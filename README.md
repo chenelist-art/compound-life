@@ -1,4 +1,4 @@
-# Compound Life
+# A Second Chance (重来人生 / 重來人生)
 
 A money life simulator. You're born at random, every big decision is about money, and you watch each choice compound for the rest of your life.
 

@@ -1,4 +1,4 @@
-/* Compound Life pixel character, chibi version: a 48×48 scene (scaled up with image-rendering: pixelated) drawn in code
+/* A Second Chance pixel character, chibi version: a 48×48 scene (scaled up with image-rendering: pixelated) drawn in code
    from the life's state each year. A big round head (about half the height) on a tiny round body with stubby arms and legs;
    a face with big sparkly eyes, coral blush and a tiny mouth that follows the mood (happy ^ ^, normal, teary, dizzy when
    ill, sleepy in old age); career outfits with one or two signature items; a partner, children who hold their parents'

@@ -1,6 +1,6 @@
-# Compound Life
+# A Second Chance
 
-A static website (no build step, no framework): a money life simulator inspired by 1in8b.life. Open `index.html` in a browser to run it. Owner: Chen, a business student; keep explanations in plain language.
+A static website (no build step, no framework): a money life simulator inspired by 1in8b.life. The name is "A Second Chance" (Chinese 重来人生 / Taiwan 重來人生: `h.brand`, `h.title`, `h.gtitle`, `g.title`, `l.title`, `g.share` in `js/i18n.js`, plus the static English in the HTML). It used to be "Compound Life": the folder, the GitHub repo and the `cl-` localStorage keys keep the old name on purpose (renaming the keys would lose saved past lives). Banknote serials start with "SC". Open `index.html` in a browser to run it. Owner: Chen, a business student; keep explanations in plain language.
 
 ## Structure
 - `index.html` – landing page (hero banknote, money lab, birth map, decision list). Logic in `js/landing.js`.

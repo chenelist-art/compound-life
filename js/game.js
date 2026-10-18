@@ -1,4 +1,4 @@
-/* Compound Life game UI: birth, the yearly loop, decisions (each one a tarot card), passbook, chart and the end card.
+/* A Second Chance game UI: birth, the yearly loop, decisions (each one a tarot card), passbook, chart and the end card.
    All text goes through t()/tr() from js/i18n.js, so switching language re-renders everything. */
 (function(){
 const $=q=>document.querySelector(q);
@@ -65,7 +65,7 @@ function startLife(ci,seed,sex){
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
-  $('#noteSerial').textContent='CL '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
+  $('#noteSerial').textContent='SC '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
   $('#setup').hidden=true;$('#game').hidden=false;$('#gstat').hidden=false;$('#gctrlLive').hidden=false;
   buildFocus();window.scrollTo(0,0);render();schedule();
 }

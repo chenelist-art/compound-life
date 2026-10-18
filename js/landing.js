@@ -8,8 +8,8 @@ const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 /* ---------- serial + counters ---------- */
 const sn=String(Math.floor(Math.random()*1e9)).padStart(9,'0');
-$('#serialNo').textContent='CL '+sn.slice(0,3)+' '+sn.slice(3,6)+' '+sn.slice(6);
-$('#noteSerial').textContent='CL'+sn;
+$('#serialNo').textContent='SC '+sn.slice(0,3)+' '+sn.slice(3,6)+' '+sn.slice(6);
+$('#noteSerial').textContent='SC'+sn;
 const t0=performance.now();
 function counters(){const s=(performance.now()-t0)/1000;$('#cBirth').textContent=Math.floor(s*4.2).toLocaleString('en-US');$('#cDeath').textContent=Math.floor(s*1.95).toLocaleString('en-US')}
 counters();setInterval(counters,250);

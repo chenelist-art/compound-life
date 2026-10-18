@@ -1,4 +1,4 @@
-/* Compound Life simulation engine: countries, life events, yearly money model, simulated futures.
+/* A Second Chance simulation engine: countries, life events, yearly money model, simulated futures.
    Every piece of text is a message descriptor M(key, vars) that js/i18n.js turns into
    English, Simplified or Traditional Chinese when it is shown. Money vars use MN() / MS(). */
 const SK=.012;
