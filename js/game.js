@@ -136,6 +136,8 @@ function render(){
   $('#nw').textContent=fm(nw);$('#nw').className='nw'+(nw<0?' loss':'');window.fitText&&fitText($('#nw'));
   $('#nwsub').innerHTML=(s.age>=18?esc(t('g.income',{a:MN(s.lastInc)})):'')+esc(t('g.twin',{a:MN(tv)}));
   $('#rkW').textContent=rankWorld(nw);$('#rkC').textContent=rankCountry(nw);
+  /* health conditions that are active right now */
+  $('#conds').innerHTML=s.dead?'':[[sick(s),'rec'],[depressed(s),'dep']].filter(c=>c[0]).map(c=>`<span class="cond c-${c[1]}">${esc(t('cond.'+c[1]))}</span>`).join('');
   $('#note').style.setProperty('--shift',Math.min(100,age)/100);
   $('#nwNum').textContent=Art.roman(age);
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
@@ -192,11 +194,14 @@ function slipHTML(ev){
   <div class="slip-top"><span class="stamp">${esc(t('g.decAge',{a:s.age}))}</span><span class="payto">${esc(t('g.payto'))}</span></div>
   <h2>${trE(ev.title)}</h2><p class="slip-text">${esc(withHint(ev.text(s),ev.hint&&ev.hint(s)))}</p>
   <div class="opts${easy?'':' blind'}">${os.map((o,i)=>{const dis=o.ok!==undefined&&o.ok!==true;return `<button class="opt" type="button" data-id="${o.id}"${dis?' disabled':''}><span class="okey" aria-hidden="true">${i+1}</span><span class="ot"><span class="ol">${trE(o.label)}${o.id===ev.def?`<span class="tag">${esc(t('g.default'))}</span>`:''}</span><span class="os">${dis?trE(o.ok):esc(withHint(o.sub,o.hint))}</span></span>${easy?`<span class="op" id="op-${o.id}">${dis?'':`<span class="pv muted">…</span><span class="pr">${esc(t('g.simulating'))}</span>`}</span>`:''}</button>`}).join('')}</div>
+  ${ev.care?`<p class="slip-care">${trE(ev.care)}</p>`:''}
   <div class="slip-foot"><span id="projlbl">${esc(t(easy?'g.sim40':G.mode==='hard'?'g.footH':'g.footN'))}</span><span>${t('g.press',{k:keys})}</span></div>`});
 }
 /* a range bar: the line is zero, the pill is the middle 80% of futures, the dot is the typical one */
 function scaleOf(rows){let mn=0,mx=0;for(const r of rows){if(r.base)continue;mn=Math.min(mn,r.lo);mx=Math.max(mx,r.hi)}if(mx-mn<1)mx=mn+1;return v=>((v-mn)/(mx-mn)*100).toFixed(2)+'%'}
-function valHTML(r,B){if(r.base)return{c:'',v:`<span class="pv muted">${esc(t('g.baseline'))}</span>`};const flat=Math.abs(r.med)<.03*B,c=flat?'':cls(r.med);return{c,v:`<span class="pv ${c}">${flat?esc(t('g.same')):fm(r.med,true)}</span>`}}
+/* a serious illness: the share of futures that survived comes first (r.alive), money second */
+const aliveTxt=r=>t('g.alive',{p:Math.round(r.alive*100)});
+function valHTML(r,B){if(r.alive!=null)return{c:r.base?'':cls(r.med),v:`<span class="pv">${esc(aliveTxt(r))}</span>`};if(r.base)return{c:'',v:`<span class="pv muted">${esc(t('g.baseline'))}</span>`};const flat=Math.abs(r.med)<.03*B,c=flat?'':cls(r.med);return{c,v:`<span class="pv ${c}">${flat?esc(t('g.same')):fm(r.med,true)}</span>`}}
 function barHTML(r,X,c){return r.base?`<span class="rbar"><span class="rb-zero" style="left:${X(0)}"></span><span class="rb-med" style="left:${X(0)}"></span></span>`:`<span class="rbar ${c}"><span class="rb-zero" style="left:${X(0)}"></span><span class="rb-range" style="left:${X(r.lo)};width:calc(${X(r.hi)} - ${X(r.lo)})"></span><span class="rb-med" style="left:${X(r.med)}"></span></span>`}
 function fillProj(){
   const P=G.proj;if(!P||G.mode!=='easy')return;const B=G.s.base;
@@ -205,11 +210,11 @@ function fillProj(){
   for(const id in P.res){const el=document.getElementById('op-'+id);if(!el)continue;const r=P.res[id],v=valHTML(r,B);
     if(r.base){el.innerHTML=`${v.v}${barHTML(r,X)}<span class="pr">${esc(t('g.twinPath'))}</span>`;continue}
     const risky=(r.hi-r.lo)>Math.max(2*Math.abs(r.med),.6*B);
-    el.innerHTML=`${v.v}${barHTML(r,X,v.c)}<span class="pr">${esc(risky?t('g.risky',{a:MS(r.lo),b:MS(r.hi)}):t('g.byAge',{a:P.tgt}))}${Math.abs(r.earn)>.05*B?esc(t('g.lifePay',{a:MS(r.earn)})):''}</span>`;
+    el.innerHTML=`${v.v}${barHTML(r,X,v.c)}<span class="pr">${esc(r.alive!=null?t('g.netBy',{a:MS(r.med),age:P.tgt}):risky?t('g.risky',{a:MS(r.lo),b:MS(r.hi)}):t('g.byAge',{a:P.tgt}))}${Math.abs(r.earn)>.05*B?esc(t('g.lifePay',{a:MS(r.earn)})):''}</span>`;
   }
 }
 /* hindsight: how each option typically turned out, shown after you choose (Normal) and on the end card (all modes) */
-const hv=r=>r.base?0:r.med;
+const hv=r=>(r.alive!=null?r.alive*1e12:0)+(r.base?0:r.med);
 function bestOf(h){return h.rows.reduce((b,r)=>!b||hv(r)>hv(b)?r:b,null)}
 function hindHTML(h){
   const B=G.s.base,X=scaleOf(h.rows),left=Math.max(0,(G.hindEnd||0)-Date.now());
@@ -231,7 +236,7 @@ function mirrorHTML(){const s=G.s,m=G.mirror;if(!m)return '';const a=s.deathAge,
   <div class="sgrid mgrid">${box(t('g.mirNw',{a:at}),m.nwAt,myNw,1)}${box(t('g.mirInc',{a:at}),m.earnAt,myEarn,1)}${box(t('g.mirAge'),m.deathAge,a,0)}</div></section>`}
 function hindAllHTML(){
   const B=G.s.base;if(!G.hinds.length)return '';
-  const val=r=>r.base?esc(t('g.baseline')):`<b class="${cls(r.med)}">${fm(r.med,true)}</b>`;
+  const val=r=>r.alive!=null?`<b>${esc(aliveTxt(r))}</b>`:r.base?esc(t('g.baseline')):`<b class="${cls(r.med)}">${fm(r.med,true)}</b>`;
   const put=(k,x,r)=>esc(t(k,{x,v:'\u0001'})).replace('\u0001',val(r));
   const li=G.hinds.map(h=>{const me=h.rows.find(r=>r.id===h.pick),b=bestOf(h);if(!me)return '';const top=hv(b)-hv(me)<.03*B;
     return `<li><span class="la">${h.age}</span><span class="lt"><span class="ll">${trE(h.title)} <span class="muted">· ${esc(t('g.byAge',{a:h.tgt}))}</span></span><span class="ln">${put('g.hindYou',me.label,me)} · ${top?esc(t('g.hindWasBest')):put('g.hindBest',b.label,b)}</span></span></li>`}).join('');
@@ -297,7 +302,7 @@ function endHTML(){
   <div class="cert-head"><span class="stamp">${esc(t('g.closed',{a:s.deathAge}))}</span>
     <h2>${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
     <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div>
-  <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}</p>
+  <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}${s.illDeath?(I18N.lang==='en'?' ':'')+esc(t('g.illEnd',{a:s.deathAge,x:M('ill.'+s.illDeath)})):''}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
   ${mirrorHTML()}
   ${stand}

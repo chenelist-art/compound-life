@@ -128,7 +128,8 @@ function newLife(ci,seed,sex){const r=mb(hsh(seed,'birth'));const c=C[ci];const 
   cutDebt:false,debtSeen:-99,noDeath:false,milestones:{},brokeLogged:0,
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
   kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
-  rel:50,offUntil:0,uncle:false,refN:0,lonely:0};
+  rel:50,offUntil:0,uncle:false,refN:0,lonely:0,
+  ill:null,illAge:-1,illType:null,dep:null,depAge:-1,lowHap:0,grindY:0};
  s.hz=0;s.dieAt=-Math.log(1-mb(hsh(seed,'death'))());
  const k=c[1];s.sex=sex||(r()<SRB[k]/(1+SRB[k])?'m':'f');s.le=Math.round(c[4]+LE_SEX[k][s.sex==='f'?0:1]-LE_SEX[k][2]);
  s.plan=planLife(s);return s}
@@ -185,7 +186,32 @@ function refer(s,id,m,lk,L,lg){if(!s.job||s.retired||s.study)return false;bump(s
 const relP=(s,p)=>clamp(p+(s.rel-50)*.004,0,.95);
 /* money from family and friends when you're sick or short, tracked in one passbook line */
 function helped(s,h){const t=T(s,'help',{kind:'custom',label:M('trk.help')});t.v+=h;t.note=M('note.help',{a:MN(t.v)})}
+/* family and friends may chip in on a medical bill; the closer you are, the likelier and the more */
+function chipIn(s,you,k,L){if(s.rel>=40&&evR(s,k)()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(M('log.helpMed',{a:MN(h)}),'good')}}
 const job=s=>!!s.job&&!s.study&&!s.retired;
+
+/* ---------- serious illness and depression ----------
+   Game rules, not published data. A serious illness (heart attack, stroke or cancer) can strike once a life: the yearly
+   chance is small while Health is 50 or more, rises below 50 and climbs fast below 30, and grows with age and years of
+   overwork (grind, and hustle at half weight). Survival depends on the treatment, Health, age, past screening and the
+   country's life expectancy (a stand-in for its hospitals). Survivors lose some months of pay and can't build Health
+   for a few years. Depression can follow two years in a row with Happiness under 35; while it lasts it cuts pay by 30%,
+   makes promotions rarer, slowly lowers Health and halves what your focus does. */
+const ILLT={best:{c:2.5,m:3,h:10,y:2,p:.9},std:{c:.6,m:5,h:15,y:3,p:.8},skip:{c:0,m:7,h:22,y:4,p:.35}};
+function illP(s){const h=s.health,hp=h>=50?.002+(100-h)*.00004:h>=30?.004+(50-h)*.001:.024+(30-h)*.004;
+ return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))}
+function survP(s,k){const ci=s.abroad!=null?s.abroad:s.ci;return clamp(ILLT[k].p+(s.health-50)*.005+(C[ci][4]-75)*.008-Math.max(0,s.age-60)*.006+(s.screen?.05:0),.05,.97)}
+const illYou=(s,k)=>ILLT[k].c*s.base*(s.insured?.15:1);
+const illNote=t=>M('note.ill',{a:MN(t.paid),b:MN(t.lost)});
+function treat(s,k){const b=ILLT[k].c*s.base,you=illYou(s,k);pay(s,you);
+ if(s.insured&&b>0){const t=s.trk.ins;if(t){t.saved+=b-you;t.v+=b-you;t.note=insNote(t)}}
+ const t=T(s,'ill',{kind:'custom',label:M('trk.ill.'+s.illType),paid:0,lost:0});t.v-=you;t.paid+=you;t.note=illNote(t);
+ later(s,s.age,'ill',{tr:k,p:survP(s,k),you})}
+const sick=s=>!!s.ill&&!s.ill.over&&s.age<s.ill.until;
+const depressed=s=>!!s.dep&&!s.dep.over&&s.age<s.dep.until;
+const depFee=s=>.08*s.base*(s.insured?.5:1);
+const depNote=t=>M('note.dep',{a:MN(t.lost),b:MN(t.paid)});
+function depStart(s,how,yrs){s.dep={how,at:s.age,until:s.age+yrs};T(s,'dep',{kind:'custom',label:M('trk.dep'),lost:0,paid:0,note:depNote({lost:0,paid:0})})}
 
 /* ---------- events ----------
    win: age window (fixed age when both ends match); p: chance it is in this life; only: birth condition;
@@ -724,7 +750,22 @@ const EV=[
  opts:s=>[
   OR('yes','e.grandsit.yes',M('e.grandsit.yes.s',{a:MN(.04*s.base)}),6,s=>{T(s,'grandsit',{kind:'custom',label:M('trk.grandsit')});rec(s,'grandsit',-.04*s.base,5,-.3);s.happy+=3}),
   OR('some','e.grandsit.some',M('e.grandsit.some.s'),3,s=>{s.happy+=1}),
-  OR('no','e.grandsit.no',M('e.grandsit.no.s'),-3,null)]}
+  OR('no','e.grandsit.no',M('e.grandsit.no.s'),-3,null)]},
+/* health: a serious illness and depression come with the situation (see tick); `surv` makes the 40 futures count survivors */
+{id:'ill',when:s=>s.illAge===s.age,surv:true,title:M('e.ill.t'),def:'std',
+ pre:s=>{},preLog:s=>M('log.ill.'+s.illType),
+ text:s=>M('e.ill.x.'+s.illType),hint:s=>M('e.ill.hx'),
+ opts:s=>['best','std','skip'].map(k=>{const y=illYou(s,k),liq=liquid(s);
+  return Hn(O(k,'e.ill.'+k,M('e.ill.'+k+'.s',{a:MN(y),ins:s.insured&&y>0?M('e.health2.ins'):'',off:job(s)?M('e.ill.off',{n:ILLT[k].m}):''}),s=>treat(s,k),
+   k==='best'?(s.insured||liq>=.5*y||M('e.home.need',{n:MN(.5*y),h:MN(liq)})):undefined),M('e.ill.h',{p:Math.round(survP(s,k)*100)}))})},
+{id:'dep',when:s=>s.depAge===s.age,title:M('e.dep.t'),def:'ignore',care:M('e.dep.care'),
+ pre:s=>{},preLog:s=>M('log.dep'),
+ text:s=>M('e.dep.x'),hint:s=>M('e.dep.h'),
+ opts:s=>{const u=evR(s,'depLen')();return[
+  Hn(O('ther','e.dep.ther',M('e.dep.ther.s',{a:MN(depFee(s)),ins:s.insured?M('e.health2.ins'):''}),s=>depStart(s,'ther',u<.5?1:2)),M('e.dep.ther.h')),
+  Hn(O('off','e.dep.off',M('e.dep.off.s',{a:MN(job(s)?.33*salary(s):0)}),s=>depStart(s,'off',1),job(s)||M('e.dep.nojob')),M('e.dep.off.h')),
+  OR('talk','e.dep.talk',M('e.dep.talk.s'),3,s=>depStart(s,'talk',clamp(Math.floor((75-s.rel)/15+u+1),1,4)),undefined,M('e.dep.talk.h')),
+  Hn(O('ignore','e.dep.ignore',M('e.dep.ignore.s'),s=>depStart(s,'ignore',4+Math.floor(u*3))),M('e.dep.ignore.h'))]}}
 ];
 
 /* an event is due when its planned age has come (and its window hasn't passed) and its condition holds; no event happens twice */
@@ -765,7 +806,12 @@ const LATER={
  sib:(s,x,L)=>{const u=evR(s,'sib')();if(u<.45){const v=.8*x.a;s.cash+=v;const t=s.trk.sib;if(t){t.v+=v;t.note=M('note.repay',{a:MN(x.a),b:MN(v)})}L&&L(M('log.sibBack',{a:MN(v)}),'good')}else if(!(u<.75&&refer(s,'sibRef',1.06,'trk.sibRef',L,'log.sibRef'))){rl(s,2);L&&L(M('log.sibThanks'),'good')}},
  uncle:(s,x,L)=>{if(!s.uncle)return;if(evR(s,'uncle')()<.4){s.uncle=false;s.bump.uncle=1;const t=s.trk.uncle;if(t)t.note=M('note.uncleEnd',{a:MN(t.v)});if(s.job&&!s.retired){s.layAt=s.age;s.layVol=false}L&&L(M('log.uncleEnd'),'bad')}else L&&L(M('log.uncleOk'),'good')},
  court:(s,x,L)=>{const won=evR(s,'court')()<.5,v=x.a*(won?1.6:.7);s.cash+=v;const t=s.trk.inhfight;if(t){t.v+=v;t.note=M('note.court',{a:MN(v)})}L&&L(M(won?'log.courtWin':'log.courtLose',{a:MN(v)}),won?'good':'')},
- roof:(s,x,L)=>{if(!s.house||evR(s,'roof')()>=.5)return;const c=.3*s.base;pay(s,c);const t=s.trk.roof;if(t){t.spent+=c;t.g+=c}L&&L(M('log.roof',{a:MN(c)}),'bad')}
+ roof:(s,x,L)=>{if(!s.house||evR(s,'roof')()>=.5)return;const c=.3*s.base;pay(s,c);const t=s.trk.roof;if(t){t.spent+=c;t.g+=c}L&&L(M('log.roof',{a:MN(c)}),'bad')},
+ /* the treatment's outcome. Simulated futures can't die (noDeath), so they only note it and carry on as survivors */
+ ill:(s,x,L)=>{const T0=ILLT[x.tr];
+  if(evR(s,'illSurv')()>=x.p){if(!s.noDeath){s.dead=true;s.deathAge=s.age;s.illDeath=s.illType;L&&L(M('log.illDie',{x:M('ill.'+s.illType)}),'bad');return}s.illDied=1}
+  s.health=clamp(s.health-T0.h,3,100);s.happy=clamp(s.happy-6,0,100);s.ill={at:s.age,until:s.age+T0.y,off:T0.m/12};
+  if(x.you>0)chipIn(s,x.you,'helpIll',L);L&&L(M('log.illOk'),'good')}
 };
 
 /* ---------- yearly resolutions ---------- */
@@ -810,7 +856,11 @@ function tick(s,yr,L){
  if(s.job&&s.job.type==='startup'&&s.job.res&&a>=s.job.res&&!s.retired)resolveStartup(s,L);
  if(s.outUntil&&a===s.outUntil){const amt=Math.min(Math.max(0,s.cash),s.sold);s.cash-=amt;addLot(s,'auto',amt);L&&L(M('log.buyBack',{a:MN(amt)}),'')}
  if(s.later.length){for(const x of s.later)if(!x.done&&a>=x.age){x.done=1;LATER[x.k](s,x,L)}s.later=s.later.filter(x=>!x.done)}
+ if(s.dead)return out; // a serious illness can end a life at the start of the year
  kidFees(s,a,L);
+ /* depression halves what your focus does; therapy is paid as you go */
+ const dp=depressed(s),fk=dp?.5:1;
+ if(dp&&s.dep.how==='ther'){const c=depFee(s);if(s.retired)payRet(s,c);else pay(s,c);const t=s.trk.dep;if(t){t.paid+=c;t.v-=c;t.note=depNote(t)}}
  if(s.annu){s.cash+=s.annu;s.earned+=s.annu;const t=s.trk.annuity;if(t){t.v+=s.annu;t.got=(t.got||0)+s.annu;t.note=M('note.annuity',{a:MN(t.cost),b:MN(t.got)})}}
  let r=Math.max(-.45,yr.mkt);if(a===s.crashAge)r=.18;else if(a===s.crashAge+1)r=.15;
  for(const k in s.lots){const l=s.lots[k];l.v*=1+lotR(l,r,yr)}
@@ -824,7 +874,7 @@ function tick(s,yr,L){
    const st=s.study,part=st.pt*B;s.earned+=part;out.gross=part;
    const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,salFor(s,'corp')-part);
    const d=part-.35*B;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
-   addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',1,M('trk.learn'));
+   addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
    if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?amort(s.sloan,.03,10):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
    const sal=s.job?salary(s):0;s.lastSal=sal;
@@ -837,10 +887,13 @@ function tick(s,yr,L){
    const employed=!!s.job&&!(full&&(!s.biz.done||s.biz.ok));
    if(employed){
     if(fo==='learn'){const c=.06*work;work-=c;const t=T(s,'sk_learn',{kind:'skill',label:M('trk.learn')});t.cost+=c}
-    if(fo==='grind')work*=1.05;
+    if(fo==='grind')work*=1+.05*fk;
     if(s.pivotYear===a){const c=.5*work;work-=c;if(s.trk.sk_pivot)s.trk.sk_pivot.cost+=c}
     if(s.cert&&a<s.cert.end&&s.cert.kind==='mba'){const c=.1*work;work-=c;if(s.trk.sk_cert)s.trk.sk_cert.cost+=c}
     if(s.offUntil>a){const t=s.trk.carers;if(t){t.v-=work;t.note=M('note.carers',{a:MN(-t.v)})}work=0}
+    /* months off for a serious illness; depression costs 30% of pay (four months off instead, in the year you take time off) */
+    if(s.ill&&s.ill.at===a){const c=s.ill.off*work,t=s.trk.ill;work-=c;if(t){t.lost+=c;t.v-=c;t.note=illNote(t)}}
+    if(dp){const c=(s.dep.how==='off'&&s.dep.at===a?.33:.3)*work,t=s.trk.dep;work-=c;if(t){t.lost+=c;t.v-=c;t.note=depNote(t)}}
     const lp=s.job.type==='gov'?.005:(a===s.crashAge?.15:.03);
     if(yr.jl<lp||s.layAt===a){work*=.5;L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad')}
     const den=1+SK*sk;
@@ -849,13 +902,14 @@ function tick(s,yr,L){
     for(const k in s.bump){const t=s.trk[k];if(t)t.v+=sal*(1-1/s.bump[k])}
     if(s.job.type==='gov'&&s.trk.gov){const t=s.trk.gov,l=sal/.9*.1;t.lost+=l;t.v-=l;t.note=M('note.gov',{l:MN(t.lost)})}
     if(s.job.type==='startup'&&s.trk.startup){const t=s.trk.startup,l=sal/.85*.15;t.lost+=l;t.v-=l;t.note=M('note.startup',{l:MN(t.lost),age:s.job.res})}
-    let pp=.07+(fo==='grind'?.08:0)+sk*.0015+(s.rel-50)*.0008;if(s.job.type==='gov')pp*=.6;if(s.uncle)pp*=.7;
+    let pp=.07+(fo==='grind'?.08*fk:0)+sk*.0015+(s.rel-50)*.0008;if(s.job.type==='gov')pp*=.6;if(s.uncle)pp*=.7;if(dp)pp*=.4;
+    if(fo==='grind')s.grindY++;
     if(s.level<6&&yr.pr<pp){s.level++;if(fo==='grind'){s.levelGrind++;T(s,'grind',{kind:'skill',label:M('trk.grind')})}L&&L(M('log.promo',{n:s.level,a:MN(salary(s))}),'good')}
     s.exp++;
     /* good Relationships bring referrals: someone you know recommends you for a better-paid job (twice at most) */
     if(s.refN<2&&s.rel>55&&evR(s,'ref')()<(s.rel-55)/350){s.refN++;refer(s,'ref'+s.refN,1.08,'trk.referral',L,'log.referral')}
    }
-   let hus=0;if(fo==='hustle'){s.hustleYears++;hus=B*.08*(1+.2*Math.min(s.hustleYears,10))*(1+SK*sk*.5);const t=T(s,'hustle',{kind:'custom',label:M('trk.hustle'),yrs:0});t.v+=hus;t.yrs++;t.note=M('note.hustle',{n:t.yrs,a:MN(hus)})}
+   let hus=0;if(fo==='hustle'){s.hustleYears++;hus=B*.08*(1+.2*Math.min(s.hustleYears,10))*(1+SK*sk*.5)*fk;const t=T(s,'hustle',{kind:'custom',label:M('trk.hustle'),yrs:0});t.v+=hus;t.yrs++;t.note=M('note.hustle',{n:t.yrs,a:MN(hus)})}
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold){side=s.biz.inc;s.biz.inc*=1.06;if(tb){tb.v+=side;tb.note=M('note.bizSide',{a:MN(side)})}}
    const gross=work+hus+side,net=netOf(s,gross);
    const hs=housing(s),liv=.5*B*cm;
@@ -899,31 +953,40 @@ function tick(s,yr,L){
   }
   // body and mind
   if(a>=40)s.health-=.7;if(a>=65)s.health-=.6;
-  if(s.retired)s.health+=.5;else if(!s.study){if(fo==='balance')s.health+=2.5;if(fo==='people')s.health+=1;if(fo==='grind')s.health-=2.5;if(fo==='hustle')s.health-=1}
+  /* while recovering from a serious illness you can't build Health back up */
+  const hk=sick(s)?0:fk;
+  if(s.retired)s.health+=.5*hk;else if(!s.study){if(fo==='balance')s.health+=2.5*hk;if(fo==='people')s.health+=hk;if(fo==='grind')s.health-=2.5;if(fo==='hustle')s.health-=1}
+  if(dp)s.health-=1.5;
   s.health=clamp(s.health,3,100);
+  if(a>=25&&s.illAge<0&&evR(s,'illRoll')()<illP(s)){s.illAge=a+1;const u=evR(s,'illType')();s.illType=u<.45?'cancer':u<.8?'heart':'stroke'}
   const mp=.02+Math.max(0,70-s.health)/900+a/3500;
   if(yr.md<mp){const bill=B*.6*(.5+yr.ma*1.5)*(s.screen?.7:1);let you=bill;if(s.insured){you=.15*bill;const t=s.trk.ins;if(t){t.saved+=bill-you;t.v+=bill-you;t.note=insNote(t)}}
    if(s.retired)payRet(s,you);else pay(s,you);s.health=clamp(s.health-4,3,100);L&&L(M('log.med',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):M('log.medSelf')}),'bad');
-   /* family and friends may chip in; the closer you are, the likelier and the more */
-   if(s.rel>=40&&evR(s,'helpMed')()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(M('log.helpMed',{a:MN(h)}),'good')}}
+   chipIn(s,you,'helpMed',L)}
   const nw=netWorth(s);let tg=48+9*Math.log10(1+Math.max(0,nw)/B)-(s.debt>.3*B?10:0)+(s.married?4:0)+Math.min(3,s.kids.length)*2+(s.health-60)/8;
   tg+=(s.rel-50)/12;
-  if(!s.retired&&!s.study){if(fo==='balance')tg+=5;if(fo==='grind')tg-=5;if(fo==='people')tg+=3}
+  if(!s.retired&&!s.study){if(fo==='balance')tg+=5*fk;if(fo==='grind')tg-=5;if(fo==='people')tg+=3*fk}
+  if(sick(s))tg-=8;
   if(s.retired&&s.rel<35){tg-=6;if(!s.lonely){s.lonely=1;L&&L(M('log.lonely'),'bad')}}
   s.happy=clamp(s.happy+(tg-s.happy)*.25,0,100);
+  // two years in a row of low Happiness can bring on depression (once a life; it shows as a decision next year)
+  s.lowHap=s.happy<35?s.lowHap+1:0;
+  if(s.lowHap>=2&&!s.dep&&s.depAge<0&&evR(s,'depRoll')()<.5)s.depAge=a+1;
   // Relationships drift down unless you give people time; marriage, children and retirement help, and they pull back toward the middle
   let dr=-1+(s.married?.4:0)+.2*Math.min(3,s.kids.length)+(45-s.rel)*.05;
-  if(s.retired)dr+=.5;else if(!s.study)dr+={people:4,balance:1.5,learn:0,grind:-1,hustle:-.6}[fo]||0;
+  if(s.retired)dr+=.5;else if(!s.study){const fd={people:4,balance:1.5,learn:0,grind:-1,hustle:-.6}[fo]||0;dr+=fd>0?fd*fk:fd}
   rl(s,dr);
   if(s.married&&s.rel<25&&!s.later.some(x=>x.k==='div')&&evR(s,'lowrel')()<.04)later(s,a+1,'div',{p:1});
   // skills for next year
   if(a>=45&&s.done.pivot==='stay'&&!s.retired)s.skillSrc.base=Math.max(0,s.skillSrc.base-.8);
   if(!s.retired&&!s.study){
    if(s.job&&s.job.type==='startup')addSkill(s,'startup',1.5,M('trk.startupSkill'));
-   if(fo==='learn'){addSkill(s,'learn',a<50?3.5:2,M('trk.learn'));const t=s.trk.sk_learn;if(t){t.years=(t.years||0)+1;t.label=M('trk.learnN',{n:t.years})}}
+   if(fo==='learn'){addSkill(s,'learn',(a<50?3.5:2)*fk,M('trk.learn'));const t=s.trk.sk_learn;if(t){t.years=(t.years||0)+1;t.label=M('trk.learnN',{n:t.years})}}
    if(s.cert&&a<s.cert.end)addSkill(s,'cert',7,s.cert.label);
   }
   for(const b of s.kids)if(b===a)L&&L(M('log.child'),'good');
+  if(s.ill&&!s.ill.over&&a+1>=s.ill.until){s.ill.over=1;s.health=clamp(s.health+6,3,100);L&&L(M('log.illRec'),'good')}
+  if(s.dep&&!s.dep.over&&a+1>=s.dep.until){s.dep.over=1;s.happy=clamp(s.happy+8,0,100);L&&L(M('log.depEnd'),'good')}
   // lifespan: each year adds that year's risk of dying; you die once the total passes the luck drawn at birth (dieAt).
   // The odds at each age are the same as a fresh roll every year, but a lower risk (a woman's longer life, better health)
   // reliably means a later death for the same luck, so the mirror life compares fairly
@@ -953,11 +1016,13 @@ function mirrorLife(s0,foc,at){const m=newLife(s0.ci,s0.seed,s0.sex==='f'?'m':'f
 /* ---------- simulated futures ---------- */
 function MC(s,fn,N,tgt){const res=[];for(let i=0;i<N;i++){const c=clone(s);c.noDeath=true;c.seed=hsh(s.seed,'mc',i);
   if(c.crashAge>c.age){const r=mb(hsh(c.seed,'cr'))();const lo=Math.max(c.age+1,34);c.crashAge=lo>50?lo:lo+Math.floor(r*(51-lo))}
-  fn(c);let g=0;while(c.age<tgt&&!c.dead&&g++<130){resolveAuto(c);tick(c,yearRand(c.seed,c.age),null)}res.push([netWorth(c),c.earned])}return res}
+  fn(c);let g=0;while(c.age<tgt&&!c.dead&&g++<130){resolveAuto(c);tick(c,yearRand(c.seed,c.age),null)}res.push([netWorth(c),c.earned,c.illDied?0:1])}return res}
+/* for an event with `surv` (a serious illness) each option also gets `alive`: the share of futures that survived it */
 function projectEvent(s,ev,N){const tgt=s.age<58?60:s.age+12;const os=ev.opts(s);const res={};const base=MC(s,c=>applyOpt(c,ev,ev.def),N,tgt);
- for(const o of os){if(o.ok!==undefined&&o.ok!==true)continue;if(o.id===ev.def){res[o.id]={base:true};continue}
+ const alive=r=>r.reduce((a,x)=>a+x[2],0)/N;
+ for(const o of os){if(o.ok!==undefined&&o.ok!==true)continue;if(o.id===ev.def){res[o.id]={base:true};if(ev.surv)res[o.id].alive=alive(base);continue}
   const r=MC(s,c=>applyOpt(c,ev,o.id),N,tgt);const d=r.map((x,i)=>x[0]-base[i][0]).sort((a,b)=>a-b);const e=r.map((x,i)=>x[1]-base[i][1]).sort((a,b)=>a-b);
-  res[o.id]={med:d[N>>1],lo:d[Math.floor(N*.1)],hi:d[Math.min(N-1,Math.floor(N*.9))],earn:e[N>>1]}}
+  res[o.id]={med:d[N>>1],lo:d[Math.floor(N*.1)],hi:d[Math.min(N-1,Math.floor(N*.9))],earn:e[N>>1]};if(ev.surv)res[o.id].alive=alive(r)}
  return{tgt,res}}
 function projectFocus(s,N){const tgt=s.age<55?60:s.age+5;const runs={};for(const f of['learn','grind','hustle','balance','people'])runs[f]=MC(s,c=>{c.focus=f},N,tgt);const out={};
  for(const f of['learn','grind','hustle','people']){const e=runs[f].map((x,i)=>x[1]-runs.balance[i][1]).sort((a,b)=>a-b);const n=runs[f].map((x,i)=>x[0]-runs.balance[i][0]).sort((a,b)=>a-b);out[f]={earn:e[N>>1],nw:n[N>>1]}}
