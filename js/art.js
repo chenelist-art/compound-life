@@ -165,5 +165,14 @@ old:{bg:'mi',d:()=>ground(78)+star(104,12,4,'wh')+heart(40,22,.22,'co')+`<rect c
 end:{bg:'mi',d:()=>star(96,18,6)+star(78,42,3.5,'wh')+spark(106,54,4,'wh')+spark(14,14,4,'wh')+`<g transform="translate(10 -6)">${MOON}<path class="th" d="M28 37 q3 3 6 0"/><path class="th" d="M30 46 q3 2 6 0"/><ellipse class="co ns" cx="28" cy="42" rx="2.4" ry="1.5"/></g><ellipse class="wa" cx="28" cy="98" rx="58" ry="26"/><ellipse class="wa" cx="100" cy="100" rx="50" ry="24"/><rect class="wh" x="88" y="66" width="16" height="12"/><path class="co" d="M85 67 l11 -9 l11 9z"/><rect class="ya th" x="93" y="70" width="6" height="5" rx="1"/>`}
 };
 function stageWin(id,cls){const a=STAGE[id];return `<div class="t-win ${cls||''}" style="--wb:var(${BG[a.bg]})">${WRAP(a.d())}</div>`}
-window.Art={svg,win,card,corners,banner,decorate,roman,stageWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
+/* ---------- tiny drawings for the five yearly focuses (a 40×40 box, drawn with thinner lines) ---------- */
+const FOC={
+learn:{bg:'ya',d:()=>spark(32,9,3.5,'wh')+`<path class="wh" d="M6 29 V14 q7 -3 14 1 q7 -4 14 -1 v15 q-7 -3 -14 1 q-7 -4 -14 -1z"/><path d="M20 15 v15"/><path class="th" d="M10 19 h6 M10 23 h6 M24 19 h6"/>`},
+grind:{bg:'co',d:()=>`<circle class="ya" cx="11" cy="12" r="4.5"/><circle class="ya" cx="29" cy="12" r="4.5"/><path d="M13 32 l-3 4 M27 32 l3 4"/><circle class="wh" cx="20" cy="23" r="11"/><path class="th" d="M20 16 v7 l5 3"/>`},
+hustle:{bg:'mi',d:()=>`<g transform="translate(-6 -1) scale(.32)">${MOON}</g>`+star(31,9,2.5,'wh')+`<rect class="ya" x="15" y="29" width="20" height="6" rx="3"/><rect class="ya" x="17" y="23" width="18" height="6" rx="3"/><rect class="ya" x="15" y="17" width="18" height="6" rx="3"/>`},
+balance:{bg:'wa',d:()=>`<path class="th" d="M15 13 q2.5 -3 0 -6 M21 13 q2.5 -3 0 -6"/><path d="M6 34 h26"/><path class="th" d="M29 21 q5 0 5 4 q0 4 -6 4"/><path class="wh" d="M9 17 h20 v5 q0 10 -10 10 q-10 0 -10 -10z"/>`},
+people:{bg:'wh',d:()=>heart(20,10,.2,'co')+`<path class="co" d="M4 38 q0 -9 9 -9 q9 0 9 9z"/><path class="mi" d="M18 38 q0 -9 9 -9 q9 0 9 9z"/><circle class="wh" cx="13" cy="24" r="6.5"/><circle class="wh" cx="27" cy="24" r="6.5"/>`+face(13,25,.32,0,false)+face(27,25,.32,0,false)}
+};
+function focusWin(id){const a=FOC[id];return `<span class="t-win fc-win" style="--wb:var(${BG[a.bg]})"><svg class="art" viewBox="0 0 40 40" aria-hidden="true" focusable="false">${a.d()}</svg></span>`}
+window.Art={svg,win,card,corners,banner,decorate,roman,stageWin,focusWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
 })();

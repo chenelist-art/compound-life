@@ -62,13 +62,13 @@ function backToSetup(){closeReplay(true);clearTimeout(G.timer);clearTimeout(G.hi
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
   $('#noteSerial').textContent='CL '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
   $('#setup').hidden=true;$('#game').hidden=false;$('#gstat').hidden=false;$('#gctrlLive').hidden=false;
-  window.scrollTo(0,0);render();schedule();
+  buildFocus();window.scrollTo(0,0);render();schedule();
 }
 /* country names inside stored messages are resolved when shown */
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
@@ -78,6 +78,8 @@ function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.tr
 function advance(){
   const s=G.s;if(!s||G.ended||G.pending||G.hind)return 'stop';
   const ev=dueEvents(s)[0];if(ev){showDecision(ev);return 'ev'}
+  /* a new focus picked during the year starts now */
+  if(G.nextF&&s.age>=18&&!s.retired){s.focus=G.nextF;G.nextF=null;addLog(M('log.focus',{x:M('f.'+s.focus)}),'choice')}
   resolveTwin();const a=s.age,yr=yearRand(s.seed,a);G.foc[a]=s.focus;G.ea[a]=s.earned;
   if(a===6)addLog(M('log.school'),'',a);
   const out=tick(s,yr,(m,k)=>addLog(m,k,a));s.lastInc=out.gross;if(out.gross>G.peakInc)G.peakInc=out.gross;
@@ -109,7 +111,7 @@ function choose(id){
   addLog(M('log.chose',{x:o.label}),'choice');if(o.id!==ev.def)G.marks.push({a:s.age,t:ev.title});
   const h={id:ev.id,title:ev.title,age,tgt:P.tgt,pick:o.id,rows:os.filter(x=>P.res[x.id]).map(x=>Object.assign({id:x.id,label:x.label},P.res[x.id]))};
   const real=h.rows.length>1;if(real)G.hinds.push(h);
-  recordTh();G.pending=null;G.fcache=null;
+  recordTh();G.pending=null;
   if(G.mode==='normal'&&real){showHind(h);return}
   next();
 }
@@ -151,7 +153,7 @@ function render(){
   $('#sealcap').textContent=L<6?t('g.ring',{n:L,a:MN(TH[L]*s.base)}):t('g.ringAll');
   drawSeal($('#seal'),nw,s.base,age,s.dead);
   $('#play').textContent=t(G.playing?'g.pause':'g.play');$('#play').disabled=G.ended;$('#skip').disabled=G.ended||!!G.pending;
-  renderSlot();drawChart();renderLedger();renderLog();
+  renderSlot();updFocus();drawChart();renderLedger();renderLog();
 }
 /* where you stand: world and country wealth ranks from the data in engine.js */
 const pctTxt=p=>p>=99.95?'99.9':p>=99?p.toFixed(1):String(Math.max(1,Math.round(p)));
@@ -172,7 +174,7 @@ function sealCfg(nw,B,age,end){
 }
 function drawSeal(cv,nw,B,age,end){Guilloche.render(cv,sealCfg(nw,B,age,end))}
 function renderSlot(force){
-  const el=$('#slot'),s=G.s;const mode=G.ended?'end':G.pending?`ev:${G.pending.id}:${s.age}`:G.hind?'hind:'+G.hinds.length:'focus:'+phase(s);
+  const el=$('#slot'),s=G.s;const mode=G.ended?'end':G.pending?`ev:${G.pending.id}:${s.age}`:G.hind?'hind:'+G.hinds.length:'idle:'+phase(s);
   if(force||mode!==G.slotMode){G.slotMode=mode;
     if(G.ended){el.innerHTML=endHTML();
       $('#again').onclick=()=>{backToSetup();reveal(pickCountry())};
@@ -184,9 +186,9 @@ function renderSlot(force){
       drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);window.fitAll&&fitAll();
     }else if(G.pending){el.innerHTML=slipHTML(G.pending);el.querySelectorAll('.opt:not([disabled])').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.id)))}
     else if(G.hind){el.innerHTML=hindHTML(G.hind);$('#hcont').onclick=endHind}
-    else{el.innerHTML=focusHTML(phase(s));el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{G.s.focus=b.dataset.f;addLog(M('log.focus',{x:M('f.'+b.dataset.f)}),'choice');updFocus();renderLog()}))}
+    else el.innerHTML=idleHTML(phase(s));
   }
-  if(G.pending)fillProj();else if(!G.ended&&!G.hind){updFocus();queueFocus()}
+  if(G.pending)fillProj();else if(!G.ended&&!G.hind)updIdle()
 }
 function selectShare(){const r=document.createRange();r.selectNodeContents($('#share'));const sl=getSelection();sl.removeAllRanges();sl.addRange(r);$('#copy').textContent=t('g.ctrlc')}
 /* in Easy, an option's text also gets its hint (skill, pay %, odds); otherwise you only see what you'd know in real life */
@@ -246,25 +248,33 @@ function hindAllHTML(){
     return `<li><span class="la">${h.age}</span><span class="lt"><span class="ll">${trE(h.title)} <span class="muted">· ${esc(t('g.byAge',{a:h.tgt}))}</span></span><span class="ln">${put('g.hindYou',me.label,me)} · ${top?esc(t('g.hindWasBest')):put('g.hindBest',b.label,b)}</span></span></li>`}).join('');
   return `<details class="hall"${G.mode==='hard'?' open':''}><summary>${esc(t('g.hindAll'))}</summary><p class="muted">${esc(t('g.hindAllP'))}</p><ul>${li}</ul></details>`;
 }
-function focusHTML(ph){
+/* between decisions: a few words about childhood or retirement (the focus has its own panel) */
+function idleHTML(ph){
   if(ph==='child')return `<section class="panel"><div class="phead"><h3>${esc(t('g.childhood'))}</h3></div><p class="childtxt" id="childtxt"></p></section>`;
   if(ph==='ret')return `<section class="panel"><div class="phead"><h3>${esc(t('g.retiredT'))}</h3></div><p class="childtxt">${esc(t('g.retTxt',{p:M(G.s.pension?'g.pension':'g.statePension')}))}</p></section>`;
-  return `<section class="panel"><div class="phead"><h3>${esc(t('g.focusT'))}</h3><span class="muted" style="font-size:13px" id="fsub">${esc(t('g.focusSub'))}</span></div>
-  <div class="fgrid">${FOCUS.map(id=>`<button type="button" class="fbtn" data-f="${id}" data-cur="${esc(t('g.current'))}" aria-pressed="false"><span class="fname">${esc(t('f.'+id))}</span><span class="fdesc">${esc(t('f.'+id+'.d'))}</span>${G.mode==='easy'?`<span class="fproj" id="fp-${id}">…</span>`:''}</button>`).join('')}</div></section>`;
+  return '';
 }
+function updIdle(){const s=G.s,el=$('#childtxt');if(el&&phase(s)==='child')el.textContent=s.age<12?t('g.child0',{a:s.age,sk:Math.round(skill(s)),fam:M('fam.'+s.fam)}):s.age<16?t('g.child12'):t('g.child16')}
+/* the yearly focus: always on screen (a left-hand panel, or a row of chips along the bottom on smaller screens).
+   A pick waits in G.nextF and starts with the next year; no money forecasts, outcomes stay hidden. */
+function buildFocus(){
+  const el=$('#frail');
+  el.innerHTML=`<div class="fr-head"><h3 id="frT">${esc(t('g.focusT'))}</h3><p class="fr-desc" id="frDesc" aria-hidden="true"></p><p class="fr-note" id="frNote" aria-live="polite"></p></div>
+  <div class="fr-list">${FOCUS.map(id=>`<button type="button" class="fcard" data-f="${id}" aria-pressed="false">${Art.focusWin(id)}<span class="fc-t"><span class="fc-n">${esc(t('f.'+id))}</span><span class="fc-d">${esc(t('f.'+id+'.d'))}</span></span><span class="fc-tag"></span></button>`).join('')}</div>`;
+  el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>pickFocus(b.dataset.f)));
+  updFocus();
+}
+function pickFocus(f){const s=G.s;if(!s||G.ended||s.retired)return;G.nextF=f===s.focus?null:f;updFocus()}
 function updFocus(){
-  const s=G.s,ph=phase(s);
-  if(ph==='child'){const el=$('#childtxt');if(el)el.textContent=s.age<12?t('g.child0',{a:s.age,sk:Math.round(skill(s)),fam:M('fam.'+s.fam)}):s.age<16?t('g.child12'):t('g.child16');return}
-  if(ph!=='adult')return;
-  document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===s.focus)));
-  const fc=G.fcache;if(G.mode!=='easy'||!fc||fc.age!==s.age)return;
-  $('#fsub').textContent=t('g.focusSub2',{age:fc.tgt});
-  for(const id of FOCUS){const el=document.getElementById('fp-'+id);if(!el)continue;if(id==='balance'){el.innerHTML=`${esc(t('g.baseline'))}<small>${esc(t('g.healthUp'))}</small>`;continue}
-    const o=fc.out[id];el.innerHTML=`<span class="${cls(o.earn)}">${esc(t('g.fPay',{a:MS(o.earn)}))}</span><small>${esc(t('g.fNw',{a:MS(o.nw)}))}</small>`}
-}
-function queueFocus(){
-  const s=G.s;if(G.mode!=='easy'||phase(s)!=='adult'||(G.fcache&&G.fcache.age===s.age)||G.fq)return;
-  G.fq=setTimeout(()=>{G.fq=null;const s=G.s;if(!s||G.pending||G.ended||phase(s)!=='adult')return;const N=(G.playing&&speedI===2)?10:16;const p=projectFocus(s,N);G.fcache={age:s.age,tgt:p.tgt,out:p.out};updFocus()},50);
+  const s=G.s;if(!s)return;
+  $('#frail').hidden=G.ended;$('#game').classList.toggle('nof',G.ended);if(G.ended)return;
+  if(s.retired)G.nextF=null;
+  const nx=G.nextF,show=nx||s.focus;
+  $('#frNote').textContent=t(s.retired?'g.fNoteRet':s.age<18?'g.fNote18':'g.fNote');
+  $('#frDesc').textContent=t('f.'+show)+(I18N.lang==='en'?': ':'：')+t('f.'+show+'.d');
+  $('#frail').querySelectorAll('[data-f]').forEach(b=>{const f=b.dataset.f,cur=f===s.focus,next=f===nx;
+    b.setAttribute('aria-pressed',String(cur));b.classList.toggle('next',next);b.disabled=s.retired;
+    b.querySelector('.fc-tag').textContent=next?t(s.age<18?'g.fAt18':'g.fNext'):cur&&!s.retired?t('g.current'):''});
 }
 function spark(id,v){
   const h=G.th[id]||[];const c=cls(v)||'flat';
@@ -422,7 +432,7 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){G.fcache=null;renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText()}});
+  if(G.s){buildFocus();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});
