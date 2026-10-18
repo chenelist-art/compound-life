@@ -308,8 +308,8 @@ tbody tr:hover td{background:var(--washi)}
 .seal-win{position:relative;aspect-ratio:10/11}
 #seal{position:absolute;left:7%;top:13%;width:86%;height:auto;aspect-ratio:1;display:block}
 .seal-cap{font-size:12.5px;text-align:center;line-height:1.4}
-/* the pixel character: 56×44 pixels drawn in js/pixel.js, scaled by a whole number (--px) so pixels stay sharp */
-.pix{display:block;width:calc(56px * var(--px,3));height:calc(44px * var(--px,3));image-rendering:pixelated;flex:none}
+/* the pixel character: 48×48 pixels drawn in js/pixel.js, scaled by a whole number (--px) so pixels stay sharp */
+.pix{display:block;width:calc(48px * var(--px,3));height:calc(48px * var(--px,3));image-rendering:pixelated;flex:none}
 .pix-nw{--px:3}
 .pix-rp{--px:2}
 .pix-end{--px:5}

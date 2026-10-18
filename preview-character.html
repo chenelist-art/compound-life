@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Character Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<!-- A check page for the pixel character (js/pixel.js): every age, face, outfit and family. Not linked from the game. -->
+<style>
+.pv{max-width:1180px;margin:0 auto;padding:28px 16px 64px}
+.pv h1{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:0 0 6px}
+.pv h2{font-size:22px;margin:0 0 4px}
+.pv .lead{margin:0 0 22px;max-width:62ch}
+.pv-sec{border:var(--outline);border-radius:var(--radius);background:var(--washi);padding:20px 18px 22px;margin:0 0 22px}
+.pv-sec>p{margin:0 0 14px;font-size:14.5px}
+.pv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.pv-tile{border:2.5px solid var(--charcoal);border-radius:18px;padding:8px 8px 6px;display:grid;justify-items:center;gap:4px;background:var(--washi)}
+.pv-tile span{font-size:13.5px;text-align:center;line-height:1.3}
+.pv-tile button{all:unset;cursor:pointer;display:block}
+.pv-tile button:focus-visible{outline:3px solid var(--charcoal);outline-offset:3px;border-radius:6px}
+.cpix{display:block;width:calc(48px * var(--px,3));height:calc(48px * var(--px,3));image-rendering:pixelated}
+.hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center}
+.hero .cpix{--px:6;border:var(--outline);border-radius:20px;background:var(--washi)}
+.ctrl{display:grid;gap:12px}
+.ctrl label{display:grid;gap:4px;font-size:15px}
+.ctrl input[type=range]{width:100%;accent-color:var(--charcoal)}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.pill{font:inherit;font-size:15px;color:var(--charcoal);background:var(--yamabuki);border:var(--outline);border-radius:999px;padding:6px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--charcoal)}
+.pill:nth-child(2){background:var(--coral)}.pill:nth-child(3){background:var(--mizu)}.pill:nth-child(4){background:var(--wakatake)}
+.pill:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--charcoal)}
+.pill[aria-pressed=true]{background:var(--charcoal);color:var(--washi)}
+.cap{font-size:14px;margin:0}
+@media (max-width:640px){.hero{grid-template-columns:minmax(0,1fr);justify-items:center}.hero .cpix{--px:5}.pv-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}.cpix{--px:2}@media (max-width:380px){.hero .cpix{--px:4}}
+</style>
+</head>
+<body>
+<main class="pv">
+  <h1>Pixel character preview</h1>
+  <p class="lead">Every look of the pixel character. Everything here is drawn live by <code>js/pixel.js</code> on a 48×48 canvas with the six palette colours. Tap any character to make it jump with sparkles.</p>
+
+  <section class="pv-sec">
+    <h2>Watch one life</h2>
+    <p>Drag the age to watch the character grow up: school, university, a career, a partner, children, a home, retirement.</p>
+    <div class="hero">
+      <canvas class="cpix" id="hero" width="48" height="48" aria-label="The pixel character at the chosen age"></canvas>
+      <div class="ctrl">
+        <label>Age <strong id="ageOut">30</strong><input type="range" id="age" min="0" max="90" value="30"></label>
+        <div class="row" role="group" aria-label="Sex"><button class="pill" type="button" data-sex="m" aria-pressed="true">Man</button><button class="pill" type="button" data-sex="f" aria-pressed="false">Woman</button></div>
+        <div class="row"><button class="pill" type="button" id="love">Hearts (wedding, baby)</button><button class="pill" type="button" id="yay">Sparkles (promotion, graduation)</button></div>
+        <p class="cap" id="heroCap"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-sec"><h2>Ages</h2><p>Baby, child, teen, adult and elder. The green sprout marks you (partners and children don't have one).</p><div class="pv-grid" id="ages"></div></section>
+  <section class="pv-sec"><h2>Expressions</h2><p>Happy is ^ ^, normal has sparkly eyes, sad eyes are teary, a serious illness makes the eyes dizzy, old age gets sleepy. The last one is the end card. Blinking happens by itself every few seconds.</p><div class="pv-grid" id="faces"></div></section>
+  <section class="pv-sec"><h2>Emotes</h2><p>Hearts and sparkles float up at big moments; the sweat drop, zzz and rain cloud stay while that's true.</p><div class="pv-grid" id="emotes"></div></section>
+  <section class="pv-sec"><h2>Outfits</h2><p>All 31 careers, then studying, school, the hospital, recovering, and everyday clothes when poor, comfortable or rich.</p><div class="pv-grid" id="outfits"></div></section>
+  <section class="pv-sec"><h2>Family</h2><p>Walking children hold a parent's hand, babies are carried. More children than hands show as a small number.</p><div class="pv-grid" id="family"></div></section>
+</main>
+
+<script src="js/i18n.js"></script>
+<script src="js/pixel.js"></script>
+<script>
+(function(){
+const base={age:30,sex:'m',fit:null,study:false,partner:false,kids:[],wealth:1,house:false,vehicle:false,mood:'flat',ill:null,dep:false,sleep:false,broke:false,retired:false};
+const S=o=>Object.assign({},base,o);
+const JOBS={acct:'Accountant',mkt:'Marketer',swe:'Software engineer',bank:'Banker',civ:'Civil servant',teach:'Teacher',nurse:'Nurse',doc:'Doctor',law:'Lawyer',chef:'Chef',
+ elec:'Electrician',mech:'Mechanic',cons:'Construction worker',drv:'Driver',fact:'Factory worker',farm:'Farmer',design:'Designer',music:'Musician',infl:'Content creator',actor:'Actor',
+ writer:'Writer',foot:'Footballer',badm:'Badminton player',esp:'Esports player',coach:'Fitness coach',hawker:'Hawker',shop:'Shop owner',start:'Startup founder',prop:'Property agent',
+ ins:'Insurance agent',trade:'Trader'};
+const name=(k,en)=>JOBS[k.replace('car.','')]||en;
+function tile(root,st,label,opt){opt=opt||{};const d=document.createElement('div');d.className='pv-tile';
+ const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',label+': tap to cheer');
+ const c=document.createElement('canvas');c.className='cpix';c.width=48;c.height=48;b.appendChild(c);d.appendChild(b);
+ const s=document.createElement('span');s.textContent=label;d.appendChild(s);root.appendChild(d);
+ Pixel.set(c,st);b.addEventListener('click',()=>Pixel.cheer(c,opt.kind||'yay'));
+ if(opt.loop)setInterval(()=>Pixel.cheer(c,opt.loop),2600);return c}
+const $=id=>document.getElementById(id);
+
+/* ages */
+[[1,'Baby, 1'],[7,'Child, 7'],[15,'Teen, 15'],[30,'Adult, 30'],[72,'Elder, 72']].forEach(([a,l])=>{tile($('ages'),S({age:a,mood:'happy'}),l+' ♂');});
+[[1,'Baby, 1'],[7,'Child, 7'],[15,'Teen, 15'],[30,'Adult, 30'],[72,'Elder, 72']].forEach(([a,l])=>{tile($('ages'),S({age:a,sex:'f',mood:'happy'}),l+' ♀');});
+
+/* expressions */
+[['happy','Happy'],['normal','Normal'],['blink','Blink'],['sad','Sad (teary)'],['sick','Sick (dizzy)'],['sleepy','Sleepy'],['peace','At peace (end card)']].forEach(([f,l])=>tile($('faces'),S({face:f}),l));
+[['happy','Happy'],['normal','Normal'],['sad','Sad'],['sick','Sick'],['sleepy','Sleepy']].forEach(([f,l])=>tile($('faces'),S({face:f,sex:'f',age:8}),l+', age 8'));
+tile($('faces'),S({age:75,face:'sleepy'}),'Sleepy, 75');
+
+/* emotes */
+tile($('emotes'),S({partner:true,mood:'happy'}),'Hearts: wedding',{kind:'love',loop:'love'});
+tile($('emotes'),S({partner:true,kids:[0],mood:'happy'}),'Hearts: new baby',{kind:'love',loop:'love'});
+tile($('emotes'),S({fit:'acct',mood:'happy'}),'Sparkles: promotion',{loop:'yay'});
+tile($('emotes'),S({age:22,study:true,mood:'happy'}),'Sparkles: graduation',{loop:'yay'});
+tile($('emotes'),S({broke:true}),'Sweat drop: money trouble');
+tile($('emotes'),S({age:70,retired:true}),'zzz: retired');
+tile($('emotes'),S({dep:true,mood:'sad'}),'Rain cloud: depression');
+
+/* outfits */
+const CARS='acct mkt swe bank civ teach nurse doc law chef elec mech cons drv fact farm design music infl actor writer foot badm esp coach hawker shop start prop ins trade'.split(' ');
+CARS.forEach(id=>tile($('outfits'),S({fit:id}),name('car.'+id,id)));
+tile($('outfits'),S({age:20,study:true}),'Studying');
+tile($('outfits'),S({age:15}),'School');
+tile($('outfits'),S({ill:'gown'}),'In hospital');
+tile($('outfits'),S({ill:'band'}),'Recovering');
+tile($('outfits'),S({wealth:0}),'Poor');
+tile($('outfits'),S({wealth:1}),'Comfortable');
+tile($('outfits'),S({wealth:2}),'Rich');
+tile($('outfits'),S({fit:'nurse',sex:'f'}),name('car.nurse','Nurse')+' ♀');
+tile($('outfits'),S({fit:'foot',sex:'f'}),name('car.foot','Footballer')+' ♀');
+
+/* family */
+[[S({partner:true,mood:'happy'}),'Married'],[S({partner:true,sex:'f',mood:'happy'}),'Married ♀'],[S({partner:true,kids:[1]}),'Baby, carried'],
+ [S({partner:true,kids:[5],mood:'happy'}),'One child'],[S({partner:true,kids:[8,5]}),'Two children'],[S({partner:true,kids:[13,6,1]}),'Three children'],
+ [S({partner:true,kids:[9,6,2,1,0]}),'Five children'],[S({kids:[7,4]}),'Single parent'],[S({kids:[1],sex:'f'}),'Single parent, baby ♀'],
+ [S({partner:true,age:70,kids:[40,38],retired:true}),'Grandparents, grown children'],[S({partner:true,house:true,vehicle:true,wealth:2,kids:[6],mood:'happy'}),'Home, car, rich'],[S({house:true,vehicle:true}),'Single, home and car']
+].forEach(([s,l])=>tile($('family'),s,l));
+
+/* one life, by age */
+let sex='m';
+function life(a){const st=S({age:a,sex,mood:a>=22&&a<30?'flat':'happy'});
+ if(a>=19&&a<22)st.study=true;if(a>=22&&a<65)st.fit=sex==='f'?'doc':'swe';if(a>=65)st.retired=true;
+ if(a>=27)st.partner=true;st.kids=[30,33].filter(b=>a>=b).map(b=>a-b);
+ if(a>=35)st.house=true;if(a>=40)st.vehicle=true;st.wealth=a<25?0:a<45?1:2;if(a>=24&&a<26)st.broke=true;return st}
+function cap(a,st){return a<3?'A baby.':a<13?'At primary school.':a<18?'At secondary school.':a<19?'Leaving school.':st.study?'At university (sparkles on graduation).':
+ a<65?(sex==='f'?'Working as a doctor':'Working as a software engineer')+(st.broke?', in debt for a while (sweat drop)':'')+(st.partner?', married':'')+(st.kids.length?', '+st.kids.length+(st.kids.length>1?' children':' child'):'')+(st.house?', with a home':'')+'.':'Retired (zzz).'}
+function hero(){const a=+$('age').value,st=life(a);$('ageOut').textContent=a;$('heroCap').textContent=cap(a,st);Pixel.set($('hero'),st)}
+$('age').addEventListener('input',hero);
+document.querySelectorAll('[data-sex]').forEach(b=>b.addEventListener('click',()=>{sex=b.dataset.sex;document.querySelectorAll('[data-sex]').forEach(x=>x.setAttribute('aria-pressed',x===b));hero()}));
+$('love').addEventListener('click',()=>Pixel.cheer($('hero'),'love'));$('yay').addEventListener('click',()=>Pixel.cheer($('hero'),'yay'));
+hero();
+})();
+</script>
+</body>
+</html>

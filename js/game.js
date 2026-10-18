@@ -61,7 +61,7 @@ function backToSetup(){closeReplay(true);clearTimeout(G.timer);clearTimeout(G.hi
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -71,9 +71,9 @@ function startLife(ci,seed,sex){
 }
 /* country names inside stored messages are resolved when shown */
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
-/* big moments that make the pixel character jump */
+/* big moments that make the pixel character jump with sparkles (a wedding or a new baby gets hearts instead) */
 const CHEER=new Set(['log.grad','log.promo','log.ring','log.car.trained','log.car.up','log.car.ok','log.car.exit']);
-function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift();if(m&&CHEER.has(m.k))G.cheer=1}
+function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift();if(m&&CHEER.has(m.k))G.cheer=G.cheer||'yay'}
 function resolveTwin(){const tw=G.t;if(tw.dead)return;let g=0,ev;while((ev=dueEvents(tw)[0])&&g++<30){const id=ev.mirror&&G.s.done[ev.id]?G.s.done[ev.id]:ev.def;applyOpt(tw,ev,id)}}
 function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.trk){const v=trkView(s,s.trk[id]).v;const h=G.th[id]||(G.th[id]=[]);if(h.length&&h[h.length-1][0]===a)h[h.length-1][1]=v;else h.push([a,v])}}
 function advance(){
@@ -153,7 +153,7 @@ function render(){
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
   /* the pixel character: this year's look, kept per age for the replay; it jumps at a wedding and other big moments */
   const ps=Pixel.stateOf(s);G.pix[age]=ps;Pixel.set($('#pix'),ps);
-  if(s.married&&!G.wasM)G.cheer=1;G.wasM=s.married;if(G.cheer&&!s.dead){Pixel.cheer($('#pix'));G.cheer=0}
+  if((s.married&&!G.wasM)||s.kids.length>G.nKids)G.cheer='love';G.wasM=s.married;G.nKids=s.kids.length;if(G.cheer&&!s.dead)Pixel.cheer($('#pix'),G.cheer);G.cheer=0
   const sk=skill(s);$('#skv').textContent=Math.round(sk);$('#skb').style.width=clamp(sk,0,100)+'%';$('#skx').textContent=t('g.skx',{p:Math.round(SK*sk*100)});
   $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';$('#rev').textContent=Math.round(s.rel);$('#reb').style.width=s.rel+'%';
   $('#chips').innerHTML=SRC.filter(k=>(s.skillSrc[k]||0)>=.5).map(k=>{const v=s.skillSrc[k];const name=k==='edu'&&s.trk.sk_edu?tr(s.trk.sk_edu.label):t('src.'+k);return `<span class="chip"><b>${esc(name)}</b> ${esc(t('g.chipSk',{n:Math.round(v)}))} · <span class="gain">${esc(t('g.chipPay',{p:Math.round(SK*v*100)}))}</span></span>`}).join('');
@@ -327,7 +327,7 @@ function endHTML(){
   win:`<div class="t-win cert-win" style="--wb:var(--wakatake)"><canvas id="certSeal" aria-hidden="true"></canvas>${Art.svg('wreath')}</div>`,body:`
   <div class="cert-hero"><div class="cert-head"><span class="stamp">${esc(t('g.closed',{a:s.deathAge}))}</span>
     <h2>${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
-    <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div><canvas class="pix pix-end" id="pixEnd" width="56" height="44" aria-hidden="true"></canvas></div>
+    <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div><canvas class="pix pix-end" id="pixEnd" width="48" height="48" aria-hidden="true"></canvas></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}${s.illDeath?(I18N.lang==='en'?' ':'')+esc(t('g.illEnd',{a:s.deathAge,x:M('ill.'+s.illDeath)})):''}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
   ${mirrorHTML()}
@@ -407,7 +407,7 @@ function roadHTML(d){
 }
 function pageHTML(p,extra){
   return Art.card({cls:'rp-card '+(extra||''),c:RPC[p.st],num:Art.roman(p.age),label:trE(p.title),name:esc(t('rp.s.'+p.st)),win:Art.stageWin(p.st,'rp-win'),
-    body:`<div class="rp-txt"><div class="rp-hd"><h3>${trE(p.title)}</h3><canvas class="pix pix-rp" data-age="${p.st==='end'?G.s.deathAge:p.age}" width="56" height="44" aria-hidden="true"></canvas></div><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}</div>`});
+    body:`<div class="rp-txt"><div class="rp-hd"><h3>${trE(p.title)}</h3><canvas class="pix pix-rp" data-age="${p.st==='end'?G.s.deathAge:p.age}" width="48" height="48" aria-hidden="true"></canvas></div><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}</div>`});
 }
 /* each page's pixel character: the look recorded at that age (or the nearest year before it) */
 function pixAt(a){let k=-1;for(const x in G.pix)if(+x<=a&&+x>k)k=+x;return G.pix[k]||G.pix[0]}
