@@ -23,9 +23,6 @@ Pick it on the setup screen; it's remembered like the language.
 ## Languages
 Use the EN / 简 / 繁 switch in the top bar. The choice is remembered, and Chinese browsers start in Chinese automatically.
 
-## Put it online for free
-- **Netlify Drop**: go to app.netlify.com/drop and drag this whole folder onto the page. You get a link in seconds.
-- **GitHub Pages**: push the folder to a GitHub repo, then turn on Pages in the repo settings (branch `main`, folder `/root`).
 
 ## Tuning the game
 Country data is the `C` table at the top of `js/engine.js`: births, typical wage, life expectancy, home price in years of pay, and university fees in years of pay. Each decision is one entry in the `EV` list in the same file: 73 in all, from pocket money at 7 to a funeral plan at 90. Every life is dealt a different mix of about 45, with something happening every year or two. Some are country-specific (a 401(k) match in the US, EPF in Malaysia, CPF in Singapore) or family-specific (supporting your parents). Some have consequences years later: a friend may or may not repay you, a property boom may burst, a patched roof may fail. To change how many decisions a life gets, change `DENSITY` in `js/engine.js`.
