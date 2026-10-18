@@ -101,7 +101,9 @@ funeral:{n:'I',c:'wa',bg:'mi',d:()=>ground(80)+star(96,16,5)+`<path class="wh" d
 /* overlays drawn on top of a canvas: clouds under the hero sun, the laurel wreath on the end card */
 const EXTRA={
   sky:{fit:'xMidYMax',d:()=>cloud(-4,92,1.5)+cloud(86,95,1.3)+spark(14,14,5,'wh')+spark(106,12,4,'wh')},
-  wreath:{fit:'xMidYMid',d:wreath}
+  wreath:{fit:'xMidYMid',d:wreath},
+  /* the back of every card: a sleeping moon among stars, seen for a moment while the card turns over */
+  back:{fit:'xMidYMid',d:()=>`<circle class="mi" cx="60" cy="45" r="30"/><circle class="ya" cx="60" cy="45" r="20"/><circle class="th" cx="70" cy="34" r="3"/><circle class="th" cx="48" cy="56" r="2.2"/>`+face(60,47,1,'sleep')+star(20,18,6)+star(100,72,6)+spark(98,18,5,'wh')+spark(22,72,5,'wh')+spark(60,6,3,'wh')+spark(60,84,3,'wh')}
 };
 const WRAP=(inner,cls,fit)=>`<svg class="art${cls?' '+cls:''}" viewBox="0 0 120 90" preserveAspectRatio="${fit||'xMidYMid'} meet" aria-hidden="true" focusable="false">${inner}</svg>`;
 function svg(id){const a=ART[id];if(a)return WRAP(a.d());const x=EXTRA[id];if(x)return WRAP(x.d(),'over',x.fit);return ''}
@@ -113,8 +115,10 @@ const corners=()=>['tl','tr','bl','br'].map(k=>`<span class="t-c ${k}" aria-hidd
 const TAIL=s=>`<svg class="t-tail ${s}" viewBox="0 0 22 34" aria-hidden="true" focusable="false"><path d="${s==='l'?'M21 3 H3 L10 17 L3 31 H21':'M1 3 H19 L12 17 L19 31 H1'}"/></svg>`;
 const banner=html=>`<div class="t-ban">${TAIL('l')}<span class="t-name">${html}</span>${TAIL('r')}</div>`;
 function roman(n){n=Math.floor(n);if(!(n>0))return '0';const V=[[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];let s='';for(const[v,r]of V)while(n>=v){s+=r;n-=v}return s}
-/* a whole card for pages that build cards in JS */
-function card(o){return `<section class="tarot ${o.cls||''}" style="--tc:var(${BG[o.c]||'--coral'})"${o.label?` aria-label="${o.label}"`:''}>${corners()}<div class="t-in"><span class="t-num">${o.num}</span>${o.win||''}${o.body||''}</div>${banner(o.name)}</section>`}
+/* a whole card for pages that build cards in JS (no name: no ribbon, the body places its own) */
+function card(o){return `<section class="tarot ${o.cls||''}" style="--tc:var(${BG[o.c]||'--coral'})"${o.label?` aria-label="${o.label}"`:''}>${corners()}<div class="t-in"><span class="t-num">${o.num}</span>${o.win||''}${o.body||''}</div>${o.name!=null?banner(o.name):''}</section>`}
+/* the card back shown during the flip, in the same frame colour as the card it hides */
+function back(c){return `<div class="tarot t-back" style="--tc:var(${BG[c]||'--coral'})" aria-hidden="true">${corners()}<div class="t-in">${svg('back')}</div></div>`}
 function win(id,cls){const a=ART[id];return `<div class="t-win ${cls||''}" style="--wb:var(${BG[a?a.bg:'mi']})">${svg(id)}</div>`}
 /* fill in static cards: corners, ribbon tails, and drawings for [data-art] windows */
 function decorate(root){
@@ -125,5 +129,5 @@ function decorate(root){
     el.querySelectorAll('[data-art]').forEach(w=>{const id=w.getAttribute('data-art');const x=ART[id];if(x)w.style.setProperty('--wb',`var(${BG[x.bg]})`);w.insertAdjacentHTML('beforeend',svg(id))});
   });
 }
-window.Art={svg,win,card,corners,banner,decorate,roman,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
+window.Art={svg,win,card,back,corners,banner,decorate,roman,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
 })();

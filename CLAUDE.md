@@ -4,7 +4,7 @@ A static website (no build step, no framework): a money life simulator inspired 
 
 ## Structure
 - `index.html` – landing page (hero banknote, money lab, birth map, decision list). Logic in `js/landing.js`.
-- `play.html` – the game. Logic in `js/game.js`.
+- `play.html` – the game. Logic in `js/game.js`. It is one screen with no page scrolling: an app layout filling `100dvh` (money bar, focus panel and chart on the left; passbook and diary on the right; on phones chart / passbook / diary are tabs). Decisions, hindsight and the end card are tarot cards drawn over the dimmed game in `#draw` with a flip (`Art.back` is the card back).
 - `js/engine.js` – the simulation: country table `C`, decision deck `EV` (73 decisions), yearly `tick()`, passbook `trkView()`, and `projectEvent()` / `projectFocus()` (40 simulated futures per choice).
   - Each life is dealt its own mix: `planLife()` gives every event with `win:[from,to]` an age in that window, with chance `p` (scaled by `DENSITY`, about 45 decisions a life) and only if `only(s)` allows it at birth (country or family). `when(s)` is checked at the time. After two quiet years `pullForward()` brings the nearest open card forward (from the plan, then from `spare`), so something happens every year or two. No decision repeats in a life.
   - Consequences that arrive years later use `later(s, age, kind, data)`, resolved by `LATER[kind]` at the start of that year (friend repays, bubble bursts, divorce, layoffs, emergencies…). Draw their randomness with `evR(s, key)` so the 40 simulated futures see different outcomes.
@@ -19,7 +19,7 @@ A static website (no build step, no framework): a money life simulator inspired 
 - Static HTML text uses `data-i18n="h.key"`; the English in the HTML is the English version, and `ZH`/`ZHT` need the `h.key` entry.
 - Money is in PPP dollars, in today's money (inflation already removed). Stocks average ~5% real with yearly noise.
 - "Where you stand" ranks (`worldPct`, `countryPct`, `incomePct` in `js/engine.js`) use real published data in `WEALTH_PCT`, `INCOME_PCT`, `WD` and `PPP`, each with its source and year in a comment (UBS Global Wealth Report / Databook 2023, World Bank PIP and WDI). Never add or change a number there without a source; anything modelled rather than published (ranks inside a country, below the world median, income vs pay) must stay labelled as an estimate, in the code and in the footer text `h.f2p3`.
-- Keep it working at phone width (390px) with no sideways scrolling.
+- Keep it working at phone width (390px) with no sideways scrolling. `play.html` must not scroll the page at all (check 1366×768, 1536×730 and 390×760): only the options list, passbook, diary and end card scroll inside themselves, and a drawn card is never taller than the screen below the top bar.
 - Fonts come from Google Fonts: Huninn for everything, with Noto Sans SC as the fallback for Simplified Chinese.
 - Gains and losses are shown with a marker underline (`.gain` / `.loss`), never with coloured text.
 - Every decision in `EV` needs a tarot name `tn.<id>` in all three languages and a drawing in `js/art.js`. The 78-card deck is now fully used (22 major arcana, the four Coin court cards on the money card, and 52 minor arcana), so a new decision has to reuse a card name.
