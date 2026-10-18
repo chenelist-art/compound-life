@@ -48,9 +48,11 @@
         </div>
         <div class="bp-choice" role="radiogroup" aria-label="Where you're born">
           <label class="ch"><input type="radio" name="bp" value="rand" id="bp-rand" checked><b data-i18n="h.rand">At random</b><span data-i18n="h.randS">Weighted by where babies are born today</span></label>
-          <label class="ch"><input type="radio" name="bp" value="pick" id="bp-pick"><b data-i18n="h.pick">Let me choose</b><span data-i18n="h.pickS">Pick one of 17 countries</span></label>
+          <label class="ch"><input type="radio" name="bp" value="pick" id="bp-pick"><b data-i18n="h.pick">Let me choose</b><span data-i18n="h.pickS">Pick one of 17 countries, and girl or boy</span></label>
         </div>
-        <div id="countryWrap" hidden><label class="lbl" for="country" style="display:block;margin-bottom:8px" data-i18n="h.country">Country</label><select id="country"></select></div>
+        <div id="countryWrap" hidden><label class="lbl" for="country" style="display:block;margin-bottom:8px" data-i18n="h.country">Country</label><select id="country"></select>
+          <label class="lbl" for="sex" style="display:block;margin:14px 0 8px" data-i18n="h.sexL">Born as</label>
+          <select id="sex"><option value="" data-i18n="h.sexR">At random</option><option value="f" data-i18n="h.sexF">A girl</option><option value="m" data-i18n="h.sexM">A boy</option></select></div>
         <div style="display:grid;gap:8px">
           <span class="lbl" data-i18n="h.diff">Difficulty</span>
           <div class="seg" id="diff0" role="group" aria-label="Difficulty">

@@ -463,6 +463,8 @@ tbody tr:hover td{background:var(--washi)}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .sgrid div{display:grid;gap:4px;align-content:start;min-width:0;padding:12px 14px;border:2.5px solid var(--charcoal);border-radius:16px;background:var(--washi)}
 .sgrid b{font-size:16px;line-height:1.35}
+.mgrid b{font-size:22px;font-variant-numeric:tabular-nums}
+.mvs{font-size:12.5px}
 .peers{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .peers li{display:grid;gap:3px;align-content:start;min-width:0;padding:10px 12px;border:2.5px dashed var(--charcoal);border-radius:16px;font-size:13px;line-height:1.35}
 .peers li.me{border-style:solid;background:var(--yamabuki);box-shadow:4px 4px 0 var(--charcoal)}

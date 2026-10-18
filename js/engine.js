@@ -39,6 +39,31 @@ const WD={IN:[3755,16500],CN:[27273,75731],NG:[1507,6879],PK:[2076,5226],ID:[481
 const PPP={IN:[20.4927,78.6045],CN:[3.79465,6.73716],NG:[147.997,425.979],PK:[46.2085,204.867],ID:[4918.70,14849.85],ET:[17.2634,51.7562],US:[1,1],
  BD:[27.7516,91.7455],BR:[2.41166,5.16397],MX:[9.92278,20.12735],PH:[19.0815,54.4778],VN:[6942.55,23271.21],JP:[94.9221,131.4981],DE:[.688423,.949624],
  GB:[.633175,.811302],MY:[1.50323,4.40108],SG:[.870895,1.378667]};
+/* ---------- women and men: real data ----------
+   LE_SEX[code] = [women, men, everyone] life expectancy at birth, 2023: World Bank WDI SP.DYN.LE00.FE.IN, SP.DYN.LE00.MA.IN and
+   SP.DYN.LE00.IN (fetched 2026-10-18). The game keeps each country's lifespan from C and shifts it by the published gap between the sexes.
+   SRB[code] = boys born for every girl, 2023: World Bank WDI SP.POP.BRTH.MF (fetched 2026-10-18).
+   PAYGAP[code] = how much less women earn than men, in %:
+   - OECD "Gender wage gap", median earnings of full-time employees, OECD Data Explorer as listed in JILPT Databook of International
+     Labour Statistics 2025, table 5-10: JP 22.0 (2023), US 16.4 (2023), GB 13.3 (2023), DE 14.4 (2022), MX 15.0 (2023), BR 10.0 (2023).
+   - SG 14.3 (2023): Ministry of Manpower, full-time resident employees aged 25-54, median (MRSD, Update on Singapore's Adjusted Gender Pay Gap).
+   - MY 2.9 (June 2024): DOSM, Employee Wages Statistics (Formal Sector) Q2 2024, median monthly wages RM2,782 men and RM2,700 women.
+   - ILOSTAT gender wage gap, all occupations (EAR_GGAP_OCU_RT, from mean hourly earnings of employees), latest year, fetched 2026-10-18:
+     IN 19.5 (2025), BD 14.5 (2024), ID 13.5 (2023), VN 8.7 (2024), ET 21.1 (2021), NG 27.4 (2013), PK -3.1 (2025), PH -15.3 (2024).
+     Where the published gap is below zero (few women hold paid jobs, and those who do tend to be better educated) the game uses 0
+     rather than a premium: an ESTIMATE.
+   - China publishes no official figure; CN uses the ILO's world figure of "around 18 per cent" (ILO news release, September 2026): an ESTIMATE.
+   CHILDPEN[code] = the child penalty: how far women's employment falls relative to men's after a first child, in %. Kleven, Landais &
+   Leite-Mariante, "The Child Penalty Atlas", Review of Economic Studies 92(5), 2025 (data from childpenaltyatlas.org, fetched 2026-10-18).
+   Singapore is not in the atlas; SG uses the atlas's Asia figure (26): an ESTIMATE.
+   The game turns that drop in work into the same % less pay for a mother for ten years after her first child (the expected loss
+   rather than a choice): an ESTIMATE. The measured pay gaps already include some mothers, so the two effects overlap a little. */
+const LE_SEX={IN:[73.60,70.52,72.00],CN:[80.93,75.20,77.95],NG:[54.74,54.18,54.46],PK:[70.16,65.33,67.65],ID:[73.27,69.04,71.15],ET:[70.73,64.08,67.31],
+ US:[81.10,75.80,78.39],BD:[76.37,73.03,74.67],BR:[78.98,72.76,75.85],MX:[77.81,72.24,75.07],PH:[72.82,66.89,69.83],VN:[79.26,69.88,74.59],
+ JP:[87.14,81.09,84.04],DE:[83.50,78.70,81.04],GB:[83.21,79.36,81.24],MY:[79.37,74.27,76.66],SG:[85.30,81.00,83.10]};
+const SRB={IN:1.07,CN:1.11,NG:1.04,PK:1.05,ID:1.06,ET:1.05,US:1.05,BD:1.05,BR:1.04,MX:1.04,PH:1.08,VN:1.11,JP:1.05,DE:1.06,GB:1.05,MY:1.06,SG:1.06};
+const PAYGAP={JP:22.0,US:16.4,GB:13.3,DE:14.4,MX:15.0,BR:10.0,SG:14.3,MY:2.9,IN:19.5,BD:14.5,ID:13.5,VN:8.7,ET:21.1,NG:27.4,PK:-3.1,PH:-15.3,CN:18};
+const CHILDPEN={BD:62,BR:37,CN:4,ET:15,DE:41,IN:25,ID:20,JP:44,MY:45,MX:44,NG:1,PK:16,PH:25,GB:34,US:25,VN:1,SG:26};
 function logInterp(tab,x){if(x>=tab[tab.length-1][0])return tab[tab.length-1][1];for(let i=1;i<tab.length;i++)if(x<tab[i][0]){const[a,p]=tab[i-1],[b,q]=tab[i];return p+(q-p)*Math.log(x/a)/Math.log(b/a)}}
 /* PPP dollars in the game → US dollars at market exchange rates, using your home country's price level */
 function toUSD(ci,v){const p=PPP[C[ci][1]];return v*p[0]/p[1]}
@@ -71,7 +96,12 @@ function T(s,id,o){if(!s.trk[id])s.trk[id]=Object.assign({id,age:s.age,kind:'cus
 function addSkill(s,k,pts,label){pts*=Math.max(0,1-skill(s)/120);s.skillSrc[k]=(s.skillSrc[k]||0)+pts;if(k!=='base'&&label)T(s,'sk_'+k,{kind:'skill',label})}
 /* pay multipliers from raises, a job abroad or going part-time */
 function pm(s){let m=1;for(const k in s.bump)m*=s.bump[k];return m}
-function salary(s){if(!s.job)return 0;const jm={corp:1,startup:.85,gov:.9}[s.job.type];return s.base*jm*(1+SK*skill(s))*(1+.18*s.level)*(1+.015*Math.min(s.exp,25))*pm(s)}
+/* a woman's pay: the country's gender pay gap, and the child penalty for ten years after her first child */
+const workCode=s=>C[s.abroad!=null?s.abroad:s.ci][1];
+const momYears=(s,a)=>{if(!s.kids.length)return false;const b=Math.min(...s.kids);return a>=b&&a<b+10};
+function gapM(s){return s.sex==='f'?1-Math.max(0,PAYGAP[workCode(s)])/100:1}
+function sexPay(s){return s.sex==='f'?gapM(s)*(momYears(s,s.age)?1-CHILDPEN[workCode(s)]/100:1):1}
+function salary(s){if(!s.job)return 0;const jm={corp:1,startup:.85,gov:.9}[s.job.type];return s.base*jm*(1+SK*skill(s))*(1+.18*s.level)*(1+.015*Math.min(s.exp,25))*pm(s)*sexPay(s)}
 function salFor(s,type){const j=s.job;s.job={type};const v=salary(s);s.job=j;return v}
 function netOf(s,g){return g-Math.max(0,g-.4*s.base)*.18}
 function price(s){return s.hm*s.base}
@@ -87,7 +117,7 @@ function yearRand(seed,age){const r=mb(hsh(seed,'y',age));return{mkt:.05+.16*gau
 function clone(s){return JSON.parse(JSON.stringify(s))}
 function netWorth(s){let n=s.cash+eqTot(s)-s.debt-s.sloan;if(s.crypto)n+=s.crypto.stake;if(s.house)n+=s.house.value-s.house.mort;if(s.car&&s.car.bal)n-=s.car.bal;if(s.biz&&s.biz.ok&&!s.biz.sold)n+=(s.biz.mode==='full'?2:1)*s.biz.inc;return n}
 
-function newLife(ci,seed){const r=mb(hsh(seed,'birth'));const c=C[ci];const u=r();const fam=u<.3?'poor':u<.68?'working':u<.92?'middle':'rich';
+function newLife(ci,seed,sex){const r=mb(hsh(seed,'birth'));const c=C[ci];const u=r();const fam=u<.3?'poor':u<.68?'working':u<.92?'middle':'rich';
  const s={ci,base:c[3],le:c[4],hm:c[5],uni:c[6],fam,seed,age:0,dead:false,deathAge:null,
   skillSrc:{base:{poor:8,working:13,middle:19,rich:25}[fam]},health:70+Math.floor(r()*12),happy:60,
   cash:0,debt:0,sloan:0,sloanPay:0,lots:{},house:null,car:null,job:null,level:0,levelGrind:0,exp:0,
@@ -99,6 +129,8 @@ function newLife(ci,seed){const r=mb(hsh(seed,'birth'));const c=C[ci];const u=r(
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
   kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
   rel:50,offUntil:0,uncle:false,refN:0,lonely:0};
+ s.hz=0;s.dieAt=-Math.log(1-mb(hsh(seed,'death'))());
+ const k=c[1];s.sex=sex||(r()<SRB[k]/(1+SRB[k])?'m':'f');s.le=Math.round(c[4]+LE_SEX[k][s.sex==='f'?0:1]-LE_SEX[k][2]);
  s.plan=planLife(s);return s}
 
 /* Each life draws its own mix of decisions. Events with `win:[from,to]` get an age in that window
@@ -369,7 +401,7 @@ const EV=[
   O('pay','e.rates.pay',M('e.rates.pay.s',{a:MN(x)}),s=>{pay(s,x);s.house.mort-=x;s.house.out+=x;ride(s)},x>.05*h.mort||M('e.rates.payNo')),
   O('ride','e.rates.ride',M('e.rates.ride.s'),ride)]}},
 {id:'kids',win:[33,33],when:s=>s.married,title:M('e.kids.t'),def:'k0',mirror:true,
- text:s=>M('e.kids.x',{a:MN(.15*s.base)}),
+ text:s=>M('e.kids.x',{a:MN(.15*s.base)}),hint:s=>s.sex==='f'&&CHILDPEN[workCode(s)]>0?M('e.kids.h',{p:CHILDPEN[workCode(s)]}):null,
  opts:s=>[0,1,2,3].map(n=>({id:'k'+n,label:n?M('e.kids.n',{n}):M('e.kids.0'),sub:n?M('e.kids.n.s',{a:MN(n*.15*s.base),h:n*3}):M('e.kids.0.s'),go:s=>{for(let i=0;i<n;i++)s.kids.push(s.age+i*2);s.happy+=n*3;if(n)T(s,'kids',{kind:'custom',label:M('trk.kids',{n}),cost:0,note:M('note.kids0')})}}))},
 {id:'edufund',win:[34,46],p:.85,when:s=>s.kids.length>0,title:M('e.edufund.t'),def:'later',
  text:s=>M('e.edufund.x',{a:MN(s.uni*s.base*.6)}),
@@ -796,6 +828,9 @@ function tick(s,yr,L){
    if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?amort(s.sloan,.03,10):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
    const sal=s.job?salary(s):0;s.lastSal=sal;
+   if(s.sex==='f'&&sal>0&&!s.study){const full=sal/sexPay(s),g=gapM(s),lg=full*(1-g),lm=full*g-sal;
+    if(lg>0){const t=T(s,'ggap',{kind:'custom',label:M('trk.ggap'),lost:0});t.lost+=lg;t.v-=lg;t.note=M('note.ggap',{a:MN(t.lost),p:Math.round((1-g)*100)})}
+    if(lm>0){const t=T(s,'mompen',{kind:'custom',label:M('trk.mompen'),lost:0});t.lost+=lm;t.v-=lm;t.note=M('note.mompen',{a:MN(t.lost),p:CHILDPEN[workCode(s)]})}}
    const full=!!(s.biz&&s.biz.mode==='full'),tb=s.trk.biz;
    let work=sal;
    if(full){if(!s.biz.done){work=.3*sal;if(tb){tb.v-=.7*sal}}else if(s.biz.ok){work=s.biz.inc;if(tb){tb.v+=s.biz.inc-sal;tb.note=M('note.bizFull',{a:MN(s.biz.inc),b:MN(sal)})}s.biz.inc*=1.04}}
@@ -889,8 +924,10 @@ function tick(s,yr,L){
    if(s.cert&&a<s.cert.end)addSkill(s,'cert',7,s.cert.label);
   }
   for(const b of s.kids)if(b===a)L&&L(M('log.child'),'good');
-  // lifespan
-  if(!s.noDeath){const Mx=s.le+8,bg=.09;let mu=bg*Math.exp(bg*(a-Mx))*Math.exp((60-s.health)/40)+.0006;if(a>=104)mu=99;if(yr.d<1-Math.exp(-mu)){s.dead=true;s.deathAge=a;return out}}
+  // lifespan: each year adds that year's risk of dying; you die once the total passes the luck drawn at birth (dieAt).
+  // The odds at each age are the same as a fresh roll every year, but a lower risk (a woman's longer life, better health)
+  // reliably means a later death for the same luck, so the mirror life compares fairly
+  if(!s.noDeath){const Mx=s.le+8,bg=.09;let mu=bg*Math.exp(bg*(a-Mx))*Math.exp((60-s.health)/40)+.0006;if(a>=104)mu=99;s.hz+=mu;if(s.hz>=s.dieAt){s.dead=true;s.deathAge=a;return out}}
  }else{s.happy=clamp(s.happy,0,100);s.health=clamp(s.health,3,100)}
  s.age++;
  return out;
@@ -904,6 +941,14 @@ function trkView(s,t){
  if(t.kind==='crash'){const v=t.mode==='sell'?t.sell-t.hold:t.hold-t.sell;return{v,note:t.mode==='sell'?M('nv.crashSell',{a:MN(t.sell),b:MN(t.hold)}):M('nv.crashHold',{a:MN(t.hold),b:MN(t.sell)})}}
  return{v:t.v,note:t.note||''}
 }
+
+/* ---------- the same life as the other sex ----------
+   Same seed (family, markets, luck), the same option wherever the same decision comes up (the default otherwise), and the same
+   focus each year (foc: age → focus). Records net worth and lifetime pay at age `at` for a fair comparison. */
+function mirrorLife(s0,foc,at){const m=newLife(s0.ci,s0.seed,s0.sex==='f'?'m':'f');let g=0;
+ while(!m.dead&&g++<130){let k=0,ev;while((ev=dueEvents(m)[0])&&k++<40)applyOpt(m,ev,s0.done[ev.id]!=null?s0.done[ev.id]:ev.def);
+  if(foc[m.age])m.focus=foc[m.age];if(m.age===at){m.nwAt=netWorth(m);m.earnAt=m.earned}tick(m,yearRand(m.seed,m.age),null)}
+ if(m.nwAt==null){m.nwAt=netWorth(m);m.earnAt=m.earned}return m}
 
 /* ---------- simulated futures ---------- */
 function MC(s,fn,N,tgt){const res=[];for(let i=0;i<N;i++){const c=clone(s);c.noDeath=true;c.seed=hsh(s.seed,'mc',i);

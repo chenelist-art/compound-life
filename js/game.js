@@ -33,7 +33,8 @@ function setDiff(d){diff=d;document.querySelectorAll('#diff0 button').forEach(b=
 document.querySelectorAll('#diff0 button').forEach(b=>b.addEventListener('click',()=>setDiff(b.dataset.df)));
 setDiff(DIFF.includes(store.get('cl-diff'))?store.get('cl-diff'):'normal');
 function pickCountry(){const tot=C.reduce((a,c)=>a+c[2],0);let u=Math.random()*tot;for(let i=0;i<C.length;i++){u-=C[i][2];if(u<=0)return i}return 0}
-$('#born').addEventListener('click',()=>reveal($('#bp-pick').checked?+sel.value:pickCountry()));
+/* "Let me choose" picks the country and, if you like, girl or boy; otherwise both are drawn (sex from the country's sex ratio at birth) */
+$('#born').addEventListener('click',()=>{const pk=$('#bp-pick').checked;reveal(pk?+sel.value:pickCountry(),pk&&$('#sex').value||undefined)});
 function renderPast(){const p=store.get('cl-past')||[];$('#pastwrap').hidden=!p.length;
   $('#past').innerHTML=p.slice(0,5).map(x=>{const ci=x.ci!=null?x.ci:C.findIndex(c=>c[0]===x.c);return `<li><span>${esc(t('g.pastItem',{c:ci>=0?I18N.cname(ci):x.c,a:x.age}))}</span><span class="num ${cls(x.nw)}">${fm(x.nw)}</span></li>`}).join('')}
 renderPast();
@@ -42,10 +43,10 @@ setupBg();
 
 let R=null;
 function revealText(){if(!R)return;const{ci,life}=R;$('#rname').textContent=I18N.cname(ci);
-  $('#rfam').textContent=t('g.bornIntoR',{fam:M('fam.'+life.fam)});
+  $('#rfam').textContent=t('g.bornR',{x:M('sex.kid.'+life.sex),fam:M('fam.'+life.fam)});
   $('#rmeta').textContent=t('g.rmeta',{a:MN(life.base),le:life.le,h:C[ci][5]})}
-function reveal(ci){
-  const seed=(Math.random()*4294967296)>>>0;const life=newLife(ci,seed);R=null;
+function reveal(ci,sex){
+  const seed=(Math.random()*4294967296)>>>0;const life=newLife(ci,seed,sex);R=null;
   $('#setupForm').hidden=true;$('#roulette').hidden=false;$('#rgo').hidden=true;
   const nm=$('#rname');nm.classList.remove('landed');$('#rfam').textContent='';$('#rmeta').textContent='';
   const total=reduce?0:20;let k=0;
@@ -55,13 +56,13 @@ function reveal(ci){
     $('#rgo').hidden=false;$('#rgo').focus({preventScroll:true});
   };
   step();
-  $('#rgo').onclick=()=>startLife(ci,seed);
+  $('#rgo').onclick=()=>startLife(ci,seed,life.sex);
 }
 function backToSetup(){clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
-function startLife(ci,seed){
-  Object.assign(G,{ci,s:newLife(ci,seed),t:newLife(ci,seed),hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0});
+function startLife(ci,seed,sex){
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -77,7 +78,7 @@ function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.tr
 function advance(){
   const s=G.s;if(!s||G.ended||G.pending||G.hind)return 'stop';
   const ev=dueEvents(s)[0];if(ev){showDecision(ev);return 'ev'}
-  resolveTwin();const a=s.age,yr=yearRand(s.seed,a);
+  resolveTwin();const a=s.age,yr=yearRand(s.seed,a);G.foc[a]=s.focus;G.ea[a]=s.earned;
   if(a===6)addLog(M('log.school'),'',a);
   const out=tick(s,yr,(m,k)=>addLog(m,k,a));s.lastInc=out.gross;if(out.gross>G.peakInc)G.peakInc=out.gross;
   if(!G.t.dead){tick(G.t,yr,null);G.ht.push([G.t.dead?G.t.deathAge+1:G.t.age,netWorth(G.t)])}
@@ -121,7 +122,7 @@ function checkMilestones(){
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
+function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
 
 /* ---------- rendering ---------- */
 function phase(s){return s.age<18?'child':s.retired?'ret':'adult'}
@@ -130,7 +131,7 @@ function render(){
   const age=s.dead?s.deathAge:s.age;
   $('#age').textContent=age;
   const job=s.study?t('g.studying',{x:s.study.label}):s.retired?t('g.retired'):(s.biz&&s.biz.mode==='full'&&s.biz.ok&&!s.biz.sold)?t('g.biz'):s.job?t('g.joblvl',{j:M(JOBK[s.job.type]),n:s.level}):s.age<18?t('g.child'):'';
-  $('#where').textContent=t('g.where',{c:I18N.cname(s.abroad!=null?s.abroad:s.ci),f:M('famS.'+s.fam),j:job?' · '+job:''});
+  $('#where').textContent=t('g.where',{c:I18N.cname(s.abroad!=null?s.abroad:s.ci),s:M((s.age<18?'sex.kid.':'sex.')+s.sex),f:M('famS.'+s.fam),j:job?' · '+job:''});
   const nw=netWorth(s),tv=netWorth(tw);
   $('#nw').textContent=fm(nw);$('#nw').className='nw'+(nw<0?' loss':'');window.fitText&&fitText($('#nw'));
   $('#nwsub').innerHTML=(s.age>=18?esc(t('g.income',{a:MN(s.lastInc)})):'')+esc(t('g.twin',{a:MN(tv)}));
@@ -155,7 +156,7 @@ function rankCountry(nw,ci){ci=ci==null?G.s.ci:ci;const p=countryPct(ci,nw),c=I1
 function bornWithYou(){const s=G.s,tot=C.reduce((a,c)=>a+c[2],0),out=[];
   for(let i=0;i<4;i++){let u=mb(hsh(s.seed,'peer',i))()*tot,ci=0;for(;ci<C.length-1;ci++){u-=C[ci][2];if(u<=0)break}
     const p=newLife(ci,hsh(s.seed,'peerSeed',i));let g=0,top=0,topAge=0;while(!p.dead&&g++<130){resolveAuto(p);tick(p,yearRand(p.seed,p.age),null);const v=netWorth(p);if(v>top){top=v;topAge=p.dead?p.deathAge:p.age}}
-    out.push({ci,fam:p.fam,age:p.deathAge,nw:netWorth(p),top,topAge})}
+    out.push({ci,fam:p.fam,sex:p.sex,age:p.deathAge,nw:netWorth(p),top,topAge})}
   return out}
 /* a sun with one scalloped ring per wealth level; it falls asleep (a moon) when the life ends */
 const RING=[.44,.57,.69,.8,.89,.96],RINGC=['mizu','wakatake','yamabuki','coral','washi','mizu'];
@@ -221,6 +222,13 @@ function hindHTML(h){
   <ul class="hrows">${rows}</ul>
   <div class="hfoot"><button class="btn btn-accent" id="hcont" type="button">${esc(t('g.cont'))} <span class="arr">→</span></button><span class="htimer" aria-hidden="true"><i style="animation-duration:${left}ms"></i></span></div>`});
 }
+/* the same life as the other sex: same family, choices and luck, so only the pay gap, the child penalty and lifespan differ */
+function mirrorHTML(){const s=G.s,m=G.mirror;if(!m)return '';const a=s.deathAge,at=Math.min(a,m.deathAge);
+  /* compare at the same age: yours from the chart history, theirs recorded by mirrorLife */
+  const h=G.hs.find(x=>x[0]===at),myNw=h?h[1]:netWorth(s),myEarn=G.ea[at]!=null?G.ea[at]:s.earned;
+  const box=(lk,v,mine,money)=>`<div><span class="lbl">${esc(lk)}</span><b>${money?fm(v):esc(String(v))}</b><span class="mvs">${esc(t('g.mirVs',{b:money?MN(mine):String(mine)}))}</span></div>`;
+  return `<section class="stand"><h4>${esc(t('g.mirT.'+m.sex))}</h4><p class="muted">${esc(t('g.mirP'))}</p>
+  <div class="sgrid mgrid">${box(t('g.mirNw',{a:at}),m.nwAt,myNw,1)}${box(t('g.mirInc',{a:at}),m.earnAt,myEarn,1)}${box(t('g.mirAge'),m.deathAge,a,0)}</div></section>`}
 function hindAllHTML(){
   const B=G.s.base;if(!G.hinds.length)return '';
   const val=r=>r.base?esc(t('g.baseline')):`<b class="${cls(r.med)}">${fm(r.med,true)}</b>`;
@@ -277,9 +285,9 @@ function endHTML(){
   const share=t('g.share',{c:cn,fam,a:s.deathAge,nw:MN(nw),rel,best:best[0]?M('g.best',{x:best[0].tk.label,v:MS(best[0].v)}):''})+(wp>0?t('g.shareW',{p:pctTxt(wp)}):'');
   /* you and the four babies born in the same second, ranked by how rich each life got at its peak (wealth at death mostly
      shows how much was spent in retirement) */
-  const crowd=[{me:1,ci:s.ci,fam:s.fam,age:s.deathAge,nw,top:Math.max(0,peak[1]),topAge:peak[0]}].concat(G.peers||[]).map(p=>Object.assign(p,{w:worldPct(p.ci,p.top)}));
+  const crowd=[{me:1,ci:s.ci,fam:s.fam,sex:s.sex,age:s.deathAge,nw,top:Math.max(0,peak[1]),topAge:peak[0]}].concat(G.peers||[]).map(p=>Object.assign(p,{w:worldPct(p.ci,p.top)}));
   const order=crowd.slice().sort((a,b)=>b.w-a.w||b.top-a.top);
-  const peersH=crowd.map(p=>`<li class="${p.me?'me':''}"><span class="pk">${esc(t('g.peerRank',{n:order.indexOf(p)+1}))}</span><b>${esc(p.me?t('g.you'):I18N.cname(p.ci))}</b><span class="muted">${esc(p.me?cn:'')}${p.me?' · ':''}${esc(t('famS.'+p.fam))} · ${esc(t('g.peerAge',{a:p.age}))}</span><span class="pnw num">${fm(p.top)}</span><span class="pw">${esc(t('g.peerPeak',{a:p.topAge}))}</span><span class="pw">${esc(rankWorld(p.top,p.ci))}</span></li>`).join('');
+  const peersH=crowd.map(p=>`<li class="${p.me?'me':''}"><span class="pk">${esc(t('g.peerRank',{n:order.indexOf(p)+1}))}</span><b>${esc(p.me?t('g.you'):I18N.cname(p.ci))}</b><span class="muted">${esc(p.me?cn:'')}${p.me?' · ':''}${esc(t('sex.kid.'+p.sex))} · ${esc(t('famS.'+p.fam))} · ${esc(t('g.peerAge',{a:p.age}))}</span><span class="pnw num">${fm(p.top)}</span><span class="pw">${esc(t('g.peerPeak',{a:p.topAge}))}</span><span class="pw">${esc(rankWorld(p.top,p.ci))}</span></li>`).join('');
   const stand=`<section class="stand"><h4>${esc(t('g.standT'))}</h4>
   <div class="sgrid"><div><span class="lbl">${esc(t('g.standW'))}</span><b>${esc(rankWorld(nw))}</b></div><div><span class="lbl">${esc(t('g.standC',{c:cn}))}</span><b>${esc(rankCountry(nw))}</b></div><div><span class="lbl">${esc(t('g.standP',{a:peak[0]}))}</span><b>${esc(rankWorld(Math.max(0,peak[1])))}</b></div>${G.peakInc>0?`<div><span class="lbl">${esc(t('g.standI'))}</span><b>${esc(t('g.standIv',{p:pctTxt(incomePct(G.peakInc))}))}</b></div>`:''}</div>
   <h4>${esc(t('g.peersT'))}</h4><p class="muted">${esc(t('g.peersSub'))}</p><ol class="peers">${peersH}</ol>
@@ -291,6 +299,7 @@ function endHTML(){
     <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
+  ${mirrorHTML()}
   ${stand}
   <div class="elists"><div><h4>${esc(t('g.grew'))}</h4><ul>${li(best)}</ul></div><div><h4>${esc(t('g.cost'))}</h4><ul>${li(worst)}</ul></div></div>
   ${hindAllHTML()}
