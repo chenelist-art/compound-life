@@ -57,16 +57,17 @@ function reveal(ci){
   step();
   $('#rgo').onclick=()=>startLife(ci,seed);
 }
-function backToSetup(){clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();$('#setup').scrollTop=0}
+function backToSetup(){clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed){
-  Object.assign(G,{ci,s:newLife(ci,seed),t:newLife(ci,seed),hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,drawMode:null,endMin:false,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0});
+  Object.assign(G,{ci,s:newLife(ci,seed),t:newLife(ci,seed),hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
+  $('#noteSerial').textContent='CL '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
   $('#setup').hidden=true;$('#game').hidden=false;$('#gstat').hidden=false;$('#gctrlLive').hidden=false;
-  render();schedule();
+  window.scrollTo(0,0);render();schedule();
 }
 /* country names inside stored messages are resolved when shown */
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
@@ -93,6 +94,8 @@ function showDecision(ev){
   if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1;if(ev.preLog)addLog(ev.preLog(s),'bad');recordTh()}
   G.pending=ev;G.proj=null;render();
   setTimeout(()=>{if(G.pending!==ev)return;G.proj=Object.assign(projectEvent(s,ev,40),{ev});fillProj()},60);
+  const el=$('#slot');const top=el.getBoundingClientRect().top;
+  if(top<70||top>window.innerHeight*.7)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-84,behavior:reduce?'auto':'smooth'});
 }
 function choose(id){
   const ev=G.pending;if(!ev)return;const s=G.s;
@@ -107,7 +110,7 @@ function choose(id){
   next();
 }
 function next(){const nx=dueEvents(G.s)[0];if(nx){showDecision(nx);return}render();schedule()}
-function showHind(h){G.hind=h;G.hindEnd=Date.now()+HIND_MS;render();clearTimeout(G.hindT);G.hindT=setTimeout(endHind,HIND_MS)}
+function showHind(h){G.hind=h;G.hindEnd=Date.now()+HIND_MS;render();const b=$('#hcont');if(b)b.focus({preventScroll:true});clearTimeout(G.hindT);G.hindT=setTimeout(endHind,HIND_MS)}
 function endHind(){if(!G.hind)return;clearTimeout(G.hindT);G.hind=null;next()}
 function level(nw,B){let L=0;for(const x of TH)if(nw>=x*B)L++;return L}
 function checkMilestones(){
@@ -118,7 +121,7 @@ function checkMilestones(){
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render()}
+function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
 
 /* ---------- rendering ---------- */
 function phase(s){return s.age<18?'child':s.retired?'ret':'adult'}
@@ -162,54 +165,33 @@ function sealCfg(nw,B,age,end){
   return{bands,guides,core:{r:.33,fill:neg?'coral':'yamabuki',face:end?'sleep':neg?'sad':'happy',craters:!!end},phase:age*.06};
 }
 function drawSeal(cv,nw,B,age,end){Guilloche.render(cv,sealCfg(nw,B,age,end))}
-/* decisions, hindsight and the end card are drawn over the dimmed game like a tarot card turned face up;
-   the focus panel (or, once the end card is put away, a small "life over" panel) stays in #slot underneath */
 function renderSlot(force){
-  const el=$('#slot'),dr=$('#draw'),s=G.s;
-  const card=G.ended?(G.endMin?null:'end'):G.pending?`ev:${G.pending.id}:${s.age}`:G.hind?'hind:'+G.hinds.length:null;
-  if(force||card!==G.drawMode){const turn=!!card&&card!==G.drawMode&&!reduce;G.drawMode=card;
-    dr.hidden=!card;$('#gbody').inert=!!card;
-    if(!card)dr.innerHTML='';
-    else{const c=G.ended?'mi':Art.frame(G.pending?G.pending.id:G.hind.id);
-      dr.innerHTML=`<div class="flip${turn?' turn':''}" role="dialog" aria-modal="true" aria-labelledby="dlgT" tabindex="-1">${Art.back(c)}${G.ended?endHTML():G.pending?slipHTML(G.pending):hindHTML(G.hind)}</div>`;
-      const fl=dr.firstElementChild;fl.addEventListener('animationend',e=>{if(e.target===fl)fl.classList.remove('turn')});
-      if(G.ended){
-        $('#again').onclick=()=>{backToSetup();reveal(pickCountry())};
-        $('#same').onclick=()=>{backToSetup();reveal(G.ci)};
-        $('#home').onclick=()=>backToSetup();
-        $('#seeChart').onclick=()=>{G.endMin=true;setTab('chart');renderSlot()};
-        $('#copy').onclick=()=>{const txt=$('#share').textContent;const b=$('#copy');const ok=()=>{b.textContent=t('g.copied');setTimeout(()=>b.textContent=t('g.copy'),1800)};
-          try{navigator.clipboard.writeText(txt).then(ok,()=>selectShare())}catch(e){selectShare()}};
-        drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);window.fitAll&&fitAll();
-      }else if(G.pending)dr.querySelectorAll('.opt:not([disabled])').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.id)));
-      else $('#hcont').onclick=endHind;
-      if(!force)(G.hind&&!G.ended?$('#hcont'):fl).focus({preventScroll:true});
-    }
+  const el=$('#slot'),s=G.s;const mode=G.ended?'end':G.pending?`ev:${G.pending.id}:${s.age}`:G.hind?'hind:'+G.hinds.length:'focus:'+phase(s);
+  if(force||mode!==G.slotMode){G.slotMode=mode;
+    if(G.ended){el.innerHTML=endHTML();
+      $('#again').onclick=()=>{backToSetup();reveal(pickCountry())};
+      $('#same').onclick=()=>{backToSetup();reveal(G.ci)};
+      $('#home').onclick=()=>backToSetup();
+      $('#copy').onclick=()=>{const txt=$('#share').textContent;const b=$('#copy');const ok=()=>{b.textContent=t('g.copied');setTimeout(()=>b.textContent=t('g.copy'),1800)};
+        try{navigator.clipboard.writeText(txt).then(ok,()=>selectShare())}catch(e){selectShare()}};
+      drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);window.fitAll&&fitAll();
+    }else if(G.pending){el.innerHTML=slipHTML(G.pending);el.querySelectorAll('.opt:not([disabled])').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.id)))}
+    else if(G.hind){el.innerHTML=hindHTML(G.hind);$('#hcont').onclick=endHind}
+    else{el.innerHTML=focusHTML(phase(s));el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{G.s.focus=b.dataset.f;addLog(M('log.focus',{x:M('f.'+b.dataset.f)}),'choice');updFocus();renderLog()}))}
   }
-  const sm=G.ended?'endmin':'focus:'+phase(s);
-  if(force||sm!==G.slotMode){G.slotMode=sm;
-    if(G.ended){el.innerHTML=endMinHTML();
-      $('#reopen').onclick=()=>{G.endMin=false;renderSlot()};
-      $('#again2').onclick=()=>{backToSetup();reveal(pickCountry())};
-    }else{el.innerHTML=focusHTML(phase(s));el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{G.s.focus=b.dataset.f;addLog(M('log.focus',{x:M('f.'+b.dataset.f)}),'choice');updFocus();renderLog()}))}
-  }
-  if(G.pending)fillProj();
-  if(!G.ended){updFocus();if(!G.pending&&!G.hind)queueFocus()}
+  if(G.pending)fillProj();else if(!G.ended&&!G.hind){updFocus();queueFocus()}
 }
-function endMinHTML(){const s=G.s;return `<section class="panel endmin"><h3>${esc(t('g.lifeIn',{c:I18N.cname(s.ci),a:s.deathAge}))}</h3><div class="erow"><button class="btn btn-accent" id="reopen" type="button">${esc(t('g.showEnd'))}</button><button class="btn btn-ghost" id="again2" type="button">${esc(t('g.again'))} <span class="arr">→</span></button></div></section>`}
 function selectShare(){const r=document.createRange();r.selectNodeContents($('#share'));const sl=getSelection();sl.removeAllRanges();sl.addRange(r);$('#copy').textContent=t('g.ctrlc')}
 /* in Easy, an option's text also gets its hint (skill, pay %, odds); otherwise you only see what you'd know in real life */
 function withHint(a,h){return G.mode==='easy'&&h?tr(a)+(I18N.lang==='en'?' ':'')+tr(h):tr(a)}
 function slipHTML(ev){
   const s=G.s,os=ev.opts(s),easy=G.mode==='easy';
   const keys=`<span class="kbd">1</span>–<span class="kbd">${os.length}</span>`;
-  /* left: drawing, card name, title and story; right: the options (the only part that scrolls when space runs out) */
-  return Art.card({cls:'slip',c:Art.frame(ev.id),num:Art.num(ev.id),label:trE(ev.title),body:`
-  <div class="slip-l">${Art.win(ev.id,'slip-win')}${Art.banner(esc(t('tn.'+ev.id)))}
+  return Art.card({cls:'slip',c:Art.frame(ev.id),num:Art.num(ev.id),label:trE(ev.title),name:esc(t('tn.'+ev.id)),win:Art.win(ev.id,'slip-win'),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.decAge',{a:s.age}))}</span><span class="payto">${esc(t('g.payto'))}</span></div>
-  <h2 id="dlgT">${trE(ev.title)}</h2><p class="slip-text">${esc(withHint(ev.text(s),ev.hint&&ev.hint(s)))}</p></div>
-  <div class="slip-r"><div class="opts${easy?'':' blind'}">${os.map((o,i)=>{const dis=o.ok!==undefined&&o.ok!==true;return `<button class="opt" type="button" data-id="${o.id}"${dis?' disabled':''}><span class="okey" aria-hidden="true">${i+1}</span><span class="ot"><span class="ol">${trE(o.label)}${o.id===ev.def?`<span class="tag">${esc(t('g.default'))}</span>`:''}</span><span class="os">${dis?trE(o.ok):esc(withHint(o.sub,o.hint))}</span></span>${easy?`<span class="op" id="op-${o.id}">${dis?'':`<span class="pv muted">…</span><span class="pr">${esc(t('g.simulating'))}</span>`}</span>`:''}</button>`}).join('')}</div>
-  <div class="slip-foot"><span id="projlbl">${esc(t(easy?'g.sim40':G.mode==='hard'?'g.footH':'g.footN'))}</span><span class="presskey">${t('g.press',{k:keys})}</span></div></div>`});
+  <h2>${trE(ev.title)}</h2><p class="slip-text">${esc(withHint(ev.text(s),ev.hint&&ev.hint(s)))}</p>
+  <div class="opts${easy?'':' blind'}">${os.map((o,i)=>{const dis=o.ok!==undefined&&o.ok!==true;return `<button class="opt" type="button" data-id="${o.id}"${dis?' disabled':''}><span class="okey" aria-hidden="true">${i+1}</span><span class="ot"><span class="ol">${trE(o.label)}${o.id===ev.def?`<span class="tag">${esc(t('g.default'))}</span>`:''}</span><span class="os">${dis?trE(o.ok):esc(withHint(o.sub,o.hint))}</span></span>${easy?`<span class="op" id="op-${o.id}">${dis?'':`<span class="pv muted">…</span><span class="pr">${esc(t('g.simulating'))}</span>`}</span>`:''}</button>`}).join('')}</div>
+  <div class="slip-foot"><span id="projlbl">${esc(t(easy?'g.sim40':G.mode==='hard'?'g.footH':'g.footN'))}</span><span>${t('g.press',{k:keys})}</span></div>`});
 }
 /* a range bar: the line is zero, the pill is the middle 80% of futures, the dot is the typical one */
 function scaleOf(rows){let mn=0,mx=0;for(const r of rows){if(r.base)continue;mn=Math.min(mn,r.lo);mx=Math.max(mx,r.hi)}if(mx-mn<1)mx=mn+1;return v=>((v-mn)/(mx-mn)*100).toFixed(2)+'%'}
@@ -233,12 +215,11 @@ function hindHTML(h){
   /* only crown a best option when it clearly beats another one */
   const b0=bestOf(h),best=h.rows.some(r=>hv(b0)-hv(r)>=.03*B)?b0:null;
   const rows=h.rows.map(r=>{const v=valHTML(r,B),mine=r.id===h.pick;return `<li class="hrow${mine?' mine':''}"><span class="ol">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${r===best?`<span class="tag tag-best">${esc(t('g.bestTag'))}</span>`:''}</span><span class="op">${v.v}${barHTML(r,X,v.c)}</span></li>`}).join('');
-  return Art.card({cls:'slip hind',c:Art.frame(h.id),num:Art.num(h.id),label:trE(h.title),body:`
-  <div class="slip-l">${Art.win(h.id,'slip-win')}${Art.banner(esc(t('tn.'+h.id)))}
+  return Art.card({cls:'slip hind',c:Art.frame(h.id),num:Art.num(h.id),label:trE(h.title),name:esc(t('tn.'+h.id)),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.hindK',{a:h.age}))}</span></div>
-  <h2 id="dlgT">${trE(h.title)}</h2><p class="slip-text">${esc(t('g.hindP',{age:h.tgt}))}</p></div>
-  <div class="slip-r"><ul class="hrows">${rows}</ul>
-  <div class="hfoot"><button class="btn btn-accent" id="hcont" type="button">${esc(t('g.cont'))} <span class="arr">→</span></button><span class="htimer" aria-hidden="true"><i style="animation-duration:${left}ms"></i></span></div></div>`});
+  <h2>${trE(h.title)}</h2><p class="slip-text">${esc(t('g.hindP',{age:h.tgt}))}</p>
+  <ul class="hrows">${rows}</ul>
+  <div class="hfoot"><button class="btn btn-accent" id="hcont" type="button">${esc(t('g.cont'))} <span class="arr">→</span></button><span class="htimer" aria-hidden="true"><i style="animation-duration:${left}ms"></i></span></div>`});
 }
 function hindAllHTML(){
   const B=G.s.base;if(!G.hinds.length)return '';
@@ -251,16 +232,14 @@ function hindAllHTML(){
 function focusHTML(ph){
   if(ph==='child')return `<section class="panel"><div class="phead"><h3>${esc(t('g.childhood'))}</h3></div><p class="childtxt" id="childtxt"></p></section>`;
   if(ph==='ret')return `<section class="panel"><div class="phead"><h3>${esc(t('g.retiredT'))}</h3></div><p class="childtxt">${esc(t('g.retTxt',{p:M(G.s.pension?'g.pension':'g.statePension')}))}</p></section>`;
-  return `<section class="panel${G.mode==='easy'?' easy':''}"><div class="phead"><h3>${esc(t('g.focusT'))}</h3><span class="muted" style="font-size:13px" id="fsub">${esc(t('g.focusSub'))}</span></div>
-  <div class="fgrid">${FOCUS.map(id=>`<button type="button" class="fbtn" data-f="${id}" data-cur="${esc(t('g.current'))}" aria-pressed="false"><span class="fname">${esc(t('f.'+id))}</span><span class="fdesc">${esc(t('f.'+id+'.d'))}</span>${G.mode==='easy'?`<span class="fproj" id="fp-${id}">…</span>`:''}</button>`).join('')}</div><p class="fnow" id="fnow"></p></section>`;
+  return `<section class="panel"><div class="phead"><h3>${esc(t('g.focusT'))}</h3><span class="muted" style="font-size:13px" id="fsub">${esc(t('g.focusSub'))}</span></div>
+  <div class="fgrid">${FOCUS.map(id=>`<button type="button" class="fbtn" data-f="${id}" data-cur="${esc(t('g.current'))}" aria-pressed="false"><span class="fname">${esc(t('f.'+id))}</span><span class="fdesc">${esc(t('f.'+id+'.d'))}</span>${G.mode==='easy'?`<span class="fproj" id="fp-${id}">…</span>`:''}</button>`).join('')}</div></section>`;
 }
 function updFocus(){
   const s=G.s,ph=phase(s);
   if(ph==='child'){const el=$('#childtxt');if(el)el.textContent=s.age<12?t('g.child0',{a:s.age,sk:Math.round(skill(s)),fam:M('fam.'+s.fam)}):s.age<16?t('g.child12'):t('g.child16');return}
   if(ph!=='adult')return;
   document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===s.focus)));
-  /* phones hide the descriptions inside the buttons and show the current one underneath */
-  const fn=$('#fnow');if(fn)fn.textContent=t('f.'+s.focus+'.d');
   const fc=G.fcache;if(G.mode!=='easy'||!fc||fc.age!==s.age)return;
   $('#fsub').textContent=t('g.focusSub2',{age:fc.tgt});
   for(const id of FOCUS){const el=document.getElementById('fp-'+id);if(!el)continue;if(id==='balance'){el.innerHTML=`${esc(t('g.baseline'))}<small>${esc(t('g.healthUp'))}</small>`;continue}
@@ -305,11 +284,10 @@ function endHTML(){
   <div class="sgrid"><div><span class="lbl">${esc(t('g.standW'))}</span><b>${esc(rankWorld(nw))}</b></div><div><span class="lbl">${esc(t('g.standC',{c:cn}))}</span><b>${esc(rankCountry(nw))}</b></div><div><span class="lbl">${esc(t('g.standP',{a:peak[0]}))}</span><b>${esc(rankWorld(Math.max(0,peak[1])))}</b></div>${G.peakInc>0?`<div><span class="lbl">${esc(t('g.standI'))}</span><b>${esc(t('g.standIv',{p:pctTxt(incomePct(G.peakInc))}))}</b></div>`:''}</div>
   <h4>${esc(t('g.peersT'))}</h4><p class="muted">${esc(t('g.peersSub'))}</p><ol class="peers">${peersH}</ol>
   <p class="snote">${esc(t('g.standNote'))}</p></section>`;
-  /* the end card scrolls inside itself; its buttons stay pinned at the bottom */
-  return Art.card({cls:'cert',c:'mi',num:'XXI',label:esc(t('g.lifeIn',{c:cn,a:s.deathAge})),name:esc(t('tn.end')),body:`
-  <div class="cert-scroll"><div class="t-win cert-win" style="--wb:var(--wakatake)"><canvas id="certSeal" aria-hidden="true"></canvas>${Art.svg('wreath')}</div>
+  return Art.card({cls:'cert',c:'mi',num:'XXI',label:esc(t('g.lifeIn',{c:cn,a:s.deathAge})),name:esc(t('tn.end')),
+  win:`<div class="t-win cert-win" style="--wb:var(--wakatake)"><canvas id="certSeal" aria-hidden="true"></canvas>${Art.svg('wreath')}</div>`,body:`
   <div class="cert-head"><span class="stamp">${esc(t('g.closed',{a:s.deathAge}))}</span>
-    <h2 id="dlgT">${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
+    <h2>${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
     <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
@@ -317,8 +295,7 @@ function endHTML(){
   <div class="elists"><div><h4>${esc(t('g.grew'))}</h4><ul>${li(best)}</ul></div><div><h4>${esc(t('g.cost'))}</h4><ul>${li(worst)}</ul></div></div>
   ${hindAllHTML()}
   <p class="share" id="share">${esc(share)}</p>
-  <div class="erow"><button class="btn btn-ghost btn-sm" id="copy" type="button">${esc(t('g.copy'))}</button><button class="btn btn-ghost btn-sm" id="home" type="button">${esc(t('g.home'))}</button></div></div>
-  <div class="erow"><button class="btn btn-accent" id="again" type="button">${esc(t('g.again'))} <span class="arr">→</span></button><button class="btn btn-ghost" id="same" type="button">${esc(t('g.sameC',{c:cn}))}</button><button class="btn btn-ghost" id="seeChart" type="button">${esc(t('g.seeChart'))}</button></div>`});
+  <div class="erow"><button class="btn btn-accent" id="again" type="button">${esc(t('g.again'))} <span class="arr">→</span></button><button class="btn btn-ghost" id="same" type="button">${esc(t('g.sameC',{c:cn}))}</button><button class="btn btn-ghost" id="copy" type="button">${esc(t('g.copy'))}</button><button class="btn btn-ghost" id="home" type="button">${esc(t('g.home'))}</button></div>`});
 }
 
 /* ---------- chart ---------- */
@@ -355,16 +332,9 @@ function drawChart(){
 const cvEl=$('#chart');
 cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl.getBoundingClientRect();const a=Math.round((ev.clientX-r.left-g.pl)/(g.w-g.pl-g.pr)*g.xmax);G.hover=a>=0?a:null;drawChart()});
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
-/* the chart fills whatever room is left, so redraw it whenever its box changes size (window, panels above it, tabs) */
-if(window.ResizeObserver)new ResizeObserver(()=>{if(G.s)drawChart()}).observe(cvEl.parentElement);
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){G.fcache=null;renderSlot(true);render();if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg)}});
-/* phones show the chart, passbook and diary as tabs; wider screens show all three and hide the tabs */
-const TABS=[...document.querySelectorAll('.gtabs [role="tab"]')];
-function setTab(k,focus){$('#gbody').dataset.tab=k;TABS.forEach(b=>{const on=b.dataset.tab===k;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;if(on&&focus)b.focus()})}
-TABS.forEach((b,i)=>{b.addEventListener('click',()=>setTab(b.dataset.tab));
-  b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){e.preventDefault();setTab(TABS[(i+d+TABS.length)%TABS.length].dataset.tab,true)}})});
+  if(G.s){G.fcache=null;renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg)}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});

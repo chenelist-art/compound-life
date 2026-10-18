@@ -976,10 +976,6 @@ Object.assign(ZHT,{
 'tn.downsize':'聖杯八','tn.medcover':'錢幣五','tn.health2':'寶劍六','tn.scam2':'聖杯五','tn.will':'聖杯國王','tn.hearing':'聖杯侍從',
 'tn.reverse':'權杖七','tn.move2':'聖杯騎士','tn.gtrip':'寶劍騎士','tn.funeral':'寶劍王牌'
 });
-/* the play page as one screen: phone tabs, and closing the end card to look at the chart */
-Object.assign(EN,{'g.seeChart':'See my life chart','g.showEnd':'Open the end card'});
-Object.assign(ZH,{'h.tChart':'走势图','g.seeChart':'看看我的人生走势图','g.showEnd':'打开结局卡'});
-Object.assign(ZHT,{'h.tChart':'走勢圖','g.seeChart':'看看我的人生走勢圖','g.showEnd':'打開結局卡'});
 const CN={
  zh:{IN:'印度',CN:'中国',NG:'尼日利亚',PK:'巴基斯坦',ID:'印度尼西亚',ET:'埃塞俄比亚',US:'美国',BD:'孟加拉国',BR:'巴西',MX:'墨西哥',PH:'菲律宾',VN:'越南',JP:'日本',DE:'德国',GB:'英国',MY:'马来西亚',SG:'新加坡'},
  zht:{IN:'印度',CN:'中國',NG:'奈及利亞',PK:'巴基斯坦',ID:'印尼',ET:'衣索比亞',US:'美國',BD:'孟加拉',BR:'巴西',MX:'墨西哥',PH:'菲律賓',VN:'越南',JP:'日本',DE:'德國',GB:'英國',MY:'馬來西亞',SG:'新加坡'}};

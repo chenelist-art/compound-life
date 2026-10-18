@@ -21,16 +21,16 @@
       <span class="lt" data-i18n="h.brand">Compound Life</span>
     </a>
     <div class="gstat" id="gstat" hidden><span class="g-age" id="age">0</span><span class="g-agel" data-i18n="h.yearsOld">years old</span><span class="g-where" id="where"></span></div>
-    <div class="gctrl glive" id="gctrlLive" hidden>
-      <button class="btn btn-ghost" id="play" type="button">Pause</button>
-      <div class="seg" id="pace" role="group" aria-label="Speed">
-        <button type="button" data-sp="0" aria-pressed="true">1×</button>
-        <button type="button" data-sp="1" aria-pressed="false">2×</button>
-        <button type="button" data-sp="2" aria-pressed="false">4×</button>
-      </div>
-      <button class="btn" id="skip" type="button"><span data-i18n="h.next">Next decision</span> <span class="arr">»</span></button>
-    </div>
     <div class="gctrl">
+      <span id="gctrlLive" hidden style="display:contents">
+        <button class="btn btn-ghost" id="play" type="button">Pause</button>
+        <div class="seg" id="pace" role="group" aria-label="Speed">
+          <button type="button" data-sp="0" aria-pressed="true">1×</button>
+          <button type="button" data-sp="1" aria-pressed="false">2×</button>
+          <button type="button" data-sp="2" aria-pressed="false">4×</button>
+        </div>
+        <button class="btn" id="skip" type="button"><span data-i18n="h.next">Next decision</span> <span class="arr">»</span></button>
+      </span>
       <div class="seg langsw" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="zh" aria-pressed="false" lang="zh-Hans">简</button><button type="button" data-lang="zht" aria-pressed="false" lang="zh-Hant">繁</button></div>
     </div>
   </div>
@@ -85,58 +85,52 @@
   </div>
 </section>
 
-<main class="gapp" id="game" hidden>
-  <div class="gbody" id="gbody" data-tab="chart">
+<main class="wrap ggrid" id="game" hidden>
   <div class="gmain">
     <section class="tarot nw-card" id="note" aria-label="Your money">
       <div class="t-in">
         <span class="t-num" id="nwNum" aria-hidden="true">0</span>
         <div class="note-body">
-          <div class="t-win seal-win"><canvas id="seal" aria-label="Your wealth engraving"></canvas></div>
+          <div class="seal-box"><div class="t-win seal-win"><canvas id="seal" aria-label="Your wealth engraving"></canvas></div><span class="seal-cap" id="sealcap"></span></div>
           <div class="nw-main">
             <span class="lbl" data-i18n="h.nw">Net worth</span>
             <span class="nw" id="nw" data-fit>$0</span>
+            <div class="nwsub" id="nwsub"></div>
+            <div class="rank" aria-live="off"><span id="rkW"></span><span id="rkC"></span></div>
           </div>
-          <div class="nwsub" id="nwsub"></div>
-          <div class="rank" aria-live="off"><span id="rkW"></span><span id="rkC"></span><span class="seal-cap" id="sealcap"></span></div>
           <div class="stats">
             <div><div class="sh"><span data-i18n="h.skill">Skill</span><b id="skv">0</b></div><div class="track sk"><i id="skb"></i></div><div class="sx" id="skx"></div></div>
             <div><div class="sh"><span data-i18n="h.health">Health</span><b id="hev">0</b></div><div class="track he"><i id="heb"></i></div></div>
             <div><div class="sh"><span data-i18n="h.happy">Happiness</span><b id="hav">0</b></div><div class="track ha"><i id="hab"></i></div></div>
           </div>
         </div>
+        <div class="ovi-strip" aria-hidden="true"><div class="ovi-in"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         <div class="chips" id="chips"></div>
+        <span class="note-serial-s" id="noteSerial" aria-hidden="true"></span>
       </div>
       <div class="t-ban" aria-hidden="true"><span class="t-name" id="nwName">Page of Coins</span></div>
     </section>
+    <div class="toast" id="toast" hidden role="status"></div>
     <div id="slot"></div>
-    <div class="seg gtabs" role="tablist" aria-label="Views">
-      <button type="button" role="tab" id="tb-chart" data-tab="chart" aria-controls="tp-chart" aria-selected="true" data-i18n="h.tChart">Chart</button>
-      <button type="button" role="tab" id="tb-book" data-tab="book" aria-controls="tp-book" aria-selected="false" tabindex="-1" data-i18n="h.pb">Passbook</button>
-      <button type="button" role="tab" id="tb-diary" data-tab="diary" aria-controls="tp-diary" aria-selected="false" tabindex="-1" data-i18n="h.diary">Diary</button>
-    </div>
-    <section class="panel chartp" id="tp-chart" role="tabpanel" aria-labelledby="tb-chart">
+    <section class="panel">
       <div class="phead"><h3 data-i18n="h.chartT">Net worth over your life</h3><div class="legend"><span><i class="l-you"></i><span data-i18n="h.lgYou">You</span></span><span><i class="l-tw"></i><span data-i18n="h.lgTwin">Autopilot twin</span></span><span><i class="l-mk"></i><span data-i18n="h.lgMarks">Your choices</span></span></div></div>
       <div class="chart-wrap"><canvas id="chart" aria-label="Net worth by age for you and your autopilot twin"></canvas></div>
     </section>
   </div>
   <aside class="gside">
-    <section class="book" id="tp-book" role="tabpanel" aria-labelledby="tb-book">
+    <section class="book">
       <div class="bookhead">
         <h3 data-i18n="h.pb">Passbook</h3>
-        <span class="muted pbsub" data-i18n="h.pbSub">What each choice is worth today. Updates every year.</span>
+        <span class="muted" style="font-size:13px" data-i18n="h.pbSub">What each choice is worth today. Updates every year.</span>
         <div class="vs"><span data-i18n="h.vs">You vs your autopilot twin</span><b id="vs">$0</b></div>
       </div>
       <ul class="ledger" id="ledger"></ul>
     </section>
-    <section class="book diary" id="tp-diary" role="tabpanel" aria-labelledby="tb-diary">
+    <section class="book diary">
       <h3 data-i18n="h.diary">Diary</h3>
       <ul class="log" id="log"></ul>
     </section>
   </aside>
-  </div>
-  <div class="toast" id="toast" hidden role="status"></div>
-  <div class="draw" id="draw" hidden></div>
 </main>
 
 <script src="js/engine.js"></script>
