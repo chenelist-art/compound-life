@@ -97,14 +97,15 @@ function newLife(ci,seed){const r=mb(hsh(seed,'birth'));const c=C[ci];const u=r(
   done:{},trk:{},earned:0,outUntil:0,sold:0,lastSal:0,lastInc:0,pivoted:false,pivotYear:-1,
   cutDebt:false,debtSeen:-99,noDeath:false,milestones:{},brokeLogged:0,
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
-  kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1};
+  kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
+  rel:50,offUntil:0,uncle:false,refN:0,lonely:0};
  s.plan=planLife(s);return s}
 
 /* Each life draws its own mix of decisions. Events with `win:[from,to]` get an age in that window
    (with chance `p`, and only if `only(s)` allows it at birth); fixed-age events are placed first and
    the rest try to land on years that are still free. Events that missed the draw go into `spare`,
    used only to fill a quiet stretch (see dueEvents). */
-const DENSITY=.55; // scales every event's chance; raise it for more decisions per life (about 45 at .55)
+const DENSITY=.5; // scales every event's chance; raise it for more decisions per life (about 50 at .5)
 function planLife(s){const r=mb(hsh(s.seed,'plan')),used={},plan={},spare={};
  for(const e of EV)if(e.win&&e.win[0]===e.win[1]){plan[e.id]=e.win[0];used[e.win[0]]=1}
  for(const e of EV){if(!e.win||e.win[0]===e.win[1])continue;
@@ -139,6 +140,19 @@ const SCH={US:{lot:'k401',lk:'trk.k401',match:.05,rel:0,rate:null,ps:[0,.05,.1]}
 const O=(id,lk,sub,go,ok)=>{const o={id,label:typeof lk==='string'?M(lk):lk,sub,go};if(ok!==undefined)o.ok=ok;return o};
 /* `sub` says only what you'd know in real life (prices, pay, fees); `hint` adds the effects you couldn't know (skill, pay %, odds) and is shown only in Easy */
 const Hn=(o,hint)=>{o.hint=hint;return o};
+/* Relationships (0–100): moved by choices about people and by how you spend your years (see tick) */
+function rl(s,d){s.rel=clamp(s.rel+d,0,100)}
+const RH=(d,x)=>d?M(x?'hr2':'hr',{n:(d>0?'+':'−')+Math.abs(d),x}):x;
+/* an option that also moves Relationships by d; the change (and any extra hint x) shows in Easy only */
+const OR=(id,lk,sub,d,go,ok,x)=>Hn(O(id,lk,sub,s=>{rl(s,d);if(go)go(s)},ok),RH(d,x));
+/* lunar new year: China, Malaysia, Singapore and Vietnam; elsewhere the biggest family holiday of the year */
+const LNY=s=>['CN','MY','SG','VN'].includes(C[s.ci][1]);
+/* a referral or recommendation: a lasting pay rise of m, shown in the passbook */
+function refer(s,id,m,lk,L,lg){if(!s.job||s.retired||s.study)return false;bump(s,id,m,M(lk));L&&L(M(lg,{p:Math.round((m-1)*100)}),'good');return true}
+/* chances that depend on people: each point of Relationships above 50 adds 0.4 percentage points */
+const relP=(s,p)=>clamp(p+(s.rel-50)*.004,0,.95);
+/* money from family and friends when you're sick or short, tracked in one passbook line */
+function helped(s,h){const t=T(s,'help',{kind:'custom',label:M('trk.help')});t.v+=h;t.note=M('note.help',{a:MN(t.v)})}
 const job=s=>!!s.job&&!s.study&&!s.retired;
 
 /* ---------- events ----------
@@ -258,9 +272,9 @@ const EV=[
 {id:'lend',win:[24,42],p:.75,when:s=>liquid(s)>.15*s.base,title:M('e.lend.t'),def:'no',
  text:s=>M('e.lend.x',{a:MN(Math.min(.3*s.base,.5*liquid(s)))}),hint:s=>M('e.lend.h'),
  opts:s=>{const a=Math.min(.3*s.base,.5*liquid(s)),go=(x,lk)=>s=>{pay(s,x);T(s,'lend',{kind:'custom',label:M(lk),v:-x,note:M('note.lend0',{a:MN(x)})});const r=evR(s,'lendAt')();later(s,s.age+2+Math.floor(r*4),'repay',{a:x,id:'lend'})};return[
-  O('all','e.lend.all',M('e.lend.all.s'),go(a,'trk.lend')),
-  O('half','e.lend.half',M('e.lend.half.s',{a:MN(a/2)}),go(a/2,'trk.lendHalf')),
-  O('no','e.lend.no',M('e.lend.no.s'),s=>{s.happy-=3})]}},
+  OR('all','e.lend.all',M('e.lend.all.s'),4,go(a,'trk.lend')),
+  OR('half','e.lend.half',M('e.lend.half.s',{a:MN(a/2)}),2,go(a/2,'trk.lendHalf')),
+  OR('no','e.lend.no',M('e.lend.no.s'),-4,s=>{s.happy-=3})]}},
 {id:'car',win:[25,25],when:s=>!s.retired,title:M('e.car.t'),def:'used',
  text:s=>M('e.car.x'),
  opts:s=>{const B=s.base;return[
@@ -276,7 +290,7 @@ const EV=[
 {id:'mlm',win:[26,38],p:.6,title:M('e.mlm.t'),def:'no',
  text:s=>M('e.mlm.x',{a:MN(.12*s.base)}),
  opts:s=>[
-  Hn(O('join','e.mlm.join',M('e.mlm.join.s',{a:MN(.12*s.base),b:MN(.04*s.base)}),s=>{pay(s,.12*s.base);T(s,'mlm',{kind:'custom',label:M('trk.mlm'),v:-.12*s.base,note:M('note.paid',{a:MN(.12*s.base)})});rec(s,'mlm',.04*s.base,3);later(s,s.age+3,'mlm')}),M('e.mlm.join.h')),
+  OR('join','e.mlm.join',M('e.mlm.join.s',{a:MN(.12*s.base),b:MN(.04*s.base)}),-6,s=>{pay(s,.12*s.base);T(s,'mlm',{kind:'custom',label:M('trk.mlm'),v:-.12*s.base,note:M('note.paid',{a:MN(.12*s.base)})});rec(s,'mlm',.04*s.base,3);later(s,s.age+3,'mlm')},undefined,M('e.mlm.join.h')),
   O('buy','e.mlm.buy',M('e.mlm.buy.s',{a:MN(.015*s.base)}),s=>spend(s,'mlm',.015*s.base,'trk.mlmBuy')),
   O('no','e.mlm.no',M('e.mlm.no.s'),s=>{})]},
 {id:'abroad',win:[26,35],p:.45,when:job,title:M('e.abroad.t'),def:'stay',
@@ -324,7 +338,7 @@ const EV=[
   Hn(O('ilp','e.agent.ilp',M('e.agent.ilp.s',{a:MN(.08*s.base)}),s=>{s.ilp={amt:.08*s.base,until:s.age+20};mkLot(s,'ilp',{fee:.025},'trk.ilp')}),M('e.agent.ilp.h')),
   O('term','e.agent.term',M('e.agent.term.s',{a:MN(.012*s.base)}),s=>{T(s,'term',{kind:'custom',label:M('trk.term')});rec(s,'term',.012*s.base,25)}),
   O('no','e.agent.no',M('e.agent.no.s'),s=>{})]},
-{id:'wed',win:[30,30],when:s=>s.marryRoll<.72,title:M('e.wed.t'),def:'modest',
+{id:'wed',win:[30,30],when:s=>s.marryRoll<.4+.0065*s.rel,title:M('e.wed.t'),def:'modest',
  text:s=>M('e.wed.x'),
  opts:s=>{const B=s.base;return[
   O('big','e.wed.big',M('e.wed.big.s',{a:MN(1.6*B)}),s=>wed(s,1.6,'trk.wedBig')),
@@ -400,9 +414,9 @@ const EV=[
 {id:'parents',win:[38,54],p:s=>s.fam==='poor'||s.fam==='working'?.85:s.fam==='middle'?.3:0,title:M('e.parents.t'),def:'send',
  text:s=>M('e.parents.x'),
  opts:s=>[
-  O('send','e.parents.send',M('e.parents.send.s',{a:MN(.1*s.base)}),s=>{T(s,'parents',{kind:'custom',label:M('trk.parents')});rec(s,'parents',.1*s.base,12)}),
-  O('move','e.parents.move',M('e.parents.move.s',{a:MN(.04*s.base)}),s=>{T(s,'parents',{kind:'custom',label:M('trk.parentsIn')});rec(s,'parents',.04*s.base,12);s.happy-=3}),
-  O('sib','e.parents.sib',M('e.parents.sib.s'),s=>{s.happy-=5})]},
+  OR('send','e.parents.send',M('e.parents.send.s',{a:MN(.1*s.base)}),5,s=>{T(s,'parents',{kind:'custom',label:M('trk.parents')});rec(s,'parents',.1*s.base,12)}),
+  OR('move','e.parents.move',M('e.parents.move.s',{a:MN(.04*s.base)}),4,s=>{T(s,'parents',{kind:'custom',label:M('trk.parentsIn')});rec(s,'parents',.04*s.base,12);s.happy-=3}),
+  OR('sib','e.parents.sib',M('e.parents.sib.s'),-3,s=>{s.happy-=5})]},
 {id:'divorce',win:[37,52],p:.55,when:s=>s.married,title:M('e.divorce.t'),def:'ignore',
  text:s=>M('e.divorce.x'),
  opts:s=>{const at=s=>s.age+2+Math.floor(evR(s,'divAt')()*5);return[
@@ -497,8 +511,8 @@ const EV=[
 {id:'club',win:[60,72],p:.55,when:s=>s.retired,title:M('e.club.t'),def:'garden',
  text:s=>M('e.club.x'),
  opts:s=>[
-  O('join','e.club.join',M('e.club.join.s',{a:MN(.06*s.base)}),s=>{T(s,'club',{kind:'ghost',label:M('trk.club')});rec(s,'club',.06*s.base,10);s.happy+=4}),
-  O('garden','e.club.garden',M('e.club.garden.s',{a:MN(.01*s.base)}),s=>{T(s,'club',{kind:'ghost',label:M('trk.garden')});rec(s,'club',.01*s.base,10);s.happy+=2}),
+  OR('join','e.club.join',M('e.club.join.s',{a:MN(.06*s.base)}),8,s=>{T(s,'club',{kind:'ghost',label:M('trk.club')});rec(s,'club',.06*s.base,10);s.happy+=4}),
+  OR('garden','e.club.garden',M('e.club.garden.s',{a:MN(.01*s.base)}),3,s=>{T(s,'club',{kind:'ghost',label:M('trk.garden')});rec(s,'club',.01*s.base,10);s.happy+=2}),
   O('no','e.club.no',M('e.club.no.s'),s=>{})]},
 {id:'downsize',win:[62,76],p:.65,when:s=>!!s.house,title:M('e.downsize.t'),def:'stay',
  text:s=>M('e.downsize.x',{a:MN(s.house.value)}),
@@ -558,7 +572,127 @@ const EV=[
  text:s=>M('e.debt.x',{a:MN(s.debt),i:MN(s.debt*.18)}),
  opts:s=>{const o=[];if(eqTot(s)>1)o.push(O('sell','e.debt.sell',M('e.debt.sell.s',{a:MN(Math.min(eqTot(s),s.debt))}),s=>{s.debtSeen=s.age;const p=Math.min(eqTot(s),s.debt);withdrawEq(s,p);s.debt-=p}));
   o.push(O('cut','e.debt.cut',M('e.debt.cut.s'),s=>{s.debtSeen=s.age;s.cutDebt=true;s.happy-=4}));
-  o.push(O('min','e.debt.min',M('e.debt.min.s'),s=>{s.debtSeen=s.age}));return o}}
+  o.push(O('min','e.debt.min',M('e.debt.min.s'),s=>{s.debtSeen=s.age}));return o}},
+/* people: friends, family and partners. Every choice here also moves Relationships */
+{id:'friends',win:[6,8],p:.85,title:M('e.friends.t'),def:'some',
+ text:s=>M('e.friends.x'),
+ opts:s=>{const a=.01*s.base;return[
+  OR('all','e.friends.all',M('e.friends.all.s',{a:MN(a)}),8,s=>{s.happy+=3}),
+  OR('some','e.friends.some',M('e.friends.some.s',{a:MN(.4*a)}),4,s=>{s.happy+=1}),
+  OR('read','e.friends.read',M('e.friends.read.s'),-4,s=>addSkill(s,'child',1.5,M('trk.child')),undefined,M('hx.sk',{n:1.5}))]}},
+{id:'peer',win:[11,14],p:.8,title:M('e.peer.t'),def:'old',
+ text:s=>M('e.peer.x',{a:MN(.03*s.base)}),
+ opts:s=>{const a=.03*s.base;return[
+  OR('ask','e.peer.ask',M('e.peer.ask.s'),3,s=>{s.happy+=2;s.habit+=.01;T(s,'habit',{kind:'custom',label:M('trk.habitSpend')})},s.fam==='poor'||s.fam==='working'?M('e.peer.no'):true,M('e.allow.spend.h')),
+  OR('own','e.peer.own',M('e.peer.own.s',{a:MN(a)}),3,s=>{spend(s,'peer',a,'trk.peer');s.happy+=2},s.cash>=a||M('e.peer.cash',{a:MN(Math.max(0,s.cash))})),
+  OR('old','e.peer.old',M('e.peer.old.s'),-2,s=>{s.happy-=1})]}},
+{id:'trip',win:[12,15],p:.8,only:s=>s.fam==='poor'||s.fam==='working',title:M('e.trip.t'),def:'stay',
+ text:s=>M('e.trip.x',{a:MN(.06*s.base)}),
+ opts:s=>{const a=.06*s.base;return[
+  OR('ask','e.trip.ask',M('e.trip.ask.s',{a:MN(a)}),5,s=>{s.happy+=3;later(s,19,'tripDebt',{a})}),
+  OR('work','e.trip.work',M('e.trip.work.s',{a:MN(a)}),5,s=>{s.earned+=a;s.happy+=1;addSkill(s,'base',.5)},undefined,M('hx.sk',{n:.5})),
+  OR('stay','e.trip.stay',M('e.trip.stay.s'),-4,s=>{s.happy-=3})]}},
+{id:'date',win:[18,24],p:.85,title:M('e.date.t'),def:'simple',
+ text:s=>M('e.date.x'),
+ opts:s=>[
+  OR('fancy','e.date.fancy',M('e.date.fancy.s',{a:MN(.15*s.base)}),6,s=>{spend(s,'date',.15*s.base,'trk.dateFancy');s.happy+=4;s.marryRoll-=.08}),
+  OR('simple','e.date.simple',M('e.date.simple.s',{a:MN(.04*s.base)}),6,s=>{spend(s,'date',.04*s.base,'trk.date');s.happy+=3;s.marryRoll-=.08}),
+  OR('solo','e.date.solo',M('e.date.solo.s'),-3,s=>addSkill(s,'base',1),undefined,M('hx.sk',{n:1}))]},
+{id:'team',win:[22,32],p:.7,when:job,title:M('e.team.t'),def:'some',
+ text:s=>M('e.team.x',{a:MN(.03*s.base)}),
+ opts:s=>{const a=.03*s.base;return[
+  OR('often','e.team.often',M('e.team.often.s',{a:MN(a)}),5,s=>{T(s,'team',{kind:'ghost',label:M('trk.team')});rec(s,'team',a,5)}),
+  OR('some','e.team.some',M('e.team.some.s',{a:MN(a/3)}),2,s=>{T(s,'team',{kind:'ghost',label:M('trk.team')});rec(s,'team',a/3,5)}),
+  OR('never','e.team.never',M('e.team.never.s'),-4,null)]}},
+{id:'fwed',win:[23,34],p:.85,title:M('e.fwed.t'),def:'norm',
+ text:s=>M('e.fwed.x',{a:MN(.02*s.base)}),
+ opts:s=>{const a=.02*s.base;return[
+  OR('big','e.fwed.big',M('e.fwed.big.s',{a:MN(2*a)}),4,s=>spend(s,'fwed',2*a,'trk.fwed')),
+  OR('norm','e.fwed.norm',M('e.fwed.norm.s',{a:MN(a)}),2,s=>spend(s,'fwed',a,'trk.fwed')),
+  OR('skip','e.fwed.skip',M('e.fwed.skip.s'),-5,null)]}},
+{id:'mentor',win:[21,30],p:.7,when:job,title:M('e.mentor.t'),def:'no',
+ text:s=>M('e.mentor.x'),
+ opts:s=>{const a=.015*s.base;return[
+  OR('yes','e.mentor.yes',M('e.mentor.yes.s',{a:MN(a)}),4,s=>{T(s,'mentor',{kind:'ghost',label:M('trk.mentorLunch')});rec(s,'mentor',a,3);addSkill(s,'mentor',3,M('trk.mentor'));later(s,s.age+3,'mentor',{p:.35})},undefined,M('hx.sk',{n:3})),
+  OR('some','e.mentor.some',M('e.mentor.some.s'),2,s=>{addSkill(s,'mentor',1,M('trk.mentor'));later(s,s.age+3,'mentor',{p:.15})},undefined,M('hx.sk',{n:1})),
+  O('no','e.mentor.no',M('e.mentor.no.s'),s=>{})]}},
+{id:'credit',win:[25,40],p:.6,when:job,title:M('e.credit.t'),def:'let',
+ text:s=>M('e.credit.x'),
+ opts:s=>[
+  OR('talk','e.credit.talk',M('e.credit.talk.s'),0,s=>later(s,s.age,'credit',{p:.45,m:1.05}),undefined,M('e.credit.talk.h')),
+  OR('boss','e.credit.boss',M('e.credit.boss.s'),-4,s=>later(s,s.age,'credit',{p:.55,m:1.08,bad:.25}),undefined,M('e.credit.boss.h')),
+  OR('let','e.credit.let',M('e.credit.let.s'),1,s=>{s.happy-=3})]},
+{id:'network',win:[24,42],p:.65,when:job,title:M('e.network.t'),def:'skip',
+ text:s=>M('e.network.x',{a:MN(.02*s.base)}),
+ opts:s=>{const a=.02*s.base,at=s=>s.age+1+Math.floor(evR(s,'netAt')()*3);return[
+  OR('follow','e.network.follow',M('e.network.follow.s',{a:MN(a)}),4,s=>{spend(s,'network',a,'trk.network');later(s,at(s),'network',{p:.3})}),
+  OR('cards','e.network.cards',M('e.network.cards.s',{a:MN(a)}),1,s=>{spend(s,'network',a,'trk.network');later(s,at(s),'network',{p:.1})}),
+  O('skip','e.network.skip',M('e.network.skip.s'),s=>{})]}},
+{id:'uncle',win:[20,28],p:.4,when:s=>job(s)&&s.abroad==null,title:M('e.uncle.t'),def:'no',
+ text:s=>M('e.uncle.x',{a:MN(1.1*salary(s))}),hint:s=>M('e.uncle.h'),
+ opts:s=>[
+  OR('join','e.uncle.join',M('e.uncle.join.s',{a:MN(1.1*salary(s))}),5,s=>{bump(s,'uncle',1.1,M('trk.uncle'));s.uncle=true;later(s,s.age+4+Math.floor(evR(s,'uncAt')()*5),'uncle')}),
+  OR('no','e.uncle.no',M('e.uncle.no.s'),-1,null)]},
+{id:'sibfees',win:[22,36],p:.5,title:M('e.sibfees.t'),def:'no',
+ text:s=>M('e.sibfees.x',{a:MN(.4*s.base)}),
+ opts:s=>{const a=.4*s.base,liq=liquid(s),go=(x,lk)=>s=>{pay(s,x);T(s,'sib',{kind:'custom',label:M(lk),v:-x,note:M('note.paid',{a:MN(x)})});later(s,s.age+5+Math.floor(evR(s,'sibAt')()*5),'sib',{a:x})};return[
+  OR('all','e.sibfees.all',M('e.sibfees.all.s',{a:MN(a)}),7,go(a,'trk.sib'),liq>=a||M('e.home.need',{n:MN(a),h:MN(liq)})),
+  OR('half','e.sibfees.half',M('e.sibfees.half.s',{a:MN(a/2)}),3,go(a/2,'trk.sibHalf'),liq>=a/2||M('e.home.need',{n:MN(a/2),h:MN(liq)})),
+  OR('no','e.sibfees.no',M('e.sibfees.no.s'),-5,null)]}},
+{id:'cny',win:[20,62],p:.8,title:M('e.cny.t'),def:'mod',
+ text:s=>M(LNY(s)?'e.cny.x':'e.cny.x2',{a:MN(.06*s.base)}),
+ opts:s=>[
+  OR('big',LNY(s)?'e.cny.big':'e.cny.big2',M('e.cny.big.s',{a:MN(.06*s.base)}),4,s=>{spend(s,'cny',.06*s.base,'trk.cny');s.happy+=2}),
+  OR('mod','e.cny.mod',M('e.cny.mod.s',{a:MN(.02*s.base)}),2,s=>spend(s,'cny',.02*s.base,'trk.cny')),
+  OR('skip','e.cny.skip',M('e.cny.skip.s'),-4,s=>{s.happy-=1})]},
+{id:'cosign',win:[28,52],p:.5,title:M('e.cosign.t'),def:'no',
+ text:s=>M('e.cosign.x',{a:MN(s.base)}),hint:s=>M('e.cosign.h'),
+ opts:s=>[
+  OR('sign','e.cosign.sign',M('e.cosign.sign.s',{a:MN(s.base)}),5,s=>{T(s,'cosign',{kind:'custom',label:M('trk.cosign'),note:M('note.cosign0')});later(s,s.age+2+Math.floor(evR(s,'cosAt')()*4),'cosign',{a:.6*s.base})}),
+  OR('gift',M('e.cosign.gift',{a:MN(.1*s.base)}),M('e.cosign.gift.s'),1,s=>spend(s,'cosign',.1*s.base,'trk.cosignGift')),
+  OR('no','e.cosign.no',M('e.cosign.no.s'),-5,null)]},
+{id:'away',win:[30,45],p:.55,when:job,title:M('e.away.t'),def:'stay',
+ text:s=>M('e.away.x',{a:MN(1.2*salary(s)),b:MN(salary(s))}),
+ opts:s=>[
+  OR('go','e.away.go',M('e.away.go.s',{a:MN(.1*s.base)}),-10,s=>{pay(s,.1*s.base);bump(s,'away',1.2,M('trk.away'));s.trk.away.v-=.1*s.base;s.happy-=2}),
+  OR('remote','e.away.remote',M('e.away.remote.s'),0,s=>later(s,s.age,'remote',{p:.35}),undefined,M('e.away.remote.h')),
+  OR('stay','e.away.stay',M('e.away.stay.s'),3,null)]},
+{id:'bizpal',win:[30,46],p:.5,when:s=>liquid(s)>.15*s.base&&!s.retired,title:M('e.bizpal.t'),def:'no',
+ text:s=>M('e.bizpal.x'),hint:s=>M('e.bizpal.h'),
+ opts:s=>{const liq=liquid(s),big=Math.min(.5*s.base,.6*liq),sm=Math.min(.12*s.base,.3*liq),go=(a,lk)=>s=>{pay(s,a);T(s,'bizpal',{kind:'custom',label:M(lk),v:-a,note:M('note.bizpalIn',{a:MN(a)})});later(s,s.age+3,'bizpal',{a})};return[
+  OR('in',M('e.bizpal.in',{a:MN(big)}),M('e.bizpal.in.s'),4,go(big,'trk.bizpal')),
+  OR('small',M('e.bizpal.small',{a:MN(sm)}),M('e.bizpal.small.s'),2,go(sm,'trk.bizpalS')),
+  OR('no','e.bizpal.no',M('e.bizpal.no.s'),-2,null)]}},
+{id:'reunion',win:[40,72],p:.7,title:M('e.reunion.t'),def:'dinner',
+ text:s=>M('e.reunion.x'),
+ opts:s=>[
+  OR('trip','e.reunion.trip',M('e.reunion.trip.s',{a:MN(.06*s.base)}),6,s=>{spend(s,'reunion',.06*s.base,'trk.reunion');s.happy+=3}),
+  OR('dinner','e.reunion.dinner',M('e.reunion.dinner.s',{a:MN(.01*s.base)}),3,s=>{spend(s,'reunion',.01*s.base,'trk.reunion');s.happy+=1}),
+  OR('skip','e.reunion.skip',M('e.reunion.skip.s'),-2,null)]},
+{id:'fsick',win:[40,66],p:.5,title:M('e.fsick.t'),def:'visit',
+ text:s=>M('e.fsick.x',{a:MN(.15*s.base)}),
+ opts:s=>{const a=.15*s.base;return[
+  OR('give',M('e.fsick.give',{a:MN(a)}),M('e.fsick.give.s'),6,s=>{spend(s,'fsick',a,'trk.fsickGift');s.happy+=2}),
+  OR('lend',M('e.fsick.lend',{a:MN(a)}),M('e.fsick.lend.s'),3,s=>{pay(s,a);T(s,'fsick',{kind:'custom',label:M('trk.fsickLend'),v:-a,note:M('note.lend0',{a:MN(a)})});later(s,s.age+2+Math.floor(evR(s,'fsAt')()*3),'repay',{a,id:'fsick'})}),
+  OR('visit','e.fsick.visit',M('e.fsick.visit.s'),3,null)]}},
+{id:'carers',win:[50,66],p:.6,title:M('e.carers.t'),def:'share',
+ text:s=>M('e.carers.x'),
+ opts:s=>{const a=.25*s.base,b=.08*s.base;return[
+  OR('quit','e.carers.quit',M('e.carers.quit.s'),8,s=>{s.offUntil=s.age+2;T(s,'carers',{kind:'custom',label:M('trk.carersQuit'),note:M('note.carers0')});s.happy-=2},job(s)||M('e.carers.nojob')),
+  OR('pay','e.carers.pay',M('e.carers.pay.s',{a:MN(a)}),2,s=>{T(s,'carers',{kind:'custom',label:M('trk.carersPay')});rec(s,'carers',a,5)}),
+  OR('share','e.carers.share',M('e.carers.share.s',{a:MN(b)}),1,s=>{T(s,'carers',{kind:'custom',label:M('trk.carersShare')});rec(s,'carers',b,5);s.happy-=2})]}},
+{id:'inhfight',win:[52,70],p:.55,only:s=>s.fam==='poor'||s.fam==='working',title:M('e.inhfight.t'),def:'fair',
+ text:s=>M('e.inhfight.x',{a:MN(.5*price(s))}),
+ opts:s=>{const sh=.5*price(s)/3;return[
+  OR('fair',M('e.inhfight.fair',{a:MN(sh)}),M('e.inhfight.fair.s'),-4,s=>{s.cash+=sh;T(s,'inhfight',{kind:'custom',label:M('trk.inhFair'),v:sh,note:M('note.got',{a:MN(sh)})})}),
+  OR('give','e.inhfight.give',M('e.inhfight.give.s'),6,s=>{s.happy+=2}),
+  OR('court','e.inhfight.court',M('e.inhfight.court.s',{a:MN(.1*s.base)}),-12,s=>{pay(s,.1*s.base);T(s,'inhfight',{kind:'custom',label:M('trk.inhCourt'),v:-.1*s.base,note:M('note.paid',{a:MN(.1*s.base)})});later(s,s.age+2,'court',{a:sh})},undefined,M('e.inhfight.court.h'))]}},
+{id:'grandsit',win:[58,76],p:.6,when:s=>s.kids.length>0,title:M('e.grandsit.t'),def:'some',
+ text:s=>M('e.grandsit.x'),
+ opts:s=>[
+  OR('yes','e.grandsit.yes',M('e.grandsit.yes.s',{a:MN(.04*s.base)}),6,s=>{T(s,'grandsit',{kind:'custom',label:M('trk.grandsit')});rec(s,'grandsit',-.04*s.base,5,-.3);s.happy+=3}),
+  OR('some','e.grandsit.some',M('e.grandsit.some.s'),3,s=>{s.happy+=1}),
+  OR('no','e.grandsit.no',M('e.grandsit.no.s'),-3,null)]}
 ];
 
 /* an event is due when its planned age has come (and its window hasn't passed) and its condition holds; no event happens twice */
@@ -579,16 +713,26 @@ const LATER={
  late:(s,x,L)=>{if(evR(s,'late')()>=.35)return;pay(s,x.a);const t=s.trk.bnpl;if(t){t.spent+=x.a;t.g+=x.a}L&&L(M('log.late',{a:MN(x.a)}),'bad')},
  emerg:(s,x,L)=>{const c=Math.min(Math.max(0,s.cash),x.a),d=x.a-c;s.cash-=c;s.debt+=d;const t=s.trk.efund;if(t&&d<1)t.note=M('note.efund',{a:MN(x.a)});L&&L(M(d>=1?'log.emergDebt':'log.emergCash',{a:MN(x.a),b:MN(d)}),d>=1?'bad':'good')},
  nego:(s,x,L)=>{const ok=evR(s,'nego')()<x.p;if(ok){if(x.lv)s.level=Math.max(0,s.level-1);bump(s,'nego',x.m,M(x.lk))}else s.happy-=2;L&&L(M(ok?'log.negoOk':'log.negoNo',{p:Math.round((x.m-1)*100)}),ok?'good':'bad')},
- repay:(s,x,L)=>{const u=evR(s,'repay'+x.id)(),f=x.fam?(u<.7?1:u<.85?.5:0):(u<.45?1:u<.65?.5:0),v=x.a*f;s.cash+=v;const t=s.trk[x.id];if(t){t.v+=v;t.note=M('note.repay',{a:MN(x.a),b:MN(v)})}L&&L(M((x.fam?'log.kidRepay':'log.repay')+(f===1?'All':f?'Half':'None'),{a:MN(x.a),b:MN(v)}),f===1?'good':'bad')},
+ repay:(s,x,L)=>{const u=evR(s,'repay'+x.id)(),f=x.fam?(u<.7?1:u<.85?.5:0):(u<relP(s,.45)?1:u<relP(s,.65)?.5:0),v=x.a*f;s.cash+=v;const t=s.trk[x.id];if(t){t.v+=v;t.note=M('note.repay',{a:MN(x.a),b:MN(v)})}L&&L(M((x.fam?'log.kidRepay':'log.repay')+(f===1?'All':f?'Half':'None'),{a:MN(x.a),b:MN(v)}),f===1?'good':'bad')},
  mlm:(s,x,L)=>{const ok=evR(s,'mlm')()<.1,t=s.trk.mlm;if(ok){const v=.5*s.base;s.cash+=v;s.earned+=v;if(t)t.v+=v}if(t)t.note=M(ok?'note.mlmOk':'note.mlmNo',{a:MN(Math.abs(t.v))});L&&L(M(ok?'log.mlmOk':'log.mlmNo'),ok?'good':'bad')},
  scam:(s,x,L)=>{const t=s.trk[x.id];if(t)t.note=M('note.scam',{a:MN(x.a)});L&&L(M(x.k2?'log.scam2':'log.scam',{a:MN(x.a)}),'bad')},
  rate:(s,x,L)=>{const h=s.house;if(h&&h.rate>.03){setRate(h,.03,s.age);L&&L(M('log.rateDown'),'good')}},
  burst:(s,x,L)=>{const down=evR(s,'burst')()<.6,m=down?.7:1.15;s.hm*=m;if(s.house)s.house.value*=m;const t=s.trk.bubble;if(t){t.v=(1-m)*t.ref;t.note=M(down?'note.bubbleDodge':'note.bubbleMiss',{a:MN(Math.abs(t.v))})}L&&L(M(down?'log.burst':'log.boom'),down?'bad':'good')},
  lay:(s,x,L)=>{if(!s.job||s.retired)return;if(evR(s,'lay')()<x.p){s.layAt=s.age;s.layVol=false;s.level=Math.max(0,s.level-1)}else L&&L(M('log.layNo'),'good')},
- div:(s,x,L)=>{if(!s.married)return;if(evR(s,'div')()>=x.p){L&&L(M('log.divNo'),'good');return}
+ div:(s,x,L)=>{if(!s.married)return;if(evR(s,'div')()>=x.p*clamp(1.6-s.rel/62,.4,1.6)){L&&L(M('log.divNo'),'good');return}
   const before=netWorth(s);withdrawEq(s,.45*eqTot(s));if(s.cash>0)s.cash*=.55;if(s.house){s.house.value*=.55;s.house.mort*=.55;setRate(s.house,s.house.rate||.03,s.age)}pay(s,.2*s.base);
   const loss=before-netWorth(s),t=T(s,'marriage',{kind:'custom',label:M('trk.divorce')});t.label=M('trk.divorce');t.v-=loss;t.note=M('note.divorce',{a:MN(loss)});s.married=false;s.happy-=12;L&&L(M('log.divorce',{a:MN(loss)}),'bad')},
  care:(s,x,L)=>{if(evR(s,'care')()>=.4)return;const amt=.8*s.base;s.rec.push({id:'',amt:amt*(s.ltc?.3:1),until:s.age+3,h:0});if(s.ltc){const t=s.trk.ltc;if(t){t.v+=amt*.7*3;t.note=M('note.ltcPaid',{a:MN(amt*.7*3)})}}L&&L(M(s.ltc?'log.careIns':'log.care',{a:MN(amt)}),'bad')},
+ tripDebt:(s,x,L)=>{spend(s,'trip',x.a,'trk.trip');L&&L(M('log.tripDebt',{a:MN(x.a)}),'')},
+ mentor:(s,x,L)=>{if(evR(s,'mentor')()<relP(s,x.p))refer(s,'mentorRef',1.1,'trk.mentorRef',L,'log.mentorRef')},
+ credit:(s,x,L)=>{const u=evR(s,'credit')();if(u<relP(s,x.p)){bump(s,'credit',x.m,M('trk.credit'));L&&L(M('log.creditOk',{p:Math.round((x.m-1)*100)}),'good')}else if(x.bad&&u>1-x.bad){s.happy-=4;L&&L(M('log.creditBad'),'bad')}else L&&L(M('log.creditNo'),'')},
+ network:(s,x,L)=>{if(evR(s,'network')()<relP(s,x.p))refer(s,'netRef',1.1,'trk.netRef',L,'log.netRef')},
+ remote:(s,x,L)=>{const ok=evR(s,'remote')()<x.p;if(ok)bump(s,'away',1.12,M('trk.awayRemote'));L&&L(M(ok?'log.remoteOk':'log.remoteNo'),ok?'good':'')},
+ bizpal:(s,x,L)=>{const u=evR(s,'bizpal')(),f=u<.25?3:u<.55?1:0,v=x.a*f;s.cash+=v;const t=s.trk.bizpal;if(t){t.v+=v;t.note=M('note.bizpal',{a:MN(x.a),b:MN(v)})}rl(s,f?4:-6);L&&L(M(f>1?'log.bizpalWin':f?'log.bizpalBack':'log.bizpalFail',{a:MN(x.a),b:MN(v)}),f?'good':'bad')},
+ cosign:(s,x,L)=>{const t=s.trk.cosign;if(evR(s,'cosign')()<.3){pay(s,x.a);if(t){t.v-=x.a;t.note=M('note.cosignPaid',{a:MN(x.a)})}rl(s,-6);L&&L(M('log.cosignPaid',{a:MN(x.a)}),'bad')}else{if(t)t.note=M('note.cosignOk');L&&L(M('log.cosignOk'),'good')}},
+ sib:(s,x,L)=>{const u=evR(s,'sib')();if(u<.45){const v=.8*x.a;s.cash+=v;const t=s.trk.sib;if(t){t.v+=v;t.note=M('note.repay',{a:MN(x.a),b:MN(v)})}L&&L(M('log.sibBack',{a:MN(v)}),'good')}else if(!(u<.75&&refer(s,'sibRef',1.06,'trk.sibRef',L,'log.sibRef'))){rl(s,2);L&&L(M('log.sibThanks'),'good')}},
+ uncle:(s,x,L)=>{if(!s.uncle)return;if(evR(s,'uncle')()<.4){s.uncle=false;s.bump.uncle=1;const t=s.trk.uncle;if(t)t.note=M('note.uncleEnd',{a:MN(t.v)});if(s.job&&!s.retired){s.layAt=s.age;s.layVol=false}L&&L(M('log.uncleEnd'),'bad')}else L&&L(M('log.uncleOk'),'good')},
+ court:(s,x,L)=>{const won=evR(s,'court')()<.5,v=x.a*(won?1.6:.7);s.cash+=v;const t=s.trk.inhfight;if(t){t.v+=v;t.note=M('note.court',{a:MN(v)})}L&&L(M(won?'log.courtWin':'log.courtLose',{a:MN(v)}),won?'good':'')},
  roof:(s,x,L)=>{if(!s.house||evR(s,'roof')()>=.5)return;const c=.3*s.base;pay(s,c);const t=s.trk.roof;if(t){t.spent+=c;t.g+=c}L&&L(M('log.roof',{a:MN(c)}),'bad')}
 };
 
@@ -661,6 +805,7 @@ function tick(s,yr,L){
     if(fo==='grind')work*=1.05;
     if(s.pivotYear===a){const c=.5*work;work-=c;if(s.trk.sk_pivot)s.trk.sk_pivot.cost+=c}
     if(s.cert&&a<s.cert.end&&s.cert.kind==='mba'){const c=.1*work;work-=c;if(s.trk.sk_cert)s.trk.sk_cert.cost+=c}
+    if(s.offUntil>a){const t=s.trk.carers;if(t){t.v-=work;t.note=M('note.carers',{a:MN(-t.v)})}work=0}
     const lp=s.job.type==='gov'?.005:(a===s.crashAge?.15:.03);
     if(yr.jl<lp||s.layAt===a){work*=.5;L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad')}
     const den=1+SK*sk;
@@ -669,9 +814,11 @@ function tick(s,yr,L){
     for(const k in s.bump){const t=s.trk[k];if(t)t.v+=sal*(1-1/s.bump[k])}
     if(s.job.type==='gov'&&s.trk.gov){const t=s.trk.gov,l=sal/.9*.1;t.lost+=l;t.v-=l;t.note=M('note.gov',{l:MN(t.lost)})}
     if(s.job.type==='startup'&&s.trk.startup){const t=s.trk.startup,l=sal/.85*.15;t.lost+=l;t.v-=l;t.note=M('note.startup',{l:MN(t.lost),age:s.job.res})}
-    let pp=.07+(fo==='grind'?.08:0)+sk*.0015;if(s.job.type==='gov')pp*=.6;
+    let pp=.07+(fo==='grind'?.08:0)+sk*.0015+(s.rel-50)*.0008;if(s.job.type==='gov')pp*=.6;if(s.uncle)pp*=.7;
     if(s.level<6&&yr.pr<pp){s.level++;if(fo==='grind'){s.levelGrind++;T(s,'grind',{kind:'skill',label:M('trk.grind')})}L&&L(M('log.promo',{n:s.level,a:MN(salary(s))}),'good')}
     s.exp++;
+    /* good Relationships bring referrals: someone you know recommends you for a better-paid job (twice at most) */
+    if(s.refN<2&&s.rel>55&&evR(s,'ref')()<(s.rel-55)/350){s.refN++;refer(s,'ref'+s.refN,1.08,'trk.referral',L,'log.referral')}
    }
    let hus=0;if(fo==='hustle'){s.hustleYears++;hus=B*.08*(1+.2*Math.min(s.hustleYears,10))*(1+SK*sk*.5);const t=T(s,'hustle',{kind:'custom',label:M('trk.hustle'),yrs:0});t.v+=hus;t.yrs++;t.note=M('note.hustle',{n:t.yrs,a:MN(hus)})}
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold){side=s.biz.inc;s.biz.inc*=1.06;if(tb){tb.v+=side;tb.note=M('note.bizSide',{a:MN(side)})}}
@@ -687,6 +834,7 @@ function tick(s,yr,L){
    if(s.sloan>0){s.sloan*=1.03;const p=Math.min(s.sloanPay||s.sloan*.12,s.sloan);s.sloan-=p;fixed+=p;if(s.sloan<1){s.sloan=0;L&&L(M('log.loanPaid'),'good')}}
    if(s.insured){const p=.035*B*s.insMul;fixed+=p;const t=s.trk.ins;if(t){t.prem+=p;t.v-=p;t.note=insNote(t)}}
    if(fo==='learn'&&employed){fixed+=.03*B;const t=s.trk.sk_learn;if(t)t.cost+=.03*B}
+   if(fo==='people'){const c=.03*B;fixed+=c;const t=T(s,'people',{kind:'ghost',label:M('trk.people')});t.spent+=c;t.g+=c}
    if(s.debt>0){const p=.25*s.debt;s.debt-=p;fixed+=p}
    fixed+=recCost(s,a)+plans(s,a,employed?work:0);
    let avail=net-fixed,saved=0;
@@ -711,18 +859,28 @@ function tick(s,yr,L){
    if(s.debt>0){const p=.25*s.debt;s.debt-=p;need+=p}
    need+=recCost(s,a)+plans(s,a,0);
    const d=inc-need;
-   if(d>=0){s.cash+=d;out.saved=d}else{const short=payRet(s,-d);out.saved=d;if(short>0){s.happy-=4;if(!s.brokeLogged){s.brokeLogged=1;L&&L(M('log.broke'),'bad')}}}
+   if(d>=0){s.cash+=d;out.saved=d}else{const short=payRet(s,-d);out.saved=d;if(short>0){s.happy-=4;if(!s.brokeLogged){s.brokeLogged=1;L&&L(M('log.broke'),'bad')}
+    if(s.rel>=40&&evR(s,'helpBroke')()<(s.rel-30)/100){const h=.5*short;s.cash+=h;helped(s,h);L&&L(M('log.helpBroke',{a:MN(h)}),'good')}}}
   }
   // body and mind
   if(a>=40)s.health-=.7;if(a>=65)s.health-=.6;
-  if(s.retired)s.health+=.5;else if(!s.study){if(fo==='balance')s.health+=2.5;if(fo==='grind')s.health-=2.5;if(fo==='hustle')s.health-=1}
+  if(s.retired)s.health+=.5;else if(!s.study){if(fo==='balance')s.health+=2.5;if(fo==='people')s.health+=1;if(fo==='grind')s.health-=2.5;if(fo==='hustle')s.health-=1}
   s.health=clamp(s.health,3,100);
   const mp=.02+Math.max(0,70-s.health)/900+a/3500;
   if(yr.md<mp){const bill=B*.6*(.5+yr.ma*1.5)*(s.screen?.7:1);let you=bill;if(s.insured){you=.15*bill;const t=s.trk.ins;if(t){t.saved+=bill-you;t.v+=bill-you;t.note=insNote(t)}}
-   if(s.retired)payRet(s,you);else pay(s,you);s.health=clamp(s.health-4,3,100);L&&L(M('log.med',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):M('log.medSelf')}),'bad')}
+   if(s.retired)payRet(s,you);else pay(s,you);s.health=clamp(s.health-4,3,100);L&&L(M('log.med',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):M('log.medSelf')}),'bad');
+   /* family and friends may chip in; the closer you are, the likelier and the more */
+   if(s.rel>=40&&evR(s,'helpMed')()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(M('log.helpMed',{a:MN(h)}),'good')}}
   const nw=netWorth(s);let tg=48+9*Math.log10(1+Math.max(0,nw)/B)-(s.debt>.3*B?10:0)+(s.married?4:0)+Math.min(3,s.kids.length)*2+(s.health-60)/8;
-  if(!s.retired&&!s.study){if(fo==='balance')tg+=5;if(fo==='grind')tg-=5}
+  tg+=(s.rel-50)/12;
+  if(!s.retired&&!s.study){if(fo==='balance')tg+=5;if(fo==='grind')tg-=5;if(fo==='people')tg+=3}
+  if(s.retired&&s.rel<35){tg-=6;if(!s.lonely){s.lonely=1;L&&L(M('log.lonely'),'bad')}}
   s.happy=clamp(s.happy+(tg-s.happy)*.25,0,100);
+  // Relationships drift down unless you give people time; marriage, children and retirement help, and they pull back toward the middle
+  let dr=-1+(s.married?.4:0)+.2*Math.min(3,s.kids.length)+(45-s.rel)*.05;
+  if(s.retired)dr+=.5;else if(!s.study)dr+={people:4,balance:1.5,learn:0,grind:-1,hustle:-.6}[fo]||0;
+  rl(s,dr);
+  if(s.married&&s.rel<25&&!s.later.some(x=>x.k==='div')&&evR(s,'lowrel')()<.04)later(s,a+1,'div',{p:1});
   // skills for next year
   if(a>=45&&s.done.pivot==='stay'&&!s.retired)s.skillSrc.base=Math.max(0,s.skillSrc.base-.8);
   if(!s.retired&&!s.study){
@@ -756,6 +914,6 @@ function projectEvent(s,ev,N){const tgt=s.age<58?60:s.age+12;const os=ev.opts(s)
   const r=MC(s,c=>applyOpt(c,ev,o.id),N,tgt);const d=r.map((x,i)=>x[0]-base[i][0]).sort((a,b)=>a-b);const e=r.map((x,i)=>x[1]-base[i][1]).sort((a,b)=>a-b);
   res[o.id]={med:d[N>>1],lo:d[Math.floor(N*.1)],hi:d[Math.min(N-1,Math.floor(N*.9))],earn:e[N>>1]}}
  return{tgt,res}}
-function projectFocus(s,N){const tgt=s.age<55?60:s.age+5;const runs={};for(const f of['learn','grind','hustle','balance'])runs[f]=MC(s,c=>{c.focus=f},N,tgt);const out={};
- for(const f of['learn','grind','hustle']){const e=runs[f].map((x,i)=>x[1]-runs.balance[i][1]).sort((a,b)=>a-b);const n=runs[f].map((x,i)=>x[0]-runs.balance[i][0]).sort((a,b)=>a-b);out[f]={earn:e[N>>1],nw:n[N>>1]}}
+function projectFocus(s,N){const tgt=s.age<55?60:s.age+5;const runs={};for(const f of['learn','grind','hustle','balance','people'])runs[f]=MC(s,c=>{c.focus=f},N,tgt);const out={};
+ for(const f of['learn','grind','hustle','people']){const e=runs[f].map((x,i)=>x[1]-runs.balance[i][1]).sort((a,b)=>a-b);const n=runs[f].map((x,i)=>x[0]-runs.balance[i][0]).sort((a,b)=>a-b);out[f]={earn:e[N>>1],nw:n[N>>1]}}
  return{tgt,out}}

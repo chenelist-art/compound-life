@@ -7,7 +7,7 @@ const SPEEDS=[900,450,180];
 let speedI=0;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const FOCUS=['learn','grind','hustle','balance'];
+const FOCUS=['learn','grind','hustle','balance','people'];
 const SRC=['child','school','edu','learn','cert','pivot','startup'];
 const JOBK={corp:'e.job.corp',startup:'e.job.startup',gov:'e.job.gov'};
 const TH=[1,3,10,30,100,300];
@@ -139,7 +139,7 @@ function render(){
   $('#nwNum').textContent=Art.roman(age);
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
   const sk=skill(s);$('#skv').textContent=Math.round(sk);$('#skb').style.width=clamp(sk,0,100)+'%';$('#skx').textContent=t('g.skx',{p:Math.round(SK*sk*100)});
-  $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';
+  $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';$('#rev').textContent=Math.round(s.rel);$('#reb').style.width=s.rel+'%';
   $('#chips').innerHTML=SRC.filter(k=>(s.skillSrc[k]||0)>=.5).map(k=>{const v=s.skillSrc[k];const name=k==='edu'&&s.trk.sk_edu?tr(s.trk.sk_edu.label):t('src.'+k);return `<span class="chip"><b>${esc(name)}</b> ${esc(t('g.chipSk',{n:Math.round(v)}))} · <span class="gain">${esc(t('g.chipPay',{p:Math.round(SK*v*100)}))}</span></span>`}).join('');
   const L=level(nw,s.base);
   $('#sealcap').textContent=L<6?t('g.ring',{n:L,a:MN(TH[L]*s.base)}):t('g.ringAll');
