@@ -337,6 +337,27 @@ tbody tr:hover td{background:var(--washi)}
 .toast{display:flex;gap:12px;align-items:center;background:var(--yamabuki);color:var(--charcoal);padding:12px 20px;border-radius:999px;border:var(--outline);box-shadow:var(--pop)}
 .toast::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--coral);border:2.5px solid var(--charcoal);flex:none}
 @media (prefers-reduced-motion: no-preference){.toast{animation:pop .35s cubic-bezier(.2,.8,.2,1.2)}@keyframes pop{from{transform:translateY(8px) scale(.96);opacity:0}}}
+/* big moment cards: a tarot card that flips in over the game, which is washed out behind a washi veil (light theme, so "dimmed" means faded, not dark) */
+.moment{position:fixed;inset:0;z-index:105;display:grid;place-items:center;padding:16px;overflow-y:auto;background:var(--washi);background:color-mix(in srgb,var(--washi) 82%,transparent)}
+.mo-card{width:min(440px,100%);margin:auto}
+.mo-card .t-in{gap:12px;padding:30px clamp(16px,4vw,26px) 48px;justify-items:center;text-align:center}
+.mo-win{max-width:250px}
+.mo-t{margin:0;font-size:clamp(25px,6vw,32px);line-height:1.18;font-weight:400;text-wrap:balance}
+.mo-row{display:flex;align-items:center;gap:14px;text-align:left;width:100%}
+.pix-mo{--px:2}
+.mo-txt{display:grid;gap:8px;min-width:0}
+.mo-x{margin:0;font-size:15.5px;line-height:1.45}
+.mo-m{margin:0;font-size:15px;line-height:1.5}
+.mo-m b{font-weight:400;font-size:19px;font-variant-numeric:tabular-nums}
+.mo-go{display:grid;gap:6px;justify-items:center;margin-top:4px}
+.mo-key{font-size:12.5px}
+@media (min-width:480px){.pix-mo{--px:3}}
+@media (prefers-reduced-motion: no-preference){
+  .moment{animation:moVeil .25s ease-out}
+  .mo-card{animation:moFlip .65s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes moVeil{from{opacity:0}}
+  @keyframes moFlip{0%{transform:perspective(1100px) rotateY(-100deg) scale(.88);opacity:0}45%{opacity:1}100%{transform:none}}
+}
 
 /* decision card */
 @media (prefers-reduced-motion: no-preference){.slip{animation:slipin .45s cubic-bezier(.2,.8,.2,1)}@keyframes slipin{from{transform:translateY(18px) rotate(-1deg);opacity:0}}}

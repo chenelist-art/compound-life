@@ -57,12 +57,12 @@ function reveal(ci,sex){
   step();
   $('#rgo').onclick=()=>startLife(ci,seed,life.sex);
 }
-function backToSetup(){closeReplay(true);clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
+function backToSetup(){closeReplay(true);closeMoment();G.moq=[];G.moThen=null;clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
-  const s=G.s;
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  const s=G.s;G.snapS=snap(s);
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
   $('#noteSerial').textContent='SC '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
@@ -73,29 +73,33 @@ function startLife(ci,seed,sex){
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
 /* big moments that make the pixel character jump with sparkles (a wedding or a new baby gets hearts instead) */
 const CHEER=new Set(['log.grad','log.promo','log.ring','log.car.trained','log.car.up','log.car.ok','log.car.exit']);
-function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift();if(m&&CHEER.has(m.k))G.cheer=G.cheer||'yay'}
+function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift();if(m&&CHEER.has(m.k))G.cheer=G.cheer||'yay';if(m&&MOMENT[m.k])moment(MOMENT[m.k],m);else if(m&&SMALL.has(m.k))toast(m)}
 function resolveTwin(){const tw=G.t;if(tw.dead)return;let g=0,ev;while((ev=dueEvents(tw)[0])&&g++<30){const id=ev.mirror&&G.s.done[ev.id]?G.s.done[ev.id]:ev.def;applyOpt(tw,ev,id)}}
 function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.trk){const v=trkView(s,s.trk[id]).v;const h=G.th[id]||(G.th[id]=[]);if(h.length&&h[h.length-1][0]===a)h[h.length-1][1]=v;else h.push([a,v])}}
 function advance(){
-  const s=G.s;if(!s||G.ended||G.pending||G.hind)return 'stop';
+  const s=G.s;if(!s||G.ended||G.pending||G.hind||G.mom)return 'stop';
   const ev=dueEvents(s)[0];if(ev){showDecision(ev);return 'ev'}
   /* a new focus picked during the year starts now */
   if(G.nextF&&s.age>=18&&!s.retired){s.focus=G.nextF;G.nextF=null;addLog(M('log.focus',{x:M('f.'+s.focus)}),'choice')}
-  resolveTwin();const a=s.age,yr=yearRand(s.seed,a);G.foc[a]=s.focus;G.ea[a]=s.earned;
+  resolveTwin();const a=s.age,yr=yearRand(s.seed,a);G.foc[a]=s.focus;G.ea[a]=s.earned;G.salPrev=salary(s);
   if(a===6)addLog(M('log.school'),'',a);
   const out=tick(s,yr,(m,k)=>addLog(m,k,a));s.lastInc=out.gross;if(out.gross>G.peakInc)G.peakInc=out.gross;
   if(!G.t.dead){tick(G.t,yr,null);G.ht.push([G.t.dead?G.t.deathAge+1:G.t.age,netWorth(G.t)])}
   G.hs.push([s.dead?a+1:s.age,netWorth(s)]);recordTh();
   if(a>=18&&out.gross>0)addLog(out.saved>=0?M('log.incSave',{a:MN(out.gross),b:MN(out.saved)}):M('log.incOver',{a:MN(out.gross),b:MN(-out.saved)}),'year',a);
-  checkMilestones();
-  if(s.dead){endLife();return 'end'}
+  checkMilestones();lifeMoments();
+  if(s.dead){G.moq=[];endLife();return 'end'}
+  if(flushMoments(()=>{render();schedule()}))return 'moment';
   return 'ok';
 }
-function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
-function skipAhead(){if(G.hind)endHind();if(G.pending||G.ended)return;clearTimeout(G.timer);let g=0,r;do{r=advance()}while(r==='ok'&&g++<150);if(r==='ok'){render();schedule()}}
+function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended||G.mom)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
+function skipAhead(){if(G.hind)endHind();if(G.pending||G.ended||G.mom)return;clearTimeout(G.timer);let g=0,r;do{r=advance()}while(r==='ok'&&g++<150);if(r==='ok'){render();schedule()}}
 function showDecision(ev){
   const s=G.s;clearTimeout(G.timer);
   if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1;if(ev.preLog)addLog(ev.preLog(s),'bad');recordTh()}
+  /* a crash, a serious illness or an inheritance shows as a big moment before its decision */
+  if(MO_EV[ev.id]&&!s['mo_'+ev.id]){s['mo_'+ev.id]=1;const k=ev.id;moment(k,k==='crash'?ev.preLog(s):k==='ill'?M('mo.ill.x'):ev.text(s),k==='ill'?M('mo.ill.'+s.illType+'.t'):null)}
+  if(flushMoments(()=>showDecision(ev)))return;
   G.pending=ev;G.proj=null;render();
   setTimeout(()=>{if(G.pending!==ev)return;const P=G.proj=Object.assign(projBegin(s,ev,40),{ev});fillProj();
     const step=()=>{if(G.pending!==ev||G.proj!==P||!P.todo.length)return;projNext(s,ev,P);fillProj();setTimeout(step,0)};setTimeout(step,0)},60);
@@ -108,7 +112,7 @@ function choose(id){
   const P=G.proj&&G.proj.ev===ev?G.proj:Object.assign(projBegin(s,ev,40),{ev}),os=ev.opts(s),age=s.age;
   while(P.todo.length)projNext(s,ev,P);
   const had=new Set(Object.keys(s.trk));
-  const o=applyOpt(s,ev,id);
+  const o=applyOpt(s,ev,id);lifeMoments();
   /* kept for the life replay: what you chose, and the passbook lines that choice started */
   /* and every option's typical result from the 40 futures (relative to the default option), for the road not taken */
   G.dec.push({id:ev.id,age,title:ev.title,label:o.label,pick:o.id,def:ev.def,trk:Object.keys(s.trk).filter(k=>!had.has(k)),tgt:P.tgt,
@@ -120,7 +124,7 @@ function choose(id){
   if(G.mode==='normal'&&real){showHind(h);return}
   next();
 }
-function next(){const nx=dueEvents(G.s)[0];if(nx){showDecision(nx);return}render();schedule()}
+function next(){if(flushMoments(next))return;const nx=dueEvents(G.s)[0];if(nx){showDecision(nx);return}render();schedule()}
 function showHind(h){G.hind=h;G.hindEnd=Date.now()+HIND_MS;render();const b=$('#hcont');if(b)b.focus({preventScroll:true});clearTimeout(G.hindT);G.hindT=setTimeout(endHind,HIND_MS)}
 function endHind(){if(!G.hind)return;clearTimeout(G.hindT);G.hind=null;next()}
 function level(nw,B){let L=0;for(const x of TH)if(nw>=x*B)L++;return L}
@@ -132,7 +136,86 @@ function checkMilestones(){
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});playReplay()}
+function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
+  /* the farewell card comes first, then the life replay */
+  if(moOn){G.moq=[deathMo()];G.moThen=playReplay;showMoment()}else playReplay()}
+
+/* ---------- big moment cards: a flashcard that stops time for the moments that shape a life ---------- */
+/* diary lines that are big moments, and the card each one opens (the line under the title is the diary line itself) */
+const MOMENT={'log.laidOff':'fired','log.layVol':'package','log.car.auto':'auto','log.bizFail':'bizfail','log.car.fail':'bizfail','log.coinDown':'crypto','log.burst':'burst',
+  'log.broke':'broke','log.divorce':'divorce','log.car.injEnd':'injury','log.promo':'promo','log.car.up':'careerup','log.grad':'grad','log.bizOk':'bizup','log.car.ok':'bizup',
+  'log.car.exit':'exit','log.child':'child','log.retire':'retired'};
+/* decision cards that open with a big moment: the moment shows first, then the decision */
+const MO_EV={crash:1,ill:1,inh:1};
+const MO_BAD=new Set(['fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury']);
+/* smaller events stay as a toast, so the game isn't stopped every year */
+const SMALL=new Set(['log.car.trained','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj']);
+let moOn=store.get('cl-moments')!==false;
+function setMo(on){moOn=on;document.querySelectorAll('#mo0 button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.mo==='1')===on)));store.set('cl-moments',on)}
+document.querySelectorAll('#mo0 button').forEach(b=>b.addEventListener('click',()=>setMo(b.dataset.mo==='1')));
+setMo(moOn);
+const num=x=>x&&typeof x==='object'&&'m' in x?x.m:0;
+/* the money line: a text key with {a} (signed) or {b} (no sign), the amount, and whether it is a gain (pos) or neither (flat) */
+function moMoney(kind,m){const s=G.s,v=m&&m.v||{},sal=Math.max(s.lastSal||0,salary(s))||s.base,raise=salary(s)-(G.salPrev||0);
+  switch(kind){
+    case 'fired':case 'package':return{k:'mo.n.pay6',v:-.5*sal};
+    case 'auto':return{k:'mo.n.sev',v:num(v.a)};
+    case 'bizfail':return m.k==='log.bizFail'?{k:'mo.n.gone',v:-num(v.a)}:{k:'mo.n.noInc'};
+    case 'crypto':return{k:'mo.n.coin',v:num(v.b)-num(v.a)};
+    case 'crash':return s.crashP>1?{k:'mo.n.stock',v:-s.crashP/.62*.38}:{k:'mo.n.noStock'};
+    case 'burst':return s.house?{k:'mo.n.home',v:-s.house.value/.7*.3}:{k:'mo.n.noHome'};
+    case 'broke':return{k:'mo.n.broke',v:0,flat:1};
+    case 'divorce':return{k:'mo.n.div',v:-num(v.a)};
+    case 'injury':return{k:'mo.n.sport'};
+    case 'hired':return s.job.train>s.age?{k:'mo.n.train',n:s.job.train}:{k:'mo.n.pay',v:salary(s)};
+    case 'promo':case 'careerup':return raise>0?{k:'mo.n.raise',v:raise}:null;
+    case 'grad':return s.sloan>0?{k:'mo.n.loan',v:-s.sloan}:{k:'mo.n.noLoan'};
+    case 'bizup':return m.k==='log.bizOk'?{k:'mo.n.inc',v:num(v.a)}:raise>0?{k:'mo.n.raise',v:raise}:null;
+    case 'exit':return{k:'mo.n.cash',v:num(v.a)};
+    case 'married':return s.trk.wed&&s.trk.wed.spent>0?{k:'mo.n.wed',v:-s.trk.wed.spent}:null;
+    case 'child':return{k:'mo.n.kid',v:-.15*s.base};
+    case 'inh':return{k:'mo.n.inh',v:inhAmt(s)};
+    case 'house':return s.house.pay>0?{k:'mo.n.mort',v:s.house.pay}:null;
+    case 'retired':return s.pension>0?{k:'mo.n.pen',v:s.pension}:{k:'mo.n.noPen'};
+  }return null}
+/* queue a card (one of each kind at a time); with the cards off it is a toast instead, and so is a promotion within three years of the last promotion card */
+function moment(kind,line,title){const s=G.s;if(!s||G.ended||G.moq.some(x=>x.kind===kind))return;
+  if(kind==='grad'||kind==='child')line=M('mo.'+kind+'.x');
+  const o={kind,tone:MO_BAD.has(kind)?'bad':'good',age:s.age,title:title||M('mo.'+kind+'.t'),line,money:moMoney(kind,line)};
+  const up=kind==='promo'||kind==='careerup';if(up&&G.promoAt!=null&&s.age-G.promoAt<3){toast(line);return}
+  if(moOn){if(up)G.promoAt=s.age;G.moq.push(o)}else toast(o.title)}
+function deathMo(){const s=G.s,nw=netWorth(s);return{kind:'death',tone:'end',age:s.deathAge,title:M('mo.death.t',{a:s.deathAge}),
+  line:s.illDeath?M('mo.die.ill',{x:M('ill.'+s.illDeath)}):M(s.deathAge>=Math.max(70,s.le-3)?'mo.die.old':'mo.die.soon'),money:{k:nw<0?'mo.n.debt':'mo.n.leave',v:nw,flat:1}}}
+/* moments that show in the life itself rather than in the diary: a wedding, a new job, the last mortgage payment */
+const snap=s=>({m:!!s.married,j:s.job?s.job.tk:null,h:s.house?s.house.mort:-1});
+function lifeMoments(){const s=G.s,a=G.snapS||snap(s),b=snap(s);G.snapS=b;
+  if(b.m&&!a.m)moment('married',M('mo.married.x'));
+  if(b.j&&b.j!==a.j)moment('hired',M(s.job.train>s.age?'mo.hired.tx':'mo.hired.x',{x:M('car.a.'+s.job.id)}));
+  if(a.h>=1&&b.h>=0&&b.h<1)moment('house',M('mo.house.x'))}
+/* show what's queued, then carry on with `then` */
+function flushMoments(then){if(!G.moq.length)return false;G.moThen=then;render();showMoment();return true}
+function moHTML(o){const ttl=trE(o.title),mo=o.money;let money='';
+  if(mo){const v=mo.v,c=mo.flat||v==null?'':v>0?'gain':v<0?'loss':'',b=x=>`<b class="${c}">${esc(x)}</b>`;
+    money=`<p class="mo-m">${esc(t(mo.k,{a:'\u0001',b:'\u0002',n:mo.n})).replace('\u0001',v==null?'':b(fm(v,true))).replace('\u0002',v==null?'':b(fm(Math.abs(v))))}</p>`}
+  return Art.card({cls:'mo-card mo-'+o.tone,c:o.tone==='bad'?'mi':o.tone==='end'?'wa':'ya',num:Art.roman(o.age),label:ttl,name:esc(t('mo.k.'+o.tone)),win:Art.momentWin(o.kind,'mo-win'),
+    body:`<h2 class="mo-t" id="moT">${ttl}</h2><div class="mo-row"><canvas class="pix pix-mo" width="48" height="48" aria-hidden="true"></canvas><div class="mo-txt"><p class="mo-x">${trE(o.line)}</p>${money}</div></div>
+    <div class="mo-go"><button class="btn btn-accent" id="moGo" type="button">${esc(t(o.tone==='end'?'mo.end.go':'g.cont'))} <span class="arr">→</span></button><span class="muted mo-key">${esc(t('mo.key'))}</span></div>`})}
+/* the pixel character matches the moment: sad (dizzy when ill, sweating when broke), celebrating, or at peace */
+function moPose(o){const ps=Object.assign({},Pixel.stateOf(G.s));
+  if(o.tone==='end')ps.sleep=true;
+  else if(o.tone==='bad'){ps.face=o.kind==='ill'?'sick':'sad';if(o.kind==='ill')ps.ill='gown';if(o.kind==='broke')ps.emote='sweat'}
+  else ps.face='happy';
+  return ps}
+function paintMoment(){const o=G.mom,el=$('#moment');if(!o||!el)return;el.dataset.kind=o.kind;el.innerHTML=moHTML(o);
+  const cv=el.querySelector('.pix-mo');Pixel.set(cv,moPose(o));clearInterval(G.moCheer);
+  if(o.tone==='good'){const k=o.kind==='married'||o.kind==='child'?'love':'yay';Pixel.cheer(cv,k);if(!reduce)G.moCheer=setInterval(()=>Pixel.cheer(cv,k),2600)}
+  $('#moGo').onclick=endMoment}
+function showMoment(){G.mom=G.moq.shift();clearTimeout(G.timer);let el=$('#moment');
+  if(!el){el=document.createElement('div');el.id='moment';el.className='moment';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','moT');document.body.appendChild(el)}
+  for(const c of document.body.children)if(c!==el)c.inert=true;
+  el.hidden=false;paintMoment();$('#moGo').focus({preventScroll:true})}
+function closeMoment(){clearInterval(G.moCheer);G.mom=null;const el=$('#moment');if(!el)return;el.hidden=true;el.innerHTML='';for(const c of document.body.children)c.inert=false}
+function endMoment(){if(!G.mom)return;if(G.moq.length){clearInterval(G.moCheer);showMoment();return}closeMoment();const f=G.moThen;G.moThen=null;if(f)f()}
 
 /* ---------- rendering ---------- */
 function phase(s){return s.age<18?'child':s.retired?'ret':'adult'}
@@ -502,12 +585,13 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){buildFocus();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText()}});
+  if(G.s){buildFocus();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText();paintMoment()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});
 $('#skip').addEventListener('click',()=>skipAhead());
 document.addEventListener('keydown',e=>{
+  if(G.mom){if(e.key===' '||e.key==='Enter'||e.key==='Escape'){e.preventDefault();endMoment()}return}
   if(RPY.el){if(e.key==='Escape'){e.preventDefault();closeReplay()}else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();rpGo(RPY.i+(e.key==='ArrowRight'?1:-1))}return}
   if(!G.s||e.target.closest('input,select,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
   if(G.pending&&/^[1-9]$/.test(e.key)){const b=document.querySelectorAll('.opt')[+e.key-1];if(b&&!b.disabled){e.preventDefault();b.click()}return}
