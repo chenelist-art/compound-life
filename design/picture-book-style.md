@@ -6,6 +6,7 @@ Apply this style to any visual output (HTML pages, artifacts, designs, SVG illus
 ## Aesthetic
 - Japanese picture-book style: cute, minimalist, friendly.
 - Light backgrounds only. Never use dark mode or dark backgrounds.
+  - One deliberate exception: at the very end of the life replay the screen slowly fades to charcoal (#3E3A39) for "Was it all worth it?" in washi-white text, then fades back to light. Nothing else may use a dark background.
 
 ## Canvas & outlines
 - Background: washi white `#FFFCF6`.
@@ -52,7 +53,7 @@ body { background: var(--washi); color: var(--charcoal); font-family: 'Huninn', 
 ```
 
 ## Checklist before delivering
-- Background is washi white, nothing dark.
+- Background is washi white, nothing dark (except the charcoal moment at the end of the life replay).
 - Every card/shape has the 3px charcoal outline and rounded corners.
 - No gradients anywhere.
 - Only palette colors used.

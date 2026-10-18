@@ -1380,16 +1380,49 @@ Object.assign(ZHT,{
 'log.dep':'醫生告訴你，你得了憂鬱症。','log.depEnd':'憂鬱慢慢散去，生活又像是你自己的了。',
 'cond.rec':'康復中','cond.dep':'憂鬱症','g.alive':'{p}%活了下來','g.netBy':'到{age}歲淨資產{a}'
 });
-/* the life replay before the end card */
-Object.assign(EN,{'rp.aria':'Life replay','rp.kick':'Your life in {c}','rp.skip':'Skip','rp.again':'Watch my life again','rp.cont':'Continue','rp.q':'Was it all worth it?',
+/* the life replay before the end card: a story per stage and the road not taken */
+Object.assign(EN,{'rp.aria':'Life replay','rp.kick':'Your life in {c}','rp.skip':'Skip','rp.again':'Watch my life again','rp.q':'Was it all worth it?',
+'rp.prev':'Back','rp.next':'Next','rp.fin':'The end','rp.n':'{i} of {n}','rp.hint':'Swipe, or use the ← → keys',
 'rp.s.birth':'Birth','rp.s.child':'Childhood','rp.s.school':'School','rp.s.job':'First job','rp.s.love':'Love','rp.s.home':'Home','rp.s.kids':'Children','rp.s.crisis':'Hard times','rp.s.ret':'Retirement','rp.s.old':'Old age','rp.s.end':'The end',
-'rp.bornT':'Born in {c}','rp.bornL':'A {x}, born into {fam}','rp.nwAt':'net worth {a}','rp.lived':'Lived to {a}','rp.after':'Life ended after {x}','rp.endT':'The last page'});
-Object.assign(ZH,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳过','rp.again':'再看一次我的一生','rp.cont':'继续','rp.q':'这一切值得吗？',
+'rp.bornT':'Born in {c}','rp.endT':'The last page',
+'rp.t.born':'You were born a {x} in {c}, into {fam}.','rp.t.dec':'At {a} you chose “{l}”.',
+'rp.t.ill':'At {a} you faced {x}, and chose “{l}”.','rp.t.illOk':'You recovered, and life went on.','rp.t.illEnd':'Your story ended there.',
+'rp.t.dep':'At {a} you went through depression, and chose “{l}”.','rp.t.depOk':'In time, it eased.',
+'rp.t.ret':'At {a} you retired, with a net worth of {nw}.','rp.t.end':'You lived to {a}.','rp.t.endIll':'Your life ended at {a}, after {x}.','rp.t.endNw':'Your net worth at the end: {nw}.',
+'rp.m.back':'It cost {c} at first, then paid you back by {age}.','rp.m.worth':'By the end it was worth {a}.','rp.m.added':'By the end it had added {a}.',
+'rp.m.cost':'In all it cost you {a}, counting what that money could have grown to.','rp.m.little':'In the end it made little difference to your money.',
+'rp.m.track':'Your money stayed on its usual path.','rp.m.vs':'Compared with “{x}”, it usually meant about {a} by {age}.','rp.m.sameAs':'It usually ended up about the same as “{x}”.',
+'rp.road':'The road not taken','rp.roadP':'The typical result in 40 simulated futures, compared with your choice, by age {age}.',
+'rp.vs':'about {a} by {age}','rp.same':'about the same','rp.bestT':'best',
+'rp.best':'Your choice was the best of these.','rp.notBest':'Usually best: “{x}”.','rp.tie':'They all usually ended up about the same.'});
+Object.assign(ZH,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳过','rp.again':'再看一次我的一生','rp.q':'这一切值得吗？',
+'rp.prev':'上一页','rp.next':'下一页','rp.fin':'结束','rp.n':'第{i}页，共{n}页','rp.hint':'左右滑动，或按 ← → 键',
 'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求学','rp.s.job':'第一份工作','rp.s.love':'爱情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'难关','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'终章',
-'rp.bornT':'出生在{c}','rp.bornL':'{fam}的{x}','rp.nwAt':'净资产{a}','rp.lived':'活到{a}岁','rp.after':'因{x}离世','rp.endT':'最后一页'});
-Object.assign(ZHT,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳過','rp.again':'再看一次我的一生','rp.cont':'繼續','rp.q':'這一切值得嗎？',
+'rp.bornT':'出生在{c}','rp.endT':'最后一页',
+'rp.t.born':'你出生在{c}的{fam}，是个{x}。','rp.t.dec':'{a}岁时，你选择了「{l}」。',
+'rp.t.ill':'{a}岁时，你遇上了{x}，选择了「{l}」。','rp.t.illOk':'你康复了，生活继续。','rp.t.illEnd':'你的故事在这里画上了句号。',
+'rp.t.dep':'{a}岁时，你经历了抑郁症，选择了「{l}」。','rp.t.depOk':'慢慢地，它好起来了。',
+'rp.t.ret':'{a}岁时你退休了，净资产{nw}。','rp.t.end':'你活到了{a}岁。','rp.t.endIll':'你在{a}岁时因{x}离世。','rp.t.endNw':'最后的净资产：{nw}。',
+'rp.m.back':'一开始花了{c}，到{age}岁时赚回来了。','rp.m.worth':'到最后，它值{a}。','rp.m.added':'到最后，它为你多带来了{a}。',
+'rp.m.cost':'算上这笔钱本可以增长的部分，它一共让你少了{a}。','rp.m.little':'到最后，它对你的钱影响不大。',
+'rp.m.track':'你的钱照原来的路走。','rp.m.vs':'和「{x}」相比，到{age}岁通常相差约{a}。','rp.m.sameAs':'结果通常和「{x}」差不多。',
+'rp.road':'没走的那条路','rp.roadP':'40个模拟未来里的典型结果，到{age}岁时和你的选择相比。',
+'rp.vs':'到{age}岁约{a}','rp.same':'差不多','rp.bestT':'最好',
+'rp.best':'你的选择是其中最好的。','rp.notBest':'通常最好的是「{x}」。','rp.tie':'几个选项的结果通常差不多。'});
+Object.assign(ZHT,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳過','rp.again':'再看一次我的一生','rp.q':'這一切值得嗎？',
+'rp.prev':'上一頁','rp.next':'下一頁','rp.fin':'結束','rp.n':'第{i}頁，共{n}頁','rp.hint':'左右滑動，或按 ← → 鍵',
 'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求學','rp.s.job':'第一份工作','rp.s.love':'愛情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'難關','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'終章',
-'rp.bornT':'出生在{c}','rp.bornL':'{fam}的{x}','rp.nwAt':'淨資產{a}','rp.lived':'活到{a}歲','rp.after':'因{x}離世','rp.endT':'最後一頁'});
+'rp.bornT':'出生在{c}','rp.endT':'最後一頁',
+'rp.t.born':'你出生在{c}的{fam}，是個{x}。','rp.t.dec':'{a}歲時，你選擇了「{l}」。',
+'rp.t.ill':'{a}歲時，你遇上了{x}，選擇了「{l}」。','rp.t.illOk':'你康復了，生活繼續。','rp.t.illEnd':'你的故事在這裡畫上了句點。',
+'rp.t.dep':'{a}歲時，你經歷了憂鬱症，選擇了「{l}」。','rp.t.depOk':'慢慢地，它好起來了。',
+'rp.t.ret':'{a}歲時你退休了，淨資產{nw}。','rp.t.end':'你活到了{a}歲。','rp.t.endIll':'你在{a}歲時因{x}離世。','rp.t.endNw':'最後的淨資產：{nw}。',
+'rp.m.back':'一開始花了{c}，到{age}歲時賺回來了。','rp.m.worth':'到最後，它值{a}。','rp.m.added':'到最後，它為你多帶來了{a}。',
+'rp.m.cost':'算上這筆錢本來可以增長的部分，它一共讓你少了{a}。','rp.m.little':'到最後，它對你的錢影響不大。',
+'rp.m.track':'你的錢照原來的路走。','rp.m.vs':'和「{x}」相比，到{age}歲通常相差約{a}。','rp.m.sameAs':'結果通常和「{x}」差不多。',
+'rp.road':'沒走的那條路','rp.roadP':'40個模擬未來裡的典型結果，到{age}歲時和你的選擇相比。',
+'rp.vs':'到{age}歲約{a}','rp.same':'差不多','rp.bestT':'最好',
+'rp.best':'你的選擇是其中最好的。','rp.notBest':'通常最好的是「{x}」。','rp.tie':'幾個選項的結果通常差不多。'});
 /* health cards borrow Strength (courage through illness) and The Star (hope and healing) */
 for(const[n,o]of[['ill','insure'],['dep','ret']])for(const d of[EN,ZH,ZHT])d['tn.'+n]=d['tn.'+o];
 const CN={

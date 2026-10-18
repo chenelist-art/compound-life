@@ -107,7 +107,9 @@ function choose(id){
   const had=new Set(Object.keys(s.trk));
   const o=applyOpt(s,ev,id);
   /* kept for the life replay: what you chose, and the passbook lines that choice started */
-  G.dec.push({id:ev.id,age,title:ev.title,label:o.label,pick:o.id,trk:Object.keys(s.trk).filter(k=>!had.has(k))});
+  /* and every option's typical result from the 40 futures (relative to the default option), for the road not taken */
+  G.dec.push({id:ev.id,age,title:ev.title,label:o.label,pick:o.id,def:ev.def,trk:Object.keys(s.trk).filter(k=>!had.has(k)),tgt:P.tgt,
+    rows:os.filter(x=>P.res[x.id]).map(x=>{const r=P.res[x.id];return{id:x.id,label:x.label,med:r.base?0:r.med,alive:r.alive}})});
   addLog(M('log.chose',{x:o.label}),'choice');if(o.id!==ev.def)G.marks.push({a:s.age,t:ev.title});
   const h={id:ev.id,title:ev.title,age,tgt:P.tgt,pick:o.id,rows:os.filter(x=>P.res[x.id]).map(x=>Object.assign({id:x.id,label:x.label},P.res[x.id]))};
   const real=h.rows.length>1;if(real)G.hinds.push(h);
@@ -329,7 +331,9 @@ function endHTML(){
 /* ---------- life replay ----------
    Before the end card, the life plays back as picture-book pages: one page per stage that actually happened (the stage's
    main decision, or its biggest one by passbook value), sorted by age, while the net-worth line draws itself underneath.
-   It ends on "Was it all worth it?" and fades into the end card. With reduced motion it is one static strip. */
+   Each page tells what you did and what came of it (from the passbook history), and shows the road not taken: every other
+   option's typical result from the 40 futures saved when you chose. You turn the pages yourself (arrows, swipe, ←/→).
+   The ending fades the screen to charcoal for "Was it all worth it?", the one dark moment in the design, then back to light. */
 const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip'],'edu'],
   ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date'],'wed'],['home',['home','bubble','move'],'home'],['kids',['kids'],'kids'],
   ['crisis',['ill','dep','crash','layoff','debt','divorce','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
@@ -339,24 +343,55 @@ const RPY={};
 const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
 const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};
 function replayPages(){
-  const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),label:M('rp.bornL',{x:M('sex.kid.'+s.sex),fam:M('fam.'+s.fam)})}];
-  const page=(st,d)=>({st,age:d.age,title:d.title,label:d.label,v:decVal(d)}),big=d=>Math.abs(decVal(d)||0);
+  const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),story:[M('rp.t.born',{x:M('sex.kid.'+s.sex),c:{k:'_c',ci:s.ci},fam:M('fam.'+s.fam)})]}];
+  const page=(st,d)=>({st,age:d.age,title:d.title,d,story:decStory(d)}),big=d=>Math.abs(decVal(d)||0);
   const old=s.retired&&s.retireAge!=null?s.retireAge+1:65; // old age comes after retirement
   for(const[st,ids,anchor]of RP){const ds=G.dec.filter(d=>ids.includes(d.id)&&RPX[d.id]!==d.pick&&(st!=='old'||d.age>=old));if(!ds.length)continue;
     /* hard times: up to two pages, illness and depression first */
     if(st==='crisis'){const w=d=>d.id==='ill'?2:d.id==='dep'?1:0;ds.sort((a,b)=>w(b)-w(a)||big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page(st,d)));continue}
     pg.push(page(st,ds.find(d=>d.id===anchor)||ds.sort((a,b)=>big(b)-big(a))[0]))}
   if(s.retired&&s.retireAge!=null){const d=G.dec.find(x=>x.id==='fire'&&x.pick==='now')||G.dec.find(x=>x.id==='ret');
-    pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),label:d?d.label:M('g.retired'),nw:nwAt(s.retireAge)})}
-  pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),label:s.illDeath?M('rp.after',{x:M('ill.'+s.illDeath)}):M('rp.lived',{a:s.deathAge}),nw:netWorth(s)});
+    pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),d,story:[M('rp.t.ret',{a:s.retireAge,nw:MN(nwAt(s.retireAge))})]})}
+  pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),story:[s.illDeath?M('rp.t.endIll',{a:s.deathAge,x:M('ill.'+s.illDeath)}):M('rp.t.end',{a:s.deathAge}),M('rp.t.endNw',{nw:MN(netWorth(s))})]});
   return pg.sort((a,b)=>a.age-b.age);
 }
-/* one page: "22 · Took the degree · +$84k" (a choice's passbook value), or net worth for retirement and the last page */
+/* a decision's passbook lines added up, year by year: [[age, value], ...] */
+function decHist(d){const ages=new Set();for(const id of d.trk)for(const p of G.th[id]||[])ages.add(p[0]);
+  return [...ages].sort((a,b)=>a-b).map(a=>[a,d.trk.reduce((v,id)=>{let x=0;for(const p of G.th[id]||[])if(p[0]<=a)x=p[1];return v+x},0)])}
+/* what you did, then what it did to your money: "At 18 you chose … It cost $21k at first, then paid you back by 31." */
+function decStory(d){
+  const s=G.s,B=s.base,small=.02*B,out=[];
+  if(d.id==='ill'){out.push(M('rp.t.ill',{a:d.age,x:M('ill.'+(s.illDeath||s.illType)),l:d.label}));out.push(M(s.illDeath?'rp.t.illEnd':'rp.t.illOk'))}
+  else if(d.id==='dep'){out.push(M('rp.t.dep',{a:d.age,l:d.label}));if(!depressed(s))out.push(M('rp.t.depOk'))}
+  else out.push(M('rp.t.dec',{a:d.age,l:d.label}));
+  const h=decHist(d);
+  if(!h.length){const me=(d.rows||[]).find(r=>r.id===d.pick),df=(d.rows||[]).find(r=>r.id===d.def);
+    if(!me||!df||d.pick===d.def)out.push(M('rp.m.track'));
+    else out.push(Math.abs(me.med)<.03*B?M('rp.m.sameAs',{x:df.label}):M('rp.m.vs',{x:df.label,a:MS(me.med),age:d.tgt}));
+    return out}
+  const end=h[h.length-1][1];let lo=0,loA=0;for(const p of h)if(p[1]<lo){lo=p[1];loA=p[0]}
+  const back=lo<-small&&end>=0?h.find(p=>p[0]>loA&&p[1]>=0):null;
+  if(back){out.push(M('rp.m.back',{c:MN(-lo),age:back[0]}));if(end>small)out.push(M('rp.m.worth',{a:MN(end)}))}
+  else out.push(end>small?M('rp.m.added',{a:MN(end)}):end<-small?M('rp.m.cost',{a:MN(-end)}):M('rp.m.little'));
+  return out;
+}
+/* the road not taken: every option's typical result from the 40 futures, compared with what you picked */
+function roadHTML(d){
+  if(!d||!d.rows||d.rows.length<2)return '';
+  const B=G.s.base,me=d.rows.find(r=>r.id===d.pick);if(!me)return '';
+  const hv=r=>(r.alive!=null?r.alive*1e12:0)+r.med,best=d.rows.reduce((b,r)=>hv(r)>hv(b)?r:b,me);
+  const top=hv(best)-hv(me)<.03*B,tie=d.rows.every(r=>Math.abs(hv(r)-hv(me))<.03*B);
+  const li=d.rows.map(r=>{const mine=r===me,diff=r.med-me.med,flat=Math.abs(diff)<.03*B;
+    const al=r.alive!=null?esc(t('g.alive',{p:Math.round(r.alive*100)})):'';
+    const v=mine?al:[al,flat?esc(t('rp.same')):`<span class="${cls(diff)}">${esc(t('rp.vs',{a:MS(diff),age:d.tgt}))}</span>`].filter(Boolean).join(' · ');
+    const best1=!tie&&(mine?top:r===best&&!top);
+    return `<li class="rr${mine?' mine':''}"><span class="rr-l">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${best1?`<span class="tag tag-best">${esc(t('rp.bestT'))}</span>`:''}</span>${v?`<span class="rr-v">${mine?'':'→ '}${v}</span>`:''}</li>`}).join('');
+  const verdict=tie?t('rp.tie'):top?t('rp.best'):t('rp.notBest',{x:best.label});
+  return `<div class="rp-road"><h4>${esc(t('rp.road'))}</h4><p class="rp-roadP">${esc(t('rp.roadP',{age:d.tgt}))}</p><ul>${li}</ul><p class="rp-verdict">${esc(verdict)}</p></div>`;
+}
 function pageHTML(p,extra){
-  const money=p.nw!=null?esc(t('rp.nwAt',{a:MN(p.nw)})):p.v!=null&&Math.abs(p.v)>=.5?`<span class="${cls(p.v)}">${fm(p.v,true)}</span>`:'';
-  const line=[`<b>${p.age}</b>`,trE(p.label)].concat(money?[money]:[]).join(' · ');
   return Art.card({cls:'rp-card '+(extra||''),c:RPC[p.st],num:Art.roman(p.age),label:trE(p.title),name:esc(t('rp.s.'+p.st)),win:Art.stageWin(p.st,'rp-win'),
-    body:`<h3>${trE(p.title)}</h3><p class="rp-l">${line}</p>`});
+    body:`<div class="rp-txt"><h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}</div>`});
 }
 function lineHTML(){
   const hs=G.hs,amax=Math.max(1,hs[hs.length-1][0]);let lo=0,hi=1;for(const p of hs){lo=Math.min(lo,p[1]);hi=Math.max(hi,p[1])}
@@ -369,32 +404,48 @@ function lineHTML(){
 /* draw the line up to this age over `ms` */
 function rpReveal(age,ms){const c=RPY.el.querySelector('#rpCover'),d=RPY.el.querySelector('#rpDot'),x=RPY.X(age)/10;
   for(const e of [c,d])e.style.transitionDuration=ms+'ms';c.style.width=(100-x)+'%';d.style.left=x+'%';d.style.top=(RPY.Y(nwAt(age))/1.2)+'%'}
+function rpNav(){const e=RPY.el,n=RPY.pages.length,i=RPY.i;
+  e.querySelector('#rpN').textContent=t('rp.n',{i:i+1,n});e.querySelector('#rpPrev').disabled=i<=0;
+  e.querySelector('#rpNext').innerHTML=i>=n-1?`${esc(t('rp.fin'))} <span class="arr">→</span>`:`${esc(t('rp.next'))} <span class="arr">›</span>`}
 function rpText(){const e=RPY.el;if(!e)return;e.setAttribute('aria-label',t('rp.aria'));e.querySelector('#rpK').textContent=t('rp.kick',{c:I18N.cname(G.s.ci)});
-  e.querySelector('#rpSkip').innerHTML=`${esc(t('rp.skip'))} <span class="arr">»</span>`;e.querySelector('#rpQ').textContent=t('rp.q');const c=e.querySelector('#rpCont');if(c)c.innerHTML=`${esc(t('rp.cont'))} <span class="arr">→</span>`;
-  const st=e.querySelector('#rpStage');if(RPY.still)st.innerHTML=RPY.pages.map(p=>pageHTML(p)).join('');else if(RPY.i>=0)st.innerHTML=pageHTML(RPY.pages[RPY.i])}
+  e.querySelector('#rpSkip').innerHTML=`${esc(t('rp.skip'))} <span class="arr">»</span>`;e.querySelector('#rpQ').textContent=t('rp.q');
+  e.querySelector('#rpPrev').innerHTML=`<span class="arr">‹</span> ${esc(t('rp.prev'))}`;e.querySelector('#rpHint').textContent=t('rp.hint');rpNav();
+  const st=e.querySelector('#rpStage');if(RPY.i>=0)st.innerHTML=pageHTML(RPY.pages[RPY.i])}
+/* turn to page i: forward pages flip away to the left, going back slides the old page off to the right */
+function rpGo(i){
+  const e=RPY.el,n=RPY.pages.length;if(!e||RPY.ending||i<0)return;if(i>=n){rpEnd();return}if(i===RPY.i)return;
+  const fwd=i>RPY.i,st=e.querySelector('#rpStage');
+  for(const old of [...st.children]){old.classList.add(fwd?'turn':'back');setTimeout(()=>old.remove(),reduce?0:850)}
+  RPY.i=i;st.insertAdjacentHTML('afterbegin',pageHTML(RPY.pages[i],RPY.first?'first':fwd?'':'from'));RPY.first=false;
+  e.querySelector('.rp-mid').scrollTop=0;rpNav();rpReveal(i<n-1?RPY.pages[i].age:G.s.deathAge+1,reduce?0:700)}
+/* after the last page: fade to charcoal, the question in washi white, hold ~3 s, back to light and into the end card */
+function rpEnd(){
+  const e=RPY.el;if(!e||RPY.ending)return;RPY.ending=true;const at=(ms,f)=>RPY.timers.push(setTimeout(f,ms));
+  e.classList.add('dusk');e.querySelector('#rpSkip').focus({preventScroll:true});
+  if(reduce){e.querySelector('#rpQ').classList.add('on');at(3000,()=>closeReplay(true));return}
+  at(2400,()=>e.querySelector('#rpQ').classList.add('on'));
+  at(6600,()=>e.querySelector('#rpQ').classList.remove('on'));
+  at(7200,()=>e.classList.add('dawn'));
+  at(8800,()=>closeReplay());
+}
 function playReplay(){
   closeReplay(true);if(!G.s||!G.ended)return;
-  const still=reduce,el=document.createElement('div');el.className='replay'+(still?' still':'');el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
-  Object.assign(RPY,{el,still,pages:replayPages(),i:-1,timers:[],back:document.activeElement});
+  const el=document.createElement('div');el.className='replay';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
+  Object.assign(RPY,{el,pages:replayPages(),i:-1,first:true,ending:false,timers:[]});
   el.innerHTML=`<div class="rp-top"><span class="kicker" id="rpK"></span><button class="btn btn-ghost" id="rpSkip" type="button"></button></div>
-  <div class="rp-mid"><div class="rp-stage" id="rpStage"></div><p class="rp-q" id="rpQ"></p></div>${lineHTML()}${still?'<div class="rp-foot"><button class="btn btn-accent" id="rpCont" type="button"></button></div>':''}`;
-  document.body.appendChild(el);document.body.classList.add('rp-open');rpText();
-  el.querySelector('#rpSkip').onclick=()=>closeReplay();const cont=el.querySelector('#rpCont');if(cont)cont.onclick=()=>closeReplay();
-  el.querySelector('#rpSkip').focus({preventScroll:true});
-  if(still){rpReveal(G.s.deathAge+1,0);el.querySelector('#rpQ').classList.add('on');return}
-  /* 15–25 seconds in all: each page gets 1.5–2.6 s, then the question holds for a moment before the fade */
-  const n=RPY.pages.length,per=clamp(19000/n,1500,2600),T0=500,at=(ms,f)=>RPY.timers.push(setTimeout(f,ms));
-  rpReveal(0,0);
-  RPY.pages.forEach((p,i)=>at(T0+i*per,()=>{const st=el.querySelector('#rpStage'),old=st.lastElementChild;RPY.i=i;
-    st.insertAdjacentHTML('afterbegin',pageHTML(p,i?'':'first'));
-    if(old){old.classList.add('turn');setTimeout(()=>old.remove(),900)}
-    rpReveal(i+1<n?p.age:G.s.deathAge+1,Math.min(per,1000))}));
-  at(T0+n*per,()=>{el.querySelector('#rpStage').classList.add('gone');el.querySelector('#rpQ').classList.add('on')});
-  at(T0+n*per+2800,()=>closeReplay());
+  <div class="rp-mid"><div class="rp-stage" id="rpStage" aria-live="polite"></div></div>${lineHTML()}
+  <div class="rp-nav"><button class="btn btn-ghost" id="rpPrev" type="button"></button><span class="rp-pg"><b id="rpN"></b><span id="rpHint"></span></span><button class="btn btn-accent" id="rpNext" type="button"></button></div>
+  <p class="rp-q" id="rpQ"></p>`;
+  document.body.appendChild(el);document.body.classList.add('rp-open');
+  el.querySelector('#rpSkip').onclick=()=>closeReplay();el.querySelector('#rpPrev').onclick=()=>rpGo(RPY.i-1);el.querySelector('#rpNext').onclick=()=>rpGo(RPY.i+1);
+  /* swipe on phones: left for the next page, right for the one before */
+  let sx=null,sy=0;el.addEventListener('touchstart',ev=>{const p=ev.touches[0];sx=p.clientX;sy=p.clientY},{passive:true});
+  el.addEventListener('touchend',ev=>{if(sx==null)return;const p=ev.changedTouches[0],dx=p.clientX-sx,dy=p.clientY-sy;sx=null;if(Math.abs(dx)>50&&Math.abs(dx)>1.5*Math.abs(dy))rpGo(RPY.i+(dx<0?1:-1))},{passive:true});
+  rpReveal(0,0);rpGo(0);rpText();el.querySelector('#rpNext').focus({preventScroll:true});
 }
 function closeReplay(now){const el=RPY.el;if(!el)return;for(const x of RPY.timers||[])clearTimeout(x);RPY.el=null;document.body.classList.remove('rp-open');
   if(now)el.remove();else{el.classList.add('fade');setTimeout(()=>el.remove(),800)}
-  const a=$('#again');if(a&&!now)a.focus({preventScroll:true})}
+  const a=$('#again');if(a)a.focus({preventScroll:true})}
 
 /* ---------- chart ---------- */
 function nice(x){const p=Math.pow(10,Math.floor(Math.log10(x)));const f=x/p;return(f<1.5?1:f<3?2:f<7?5:10)*p}
@@ -438,7 +489,7 @@ window.addEventListener('langchange',()=>{fillCountries();renderPast();revealTex
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});
 $('#skip').addEventListener('click',()=>skipAhead());
 document.addEventListener('keydown',e=>{
-  if(RPY.el){if(e.key==='Escape'){e.preventDefault();closeReplay()}return}
+  if(RPY.el){if(e.key==='Escape'){e.preventDefault();closeReplay()}else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();rpGo(RPY.i+(e.key==='ArrowRight'?1:-1))}return}
   if(!G.s||e.target.closest('input,select,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
   if(G.pending&&/^[1-9]$/.test(e.key)){const b=document.querySelectorAll('.opt')[+e.key-1];if(b&&!b.disabled){e.preventDefault();b.click()}return}
   if(e.key===' '&&!e.target.closest('button')){e.preventDefault();$('#play').click()}
