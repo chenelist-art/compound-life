@@ -1381,6 +1381,16 @@ Object.assign(ZHT,{
 'log.dep':'醫生告訴你，你得了憂鬱症。','log.depEnd':'憂鬱慢慢散去，生活又像是你自己的了。',
 'cond.rec':'康復中','cond.dep':'憂鬱症','g.alive':'{p}%活了下來','g.netBy':'到{age}歲淨資產{a}'
 });
+/* the life replay before the end card */
+Object.assign(EN,{'rp.aria':'Life replay','rp.kick':'Your life in {c}','rp.skip':'Skip','rp.again':'Watch my life again','rp.cont':'Continue','rp.q':'Was it all worth it?',
+'rp.s.birth':'Birth','rp.s.child':'Childhood','rp.s.school':'School','rp.s.job':'First job','rp.s.love':'Love','rp.s.home':'Home','rp.s.kids':'Children','rp.s.crisis':'Hard times','rp.s.ret':'Retirement','rp.s.old':'Old age','rp.s.end':'The end',
+'rp.bornT':'Born in {c}','rp.bornL':'A {x}, born into {fam}','rp.nwAt':'net worth {a}','rp.lived':'Lived to {a}','rp.after':'Life ended after {x}','rp.endT':'The last page'});
+Object.assign(ZH,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳过','rp.again':'再看一次我的一生','rp.cont':'继续','rp.q':'这一切值得吗？',
+'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求学','rp.s.job':'第一份工作','rp.s.love':'爱情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'难关','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'终章',
+'rp.bornT':'出生在{c}','rp.bornL':'{fam}的{x}','rp.nwAt':'净资产{a}','rp.lived':'活到{a}岁','rp.after':'因{x}离世','rp.endT':'最后一页'});
+Object.assign(ZHT,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳過','rp.again':'再看一次我的一生','rp.cont':'繼續','rp.q':'這一切值得嗎？',
+'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求學','rp.s.job':'第一份工作','rp.s.love':'愛情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'難關','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'終章',
+'rp.bornT':'出生在{c}','rp.bornL':'{fam}的{x}','rp.nwAt':'淨資產{a}','rp.lived':'活到{a}歲','rp.after':'因{x}離世','rp.endT':'最後一頁'});
 /* health cards borrow Strength (courage through illness) and The Star (hope and healing) */
 for(const[n,o]of[['ill','insure'],['dep','ret']])for(const d of[EN,ZH,ZHT])d['tn.'+n]=d['tn.'+o];
 const CN={

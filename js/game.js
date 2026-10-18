@@ -58,11 +58,11 @@ function reveal(ci,sex){
   step();
   $('#rgo').onclick=()=>startLife(ci,seed,life.sex);
 }
-function backToSetup(){clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
+function backToSetup(){closeReplay(true);clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,fcache:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -102,7 +102,10 @@ function choose(id){
   const ev=G.pending;if(!ev)return;const s=G.s;
   /* the 40 futures are worked out from the moment before you choose; they are kept for the hindsight card and the end card */
   const P=G.proj&&G.proj.ev===ev?G.proj:projectEvent(s,ev,40),os=ev.opts(s),age=s.age;
+  const had=new Set(Object.keys(s.trk));
   const o=applyOpt(s,ev,id);
+  /* kept for the life replay: what you chose, and the passbook lines that choice started */
+  G.dec.push({id:ev.id,age,title:ev.title,label:o.label,pick:o.id,trk:Object.keys(s.trk).filter(k=>!had.has(k))});
   addLog(M('log.chose',{x:o.label}),'choice');if(o.id!==ev.def)G.marks.push({a:s.age,t:ev.title});
   const h={id:ev.id,title:ev.title,age,tgt:P.tgt,pick:o.id,rows:os.filter(x=>P.res[x.id]).map(x=>Object.assign({id:x.id,label:x.label},P.res[x.id]))};
   const real=h.rows.length>1;if(real)G.hinds.push(h);
@@ -122,7 +125,7 @@ function checkMilestones(){
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
+function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});playReplay()}
 
 /* ---------- rendering ---------- */
 function phase(s){return s.age<18?'child':s.retired?'ret':'adult'}
@@ -175,6 +178,7 @@ function renderSlot(force){
       $('#again').onclick=()=>{backToSetup();reveal(pickCountry())};
       $('#same').onclick=()=>{backToSetup();reveal(G.ci)};
       $('#home').onclick=()=>backToSetup();
+      $('#replay').onclick=()=>playReplay();
       $('#copy').onclick=()=>{const txt=$('#share').textContent;const b=$('#copy');const ok=()=>{b.textContent=t('g.copied');setTimeout(()=>b.textContent=t('g.copy'),1800)};
         try{navigator.clipboard.writeText(txt).then(ok,()=>selectShare())}catch(e){selectShare()}};
       drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);window.fitAll&&fitAll();
@@ -309,8 +313,78 @@ function endHTML(){
   <div class="elists"><div><h4>${esc(t('g.grew'))}</h4><ul>${li(best)}</ul></div><div><h4>${esc(t('g.cost'))}</h4><ul>${li(worst)}</ul></div></div>
   ${hindAllHTML()}
   <p class="share" id="share">${esc(share)}</p>
-  <div class="erow"><button class="btn btn-accent" id="again" type="button">${esc(t('g.again'))} <span class="arr">→</span></button><button class="btn btn-ghost" id="same" type="button">${esc(t('g.sameC',{c:cn}))}</button><button class="btn btn-ghost" id="copy" type="button">${esc(t('g.copy'))}</button><button class="btn btn-ghost" id="home" type="button">${esc(t('g.home'))}</button></div>`});
+  <div class="erow"><button class="btn btn-accent" id="again" type="button">${esc(t('g.again'))} <span class="arr">→</span></button><button class="btn btn-ghost" id="same" type="button">${esc(t('g.sameC',{c:cn}))}</button><button class="btn btn-ghost" id="replay" type="button">${esc(t('rp.again'))}</button><button class="btn btn-ghost" id="copy" type="button">${esc(t('g.copy'))}</button><button class="btn btn-ghost" id="home" type="button">${esc(t('g.home'))}</button></div>`});
 }
+
+/* ---------- life replay ----------
+   Before the end card, the life plays back as picture-book pages: one page per stage that actually happened (the stage's
+   main decision, or its biggest one by passbook value), sorted by age, while the net-worth line draws itself underneath.
+   It ends on "Was it all worth it?" and fades into the end card. With reduced motion it is one static strip. */
+const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip'],'edu'],
+  ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date'],'wed'],['home',['home','bubble','move'],'home'],['kids',['kids'],'kids'],
+  ['crisis',['ill','dep','crash','layoff','debt','divorce','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
+const RPX={kids:'k0',date:'solo'}; // choices that mean the stage never happened
+const RPC={birth:'mi',child:'ya',school:'wa',job:'co',love:'co',home:'ya',kids:'wa',crisis:'mi',ret:'ya',old:'wa',end:'mi'};
+const RPY={};
+const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
+const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};
+function replayPages(){
+  const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),label:M('rp.bornL',{x:M('sex.kid.'+s.sex),fam:M('fam.'+s.fam)})}];
+  const page=(st,d)=>({st,age:d.age,title:d.title,label:d.label,v:decVal(d)}),big=d=>Math.abs(decVal(d)||0);
+  const old=s.retired&&s.retireAge!=null?s.retireAge+1:65; // old age comes after retirement
+  for(const[st,ids,anchor]of RP){const ds=G.dec.filter(d=>ids.includes(d.id)&&RPX[d.id]!==d.pick&&(st!=='old'||d.age>=old));if(!ds.length)continue;
+    /* hard times: up to two pages, illness and depression first */
+    if(st==='crisis'){const w=d=>d.id==='ill'?2:d.id==='dep'?1:0;ds.sort((a,b)=>w(b)-w(a)||big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page(st,d)));continue}
+    pg.push(page(st,ds.find(d=>d.id===anchor)||ds.sort((a,b)=>big(b)-big(a))[0]))}
+  if(s.retired&&s.retireAge!=null){const d=G.dec.find(x=>x.id==='fire'&&x.pick==='now')||G.dec.find(x=>x.id==='ret');
+    pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),label:d?d.label:M('g.retired'),nw:nwAt(s.retireAge)})}
+  pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),label:s.illDeath?M('rp.after',{x:M('ill.'+s.illDeath)}):M('rp.lived',{a:s.deathAge}),nw:netWorth(s)});
+  return pg.sort((a,b)=>a.age-b.age);
+}
+/* one page: "22 · Took the degree · +$84k" (a choice's passbook value), or net worth for retirement and the last page */
+function pageHTML(p,extra){
+  const money=p.nw!=null?esc(t('rp.nwAt',{a:MN(p.nw)})):p.v!=null&&Math.abs(p.v)>=.5?`<span class="${cls(p.v)}">${fm(p.v,true)}</span>`:'';
+  const line=[`<b>${p.age}</b>`,trE(p.label)].concat(money?[money]:[]).join(' · ');
+  return Art.card({cls:'rp-card '+(extra||''),c:RPC[p.st],num:Art.roman(p.age),label:trE(p.title),name:esc(t('rp.s.'+p.st)),win:Art.stageWin(p.st,'rp-win'),
+    body:`<h3>${trE(p.title)}</h3><p class="rp-l">${line}</p>`});
+}
+function lineHTML(){
+  const hs=G.hs,amax=Math.max(1,hs[hs.length-1][0]);let lo=0,hi=1;for(const p of hs){lo=Math.min(lo,p[1]);hi=Math.max(hi,p[1])}
+  const X=a=>a/amax*1000,Y=v=>8+(1-(v-lo)/(hi-lo))*104,pts=hs.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' '),z=Y(0).toFixed(1),area=`0,${z} ${pts} 1000,${z}`;
+  RPY.X=X;RPY.Y=Y;
+  return `<div class="rp-graph" aria-hidden="true"><svg viewBox="0 0 1000 120" preserveAspectRatio="none"><defs><clipPath id="rpUp"><rect width="1000" height="${z}"/></clipPath><clipPath id="rpDn"><rect y="${z}" width="1000" height="${120-z}"/></clipPath></defs>
+  <polygon class="up" clip-path="url(#rpUp)" points="${area}"/><polygon class="dn" clip-path="url(#rpDn)" points="${area}"/><line class="zero" x1="0" x2="1000" y1="${z}" y2="${z}"/><polyline class="ln" points="${pts}"/></svg>
+  <div class="rp-cover" id="rpCover"></div><span class="rp-dot" id="rpDot"></span><span class="rp-a0">0</span><span class="rp-a1">${G.s.deathAge}</span></div>`;
+}
+/* draw the line up to this age over `ms` */
+function rpReveal(age,ms){const c=RPY.el.querySelector('#rpCover'),d=RPY.el.querySelector('#rpDot'),x=RPY.X(age)/10;
+  for(const e of [c,d])e.style.transitionDuration=ms+'ms';c.style.width=(100-x)+'%';d.style.left=x+'%';d.style.top=(RPY.Y(nwAt(age))/1.2)+'%'}
+function rpText(){const e=RPY.el;if(!e)return;e.setAttribute('aria-label',t('rp.aria'));e.querySelector('#rpK').textContent=t('rp.kick',{c:I18N.cname(G.s.ci)});
+  e.querySelector('#rpSkip').innerHTML=`${esc(t('rp.skip'))} <span class="arr">»</span>`;e.querySelector('#rpQ').textContent=t('rp.q');const c=e.querySelector('#rpCont');if(c)c.innerHTML=`${esc(t('rp.cont'))} <span class="arr">→</span>`;
+  const st=e.querySelector('#rpStage');if(RPY.still)st.innerHTML=RPY.pages.map(p=>pageHTML(p)).join('');else if(RPY.i>=0)st.innerHTML=pageHTML(RPY.pages[RPY.i])}
+function playReplay(){
+  closeReplay(true);if(!G.s||!G.ended)return;
+  const still=reduce,el=document.createElement('div');el.className='replay'+(still?' still':'');el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
+  Object.assign(RPY,{el,still,pages:replayPages(),i:-1,timers:[],back:document.activeElement});
+  el.innerHTML=`<div class="rp-top"><span class="kicker" id="rpK"></span><button class="btn btn-ghost" id="rpSkip" type="button"></button></div>
+  <div class="rp-mid"><div class="rp-stage" id="rpStage"></div><p class="rp-q" id="rpQ"></p></div>${lineHTML()}${still?'<div class="rp-foot"><button class="btn btn-accent" id="rpCont" type="button"></button></div>':''}`;
+  document.body.appendChild(el);document.body.classList.add('rp-open');rpText();
+  el.querySelector('#rpSkip').onclick=()=>closeReplay();const cont=el.querySelector('#rpCont');if(cont)cont.onclick=()=>closeReplay();
+  el.querySelector('#rpSkip').focus({preventScroll:true});
+  if(still){rpReveal(G.s.deathAge+1,0);el.querySelector('#rpQ').classList.add('on');return}
+  /* 15–25 seconds in all: each page gets 1.5–2.6 s, then the question holds for a moment before the fade */
+  const n=RPY.pages.length,per=clamp(19000/n,1500,2600),T0=500,at=(ms,f)=>RPY.timers.push(setTimeout(f,ms));
+  rpReveal(0,0);
+  RPY.pages.forEach((p,i)=>at(T0+i*per,()=>{const st=el.querySelector('#rpStage'),old=st.lastElementChild;RPY.i=i;
+    st.insertAdjacentHTML('afterbegin',pageHTML(p,i?'':'first'));
+    if(old){old.classList.add('turn');setTimeout(()=>old.remove(),900)}
+    rpReveal(i+1<n?p.age:G.s.deathAge+1,Math.min(per,1000))}));
+  at(T0+n*per,()=>{el.querySelector('#rpStage').classList.add('gone');el.querySelector('#rpQ').classList.add('on')});
+  at(T0+n*per+2800,()=>closeReplay());
+}
+function closeReplay(now){const el=RPY.el;if(!el)return;for(const x of RPY.timers||[])clearTimeout(x);RPY.el=null;document.body.classList.remove('rp-open');
+  if(now)el.remove();else{el.classList.add('fade');setTimeout(()=>el.remove(),800)}
+  const a=$('#again');if(a&&!now)a.focus({preventScroll:true})}
 
 /* ---------- chart ---------- */
 function nice(x){const p=Math.pow(10,Math.floor(Math.log10(x)));const f=x/p;return(f<1.5?1:f<3?2:f<7?5:10)*p}
@@ -348,12 +422,13 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){G.fcache=null;renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg)}});
+  if(G.s){G.fcache=null;renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});
 $('#skip').addEventListener('click',()=>skipAhead());
 document.addEventListener('keydown',e=>{
+  if(RPY.el){if(e.key==='Escape'){e.preventDefault();closeReplay()}return}
   if(!G.s||e.target.closest('input,select,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
   if(G.pending&&/^[1-9]$/.test(e.key)){const b=document.querySelectorAll('.opt')[+e.key-1];if(b&&!b.disabled){e.preventDefault();b.click()}return}
   if(e.key===' '&&!e.target.closest('button')){e.preventDefault();$('#play').click()}
