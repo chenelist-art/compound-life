@@ -61,7 +61,7 @@ function backToSetup(){closeReplay(true);clearTimeout(G.timer);clearTimeout(G.hi
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -71,7 +71,9 @@ function startLife(ci,seed,sex){
 }
 /* country names inside stored messages are resolved when shown */
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
-function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift()}
+/* big moments that make the pixel character jump */
+const CHEER=new Set(['log.grad','log.promo','log.ring','log.car.trained','log.car.up','log.car.ok','log.car.exit']);
+function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.log.length>400)G.log.shift();if(m&&CHEER.has(m.k))G.cheer=1}
 function resolveTwin(){const tw=G.t;if(tw.dead)return;let g=0,ev;while((ev=dueEvents(tw)[0])&&g++<30){const id=ev.mirror&&G.s.done[ev.id]?G.s.done[ev.id]:ev.def;applyOpt(tw,ev,id)}}
 function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.trk){const v=trkView(s,s.trk[id]).v;const h=G.th[id]||(G.th[id]=[]);if(h.length&&h[h.length-1][0]===a)h[h.length-1][1]=v;else h.push([a,v])}}
 function advance(){
@@ -149,6 +151,9 @@ function render(){
   $('#note').style.setProperty('--shift',Math.min(100,age)/100);
   $('#nwNum').textContent=Art.roman(age);
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
+  /* the pixel character: this year's look, kept per age for the replay; it jumps at a wedding and other big moments */
+  const ps=Pixel.stateOf(s);G.pix[age]=ps;Pixel.set($('#pix'),ps);
+  if(s.married&&!G.wasM)G.cheer=1;G.wasM=s.married;if(G.cheer&&!s.dead){Pixel.cheer($('#pix'));G.cheer=0}
   const sk=skill(s);$('#skv').textContent=Math.round(sk);$('#skb').style.width=clamp(sk,0,100)+'%';$('#skx').textContent=t('g.skx',{p:Math.round(SK*sk*100)});
   $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';$('#rev').textContent=Math.round(s.rel);$('#reb').style.width=s.rel+'%';
   $('#chips').innerHTML=SRC.filter(k=>(s.skillSrc[k]||0)>=.5).map(k=>{const v=s.skillSrc[k];const name=k==='edu'&&s.trk.sk_edu?tr(s.trk.sk_edu.label):t('src.'+k);return `<span class="chip"><b>${esc(name)}</b> ${esc(t('g.chipSk',{n:Math.round(v)}))} · <span class="gain">${esc(t('g.chipPay',{p:Math.round(SK*v*100)}))}</span></span>`}).join('');
@@ -188,7 +193,7 @@ function renderSlot(force){
       $('#replay').onclick=()=>playReplay();
       $('#copy').onclick=()=>{const txt=$('#share').textContent;const b=$('#copy');const ok=()=>{b.textContent=t('g.copied');setTimeout(()=>b.textContent=t('g.copy'),1800)};
         try{navigator.clipboard.writeText(txt).then(ok,()=>selectShare())}catch(e){selectShare()}};
-      drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);window.fitAll&&fitAll();
+      drawSeal($('#certSeal'),netWorth(s),s.base,s.deathAge,true);Pixel.set($('#pixEnd'),Pixel.stateOf(s));window.fitAll&&fitAll();
     }else if(G.pending){el.innerHTML=slipHTML(G.pending);el.querySelectorAll('.opt:not([disabled])').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.id)))}
     else if(G.hind){el.innerHTML=hindHTML(G.hind);$('#hcont').onclick=endHind}
     else el.innerHTML=idleHTML(phase(s));
@@ -320,9 +325,9 @@ function endHTML(){
   <p class="snote">${esc(t('g.standNote'))}</p></section>`;
   return Art.card({cls:'cert',c:'mi',num:'XXI',label:esc(t('g.lifeIn',{c:cn,a:s.deathAge})),name:esc(t('tn.end')),
   win:`<div class="t-win cert-win" style="--wb:var(--wakatake)"><canvas id="certSeal" aria-hidden="true"></canvas>${Art.svg('wreath')}</div>`,body:`
-  <div class="cert-head"><span class="stamp">${esc(t('g.closed',{a:s.deathAge}))}</span>
+  <div class="cert-hero"><div class="cert-head"><span class="stamp">${esc(t('g.closed',{a:s.deathAge}))}</span>
     <h2>${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
-    <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div>
+    <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div><canvas class="pix pix-end" id="pixEnd" width="56" height="44" aria-hidden="true"></canvas></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}${s.illDeath?(I18N.lang==='en'?' ':'')+esc(t('g.illEnd',{a:s.deathAge,x:M('ill.'+s.illDeath)})):''}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
   ${mirrorHTML()}
@@ -402,8 +407,11 @@ function roadHTML(d){
 }
 function pageHTML(p,extra){
   return Art.card({cls:'rp-card '+(extra||''),c:RPC[p.st],num:Art.roman(p.age),label:trE(p.title),name:esc(t('rp.s.'+p.st)),win:Art.stageWin(p.st,'rp-win'),
-    body:`<div class="rp-txt"><h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}</div>`});
+    body:`<div class="rp-txt"><div class="rp-hd"><h3>${trE(p.title)}</h3><canvas class="pix pix-rp" data-age="${p.st==='end'?G.s.deathAge:p.age}" width="56" height="44" aria-hidden="true"></canvas></div><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}</div>`});
 }
+/* each page's pixel character: the look recorded at that age (or the nearest year before it) */
+function pixAt(a){let k=-1;for(const x in G.pix)if(+x<=a&&+x>k)k=+x;return G.pix[k]||G.pix[0]}
+function rpPix(root){root.querySelectorAll('canvas.pix-rp').forEach(c=>Pixel.set(c,pixAt(+c.dataset.age)))}
 function lineHTML(){
   const hs=G.hs,amax=Math.max(1,hs[hs.length-1][0]);let lo=0,hi=1;for(const p of hs){lo=Math.min(lo,p[1]);hi=Math.max(hi,p[1])}
   const X=a=>a/amax*1000,Y=v=>8+(1-(v-lo)/(hi-lo))*104,pts=hs.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' '),z=Y(0).toFixed(1),area=`0,${z} ${pts} 1000,${z}`;
@@ -421,13 +429,13 @@ function rpNav(){const e=RPY.el,n=RPY.pages.length,i=RPY.i;
 function rpText(){const e=RPY.el;if(!e)return;e.setAttribute('aria-label',t('rp.aria'));e.querySelector('#rpK').textContent=t('rp.kick',{c:I18N.cname(G.s.ci)});
   e.querySelector('#rpSkip').innerHTML=`${esc(t('rp.skip'))} <span class="arr">»</span>`;e.querySelector('#rpQ').textContent=t('rp.q');
   e.querySelector('#rpPrev').innerHTML=`<span class="arr">‹</span> ${esc(t('rp.prev'))}`;e.querySelector('#rpHint').textContent=t('rp.hint');rpNav();
-  const st=e.querySelector('#rpStage');if(RPY.i>=0)st.innerHTML=pageHTML(RPY.pages[RPY.i])}
+  const st=e.querySelector('#rpStage');if(RPY.i>=0){st.innerHTML=pageHTML(RPY.pages[RPY.i]);rpPix(st)}}
 /* turn to page i: forward pages flip away to the left, going back slides the old page off to the right */
 function rpGo(i){
   const e=RPY.el,n=RPY.pages.length;if(!e||RPY.ending||i<0)return;if(i>=n){rpEnd();return}if(i===RPY.i)return;
   const fwd=i>RPY.i,st=e.querySelector('#rpStage');
   for(const old of [...st.children]){old.classList.add(fwd?'turn':'back');setTimeout(()=>old.remove(),reduce?0:850)}
-  RPY.i=i;st.insertAdjacentHTML('afterbegin',pageHTML(RPY.pages[i],RPY.first?'first':fwd?'':'from'));RPY.first=false;
+  RPY.i=i;st.insertAdjacentHTML('afterbegin',pageHTML(RPY.pages[i],RPY.first?'first':fwd?'':'from'));RPY.first=false;rpPix(st.firstElementChild);
   e.querySelector('.rp-mid').scrollTop=0;rpNav();rpReveal(i<n-1?RPY.pages[i].age:G.s.deathAge+1,reduce?0:700)}
 /* after the last page: fade to charcoal, the question in washi white, hold ~3 s, back to light and into the end card */
 function rpEnd(){
