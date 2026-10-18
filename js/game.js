@@ -9,7 +9,6 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const FOCUS=['learn','grind','hustle','balance','people'];
 const SRC=['child','school','edu','learn','cert','pivot','startup'];
-const JOBK={corp:'e.job.corp',startup:'e.job.startup',gov:'e.job.gov'};
 const TH=[1,3,10,30,100,300];
 const store={get(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -96,14 +95,16 @@ function showDecision(ev){
   const s=G.s;clearTimeout(G.timer);
   if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1;if(ev.preLog)addLog(ev.preLog(s),'bad');recordTh()}
   G.pending=ev;G.proj=null;render();
-  setTimeout(()=>{if(G.pending!==ev)return;G.proj=Object.assign(projectEvent(s,ev,40),{ev});fillProj()},60);
+  setTimeout(()=>{if(G.pending!==ev)return;const P=G.proj=Object.assign(projBegin(s,ev,40),{ev});fillProj();
+    const step=()=>{if(G.pending!==ev||G.proj!==P||!P.todo.length)return;projNext(s,ev,P);fillProj();setTimeout(step,0)};setTimeout(step,0)},60);
   const el=$('#slot');const top=el.getBoundingClientRect().top;
   if(top<70||top>window.innerHeight*.7)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-84,behavior:reduce?'auto':'smooth'});
 }
 function choose(id){
   const ev=G.pending;if(!ev)return;const s=G.s;
   /* the 40 futures are worked out from the moment before you choose; they are kept for the hindsight card and the end card */
-  const P=G.proj&&G.proj.ev===ev?G.proj:projectEvent(s,ev,40),os=ev.opts(s),age=s.age;
+  const P=G.proj&&G.proj.ev===ev?G.proj:Object.assign(projBegin(s,ev,40),{ev}),os=ev.opts(s),age=s.age;
+  while(P.todo.length)projNext(s,ev,P);
   const had=new Set(Object.keys(s.trk));
   const o=applyOpt(s,ev,id);
   /* kept for the life replay: what you chose, and the passbook lines that choice started */
@@ -137,7 +138,7 @@ function render(){
   const s=G.s,tw=G.t;
   const age=s.dead?s.deathAge:s.age;
   $('#age').textContent=age;
-  const job=s.study?t('g.studying',{x:s.study.label}):s.retired?t('g.retired'):(s.biz&&s.biz.mode==='full'&&s.biz.ok&&!s.biz.sold)?t('g.biz'):s.job?t('g.joblvl',{j:M(JOBK[s.job.type]),n:s.level}):s.age<18?t('g.child'):'';
+  const job=s.study?t('g.studying',{x:s.study.label}):s.retired?t('g.retired'):(s.biz&&s.biz.mode==='full'&&s.biz.ok&&!s.biz.sold)?t('g.biz'):s.job?jobTxt(s):s.age<18?t('g.child'):'';
   $('#where').textContent=t('g.where',{c:I18N.cname(s.abroad!=null?s.abroad:s.ci),s:M((s.age<18?'sex.kid.':'sex.')+s.sex),f:M('famS.'+s.fam),j:job?' · '+job:''});
   const nw=netWorth(s),tv=netWorth(tw);
   $('#nw').textContent=fm(nw);$('#nw').className='nw'+(nw<0?' loss':'');window.fitText&&fitText($('#nw'));
@@ -157,6 +158,8 @@ function render(){
   $('#play').textContent=t(G.playing?'g.pause':'g.play');$('#play').disabled=G.ended;$('#skip').disabled=G.ended||!!G.pending;
   renderSlot();updFocus();drawChart();renderLedger();renderLog();
 }
+/* the career in the header: "Nurse · level 2", "Doctor, in training", or just the name where there are no levels */
+function jobTxt(s){const j=M('car.'+s.job.id);return s.job.train>s.age?t('g.train',{j}):CAR[s.job.id].gr>0?t('g.joblvl',{j,n:s.level}):t('g.job1',{j})}
 /* where you stand: world and country wealth ranks from the data in engine.js */
 const pctTxt=p=>p>=99.95?'99.9':p>=99?p.toFixed(1):String(Math.max(1,Math.round(p)));
 function rankWorld(nw,ci){const p=worldPct(ci==null?G.s.ci:ci,nw);return p<=0?t('g.rkWorld0'):t('g.rkWorld',{p:pctTxt(p)})}
@@ -201,7 +204,7 @@ function slipHTML(ev){
   return Art.card({cls:'slip',c:Art.frame(ev.id),num:Art.num(ev.id),label:trE(ev.title),name:esc(t('tn.'+ev.id)),win:Art.win(ev.id,'slip-win'),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.decAge',{a:s.age}))}</span><span class="payto">${esc(t('g.payto'))}</span></div>
   <h2>${trE(ev.title)}</h2><p class="slip-text">${esc(withHint(ev.text(s),ev.hint&&ev.hint(s)))}</p>
-  <div class="opts${easy?'':' blind'}">${os.map((o,i)=>{const dis=o.ok!==undefined&&o.ok!==true;return `<button class="opt" type="button" data-id="${o.id}"${dis?' disabled':''}><span class="okey" aria-hidden="true">${i+1}</span><span class="ot"><span class="ol">${trE(o.label)}${o.id===ev.def?`<span class="tag">${esc(t('g.default'))}</span>`:''}</span><span class="os">${dis?trE(o.ok):esc(withHint(o.sub,o.hint))}</span></span>${easy?`<span class="op" id="op-${o.id}">${dis?'':`<span class="pv muted">…</span><span class="pr">${esc(t('g.simulating'))}</span>`}</span>`:''}</button>`}).join('')}</div>
+  <div class="opts${easy?'':' blind'}${os.length>8?' many':''}">${os.map((o,i)=>{const dis=o.ok!==undefined&&o.ok!==true;return `${o.grp&&o.grp!==(os[i-1]||{}).grp?`<h4 class="ogrp">${esc(t('car.f.'+o.grp))}</h4>`:''}<button class="opt" type="button" data-id="${o.id}"${dis?' disabled':''}><span class="okey" aria-hidden="true">${i+1}</span><span class="ot"><span class="ol">${trE(o.label)}${o.id===ev.def?`<span class="tag">${esc(t('g.default'))}</span>`:''}</span><span class="os">${dis?trE(o.ok):esc(withHint(o.sub,o.hint))}</span></span>${easy?`<span class="op" id="op-${o.id}">${dis?'':`<span class="pv muted">…</span><span class="pr">${esc(t('g.simulating'))}</span>`}</span>`:''}</button>`}).join('')}</div>
   ${ev.care?`<p class="slip-care">${trE(ev.care)}</p>`:''}
   <div class="slip-foot"><span id="projlbl">${esc(t(easy?'g.sim40':G.mode==='hard'?'g.footH':'g.footN'))}</span><span>${t('g.press',{k:keys})}</span></div>`});
 }
@@ -228,10 +231,12 @@ function hindHTML(h){
   const B=G.s.base,X=scaleOf(h.rows),left=Math.max(0,(G.hindEnd||0)-Date.now());
   /* only crown a best option when it clearly beats another one */
   const b0=bestOf(h),best=h.rows.some(r=>hv(b0)-hv(r)>=.03*B)?b0:null;
-  const rows=h.rows.map(r=>{const v=valHTML(r,B),mine=r.id===h.pick;return `<li class="hrow${mine?' mine':''}"><span class="ol">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${r===best?`<span class="tag tag-best">${esc(t('g.bestTag'))}</span>`:''}</span><span class="op">${v.v}${barHTML(r,X,v.c)}</span></li>`}).join('');
+  const top8=h.rows.length>8?new Set([h.pick,b0.id].concat(h.rows.slice().sort((a,b)=>hv(b)-hv(a)).map(r=>r.id))):null;
+  const shown=top8?h.rows.filter(r=>[...top8].slice(0,8).includes(r.id)):h.rows;
+  const rows=shown.map(r=>{const v=valHTML(r,B),mine=r.id===h.pick;return `<li class="hrow${mine?' mine':''}"><span class="ol">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${r===best?`<span class="tag tag-best">${esc(t('g.bestTag'))}</span>`:''}</span><span class="op">${v.v}${barHTML(r,X,v.c)}</span></li>`}).join('');
   return Art.card({cls:'slip hind',c:Art.frame(h.id),num:Art.num(h.id),label:trE(h.title),name:esc(t('tn.'+h.id)),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.hindK',{a:h.age}))}</span></div>
-  <h2>${trE(h.title)}</h2><p class="slip-text">${esc(t('g.hindP',{age:h.tgt}))}</p>
+  <h2>${trE(h.title)}</h2><p class="slip-text">${esc(t('g.hindP',{age:h.tgt}))}${top8?(I18N.lang==='en'?' ':'')+esc(t('g.hindTop',{m:h.rows.length})):''}</p>
   <ul class="hrows">${rows}</ul>
   <div class="hfoot"><button class="btn btn-accent" id="hcont" type="button">${esc(t('g.cont'))} <span class="arr">→</span></button><span class="htimer" aria-hidden="true"><i style="animation-duration:${left}ms"></i></span></div>`});
 }
@@ -338,7 +343,7 @@ const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer'
   ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date'],'wed'],['home',['home','bubble','move'],'home'],['kids',['kids'],'kids'],
   ['crisis',['ill','dep','crash','layoff','debt','divorce','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
 const RPX={kids:'k0',date:'solo'}; // choices that mean the stage never happened
-const RPC={birth:'mi',child:'ya',school:'wa',job:'co',love:'co',home:'ya',kids:'wa',crisis:'mi',ret:'ya',old:'wa',end:'mi'};
+const RPC={career:'wa',birth:'mi',child:'ya',school:'wa',job:'co',love:'co',home:'ya',kids:'wa',crisis:'mi',ret:'ya',old:'wa',end:'mi'};
 const RPY={};
 const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
 const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};
@@ -350,6 +355,8 @@ function replayPages(){
     /* hard times: up to two pages, illness and depression first */
     if(st==='crisis'){const w=d=>d.id==='ill'?2:d.id==='dep'?1:0;ds.sort((a,b)=>w(b)-w(a)||big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page(st,d)));continue}
     pg.push(page(st,ds.find(d=>d.id===anchor)||ds.sort((a,b)=>big(b)-big(a))[0]))}
+  /* later careers: up to two more pages (the first career is the "first job" page) */
+  G.dec.filter(d=>d.id==='job').slice(1).sort((a,b)=>big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page('career',d)));
   if(s.retired&&s.retireAge!=null){const d=G.dec.find(x=>x.id==='fire'&&x.pick==='now')||G.dec.find(x=>x.id==='ret');
     pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),d,story:[M('rp.t.ret',{a:s.retireAge,nw:MN(nwAt(s.retireAge))})]})}
   pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),story:[s.illDeath?M('rp.t.endIll',{a:s.deathAge,x:M('ill.'+s.illDeath)}):M('rp.t.end',{a:s.deathAge}),M('rp.t.endNw',{nw:MN(netWorth(s))})]});
@@ -364,6 +371,9 @@ function decStory(d){
   if(d.id==='ill'){out.push(M('rp.t.ill',{a:d.age,x:M('ill.'+(s.illDeath||s.illType)),l:d.label}));out.push(M(s.illDeath?'rp.t.illEnd':'rp.t.illOk'))}
   else if(d.id==='dep'){out.push(M('rp.t.dep',{a:d.age,l:d.label}));if(!depressed(s))out.push(M('rp.t.depOk'))}
   else out.push(M('rp.t.dec',{a:d.age,l:d.label}));
+  /* a career: from when to when, and what it came to */
+  const ck=d.id==='job'&&d.trk.find(k=>/^car\d/.test(k)),ct=ck&&s.trk[ck];
+  if(ct){const v=ct.label.v||{};out.push(M('rp.m.career',{x:M('car.a.'+d.pick),a:v.a!=null?v.a:d.age,b:v.b!=null?v.b:s.deathAge,e:MS(ct.v)}));return out}
   const h=decHist(d);
   if(!h.length){const me=(d.rows||[]).find(r=>r.id===d.pick),df=(d.rows||[]).find(r=>r.id===d.def);
     if(!me||!df||d.pick===d.def)out.push(M('rp.m.track'));
@@ -381,13 +391,14 @@ function roadHTML(d){
   const B=G.s.base,me=d.rows.find(r=>r.id===d.pick);if(!me)return '';
   const hv=r=>(r.alive!=null?r.alive*1e12:0)+r.med,best=d.rows.reduce((b,r)=>hv(r)>hv(b)?r:b,me);
   const top=hv(best)-hv(me)<.03*B,tie=d.rows.every(r=>Math.abs(hv(r)-hv(me))<.03*B);
-  const li=d.rows.map(r=>{const mine=r===me,diff=r.med-me.med,flat=Math.abs(diff)<.03*B;
+  const keep=d.rows.length>6?new Set([me.id].concat(d.rows.filter(r=>r!==me).sort((a,b)=>hv(b)-hv(a)).slice(0,5).map(r=>r.id))):null;
+  const li=d.rows.filter(r=>!keep||keep.has(r.id)).map(r=>{const mine=r===me,diff=r.med-me.med,flat=Math.abs(diff)<.03*B;
     const al=r.alive!=null?esc(t('g.alive',{p:Math.round(r.alive*100)})):'';
     const v=mine?al:[al,flat?esc(t('rp.same')):`<span class="${cls(diff)}">${esc(t('rp.vs',{a:MS(diff),age:d.tgt}))}</span>`].filter(Boolean).join(' · ');
     const best1=!tie&&(mine?top:r===best&&!top);
     return `<li class="rr${mine?' mine':''}"><span class="rr-l">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${best1?`<span class="tag tag-best">${esc(t('rp.bestT'))}</span>`:''}</span>${v?`<span class="rr-v">${mine?'':'→ '}${v}</span>`:''}</li>`}).join('');
   const verdict=tie?t('rp.tie'):top?t('rp.best'):t('rp.notBest',{x:best.label});
-  return `<div class="rp-road"><h4>${esc(t('rp.road'))}</h4><p class="rp-roadP">${esc(t('rp.roadP',{age:d.tgt}))}</p><ul>${li}</ul><p class="rp-verdict">${esc(verdict)}</p></div>`;
+  return `<div class="rp-road"><h4>${esc(t('rp.road'))}</h4><p class="rp-roadP">${esc(t('rp.roadP',{age:d.tgt}))}</p><ul>${li}</ul>${keep?`<p class="rp-roadP">${esc(t('rp.more',{n:d.rows.length-6}))}</p>`:''}<p class="rp-verdict">${esc(verdict)}</p></div>`;
 }
 function pageHTML(p,extra){
   return Art.card({cls:'rp-card '+(extra||''),c:RPC[p.st],num:Art.roman(p.age),label:trE(p.title),name:esc(t('rp.s.'+p.st)),win:Art.stageWin(p.st,'rp-win'),

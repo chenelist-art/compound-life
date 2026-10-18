@@ -101,8 +101,11 @@ const workCode=s=>C[s.abroad!=null?s.abroad:s.ci][1];
 const momYears=(s,a)=>{if(!s.kids.length)return false;const b=Math.min(...s.kids);return a>=b&&a<b+10};
 function gapM(s){return s.sex==='f'?1-Math.max(0,PAYGAP[workCode(s)])/100:1}
 function sexPay(s){return s.sex==='f'?gapM(s)*(momYears(s,s.age)?1-CHILDPEN[workCode(s)]/100:1):1}
-function salary(s){if(!s.job)return 0;const jm={corp:1,startup:.85,gov:.9}[s.job.type];return s.base*jm*(1+SK*skill(s))*(1+.18*s.level)*(1+.015*Math.min(s.exp,25))*pm(s)*sexPay(s)}
-function salFor(s,type){const j=s.job;s.job={type};const v=salary(s);s.job=j;return v}
+/* pay: the career's typical multiple, then Skill, promotions and experience (weighted by how much the career rewards them),
+   a creative or sporting tier, a business's growth, this year's commission or market luck, raises, and the pay gap */
+function salary(s){const j=s.job;if(!j)return 0;const c=CAR[j.id];if(j.train>s.age)return s.base*c.tr.pay*sexPay(s);
+ let v=s.base*carR(s,j.id)*(j.tier||1)*(j.own||1)*(j.yv==null?1:j.yv)*(1+SK*skill(s))*(1+.18*c.gr*s.level)*(1+.015*c.gr*Math.min(s.exp,25));
+ if(c.fl&&v<c.fl*s.base)v=c.fl*s.base;return v>0?v*pm(s)*sexPay(s):v}
 function netOf(s,g){return g-Math.max(0,g-.4*s.base)*.18}
 function price(s){return s.hm*s.base}
 function rent(s){return .03*price(s)}
@@ -129,7 +132,8 @@ function newLife(ci,seed,sex){const r=mb(hsh(seed,'birth'));const c=C[ci];const 
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
   kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
   rel:50,offUntil:0,uncle:false,refN:0,lonely:0,
-  ill:null,illAge:-1,illType:null,dep:null,depAge:-1,lowHap:0,grindY:0};
+  ill:null,illAge:-1,illType:null,dep:null,depAge:-1,lowHap:0,grindY:0,
+  needJob:true,lastCar:null,carN:0,carGone:{},swAt:null,swWhy:null};
  s.hz=0;s.dieAt=-Math.log(1-mb(hsh(seed,'death'))());
  const k=c[1];s.sex=sex||(r()<SRB[k]/(1+SRB[k])?'m':'f');s.le=Math.round(c[4]+LE_SEX[k][s.sex==='f'?0:1]-LE_SEX[k][2]);
  s.plan=planLife(s);return s}
@@ -189,6 +193,152 @@ function helped(s,h){const t=T(s,'help',{kind:'custom',label:M('trk.help')});t.v
 /* family and friends may chip in on a medical bill; the closer you are, the likelier and the more */
 function chipIn(s,you,k,L){if(s.rel>=40&&evR(s,k)()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(M('log.helpMed',{a:MN(h)}),'good')}}
 const job=s=>!!s.job&&!s.study&&!s.retired;
+
+/* ---------- careers ----------
+   CAR[id]: f family; r typical pay as a multiple of the median pay of all jobs (the game's pay curve, Skill, promotions and
+   experience build on it, as they did for the old "big company" job at r = 1); g the ISCO-08 major group used to adjust r for
+   your country (0 = none); req: ed (1 diploma, 2 degree), sk lowest Skill, hl lowest Health, age (latest age to start), cap
+   (savings you put in, × typical wage); gr how much promotions and experience raise pay (0 = none); pp promotion speed;
+   lay [yearly layoff chance, in a crash year]; auto yearly chance from 45 that the job is automated; inj yearly injury chance;
+   hd Health and hp Happiness a year; tr training {y years, pay, fee} (× typical wage); pen pension (× last pay); tiers
+   [[chance, pay ×]] drawn when you start (creative and sports work) and sometimes again; end [from, to] the age a playing
+   career ends; own {res years until it works or fails, fail chance, grow a year, max ×}; vol yearly ups and downs
+   (commission, harvests); mkt pay follows the stock market; fl lowest pay (× typical wage: gigs and day jobs).
+   PAY DATA (r): US Bureau of Labor Statistics, Occupational Employment and Wage Statistics (OEWS), May 2025, national annual
+   median wages, BLS public API (series OEUN…13), fetched 2026-10-18. All occupations: $50,980. Each r = occupation median ÷ $50,980:
+   accountants and auditors 13-2011 $83,680 (1.64); market research analysts and marketing specialists 13-1161 $78,760 (1.54);
+   software developers 15-1252 $135,980 (2.67); financial and investment analysts 13-2051 $102,740 (2.02, our banker);
+   secondary school teachers 25-2031 $72,040 (1.41); registered nurses 29-1141 $97,550 (1.91; the game's nurse needs only a diploma, so it is adjusted with
+   ISCO group 3, nursing associate professionals); family medicine physicians
+   29-1215 $244,180 (4.79); lawyers 23-1011 $159,670 (3.13); restaurant cooks 35-2014 $37,390 (0.73, the first rung of a chef's career: promotions
+   lead towards chefs and head cooks 35-1011, $62,470); electricians 47-2111
+   $63,190 (1.24); automotive service technicians and mechanics 49-3023 $50,620 (0.99); construction laborers 47-2061 $47,120
+   (0.92); heavy and tractor-trailer truck drivers 53-3032 $58,640 (1.15); miscellaneous assemblers and fabricators 51-2090
+   $44,650 (0.88, our factory worker); farmworkers and laborers, crop 45-2092 $35,660 (0.70); graphic designers 27-1024 $62,960
+   (1.24); writers and authors 27-3043 $76,910 (1.51); athletes and sports competitors 27-2021 $66,710 (1.31, footballer and
+   badminton player); exercise trainers and group fitness instructors 39-9031 $47,160 (0.93); real estate sales agents 41-9022
+   $52,830 (1.04); insurance sales agents 41-3021 $62,280 (1.22); securities, commodities and financial services sales agents
+   41-3031 $78,660 (1.54, our trader).
+   ESTIMATES (no published median fits): civil servant 1.0; musician 0.55 and actor 0.5 (the BLS gives only hourly medians,
+   $47.80 and $29.05, for work that is mostly part-time); content creator 0.45; esports player 0.9; hawker 0.73 (restaurant
+   cooks, as for the chef, as a stand-in); shop owner 0.95 (first-line supervisors of retail sales workers 41-1011, $48,520, as a
+   stand-in); startup founder 0.5 while building. All the risks (tiers, injuries, failure, automation, when careers end) are
+   game rules, not data.
+   COUNTRY ADJUSTMENT (ISCO): ILOSTAT, mean monthly earnings of employees by occupation, ISCO-08 major groups 1–9
+   (EAR_EMTA_SEX_OCU_NB, both sexes), ILO SDMX API, fetched 2026-10-18, latest year with every group: each group's mean ÷ the
+   all-occupations mean. Years: BD 2024, BR 2025, DE 2022, ET 2021, GB 2025, ID 2023, IN 2025, MX 2025, MY 2020, NG 2024,
+   PK 2025, PH 2024, SG 2021, US 2025, VN 2024. A career's r is multiplied by (its group's ratio in the country you work in ÷
+   the US ratio), because the BLS medians are American. China and Japan have no occupation breakdown there and use the US
+   ratios; Singapore has no farm figure and uses the US one; mixing mean ratios with medians is an approximation: ESTIMATES. */
+const ISCO={US:[1.65,1.38,1.04,.72,.59,.57,.86,.75,.58],BD:[2.43,1.49,1.45,1.46,.93,.83,.94,1.00,.69],BR:[2.36,1.93,1.28,.81,.68,.58,.78,.83,.48],
+ DE:[1.99,1.36,1.03,.86,.63,.71,.89,.83,.53],ET:[1.91,1.88,1.35,1.01,.53,.70,.74,1.07,.50],GB:[1.45,1.23,1.00,.72,.62,.68,.94,.87,.48],
+ ID:[2.59,1.24,1.66,1.29,.89,.62,.91,1.16,.68],IN:[2.27,1.72,1.18,1.09,.70,.59,.76,.78,.52],MX:[2.09,1.63,1.30,1.10,.84,.72,1.04,1.05,.67],
+ MY:[2.21,1.81,1.13,.81,.66,.53,.64,.65,.59],NG:[1.39,.99,1.23,.96,.77,.71,.95,1.19,.74],PK:[1.42,1.35,1.48,1.00,1.22,1.02,1.08,1.08,.94],
+ PH:[2.03,1.89,1.32,1.18,.84,.73,.89,.92,.67],SG:[2.06,1.49,.88,.65,.56,null,.60,.46,.35],VN:[1.63,1.39,1.17,1.06,.85,.73,.95,1.01,.74]};
+const CAR={
+ acct:{f:'office',r:1.64,g:2,req:{ed:2},gr:1,lay:[.02,.1],auto:.025},
+ mkt:{f:'office',r:1.54,g:2,req:{ed:1},gr:1,lay:[.03,.15],auto:.015},
+ swe:{f:'office',r:2.67,g:2,req:{ed:2,sk:30},gr:1.1,lay:[.03,.15],auto:.01,hp:-1},
+ bank:{f:'office',r:2.02,g:2,req:{ed:2,sk:30},gr:1.2,lay:[.03,.2],auto:.015,hd:-.3,hp:-2},
+ civ:{f:'office',r:1,g:4,req:{},gr:.7,pp:.6,lay:[.005,.005],pen:.4},
+ teach:{f:'office',r:1.41,g:2,req:{ed:2},gr:.6,pp:.5,lay:[.005,.01],pen:.35,hp:1},
+ nurse:{f:'office',r:1.91,g:3,req:{ed:1},gr:.6,lay:[.005,.01],hd:-.4},
+ doc:{f:'office',r:4.79,g:2,req:{ed:2,sk:42},gr:.8,lay:[.003,.005],tr:{y:4,pay:.4,fee:.5},hd:-.5,hp:-1},
+ law:{f:'office',r:3.13,g:2,req:{ed:2,sk:36},gr:1,lay:[.02,.06],tr:{y:2,pay:.15,fee:.7},hp:-2},
+ chef:{f:'hands',r:.73,g:5,req:{},gr:.5,lay:[.03,.1],inj:.02,hd:-.8},
+ elec:{f:'hands',r:1.24,g:7,req:{ed:1},gr:.5,lay:[.02,.06],inj:.02,hd:-.6},
+ mech:{f:'hands',r:.99,g:7,req:{},gr:.5,lay:[.02,.06],inj:.015,hd:-.6},
+ cons:{f:'hands',r:.92,g:9,req:{hl:50},gr:.4,lay:[.04,.15],inj:.04,hd:-1.5},
+ drv:{f:'hands',r:1.15,g:8,req:{},gr:.3,lay:[.02,.06],inj:.015,hd:-.8,auto:.03},
+ fact:{f:'hands',r:.88,g:8,req:{},gr:.4,lay:[.04,.12],inj:.02,hd:-.8,auto:.03},
+ farm:{f:'hands',r:.70,g:6,req:{},gr:.3,lay:[0,0],inj:.02,hd:-.8,vol:.25},
+ design:{f:'creative',r:1.24,g:2,req:{ed:1},gr:.6,lay:[.03,.12],tiers:[[.25,.6],[.5,1],[.2,1.6],[.05,3]],fl:.6,hp:2},
+ music:{f:'creative',r:.55,g:2,req:{},gr:0,lay:[0,0],tiers:[[.6,.35],[.25,1],[.12,3],[.03,20]],fl:.6,hp:3},
+ infl:{f:'creative',r:.45,g:0,req:{},gr:0,lay:[0,0],tiers:[[.65,.2],[.22,1],[.1,4],[.03,30]],fl:.6,hp:2},
+ actor:{f:'creative',r:.5,g:2,req:{},gr:0,lay:[0,0],tiers:[[.6,.3],[.25,1],[.12,3],[.03,25]],fl:.6,hp:3},
+ writer:{f:'creative',r:1.51,g:2,req:{sk:25},gr:0,lay:[0,0],tiers:[[.5,.35],[.3,1],[.15,2],[.05,8]],fl:.6,hp:3},
+ foot:{f:'sport',r:1.31,g:3,req:{hl:65,age:22},gr:0,lay:[0,0],tiers:[[.75,.45],[.2,1.2],[.04,6],[.01,40]],end:[30,35],inj:.07,hd:1,hp:2,fl:.6},
+ badm:{f:'sport',r:1.31,g:3,req:{hl:65,age:22},gr:0,lay:[0,0],tiers:[[.8,.4],[.16,1.2],[.035,5],[.005,25]],end:[29,34],inj:.05,hd:1,hp:2,fl:.6},
+ esp:{f:'sport',r:.9,g:0,req:{age:22},gr:0,lay:[0,0],tiers:[[.8,.3],[.15,1.2],[.04,5],[.01,20]],end:[25,29],inj:.03,hd:-.8,hp:2,fl:.6},
+ coach:{f:'sport',r:.93,g:3,req:{hl:60},gr:.4,lay:[.03,.1],inj:.02,hd:1},
+ hawker:{f:'own',r:.73,g:5,req:{cap:.2},gr:0,lay:[0,0],own:{res:2,fail:.3,grow:.04,max:2},hd:-.6},
+ shop:{f:'own',r:.95,g:5,req:{cap:.8},gr:0,lay:[0,0],own:{res:2,fail:.4,grow:.05,max:2.5}},
+ start:{f:'own',r:.5,g:0,req:{cap:.4,sk:25},gr:0,lay:[0,0],own:{res:4,fail:.7,grow:.06,max:10},hp:-1},
+ prop:{f:'own',r:1.04,g:3,req:{},gr:.3,lay:[0,0],vol:.55},
+ ins:{f:'own',r:1.22,g:3,req:{},gr:.3,lay:[0,0],vol:.4},
+ trade:{f:'own',r:1.54,g:3,req:{cap:.5},gr:0,lay:[0,0],mkt:1}
+};
+/* a career's typical pay multiple in the country you work in */
+function carR(s,id){const c=CAR[id],t=ISCO[workCode(s)];if(!c.g||!t)return c.r;const g=c.g-1;return c.r*(t[g]!=null?t[g]:ISCO.US[g])/ISCO.US[g]}
+const edLv=s=>s.done.edu==='uni'?2:s.done.edu==='dip'?1:0;
+function drawTier(r,c){let u=r();for(const t of c.tiers){u-=t[0];if(u<=0)return t[1]}return c.tiers[0][1]}
+const typTier=c=>c.tiers.reduce((b,t)=>t[0]>b[0]?t:b)[1];
+/* true, or the reason a career is out of reach right now */
+function carLock(s,id){const q=CAR[id].req,ed=edLv(s);
+ if(s.carGone&&s.carGone[id])return M('car.need.gone');
+ if(q.ed&&ed<q.ed)return M(q.ed===2?'car.need.uni':'car.need.dip');
+ if(q.age&&s.age>q.age)return M('car.need.age',{n:q.age});
+ if(q.sk&&skill(s)<q.sk)return M('car.need.sk',{n:q.sk,h:Math.floor(skill(s))});
+ if(q.hl&&s.health<q.hl)return M('car.need.hl',{n:q.hl,h:Math.floor(s.health)});
+ if(q.cap&&liquid(s)<q.cap*s.base)return M('car.need.cap',{n:MN(q.cap*s.base),h:MN(liquid(s))});
+ return true}
+/* switching keeps half your experience in the same family of careers, a fifth in a new one, and you start lower */
+const sameFam=(s,id)=>!!s.lastCar&&CAR[s.lastCar].f===CAR[id].f;
+/* what a career would typically pay in its first working year (what you'd be told at the interview) */
+function carStartPay(s,id){const c=CAR[id],j=s.job,lv=s.level,ex=s.exp,sf=sameFam(s,id);
+ if(s.lastCar){s.level=sf?Math.max(0,lv-2):0;s.exp=ex*(sf?.5:.2)}
+ s.job={id,tier:c.tiers?typTier(c):1,own:1,yv:c.mkt?.45:1};const v=salary(s);s.job=j;s.level=lv;s.exp=ex;return v}
+function carHint(s,id){const c=CAR[id],nm=M('car.'+id);
+ if(c.tr)return M('car.h.train',{n:c.tr.y});
+ if(c.pen)return M('car.h.gov',{p:Math.round(c.pen*100)});
+ if(c.f==='office')return M('car.h.office',{x:c.auto?M('car.h.auto'):''});
+ if(id==='farm')return M('car.h.farm');
+ if(c.f==='hands')return M('car.h.hands',{x:c.auto?M('car.h.auto'):''});
+ if(c.f==='creative')return M('car.h.creative');
+ if(c.end)return M('car.h.sport',{a:c.end[0]});
+ if(id==='coach')return M('car.h.coach');
+ if(id==='start')return M('car.h.start',{n:c.own.res});
+ if(c.own)return M('car.h.own',{n:c.own.res});
+ if(c.mkt)return M('car.h.trade');
+ return M('car.h.comm',{x:M(id==='prop'?'car.h.prop':'car.h.ins')})}
+function carNote(t){t.note=M('note.car',{a:MN(t.paid),n:t.yrs,f:t.fee?M('note.carF',{f:MN(t.fee)}):'',c:t.cap?M('note.carC',{c:MN(t.cap)}):''})}
+function pickCareer(s,id){const c=CAR[id],r=evR(s,'carPick'),sf=sameFam(s,id);
+ if(s.lastCar){s.exp*=sf?.5:.2;s.level=sf?Math.max(0,s.level-2):0;s.levelGrind=Math.min(s.levelGrind,s.level)}
+ const j={id,start:s.age,tk:'car'+(s.carN=(s.carN||0)+1)};
+ if(c.tr)j.train=s.age+c.tr.y;if(c.tiers)j.tier=drawTier(r,c);if(c.end)j.end=c.end[0]+Math.floor(r()*(c.end[1]-c.end[0]+1));
+ if(c.own){j.own=1;j.res=s.age+c.own.res}if(id==='prop')j.hm0=s.hm;
+ s.job=j;s.needJob=false;s.swAt=s.age+6+Math.floor(r()*5);s.swWhy=null;
+ const t=T(s,j.tk,{kind:'custom',label:M('trk.carNow',{x:M('car.'+id),a:s.age}),paid:0,fee:0,cap:0,yrs:0});
+ if(c.req.cap){const k=c.req.cap*s.base;pay(s,k);t.v-=k;t.cap=k}carNote(t)}
+/* a career ends: you quit (to = the last year you worked), it was automated, a playing career ran out, an injury, a failed business */
+function endCareer(s,why,to){const j=s.job;if(!j)return;const t=s.trk[j.tk];if(t)t.label=M('trk.car',{x:M('car.'+j.id),a:j.start,b:Math.max(j.start,to==null?s.age:to)});
+ s.lastCar=j.id;s.job=null;s.needJob=true;s.swWhy=null;delete s.done.job;if(why==='auto')s.carGone[j.id]=1}
+/* after a layoff or an injury, a "switch career?" card comes up next year */
+function offerSwitch(s,why){if(!s.job)return;s.swAt=s.age+1;s.swWhy=why;delete s.done.switch}
+/* the start of a working year: training fees, a creative or sporting career rising or fading, commission and harvest luck */
+function careerStart(s,yr,L){const j=s.job,c=CAR[j.id],a=s.age,r=evR(s,'carYr'),nm=M('car.a.'+j.id);
+ if(j.train>a){const f=c.tr.fee*s.base;pay(s,f);const t=s.trk[j.tk];if(t){t.v-=f;t.fee+=f;carNote(t)}return}
+ if(j.train===a)L&&L(M('log.car.trained',{x:nm}),'good');
+ if(c.tiers){if(!j.seen){j.seen=1;if(j.tier>=c.tiers[2][1])L&&L(M('log.car.up',{x:nm}),'good')}
+  else if((a-j.start)%4===0&&r()<.4){const o=j.tier;j.tier=drawTier(r,c);if(j.tier!==o)L&&L(M(j.tier>o?'log.car.up':'log.car.down',{x:nm}),j.tier>o?'good':'bad')}}
+ if(c.vol)j.yv=Math.exp(c.vol*gauss(r)-c.vol*c.vol/2)*(j.id==='prop'?clamp(s.hm/j.hm0,.5,2):j.id==='ins'?1+(s.rel-50)/150:1);
+ if(c.mkt)j.yv=.45+5*(yr.mkt-.05)+.3*gauss(r);
+ if(j.ok&&c.own)j.own=Math.min(c.own.max,j.own*(1+c.own.grow))}
+/* this year's pay goes into the career's passbook line */
+function carPaid(s,w){const t=s.job&&s.trk[s.job.tk];if(!t)return;t.v+=w;t.paid+=w;t.yrs++;carNote(t)}
+/* the end of a working year: injuries, automation, a playing career running out, a business that works or fails */
+function careerEnd(s,L){const j=s.job,c=CAR[j.id],a=s.age,r=evR(s,'carEnd'),nm=M('car.a.'+j.id),t=s.trk[j.tk];if(j.train>a)return;
+ if(c.inj&&r()<c.inj*(1+Math.max(0,60-s.health)/80)){const sp=!!c.end,lost=.25*Math.max(0,salary(s));
+  s.health=clamp(s.health-(sp?12:8),3,100);s.happy=clamp(s.happy-4,0,100);pay(s,lost);
+  const ti=T(s,'inj',{kind:'custom',label:M('trk.inj'),lost:0});ti.lost+=lost;ti.v-=lost;ti.note=M('note.inj',{a:MN(ti.lost)});
+  if(sp&&r()<.35){L&&L(M('log.car.injEnd',{x:nm}),'bad');endCareer(s,'inj');return}
+  L&&L(M('log.car.inj'),'bad');offerSwitch(s,'inj')}
+ if(c.auto&&a>=45&&r()<c.auto){const sev=.5*salary(s);s.cash+=sev;s.earned+=sev;if(t){t.v+=sev;t.paid+=sev;carNote(t)}L&&L(M('log.car.auto',{x:nm,a:MN(sev)}),'bad');endCareer(s,'auto');return}
+ if(j.end&&a+1>=j.end){L&&L(M('log.car.age',{x:nm}),'');endCareer(s,'age');return}
+ if(c.own&&!j.done&&a+1>=j.res){j.done=1;const u=r();
+  if(j.id==='start'&&u<.08){const v=12*s.base*(1+skill(s)/60);s.cash+=v;s.earned+=v;if(t){t.v+=v;t.paid+=v;carNote(t)}L&&L(M('log.car.exit',{a:MN(v)}),'good');endCareer(s,'exit');return}
+  if(u<c.own.fail){L&&L(M('log.car.fail',{x:nm}),'bad');endCareer(s,'fail');return}
+  j.ok=true;if(j.id==='start')j.own=5;L&&L(M('log.car.ok',{x:nm}),'good')}}
 
 /* ---------- serious illness and depression ----------
    Game rules, not published data. A serious illness (heart attack, stroke or cancer) can strike once a life: the yearly
@@ -273,15 +423,22 @@ const EV=[
   Hn(O('uni','e.edu.uni',M('e.edu.uni.s',{c:MN(cu),loan:cu>Math.max(0,s.cash)+1?M('e.edu.loan'):''}),s=>startStudy(s,'uni')),M('e.edu.uni.h',{e:eu,p:Math.round(eu*SK*100)})),
   Hn(O('dip','e.edu.dip',M('e.edu.dip.s',{c:MN(cd)}),s=>startStudy(s,'dip')),M('e.edu.dip.h',{e:ed,p:Math.round(ed*SK*100)})),
   O('work','e.edu.work',M('e.edu.work.s'),s=>{})]}},
-{id:'job',when:s=>s.age>=18&&!!s.done.edu&&!s.study&&!s.job&&!s.retired,title:M('e.job.t'),def:'corp',
- text:s=>M('e.job.x'),
+/* choosing a career: every career, grouped by family (grp), locked ones show why. It comes back whenever a career ends */
+{id:'job',when:s=>s.needJob&&s.age>=18&&s.age<64&&!!s.done.edu&&!s.study&&!s.job&&!s.retired,title:M('e.job.t'),def:'civ',
+ text:s=>M(s.lastCar?'e.job.x2':'e.job.x'),
+ opts:s=>Object.keys(CAR).map(id=>{const c=CAR[id],a=MN(carStartPay(s,id));
+  const sub=c.tr?M('car.s.tr',{n:c.tr.y,p:MN(c.tr.pay*s.base),f:MN(c.tr.fee*s.base),a}):c.req.cap?M('car.s.cap',{c:MN(c.req.cap*s.base),a}):M('car.s',{a});
+  const o=Hn(O(id,'car.'+id,sub,s=>pickCareer(s,id),carLock(s,id)),carHint(s,id));o.grp=c.f;return o})},
+/* every so often, and the year after a layoff or an injury: stay, or choose a new career */
+{id:'switch',when:s=>job(s)&&s.swAt!=null&&s.age>=s.swAt&&s.age<62&&!(s.job.train>s.age),title:M('e.switch.t'),def:'stay',
+ again:s=>{delete s.done.switch;s.swWhy=null;if(s.job)s.swAt=s.age+6+Math.floor(evR(s,'swAt')()*5)},
+ text:s=>M('e.switch.x'+(s.swWhy?'.'+s.swWhy:''),{x:M('car.a.'+s.job.id),n:s.age-s.job.start}),hint:s=>M('e.switch.h'),
  opts:s=>[
-  O('corp','e.job.corp',M('e.job.corp.s',{a:MN(salFor(s,'corp'))}),s=>{s.job={type:'corp',start:s.age}}),
-  Hn(O('startup','e.job.startup',M('e.job.startup.s',{a:MN(salFor(s,'startup'))}),s=>{s.job={type:'startup',start:s.age,res:s.age+6};T(s,'startup',{kind:'custom',label:M('trk.startup'),lost:0,note:M('note.startup0')})}),M('e.job.startup.h')),
-  O('gov','e.job.gov',M('e.job.gov.s',{a:MN(salFor(s,'gov'))}),s=>{s.job={type:'gov',start:s.age};T(s,'gov',{kind:'custom',label:M('trk.gov'),lost:0,recv:0,note:M('note.gov0')})})]},
+  O('stay','e.switch.stay',M('e.switch.stay.s'),s=>{}),
+  O('go','e.switch.go',M('e.switch.go.s'),s=>endCareer(s,'quit',s.age-1))]},
 {id:'save',when:s=>!!s.job&&!s.done.save,title:M('e.save.t'),def:'0',
  text:s=>M('e.save.x'),
- opts:s=>{const net=netOf(s,salFor(s,s.job.type));return [0,.1,.2,.3].map(p=>{const pc=Math.round(p*100);return p?{id:String(pc),label:M('e.save.p',{p:pc}),sub:M('e.save.p.s',{a:MN(net*p)}),go:s=>setSave(s,p)}:{id:'0',label:M('e.save.0'),sub:M('e.save.0.s'),go:s=>setSave(s,0)}})}},
+ opts:s=>{const net=netOf(s,salary(s));return [0,.1,.2,.3].map(p=>{const pc=Math.round(p*100);return p?{id:String(pc),label:M('e.save.p',{p:pc}),sub:M('e.save.p.s',{a:MN(net*p)}),go:s=>setSave(s,p)}:{id:'0',label:M('e.save.0'),sub:M('e.save.0.s'),go:s=>setSave(s,0)}})}},
 {id:'cc',win:[19,21],p:.8,when:s=>!s.retired,title:M('e.cc.t'),def:'full',
  text:s=>M('e.cc.x',{a:MN(.3*s.base)}),
  opts:s=>{const a=.2*s.base;return[
@@ -777,7 +934,7 @@ function pullForward(s){if(s.age<6||s.age-s.lastDec<2)return null;let best=null,
   const d=Math.abs(a-s.age)+w;if(d<bd&&(!e.when||e.when(s))){best=e;bd=d}}
  if(best)s.plan[best.id]=s.age;return best}
 function dueEvents(s){if(s.dead)return[];const d=EV.filter(e=>!s.done[e.id]&&due(s,e));if(d.length)return d;const p=pullForward(s);return p?[p]:[]}
-function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.lastDec=s.age;return o}
+function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.lastDec=s.age;if(ev.again)ev.again(s);return o}
 function resolveAuto(s){let g=0,ev;while((ev=dueEvents(s)[0])&&g++<30)applyOpt(s,ev,ev.def)}
 
 /* ---------- consequences that arrive years later ---------- */
@@ -815,7 +972,7 @@ const LATER={
 };
 
 /* ---------- yearly resolutions ---------- */
-function retire(s,L){s.retired=true;if(s.job&&s.job.type==='gov')s.pension=.4*s.lastSal;
+function retire(s,L){s.retired=true;if(s.job){const c=CAR[s.job.id];if(c.pen)s.pension=c.pen*s.lastSal;const t=s.trk[s.job.tk];if(t)t.label=M('trk.car',{x:M('car.'+s.job.id),a:s.job.start,b:Math.max(s.job.start,s.age-1)})}
  if(s.biz&&s.biz.ok&&!s.biz.sold){const v=(s.biz.mode==='full'?3:2)*s.biz.inc;addLot(s,'bizsale',v);s.biz.sold=true;const t=s.trk.biz;if(t){t.v+=v;t.note=M('note.bizSold',{a:MN(v)})}L&&L(M('log.bizSold',{a:MN(v)}),'good')}
  for(const k in s.trk)if(s.trk[k].kind==='skill')s.trk[k].per=0;
  L&&L(M('log.retire',{age:s.age,p:s.pension?M('log.retireP',{a:MN(s.pension)}):''}),'good')}
@@ -824,8 +981,6 @@ function resolveBiz(s,L){const b=s.biz,r=evR(s,'bizout'),u=r(),u2=r();b.done=tru
  else{L&&L(M('log.bizFail',{a:MN(b.cap)}),'bad');if(t)t.note=M('note.bizFail');b.ok=false}}
 function resolveCrypto(s,L){const u=evR(s,'coin')();const st=s.crypto.stake;const m=u<.18?6:u<.45?1.3:.1;const val=st*m;s.cash+=val;const t=s.trk.tip;if(t){t.v=val-st;t.note=M('note.coin',{a:MN(st),b:MN(val)})}
  L&&L(M(m>1.5?'log.coinBig':m>1?'log.coinUp':'log.coinDown',{a:MN(st),b:MN(val)}),m>1?'good':'bad');s.crypto=null}
-function resolveStartup(s,L){const u=evR(s,'shares')();const p=u<.1?5*s.lastSal:u<.32?.6*s.lastSal:0;s.cash+=p;const t=s.trk.startup;if(t){t.v+=p;t.note=p>0?M('note.startupWin',{a:MN(p),l:MN(t.lost)}):M('note.startupZero',{l:MN(t.lost)})}
- L&&L(M(p>0?'log.startupWin':'log.startupZero',{a:MN(p)}),p>0?'good':'bad');s.job={type:'corp',start:s.job.start}}
 function housing(s){
  if(!s.house){const m=s.age<s.rentUntil?s.rentMul:1,b=rent(s)*(s.costMul||1);if(m<1&&s.trk.move)s.trk.move.v+=b*(1-m);return b*m}
  const h=s.house,rt=h.rate||.03;let mp=0;if(h.mort>0){if(rt>.03&&s.trk.rates)s.trk.rates.v-=h.mort*(rt-.03);h.mort*=1+rt;mp=Math.min(h.pay,h.mort);h.mort-=mp;if(h.mort<1)h.mort=0}
@@ -853,7 +1008,6 @@ function tick(s,yr,L){
  if(!s.retired&&s.retireAge&&a>=s.retireAge)retire(s,L);
  if(s.biz&&!s.biz.done&&a>=s.biz.res)resolveBiz(s,L);
  if(s.crypto&&a>=s.crypto.res)resolveCrypto(s,L);
- if(s.job&&s.job.type==='startup'&&s.job.res&&a>=s.job.res&&!s.retired)resolveStartup(s,L);
  if(s.outUntil&&a===s.outUntil){const amt=Math.min(Math.max(0,s.cash),s.sold);s.cash-=amt;addLot(s,'auto',amt);L&&L(M('log.buyBack',{a:MN(amt)}),'')}
  if(s.later.length){for(const x of s.later)if(!x.done&&a>=x.age){x.done=1;LATER[x.k](s,x,L)}s.later=s.later.filter(x=>!x.done)}
  if(s.dead)return out; // a serious illness can end a life at the start of the year
@@ -872,11 +1026,12 @@ function tick(s,yr,L){
  if(a>=18){
   if(s.study){
    const st=s.study,part=st.pt*B;s.earned+=part;out.gross=part;
-   const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,salFor(s,'corp')-part);
+   const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,carStartPay(s,'civ')-part);
    const d=part-.35*B;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
    addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
    if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?amort(s.sloan,.03,10):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
+   if(s.job)careerStart(s,yr,L);
    const sal=s.job?salary(s):0;s.lastSal=sal;
    if(s.sex==='f'&&sal>0&&!s.study){const full=sal/sexPay(s),g=gapM(s),lg=full*(1-g),lm=full*g-sal;
     if(lg>0){const t=T(s,'ggap',{kind:'custom',label:M('trk.ggap'),lost:0});t.lost+=lg;t.v-=lg;t.note=M('note.ggap',{a:MN(t.lost),p:Math.round((1-g)*100)})}
@@ -894,21 +1049,22 @@ function tick(s,yr,L){
     /* months off for a serious illness; depression costs 30% of pay (four months off instead, in the year you take time off) */
     if(s.ill&&s.ill.at===a){const c=s.ill.off*work,t=s.trk.ill;work-=c;if(t){t.lost+=c;t.v-=c;t.note=illNote(t)}}
     if(dp){const c=(s.dep.how==='off'&&s.dep.at===a?.33:.3)*work,t=s.trk.dep;work-=c;if(t){t.lost+=c;t.v-=c;t.note=depNote(t)}}
-    const lp=s.job.type==='gov'?.005:(a===s.crashAge?.15:.03);
-    if(yr.jl<lp||s.layAt===a){work*=.5;L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad')}
+    /* layoffs: each career has its own risk, much higher in a crash year (none while training); a switch card follows */
+    const cr=CAR[s.job.id],trn=s.job.train>a,lp=trn?0:cr.lay[a===s.crashAge?1:0];
+    if(yr.jl<lp||s.layAt===a){work*=.5;L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad');offerSwitch(s,'lay')}
     const den=1+SK*sk;
     for(const k in s.skillSrc){if(k==='base')continue;const t=s.trk['sk_'+k];if(!t)continue;const ex=sal*SK*s.skillSrc[k]/den;t.gain+=ex;t.per=ex}
     if(s.levelGrind&&s.trk.grind){const t=s.trk.grind,ex=sal*.18*s.levelGrind/(1+.18*s.level);t.gain+=ex;t.per=ex}
     for(const k in s.bump){const t=s.trk[k];if(t)t.v+=sal*(1-1/s.bump[k])}
-    if(s.job.type==='gov'&&s.trk.gov){const t=s.trk.gov,l=sal/.9*.1;t.lost+=l;t.v-=l;t.note=M('note.gov',{l:MN(t.lost)})}
-    if(s.job.type==='startup'&&s.trk.startup){const t=s.trk.startup,l=sal/.85*.15;t.lost+=l;t.v-=l;t.note=M('note.startup',{l:MN(t.lost),age:s.job.res})}
-    let pp=.07+(fo==='grind'?.08*fk:0)+sk*.0015+(s.rel-50)*.0008;if(s.job.type==='gov')pp*=.6;if(s.uncle)pp*=.7;if(dp)pp*=.4;
+    carPaid(s,work);
+    let pp=.07+(fo==='grind'?.08*fk:0)+sk*.0015+(s.rel-50)*.0008;pp*=cr.pp||1;if(s.uncle)pp*=.7;if(dp)pp*=.4;
     if(fo==='grind')s.grindY++;
-    if(s.level<6&&yr.pr<pp){s.level++;if(fo==='grind'){s.levelGrind++;T(s,'grind',{kind:'skill',label:M('trk.grind')})}L&&L(M('log.promo',{n:s.level,a:MN(salary(s))}),'good')}
-    s.exp++;
+    if(cr.gr>0&&!trn&&s.level<6&&yr.pr<pp){s.level++;if(fo==='grind'){s.levelGrind++;T(s,'grind',{kind:'skill',label:M('trk.grind')})}L&&L(M('log.promo',{n:s.level,a:MN(salary(s))}),'good')}
+    if(!trn)s.exp++;
     /* good Relationships bring referrals: someone you know recommends you for a better-paid job (twice at most) */
     if(s.refN<2&&s.rel>55&&evR(s,'ref')()<(s.rel-55)/350){s.refN++;refer(s,'ref'+s.refN,1.08,'trk.referral',L,'log.referral')}
    }
+   if(employed&&s.job)careerEnd(s,L);
    let hus=0;if(fo==='hustle'){s.hustleYears++;hus=B*.08*(1+.2*Math.min(s.hustleYears,10))*(1+SK*sk*.5)*fk;const t=T(s,'hustle',{kind:'custom',label:M('trk.hustle'),yrs:0});t.v+=hus;t.yrs++;t.note=M('note.hustle',{n:t.yrs,a:MN(hus)})}
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold){side=s.biz.inc;s.biz.inc*=1.06;if(tb){tb.v+=side;tb.note=M('note.bizSide',{a:MN(side)})}}
    const gross=work+hus+side,net=netOf(s,gross);
@@ -957,6 +1113,7 @@ function tick(s,yr,L){
   const hk=sick(s)?0:fk;
   if(s.retired)s.health+=.5*hk;else if(!s.study){if(fo==='balance')s.health+=2.5*hk;if(fo==='people')s.health+=hk;if(fo==='grind')s.health-=2.5;if(fo==='hustle')s.health-=1}
   if(dp)s.health-=1.5;
+  if(job(s)){const hd=CAR[s.job.id].hd||0;s.health+=hd>0?hd*hk:hd}
   s.health=clamp(s.health,3,100);
   if(a>=25&&s.illAge<0&&evR(s,'illRoll')()<illP(s)){s.illAge=a+1;const u=evR(s,'illType')();s.illType=u<.45?'cancer':u<.8?'heart':'stroke'}
   const mp=.02+Math.max(0,70-s.health)/900+a/3500;
@@ -967,6 +1124,7 @@ function tick(s,yr,L){
   tg+=(s.rel-50)/12;
   if(!s.retired&&!s.study){if(fo==='balance')tg+=5*fk;if(fo==='grind')tg-=5;if(fo==='people')tg+=3*fk}
   if(sick(s))tg-=8;
+  if(job(s))tg+=CAR[s.job.id].hp||0;
   if(s.retired&&s.rel<35){tg-=6;if(!s.lonely){s.lonely=1;L&&L(M('log.lonely'),'bad')}}
   s.happy=clamp(s.happy+(tg-s.happy)*.25,0,100);
   // two years in a row of low Happiness can bring on depression (once a life; it shows as a decision next year)
@@ -980,7 +1138,7 @@ function tick(s,yr,L){
   // skills for next year
   if(a>=45&&s.done.pivot==='stay'&&!s.retired)s.skillSrc.base=Math.max(0,s.skillSrc.base-.8);
   if(!s.retired&&!s.study){
-   if(s.job&&s.job.type==='startup')addSkill(s,'startup',1.5,M('trk.startupSkill'));
+   if(s.job&&s.job.id==='start')addSkill(s,'startup',1.5,M('trk.startupSkill'));
    if(fo==='learn'){addSkill(s,'learn',(a<50?3.5:2)*fk,M('trk.learn'));const t=s.trk.sk_learn;if(t){t.years=(t.years||0)+1;t.label=M('trk.learnN',{n:t.years})}}
    if(s.cert&&a<s.cert.end)addSkill(s,'cert',7,s.cert.label);
   }
@@ -1018,12 +1176,16 @@ function MC(s,fn,N,tgt){const res=[];for(let i=0;i<N;i++){const c=clone(s);c.noD
   if(c.crashAge>c.age){const r=mb(hsh(c.seed,'cr'))();const lo=Math.max(c.age+1,34);c.crashAge=lo>50?lo:lo+Math.floor(r*(51-lo))}
   fn(c);let g=0;while(c.age<tgt&&!c.dead&&g++<130){resolveAuto(c);tick(c,yearRand(c.seed,c.age),null)}res.push([netWorth(c),c.earned,c.illDied?0:1])}return res}
 /* for an event with `surv` (a serious illness) each option also gets `alive`: the share of futures that survived it */
-function projectEvent(s,ev,N){const tgt=s.age<58?60:s.age+12;const os=ev.opts(s);const res={};const base=MC(s,c=>applyOpt(c,ev,ev.def),N,tgt);
- const alive=r=>r.reduce((a,x)=>a+x[2],0)/N;
- for(const o of os){if(o.ok!==undefined&&o.ok!==true)continue;if(o.id===ev.def){res[o.id]={base:true};if(ev.surv)res[o.id].alive=alive(base);continue}
-  const r=MC(s,c=>applyOpt(c,ev,o.id),N,tgt);const d=r.map((x,i)=>x[0]-base[i][0]).sort((a,b)=>a-b);const e=r.map((x,i)=>x[1]-base[i][1]).sort((a,b)=>a-b);
-  res[o.id]={med:d[N>>1],lo:d[Math.floor(N*.1)],hi:d[Math.min(N-1,Math.floor(N*.9))],earn:e[N>>1]};if(ev.surv)res[o.id].alive=alive(r)}
- return{tgt,res}}
+function projectEvent(s,ev,N){const P=projBegin(s,ev,N);while(P.todo.length)projNext(s,ev,P);return P}
+/* the same in steps, so a card with many options (careers) can fill in its projections without freezing the page:
+   projBegin runs the default option's futures, then each projNext runs one more option */
+function projBegin(s,ev,N){const tgt=s.age<58?60:s.age+12,base=MC(s,c=>applyOpt(c,ev,ev.def),N,tgt),res={},todo=[];
+ for(const o of ev.opts(s)){if(o.ok!==undefined&&o.ok!==true)continue;if(o.id===ev.def){res[o.id]={base:true};if(ev.surv)res[o.id].alive=aliveOf(base,N)}else todo.push(o.id)}
+ return{tgt,res,todo,base,N}}
+const aliveOf=(r,N)=>r.reduce((a,x)=>a+x[2],0)/N;
+function projNext(s,ev,P){const id=P.todo.shift();if(id==null)return;const N=P.N,base=P.base;
+ const r=MC(s,c=>applyOpt(c,ev,id),N,P.tgt);const d=r.map((x,i)=>x[0]-base[i][0]).sort((a,b)=>a-b);const e=r.map((x,i)=>x[1]-base[i][1]).sort((a,b)=>a-b);
+ P.res[id]={med:d[N>>1],lo:d[Math.floor(N*.1)],hi:d[Math.min(N-1,Math.floor(N*.9))],earn:e[N>>1]};if(ev.surv)P.res[id].alive=aliveOf(r,N)}
 function projectFocus(s,N){const tgt=s.age<55?60:s.age+5;const runs={};for(const f of['learn','grind','hustle','balance','people'])runs[f]=MC(s,c=>{c.focus=f},N,tgt);const out={};
  for(const f of['learn','grind','hustle','people']){const e=runs[f].map((x,i)=>x[1]-runs.balance[i][1]).sort((a,b)=>a-b);const n=runs[f].map((x,i)=>x[0]-runs.balance[i][0]).sort((a,b)=>a-b);out[f]={earn:e[N>>1],nw:n[N>>1]}}
  return{tgt,out}}
