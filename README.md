@@ -1,6 +1,6 @@
 # A Second Chance (重来人生 / 重來人生)
 
-A money life simulator. You're born at random, every big decision is about money, and you watch each choice compound for the rest of your life.
+A life simulator about money and time. You arrive at random, one among eight billion, and watch every choice quietly shape the rest of your life.
 
 ## Open it
 Double-click `index.html`. It runs in any modern browser with no install. You need internet the first time so the fonts load.

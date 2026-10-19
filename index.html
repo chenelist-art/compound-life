@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light">
 <title data-i18n="h.title">A Second Chance</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="A money life simulator. Be born at random, make every big money decision, and watch each choice compound for the rest of your life.">
+<meta name="description" content="A life simulator about money and time. You arrive at random, one among eight billion, and watch every choice quietly shape the rest of your life.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
@@ -24,7 +24,7 @@
     <nav aria-label="Sections">
       <a href="#lab" data-i18n="h.nav1">Try a choice</a>
       <a href="#rules" data-i18n="h.nav2">How it works</a>
-      <a href="#world" data-i18n="h.nav3">Where you're born</a>
+      <a href="#world" data-i18n="h.nav3">Where you begin</a>
       <a href="#decisions" data-i18n="h.nav4">The decisions</a>
     </nav>
     <div class="nav-r">
@@ -39,15 +39,15 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="serial"><span data-i18n="h.series">Series 2026</span> <span aria-hidden="true">·</span> <span data-i18n="h.noteNo">Note No.</span> <b id="serialNo">SC 004 218 907</b></p>
-      <h1 class="mega"><span class="w-wide" data-i18n="h.heroWide">Every choice</span><span class="w-tall" data-fit data-i18n="h.heroTall"><em>compounds.</em></span></h1>
-      <p class="lede" data-i18n="h.lede">You're born at random, one of 8 billion people. Every big decision after that is about money, and you <b>watch each one grow or shrink</b> for the rest of your life. If you study, you see exactly what it pays you every year until it has paid for itself.</p>
+      <h1 class="mega"><span class="w-wide" data-i18n="h.heroWide">Every choice</span><span class="w-tall" data-fit data-i18n="h.heroTall"><em>matters.</em></span></h1>
+      <p class="lede" data-i18n="h.lede">You arrive at random, one among eight billion. Where you start is luck—but from here, you get to watch every choice quietly shape the rest of your life.</p>
       <div class="cta-row">
         <a class="btn btn-accent btn-lg" href="play.html#born"><span data-i18n="h.ctaRand">Be born at random</span> <span class="arr">→</span></a>
         <a class="btn btn-ghost btn-lg" href="play.html#pick" data-i18n="h.ctaPick">Choose a country</a>
       </div>
       <dl class="live" aria-live="off">
-        <div><dt data-i18n="h.cBirth">Babies born since you opened this page</dt><dd><span class="dot" aria-hidden="true"></span><span id="cBirth">0</span></dd></div>
-        <div><dt data-i18n="h.cDeath">People who died in the same time</dt><dd id="cDeath">0</dd></div>
+        <div><dt data-i18n="h.cBirth">Lives that began since you opened this page</dt><dd><span class="dot" aria-hidden="true"></span><span id="cBirth">0</span></dd></div>
+        <div><dt data-i18n="h.cDeath">Lives that ended in the same moments</dt><dd id="cDeath">0</dd></div>
       </dl>
     </div>
     <div class="note-stage" id="noteStage">
@@ -57,7 +57,7 @@
           <div class="t-win hero-win" data-art="sky"><canvas id="heroRosette" aria-hidden="true"></canvas></div>
           <div class="ovi-strip" aria-hidden="true"><div class="ovi-in"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
           <div class="den-frac" aria-hidden="true"><span class="t">1</span><span class="l"></span><span class="b" data-fit>8,000,000,000</span></div>
-          <span class="note-cap" aria-hidden="true" data-i18n="h.noteCap">One life · good for every decision you make</span>
+          <span class="note-cap" aria-hidden="true" data-i18n="h.noteCap">One life · every choice counts</span>
           <span class="note-serial" id="noteSerial" aria-hidden="true">SC004218907</span>
         </div>
         <div class="t-ban" aria-hidden="true"><span class="t-name" data-i18n="tn.hero">Ace of Coins</span></div>
@@ -69,9 +69,9 @@
 <section class="band lab" id="lab">
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker" data-i18n="h.labK">Try one choice before you're born</p>
-      <h2 data-i18n="h.labH">In most life games, studying feels like nothing happened. <em>Here you see the money.</em></h2>
-      <p class="sub" data-i18n="h.labSub">Move the controls. This uses the same wages, fees and prices as the game, with the stock market smoothed to a steady 5% a year after inflation. In the game it goes up and down.</p>
+      <p class="kicker" data-i18n="h.labK">Before you are born, try one choice</p>
+      <h2 data-i18n="h.labH">In most games, choices just give the illusion of control. <em>Here, your decisions actually push back against fate.</em></h2>
+      <p class="sub" data-i18n="h.labSub">Move the sliders and watch. The wages, fees and prices are the game’s own; only the stock market is smoothed to a steady 5% a year after inflation. In the game, it rises and falls.</p>
     </div>
     <div class="lab-grid">
       <form class="card lab-ctrl" id="labForm" onsubmit="return false">
@@ -100,13 +100,13 @@
       </form>
       <div class="card lab-out">
         <div class="readouts">
-          <div><span class="lbl" data-i18n="h.ro1">At 65 you'd have</span><span class="ro-v big" id="roPot">$0</span><span class="ro-n" id="roPotN"></span></div>
-          <div><span class="lbl" data-i18n="h.ro2">You put in</span><span class="ro-v" id="roIn">$0</span><span class="ro-n" data-i18n="h.ro2n">from your paychecks</span></div>
-          <div class="ro-gr"><span class="lbl" data-i18n="h.ro3">Compounding added</span><span class="ro-v" id="roGr">$0</span><span class="ro-n" id="roGrN"></span></div>
+          <div><span class="lbl" data-i18n="h.ro1">At 65</span><span class="ro-v big" id="roPot">$0</span><span class="ro-n" id="roPotN"></span></div>
+          <div><span class="lbl" data-i18n="h.ro2">What you gave</span><span class="ro-v" id="roIn">$0</span><span class="ro-n" data-i18n="h.ro2n">earned through your own days</span></div>
+          <div class="ro-gr"><span class="lbl" data-i18n="h.ro3">What time gave back</span><span class="ro-v" id="roGr">$0</span><span class="ro-n" id="roGrN"></span></div>
         </div>
         <div class="payback"><span class="pb-age" id="pbAge">31</span><p id="pbText"></p></div>
         <div class="chart-wrap"><canvas id="labChart" aria-label="Investment pot by age, split into what you put in and growth"></canvas></div>
-        <div class="legend"><span><i class="l-in"></i><span data-i18n="h.lg1">What you put in</span></span><span><i class="l-gr"></i><span data-i18n="h.lg2">Growth from compounding</span></span><span><i class="l-cmp"></i><span id="cmpLbl">Same plan, working from 18</span></span></div>
+        <div class="legend"><span><i class="l-in"></i><span data-i18n="h.lg1">What you gave</span></span><span><i class="l-gr"></i><span data-i18n="h.lg2">What time gave back</span></span><span><i class="l-cmp"></i><span id="cmpLbl">Same plan, working from 18</span></span></div>
       </div>
     </div>
   </div>
@@ -116,23 +116,23 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="kicker" data-i18n="h.rulesK">How it works</p>
-      <h2 data-i18n="h.rulesH">Four rules of this world.</h2>
+      <h2 data-i18n="h.rulesH">Four truths of this game.</h2>
     </div>
     <div class="rules-grid">
       <article class="card rule">
-        <div><h3 data-i18n="h.r1t">You're born at random</h3><p data-i18n="h.r1p">Weighted by where babies are actually born today. Your country sets your wages, rent, house prices and how long you'll probably live. Your family decides who pays for university.</p></div>
+        <div><h3 data-i18n="h.r1t">The starting point</h3><p data-i18n="h.r1p">A roll of the dice chooses where your journey begins.</p></div>
         <svg class="art" viewBox="0 0 160 120" aria-hidden="true"><path class="ya th" d="M18 14 Q18 22 26 22 Q18 22 18 30 Q18 22 10 22 Q18 22 18 14Z"/><path class="wh th" d="M146 92 Q146 98 152 98 Q146 98 146 104 Q146 98 140 98 Q146 98 146 92Z"/><circle class="mi" cx="72" cy="64" r="44"/><path class="wa" d="M40 44 q10 -12 24 -6 q6 9 -2 15 q-11 2 -9 13 q-4 9 -13 2 q-8 -10 0 -24z"/><path class="wa" d="M84 30 q15 -2 23 9 q4 11 -4 15 q-9 -2 -13 7 q-9 4 -11 -7 q-2 -15 5 -24z"/><path class="wa" d="M60 90 q13 -7 22 2 q2 11 -11 13 q-13 0 -11 -15z"/><path class="co" d="M112 24 a11 11 0 1 1 22 0 c0 9 -11 17 -11 24 c0 -7 -11 -15 -11 -24z"/><circle class="wh th" cx="123" cy="24" r="4.5"/><rect class="ya th" x="104" y="56" width="40" height="22" rx="11"/><text class="tx" x="124" y="71.5" text-anchor="middle" data-i18n="h.r1s">you</text></svg>
       </article>
       <article class="card rule">
-        <div><h3 data-i18n="h.r2t">Choose first, see later</h3><p data-i18n="h.r2p">Like real life, you choose knowing only the prices, the pay and the fees. Afterwards, a hindsight card shows how every option typically turned out across 40 simulated futures, so you learn why a crypto bet and an index fund are not the same. Easy mode shows it before you choose; Hard mode saves it all for the end.</p></div>
+        <div><h3 data-i18n="h.r2t">Deciding forward</h3><p data-i18n="h.r2p">Just like life: it only makes sense looking back.</p></div>
         <svg class="art" viewBox="0 0 160 120" aria-hidden="true"><circle class="mi" cx="84" cy="54" r="40"/><path class="th" d="M54 72 Q84 72 112 32"/><path class="th" d="M54 72 Q84 72 118 44"/><path class="th" d="M54 72 Q84 72 120 70"/><path class="th" d="M54 72 Q84 72 114 82"/><path class="th" d="M54 72 Q84 72 104 88"/><path d="M54 72 Q84 72 120 56"/><circle class="ya" cx="54" cy="72" r="4.5"/><circle class="co" cx="120" cy="56" r="5"/><path class="th wh" d="M66 30 q8 -8 18 -8"/><path class="co" d="M56 92 h56 l9 20 h-74 z"/><rect class="ya th" x="2" y="6" width="56" height="22" rx="11"/><text class="tx" x="30" y="21.5" text-anchor="middle" data-i18n="h.r2s">typical</text></svg>
       </article>
       <article class="card rule">
-        <div><h3 data-i18n="h.r3t">Every choice gets a line</h3><p data-i18n="h.r3p">Your passbook gives each decision its own running total that updates every year. Your degree starts in the red, then you watch it turn green and pay for itself.</p></div>
+        <div><h3 data-i18n="h.r3t">The ledger remembers</h3><p data-i18n="h.r3p">Every small decision, time adds up for you.</p></div>
         <svg class="art" viewBox="0 0 160 120" aria-hidden="true"><rect class="wh" x="4" y="4" width="152" height="112" rx="12"/><path class="th" d="M4 42 H156 M4 80 H156" stroke-dasharray="3 5"/><text class="tx sm" x="14" y="20" data-i18n="h.r3a">Degree</text><path class="th" d="M14 36 L24 36 L34 34 L44 31 L56 27"/><rect class="wa th" x="100" y="14" width="50" height="22" rx="11"/><text class="tx sm" x="125" y="29" text-anchor="middle">+$84k</text><text class="tx sm" x="14" y="58" data-i18n="h.r3b">Big wedding</text><path class="th" d="M14 66 L24 68 L34 70 L44 72 L54 74"/><rect class="co th" x="100" y="51" width="50" height="22" rx="11"/><text class="tx sm" x="125" y="66" text-anchor="middle">−$41k</text><text class="tx sm" x="14" y="96" data-i18n="h.r3c">Invest 20%</text><path class="th" d="M14 110 L24 110 L34 109 L44 107 L56 103"/><rect class="wa th" x="100" y="89" width="50" height="22" rx="11"/><text class="tx sm" x="125" y="104" text-anchor="middle">+$310k</text></svg>
       </article>
       <article class="card rule">
-        <div><h3 data-i18n="h.r4t">You race your autopilot twin</h3><p data-i18n="h.r4p">Your twin has the same birth and the same luck, but always takes the default option. The gap between your line and theirs is what your choices were worth.</p></div>
+        <div><h3 data-i18n="h.r4t">The parallel you</h3><p data-i18n="h.r4p">Walk beside the version of you who always played it safe, and see how far apart you end up.</p></div>
         <svg class="art" viewBox="0 0 160 120" aria-hidden="true"><path class="th" stroke-dasharray="6 6" d="M10 108 C60 104 96 92 132 78"/><path d="M10 108 C60 100 92 64 130 28"/><path class="th" d="M150 32 V74 M145 32 H155 M145 74 H155"/><circle class="ya" cx="130" cy="26" r="11"/><circle class="ch ns" cx="126.5" cy="25" r="1.5"/><circle class="ch ns" cx="133.5" cy="25" r="1.5"/><path class="th" d="M127 29 q3 2.5 6 0"/><circle class="mi" cx="134" cy="78" r="10"/><path class="th" d="M130 77 q2 2 4 0 M134.5 77 q2 2 4 0"/><path class="th" d="M131 82 h6"/><rect class="wa th" x="8" y="22" width="54" height="22" rx="11"/><text class="tx sm" x="35" y="37" text-anchor="middle">+$212k</text><circle class="ya" cx="10" cy="108" r="4"/><text class="tx sm" x="4" y="122" data-i18n="h.r4s">age 18</text></svg>
       </article>
     </div>
@@ -142,9 +142,9 @@
 <section class="band world" id="world">
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker" data-i18n="h.worldK">Where you'll probably be born</p>
-      <h2 data-i18n="h.worldH">Your first decision isn't yours.</h2>
-      <p class="sub" data-i18n="h.worldSub">Each block is one of the 17 countries in the game, sized by how many babies are born there each year. Tap one to see how a life there starts.</p>
+      <p class="kicker" data-i18n="h.worldK">Where you might begin</p>
+      <h2 data-i18n="h.worldH">The first choice is never yours.</h2>
+      <p class="sub" data-i18n="h.worldSub">Each block is one of the game’s 17 countries, sized by how many babies are born there each year. Tap one to see how a life there begins.</p>
     </div>
     <div class="strip" id="strip" role="group" aria-label="Countries by number of births"></div>
     <div class="strip-info" id="stripInfo" aria-live="polite"></div>
@@ -160,31 +160,31 @@
 <section class="band" id="decisions">
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker" data-i18n="h.decK">A life, decision by decision</p>
-      <h2 data-i18n="h.decH">About 50 choices a life, dealt from a deck of 96. Every one has a money side.</h2>
-      <p class="sub" data-i18n="h.decSub">Every life deals a different mix, from your first pocket money to your will. Here are 20 of the cards. Time stops for each one, and every year you also pick a focus that keeps paying, or costing, for as long as you keep it.</p>
+      <p class="kicker" data-i18n="h.decK">A life, one card at a time</p>
+      <h2 data-i18n="h.decH">Around 50 choices in a life, drawn from a deck of 96. Each one touches your money, and often more than money.</h2>
+      <p class="sub" data-i18n="h.decSub">No two lives draw the same hand, from your first pocket money to your will. Here are 20 of the cards. Time pauses for each one. Every year you also choose a focus, which quietly pays, or costs, for as long as you keep it.</p>
     </div>
     <div class="dec-list">
-      <article class="tarot mini" data-ev="pocket"><div class="t-in"><span class="t-num">0</span><div class="t-win" data-art="pocket"></div><span class="dec-age">12<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d1t">Birthday money</h3><p data-i18n="h.d1p">Spend it, keep it in a jar, or invest it. Your passbook shows what that money would have grown into.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.pocket">The Fool</span></div></article>
-      <article class="tarot mini" data-ev="summer"><div class="t-in"><span class="t-num">XIX</span><div class="t-win" data-art="summer"></div><span class="dec-age">16<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d2t">Your summer</h3><p data-i18n="h.d2p">A part-time job, studying for exams, or rest. Good grades win a university scholarship.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.summer">The Sun</span></div></article>
-      <article class="tarot mini" data-ev="edu"><div class="t-in"><span class="t-num">V</span><div class="t-win" data-art="edu"></div><span class="dec-age">18<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d3t">After school</h3><p data-i18n="h.d3p">University, a diploma, or work straight away. You see the fees, the loan, and the pay rise you keep for life.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.edu">The Hierophant</span></div></article>
-      <article class="tarot mini" data-ev="job"><div class="t-in"><span class="t-num">I</span><div class="t-win" data-art="job"></div><span class="dec-age">18+<small data-i18n="h.firstJob">first job</small></span><h3 data-i18n="h.d4t">Choose a career</h3><p data-i18n="h.d4p">About 30 careers, from nurse to footballer to hawker. Some need a degree, good health or savings.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.job">The Magician</span></div></article>
-      <article class="tarot mini" data-ev="save"><div class="t-in"><span class="t-num">II</span><div class="t-win" data-art="save"></div><span class="dec-age">18+<small data-i18n="h.firstPay">first pay</small></span><h3 data-i18n="h.d5t">Your first paycheck</h3><p data-i18n="h.d5p">How much goes straight into an index fund every month: nothing, 10%, 20% or 30%.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.save">The High Priestess</span></div></article>
-      <article class="tarot mini" data-ev="insure"><div class="t-in"><span class="t-num">VIII</span><div class="t-win" data-art="insure"></div><span class="dec-age">24<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d6t">Health insurance</h3><p data-i18n="h.d6p">A fixed cost every year, or pay the whole bill yourself if you get sick.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.insure">Strength</span></div></article>
+      <article class="tarot mini" data-ev="pocket"><div class="t-in"><span class="t-num">0</span><div class="t-win" data-art="pocket"></div><span class="dec-age">12<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d1t">Birthday money</h3><p data-i18n="h.d1p">Spend it, keep it in a jar, or invest it. Years later, your passbook shows what it could have become.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.pocket">The Fool</span></div></article>
+      <article class="tarot mini" data-ev="summer"><div class="t-in"><span class="t-num">XIX</span><div class="t-win" data-art="summer"></div><span class="dec-age">16<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d2t">Your summer</h3><p data-i18n="h.d2p">A part-time job, a summer of study, or a summer of rest. Good grades can win a university scholarship.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.summer">The Sun</span></div></article>
+      <article class="tarot mini" data-ev="edu"><div class="t-in"><span class="t-num">V</span><div class="t-win" data-art="edu"></div><span class="dec-age">18<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d3t">After school</h3><p data-i18n="h.d3p">University, a diploma, or work straight away. You see the fees and the loan; the pay rise stays with you for life.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.edu">The Hierophant</span></div></article>
+      <article class="tarot mini" data-ev="job"><div class="t-in"><span class="t-num">I</span><div class="t-win" data-art="job"></div><span class="dec-age">18+<small data-i18n="h.firstJob">first job</small></span><h3 data-i18n="h.d4t">Choose a career</h3><p data-i18n="h.d4p">About 30 paths, from nurse to footballer to hawker. Some ask for a degree, good health or savings.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.job">The Magician</span></div></article>
+      <article class="tarot mini" data-ev="save"><div class="t-in"><span class="t-num">II</span><div class="t-win" data-art="save"></div><span class="dec-age">18+<small data-i18n="h.firstPay">first pay</small></span><h3 data-i18n="h.d5t">Your first paycheck</h3><p data-i18n="h.d5p">How much slips quietly into an index fund each month: nothing, 10%, 20% or 30%.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.save">The High Priestess</span></div></article>
+      <article class="tarot mini" data-ev="insure"><div class="t-in"><span class="t-num">VIII</span><div class="t-win" data-art="insure"></div><span class="dec-age">24<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d6t">Health insurance</h3><p data-i18n="h.d6p">A small, steady cost every year, or the whole bill on your own if you fall ill.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.insure">Strength</span></div></article>
       <article class="tarot mini" data-ev="car"><div class="t-in"><span class="t-num">VII</span><div class="t-win" data-art="car"></div><span class="dec-age">25<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d7t">Buying a car</h3><p data-i18n="h.d7p">New on a loan, used for cash, or keep taking the bus.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.car">The Chariot</span></div></article>
-      <article class="tarot mini" data-ev="tip"><div class="t-in"><span class="t-num">X</span><div class="t-win" data-art="tip"></div><span class="dec-age">27<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d8t">A hot tip</h3><p data-i18n="h.d8p">A friend's new crypto coin. Go big, bet small, or skip it.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.tip">Wheel of Fortune</span></div></article>
-      <article class="tarot mini" data-ev="cert"><div class="t-in"><span class="t-num">IX</span><div class="t-win" data-art="cert"></div><span class="dec-age">29<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d9t">Level up</h3><p data-i18n="h.d9p">A part-time Master's, a professional certificate, or keep your evenings free.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.cert">The Hermit</span></div></article>
-      <article class="tarot mini" data-ev="wed"><div class="t-in"><span class="t-num">VI</span><div class="t-win" data-art="wed"></div><span class="dec-age">30<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d10t">The wedding</h3><p data-i18n="h.d10p">300 guests, a modest party, or a registry office and a nice dinner.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.wed">The Lovers</span></div></article>
-      <article class="tarot mini" data-ev="home"><div class="t-in"><span class="t-num">III</span><div class="t-win" data-art="home"></div><span class="dec-age">31<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d11t">Rent or buy</h3><p data-i18n="h.d11p">A family home, a small flat, or keep renting and investing the difference.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.home">The Empress</span></div></article>
-      <article class="tarot mini" data-ev="kids"><div class="t-in"><span class="t-num">XVIII</span><div class="t-win" data-art="kids"></div><span class="dec-age">33<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d12t">Children</h3><p data-i18n="h.d12p">Each child costs about 15% of a typical wage every year until they're 22.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.kids">The Moon</span></div></article>
-      <article class="tarot mini" data-ev="crash"><div class="t-in"><span class="t-num">XVI</span><div class="t-win" data-art="crash"></div><span class="dec-age">34–50<small data-i18n="h.sometime">sometime</small></span><h3 data-i18n="h.d13t">The crash</h3><p data-i18n="h.d13p">Stocks fall 38% in a few weeks. Sell everything, hold, or buy more.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.crash">The Tower</span></div></article>
-      <article class="tarot mini" data-ev="biz"><div class="t-in"><span class="t-num">IV</span><div class="t-win" data-art="biz"></div><span class="dec-age">36<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d14t">Your own business</h3><p data-i18n="h.d14p">Quit and go all in, start it on the side, or stay employed.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.biz">The Emperor</span></div></article>
-      <article class="tarot mini" data-ev="save2"><div class="t-in"><span class="t-num">XI</span><div class="t-win" data-art="save2"></div><span class="dec-age">40<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d15t">Halfway check-in</h3><p data-i18n="h.d15p">Raise or lower how much of each paycheck you invest.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.save2">Justice</span></div></article>
-      <article class="tarot mini" data-ev="pivot"><div class="t-in"><span class="t-num">XIII</span><div class="t-win" data-art="pivot"></div><span class="dec-age">43<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d16t">Your industry changes</h3><p data-i18n="h.d16p">Retrain for a year on half pay, or watch your skill slip from 45.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.pivot">Death</span></div></article>
-      <article class="tarot mini" data-ev="life"><div class="t-in"><span class="t-num">XV</span><div class="t-win" data-art="life"></div><span class="dec-age">47<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d17t">A bigger life?</h3><p data-i18n="h.d17p">Upgrade your lifestyle, keep things the same, or live below your means.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.life">The Devil</span></div></article>
+      <article class="tarot mini" data-ev="tip"><div class="t-in"><span class="t-num">X</span><div class="t-win" data-art="tip"></div><span class="dec-age">27<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d8t">A hot tip</h3><p data-i18n="h.d8p">A friend’s new crypto coin. Go big, bet small, or let it pass.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.tip">Wheel of Fortune</span></div></article>
+      <article class="tarot mini" data-ev="cert"><div class="t-in"><span class="t-num">IX</span><div class="t-win" data-art="cert"></div><span class="dec-age">29<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d9t">Level up</h3><p data-i18n="h.d9p">A part-time Master’s, a professional certificate, or evenings kept for yourself.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.cert">The Hermit</span></div></article>
+      <article class="tarot mini" data-ev="wed"><div class="t-in"><span class="t-num">VI</span><div class="t-win" data-art="wed"></div><span class="dec-age">30<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d10t">The wedding</h3><p data-i18n="h.d10p">300 guests, a modest party, or a registry office and a quiet dinner.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.wed">The Lovers</span></div></article>
+      <article class="tarot mini" data-ev="home"><div class="t-in"><span class="t-num">III</span><div class="t-win" data-art="home"></div><span class="dec-age">31<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d11t">Rent or buy</h3><p data-i18n="h.d11p">A family home, a small flat, or keep renting and invest the difference.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.home">The Empress</span></div></article>
+      <article class="tarot mini" data-ev="kids"><div class="t-in"><span class="t-num">XVIII</span><div class="t-win" data-art="kids"></div><span class="dec-age">33<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d12t">Children</h3><p data-i18n="h.d12p">Each child costs about 15% of a typical wage a year until they turn 22, and brings things money can’t measure.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.kids">The Moon</span></div></article>
+      <article class="tarot mini" data-ev="crash"><div class="t-in"><span class="t-num">XVI</span><div class="t-win" data-art="crash"></div><span class="dec-age">34–50<small data-i18n="h.sometime">sometime</small></span><h3 data-i18n="h.d13t">The crash</h3><p data-i18n="h.d13p">Stocks can lose a third or more in a few weeks. Sell everything, hold on, or buy more.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.crash">The Tower</span></div></article>
+      <article class="tarot mini" data-ev="biz"><div class="t-in"><span class="t-num">IV</span><div class="t-win" data-art="biz"></div><span class="dec-age">36<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d14t">Your own business</h3><p data-i18n="h.d14p">Quit and go all in, start it on the side, or stay where you are.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.biz">The Emperor</span></div></article>
+      <article class="tarot mini" data-ev="save2"><div class="t-in"><span class="t-num">XI</span><div class="t-win" data-art="save2"></div><span class="dec-age">40<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d15t">Halfway check-in</h3><p data-i18n="h.d15p">Invest more of each paycheck, or less.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.save2">Justice</span></div></article>
+      <article class="tarot mini" data-ev="pivot"><div class="t-in"><span class="t-num">XIII</span><div class="t-win" data-art="pivot"></div><span class="dec-age">43<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d16t">Your industry changes</h3><p data-i18n="h.d16p">Retrain for a year on half pay, or watch your skill slowly fade from 45.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.pivot">Death</span></div></article>
+      <article class="tarot mini" data-ev="life"><div class="t-in"><span class="t-num">XV</span><div class="t-win" data-art="life"></div><span class="dec-age">47<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d17t">A bigger life?</h3><p data-i18n="h.d17p">Upgrade the way you live, keep things as they are, or live below your means.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.life">The Devil</span></div></article>
       <article class="tarot mini" data-ev="inh"><div class="t-in"><span class="t-num">XX</span><div class="t-win" data-art="inh"></div><span class="dec-age">46–59<small data-i18n="h.maybe">maybe</small></span><h3 data-i18n="h.d18t">An inheritance</h3><p data-i18n="h.d18p">Invest it, pay off the house, spend it, or leave it in the bank.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.inh">Judgement</span></div></article>
       <article class="tarot mini" data-ev="ret"><div class="t-in"><span class="t-num">XVII</span><div class="t-win" data-art="ret"></div><span class="dec-age">55<small data-i18n="h.age">age</small></span><h3 data-i18n="h.d19t">When to stop working</h3><p data-i18n="h.d19p">Retire at 55, 60, 65 or 70, and live on what you built.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.ret">The Star</span></div></article>
-      <article class="tarot mini" data-ev="debt"><div class="t-in"><span class="t-num">XIV</span><div class="t-win" data-art="debt"></div><span class="dec-age"><span data-i18n="h.any">Any</span><small data-i18n="h.anyS">age</small></span><h3 data-i18n="h.d20t">Credit card debt</h3><p data-i18n="h.d20p">18% interest a year. Sell investments, cut spending, or pay the minimum.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.debt">Temperance</span></div></article>
+      <article class="tarot mini" data-ev="debt"><div class="t-in"><span class="t-num">XIV</span><div class="t-win" data-art="debt"></div><span class="dec-age"><span data-i18n="h.any">Any</span><small data-i18n="h.anyS">age</small></span><h3 data-i18n="h.d20t">Credit card debt</h3><p data-i18n="h.d20p">18% interest a year. Sell investments, spend less, or pay the minimum.</p></div><div class="t-ban"><span class="t-name" data-i18n="tn.debt">Temperance</span></div></article>
     </div>
   </div>
 </section>
@@ -193,8 +193,8 @@
   <canvas id="finalRosette" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="final-in">
-      <h2 data-i18n="h.finalH">Your life is <em>waiting.</em></h2>
-      <p data-i18n="h.finalP">A life takes about 15 minutes. You'll make around 45 money decisions, and at the end you'll see which ones grew the most and which ones cost you.</p>
+      <h2 data-i18n="h.finalH">Somewhere, a life is <em>about to begin.</em></h2>
+      <p data-i18n="h.finalP">A life takes about 15 minutes and around 50 decisions. At the end you’ll see what grew, what it cost you, and a grade for the whole life: money, happiness, health and the people around you.</p>
       <div class="cta-row">
         <a class="btn btn-accent btn-lg" href="play.html#born"><span data-i18n="h.ctaRand">Be born at random</span> <span class="arr">→</span></a>
         <a class="btn btn-ghost btn-lg" href="play.html#pick" data-i18n="h.ctaPick">Choose a country</a>
@@ -208,18 +208,18 @@
   <div class="wrap foot-grid">
     <div>
       <h4 data-i18n="h.brand">A Second Chance</h4>
-      <p data-i18n="h.f1p">A free money game inspired by <a href="https://1in8b.life/" target="_blank" rel="noopener">1 in 8 Billion</a>. Built with Claude.</p>
+      <p data-i18n="h.f1p">A free game about money and time, inspired by <a href="https://1in8b.life/" target="_blank" rel="noopener">1 in 8 Billion</a>. Built with Claude.</p>
     </div>
     <div>
       <h4 data-i18n="h.f2h">Where the numbers come from</h4>
       <p data-i18n="h.f2p1">Wages, house prices, university fees and life expectancy are rough figures based on public World Bank and UN data. All money is in dollars adjusted to local prices (PPP) and kept in today's money, so inflation is already taken out.</p>
-      <p data-i18n="h.f2p2">In the game, stocks grow about 4–5% a year after inflation on average, with real crashes and booms.</p>
+      <p data-i18n="h.f2p2">In the game, stocks grow about 4–5% a year after inflation on average, through real crashes, booms and the occasional lost decade.</p>
       <p data-i18n="h.f2p4">Women and men: life expectancy and the sex ratio at birth come from the <a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank</a> (2023). The gender pay gap comes from the <a href="https://data-explorer.oecd.org/" target="_blank" rel="noopener">OECD</a> (median full-time pay in Japan, the US, the UK, Germany, Mexico and Brazil), Singapore's Ministry of Manpower, Malaysia's DOSM and <a href="https://ilostat.ilo.org/" target="_blank" rel="noopener">ILOSTAT</a> for the rest. The motherhood penalty comes from <a href="https://childpenaltyatlas.org/" target="_blank" rel="noopener">The Child Penalty Atlas</a> (Kleven, Landais and Leite-Mariante, 2025). China's pay gap (no official figure, so the ILO world average), Singapore's child penalty, pay gaps below zero (counted as zero) and turning the child penalty into lower pay are estimates.</p>
       <p data-i18n="h.f2p3">Where you stand in the world: wealth ranks use the UBS <a href="https://www.ubs.com/global/en/wealthmanagement/insights/global-wealth-report.html" target="_blank" rel="noopener">Global Wealth Report 2023</a> and Global Wealth Databook 2023 (end of 2022, all 5.4 billion adults). Income ranks use the <a href="https://pip.worldbank.org/" target="_blank" rel="noopener">World Bank Poverty and Inequality Platform</a> (2022, in 2021 PPP dollars). Game money is turned into US dollars with <a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank</a> 2022 price levels. Ranks inside a country, wealth ranks below the world median, and income ranks are estimates.</p>
     </div>
     <div>
-      <h4 data-i18n="h.f3h">Please note</h4>
-      <p data-i18n="h.f3p">This is a game for learning and fun, not financial advice. Real lives are messier than any model.</p>
+      <h4 data-i18n="h.f3h">A quiet note</h4>
+      <p data-i18n="h.f3p">This is a game for learning and play, not financial advice. Real lives are always messier than any model.</p>
     </div>
   </div>
 </footer>
