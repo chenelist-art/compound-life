@@ -1382,7 +1382,7 @@ Object.assign(ZHT,{
 });
 /* the life replay before the end card: a story per stage and the road not taken */
 Object.assign(EN,{'rp.aria':'Life replay','rp.kick':'Your life in {c}','rp.skip':'Skip','rp.again':'Watch my life again','rp.q':'Was it all worth it?',
-'rp.prev':'Back','rp.next':'Next','rp.fin':'The end','rp.n':'{i} of {n}','rp.hint':'Swipe, or use the ← → keys',
+'rp.prev':'Back','rp.next':'Next','rp.fin':'The end','rp.n':'{i} of {n}','rp.hint':'Tap the drawing to speed it up · swipe or use ← →',
 'rp.s.birth':'Birth','rp.s.child':'Childhood','rp.s.school':'School','rp.s.job':'First job','rp.s.love':'Love','rp.s.home':'Home','rp.s.kids':'Children','rp.s.crisis':'Hard times','rp.s.ret':'Retirement','rp.s.old':'Old age','rp.s.end':'The end',
 'rp.bornT':'Born in {c}','rp.endT':'The last page',
 'rp.t.born':'You were born a {x} in {c}, into {fam}.','rp.t.dec':'At {a} you chose “{l}”.',
@@ -1396,7 +1396,7 @@ Object.assign(EN,{'rp.aria':'Life replay','rp.kick':'Your life in {c}','rp.skip'
 'rp.vs':'about {a} by {age}','rp.same':'about the same','rp.bestT':'best',
 'rp.best':'Your choice was the best of these.','rp.notBest':'Usually best: “{x}”.','rp.tie':'They all usually ended up about the same.'});
 Object.assign(ZH,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳过','rp.again':'再看一次我的一生','rp.q':'这一切值得吗？',
-'rp.prev':'上一页','rp.next':'下一页','rp.fin':'结束','rp.n':'第{i}页，共{n}页','rp.hint':'左右滑动，或按 ← → 键',
+'rp.prev':'上一幕','rp.next':'下一幕','rp.fin':'结束','rp.n':'第{i}幕，共{n}幕','rp.hint':'点一下画面可以加快 · 左右滑动或按 ← → 键',
 'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求学','rp.s.job':'第一份工作','rp.s.love':'爱情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'难关','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'终章',
 'rp.bornT':'出生在{c}','rp.endT':'最后一页',
 'rp.t.born':'你出生在{c}的{fam}，是个{x}。','rp.t.dec':'{a}岁时，你选择了「{l}」。',
@@ -1410,7 +1410,7 @@ Object.assign(ZH,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.sk
 'rp.vs':'到{age}岁约{a}','rp.same':'差不多','rp.bestT':'最好',
 'rp.best':'你的选择是其中最好的。','rp.notBest':'通常最好的是「{x}」。','rp.tie':'几个选项的结果通常差不多。'});
 Object.assign(ZHT,{'rp.aria':'人生回放','rp.kick':'你在{c}的一生','rp.skip':'跳過','rp.again':'再看一次我的一生','rp.q':'這一切值得嗎？',
-'rp.prev':'上一頁','rp.next':'下一頁','rp.fin':'結束','rp.n':'第{i}頁，共{n}頁','rp.hint':'左右滑動，或按 ← → 鍵',
+'rp.prev':'上一幕','rp.next':'下一幕','rp.fin':'結束','rp.n':'第{i}幕，共{n}幕','rp.hint':'點一下畫面可以加快 · 左右滑動或按 ← → 鍵',
 'rp.s.birth':'出生','rp.s.child':'童年','rp.s.school':'求學','rp.s.job':'第一份工作','rp.s.love':'愛情','rp.s.home':'家','rp.s.kids':'孩子','rp.s.crisis':'難關','rp.s.ret':'退休','rp.s.old':'晚年','rp.s.end':'終章',
 'rp.bornT':'出生在{c}','rp.endT':'最後一頁',
 'rp.t.born':'你出生在{c}的{fam}，是個{x}。','rp.t.dec':'{a}歲時，你選擇了「{l}」。',
@@ -1642,6 +1642,13 @@ Object.assign(ZHT,{
 'hx.hl':'這幾年健康 {n}。',
 'e.mentor.h':'大約三分之一的導師其實幫不上什麼忙。',
 'trk.car2Keep':'舊車的維修費'});
+/* the line-drawing replay */
+Object.assign(EN,{
+'rp.age':'Age {a}'});
+Object.assign(ZH,{
+'rp.age':'{a}岁'});
+Object.assign(ZHT,{
+'rp.age':'{a}歲'});
 const D={en:EN,zh:ZH,zht:ZHT};
 let lang='en';
 try{const v=localStorage.getItem('cl-lang');if(LANGS.includes(v))lang=v;else{const n=(navigator.language||'').toLowerCase();if(n.startsWith('zh'))lang=/(tw|hk|mo|hant)/.test(n)?'zht':'zh'}}catch(e){}

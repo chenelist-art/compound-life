@@ -15,7 +15,9 @@ const cloud=(x,y,s,c)=>`<path class="${c||'wh'}" d="M${x} ${y} a${6*s} ${6*s} 0 
 const spark=(x,y,r,c)=>`<path class="${c||'ya'} th" d="M${x} ${y-r} Q${x} ${y} ${x+r} ${y} Q${x} ${y} ${x} ${y+r} Q${x} ${y} ${x-r} ${y} Q${x} ${y} ${x} ${y-r} Z"/>`;
 const star=(x,y,r,c)=>{let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.48:r;d+=(i?'L':'M')+(x+q*Math.cos(a)).toFixed(1)+' '+(y+q*Math.sin(a)).toFixed(1)}return `<path class="${c||'ya'}" d="${d}Z"/>`};
 const heart=(x,y,k,c)=>`<path class="${c||'co'}" d="M${x} ${y+18*k} C${x-26*k} ${y} ${x-16*k} ${y-22*k} ${x} ${y-10*k} C${x+16*k} ${y-22*k} ${x+26*k} ${y} ${x} ${y+18*k} Z"/>`;
-const ground=(y,c)=>`<rect class="${c||'wa'}" x="-200" y="${y}" width="520" height="80"/>`;
+/* bare: the life replay draws its own ground (the net-worth line), so stageArt() leaves the drawings' ground out */
+let bare=false;
+const ground=(y,c)=>bare?'':`<rect class="${c||'wa'}" x="-200" y="${y}" width="520" height="80"/>`;
 const coin=(x,y,r)=>`<circle class="ya" cx="${x}" cy="${y}" r="${r}"/><circle class="th" cx="${x}" cy="${y}" r="${r*.62}"/>`;
 const drop=(x,y)=>`<path class="wh th" d="M${x} ${y} q4 6 0 9 q-4 -3 0 -9z"/>`;
 function wreath(){let o='';for(const side of [-1,1]){for(let i=0;i<9;i++){const a=side<0?110+i*17:70-i*17;const r=a*Math.PI/180;const x=60+41*Math.cos(r),y=45+41*Math.sin(r);o+=`<ellipse class="wa th" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="6.5" ry="3.2" transform="rotate(${(a+90-side*30).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}}return o+`<path class="co th" d="M54 88 l6 -5 l6 5 M60 83 v-2"/>`}
@@ -166,6 +168,9 @@ ret:{bg:'co',d:()=>`<circle class="ya" cx="62" cy="70" r="26"/>`+ground(70,'wa')
 old:{bg:'mi',d:()=>ground(78)+star(104,12,4,'wh')+heart(40,22,.22,'co')+`<rect class="co" x="84" y="50" width="7" height="28" rx="2"/><circle class="ya" cx="87" cy="40" r="17"/><ellipse class="co th" cx="70" cy="58" rx="3.5" ry="2" transform="rotate(30 70 58)"/><ellipse class="ya th" cx="106" cy="66" rx="3.5" ry="2" transform="rotate(-20 106 66)"/><rect class="wa" x="10" y="62" width="58" height="5" rx="2"/><path d="M14 67 v11 M64 67 v11"/><path class="wh" d="M16 63 q0 -14 12 -14 q12 0 12 14z"/><path class="wh" d="M40 63 q0 -14 12 -14 q12 0 12 14z"/><circle class="wh" cx="28" cy="41" r="9"/><circle class="wh" cx="52" cy="41" r="9"/><path class="th" d="M20 38 q8 -11 16 0 M44 38 q8 -11 16 0"/>`+face(28,42,.42,'sleep')+face(52,42,.42,'sleep')},
 end:{bg:'mi',d:()=>star(96,18,6)+star(78,42,3.5,'wh')+spark(106,54,4,'wh')+spark(14,14,4,'wh')+`<g transform="translate(10 -6)">${MOON}<path class="th" d="M28 37 q3 3 6 0"/><path class="th" d="M30 46 q3 2 6 0"/><ellipse class="co ns" cx="28" cy="42" rx="2.4" ry="1.5"/></g><ellipse class="wa" cx="28" cy="98" rx="58" ry="26"/><ellipse class="wa" cx="100" cy="100" rx="50" ry="24"/><rect class="wh" x="88" y="66" width="16" height="12"/><path class="co" d="M85 67 l11 -9 l11 9z"/><rect class="ya th" x="93" y="70" width="6" height="5" rx="1"/>`}
 };
+/* a stage drawing without its ground, and its window colour, for the replay's line drawing */
+function stageArt(id){bare=true;try{return STAGE[id].d()}finally{bare=false}}
+const stageBg=id=>BG[STAGE[id].bg];
 function stageWin(id,cls){const a=STAGE[id];return `<div class="t-win ${cls||''}" style="--wb:var(${BG[a.bg]})">${WRAP(a.d())}</div>`}
 /* ---------- big moment cards (same 120×90 box); moments that match a decision or a life stage borrow its drawing ---------- */
 const sad=(x,y,s)=>`<circle class="ch ns" cx="${x-5*s}" cy="${y-s}" r="${1.9*s}"/><circle class="ch ns" cx="${x+5*s}" cy="${y-s}" r="${1.9*s}"/><path class="th" d="M${x-3*s} ${y+5*s} q${3*s} ${-3*s} ${6*s} 0"/>`;
@@ -192,5 +197,5 @@ balance:{bg:'wa',d:()=>`<path class="th" d="M15 13 q2.5 -3 0 -6 M21 13 q2.5 -3 0
 people:{bg:'wh',d:()=>heart(20,10,.2,'co')+`<path class="co" d="M4 38 q0 -9 9 -9 q9 0 9 9z"/><path class="mi" d="M18 38 q0 -9 9 -9 q9 0 9 9z"/><circle class="wh" cx="13" cy="24" r="6.5"/><circle class="wh" cx="27" cy="24" r="6.5"/>`+face(13,25,.32,0,false)+face(27,25,.32,0,false)}
 };
 function focusWin(id){const a=FOC[id];return `<span class="t-win fc-win" style="--wb:var(${BG[a.bg]})"><svg class="art" viewBox="0 0 40 40" aria-hidden="true" focusable="false">${a.d()}</svg></span>`}
-window.Art={svg,win,card,corners,banner,decorate,roman,stageWin,focusWin,momentWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
+window.Art={svg,win,card,corners,banner,decorate,roman,stageWin,stageArt,stageBg,focusWin,momentWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
 })();
