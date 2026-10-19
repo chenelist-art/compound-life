@@ -35,7 +35,7 @@ function pickCountry(){const tot=C.reduce((a,c)=>a+c[2],0);let u=Math.random()*t
 /* "Let me choose" picks the country and, if you like, girl or boy; otherwise both are drawn (sex from the country's sex ratio at birth) */
 $('#born').addEventListener('click',()=>{const pk=$('#bp-pick').checked;reveal(pk?+sel.value:pickCountry(),pk&&$('#sex').value||undefined)});
 function renderPast(){const p=store.get('cl-past')||[];$('#pastwrap').hidden=!p.length;
-  $('#past').innerHTML=p.slice(0,5).map(x=>{const ci=x.ci!=null?x.ci:C.findIndex(c=>c[0]===x.c);return `<li><span>${esc(t('g.pastItem',{c:ci>=0?I18N.cname(ci):x.c,a:x.age}))}</span><span class="num ${cls(x.nw)}">${fm(x.nw)}</span></li>`}).join('')}
+  $('#past').innerHTML=p.slice(0,5).map(x=>{const ci=x.ci!=null?x.ci:C.findIndex(c=>c[0]===x.c);return `<li><span>${esc(t('g.pastItem',{c:ci>=0?I18N.cname(ci):x.c,a:x.age}))}</span><span class="num ${cls(x.nw)}">${x.g?`<b class="pgrade">${esc(x.g)}</b>`:''}${fm(x.nw)}</span></li>`}).join('')}
 renderPast();
 function setupBg(){Guilloche.render($('#setupRosette'),Object.assign({},Guilloche.MOON,{phase:.6}))}
 setupBg();
@@ -45,7 +45,7 @@ function revealText(){if(!R)return;const{ci,life}=R;$('#rname').textContent=I18N
   $('#rfam').textContent=t('g.bornR',{x:M('sex.kid.'+life.sex),fam:M('fam.'+life.fam)});
   $('#rmeta').textContent=t('g.rmeta',{a:MN(life.base),le:life.le,h:C[ci][5]})}
 function reveal(ci,sex){
-  const seed=(Math.random()*4294967296)>>>0;const life=newLife(ci,seed,sex);R=null;
+  const seed=(Math.random()*4294967296)>>>0;const life=newLife(ci,seed,sex,diff);R=null;
   $('#setupForm').hidden=true;$('#roulette').hidden=false;$('#rgo').hidden=true;
   const nm=$('#rname');nm.classList.remove('landed');$('#rfam').textContent='';$('#rmeta').textContent='';
   const total=reduce?0:20;let k=0;
@@ -61,7 +61,7 @@ function backToSetup(){closeReplay(true);closeMoment();G.moq=[];G.moThen=null;cl
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex),t:newLife(ci,seed,sex),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;G.snapS=snap(s);
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -109,7 +109,7 @@ function showDecision(ev){
 function choose(id){
   const ev=G.pending;if(!ev)return;const s=G.s;
   /* the 40 futures are worked out from the moment before you choose; they are kept for the hindsight card and the end card */
-  const P=G.proj&&G.proj.ev===ev?G.proj:Object.assign(projBegin(s,ev,40),{ev}),os=ev.opts(s),age=s.age;
+  const P=G.proj&&G.proj.ev===ev?G.proj:Object.assign(projBegin(s,ev,40),{ev}),os=evOpts(s,ev),age=s.age;
   while(P.todo.length)projNext(s,ev,P);
   const had=new Set(Object.keys(s.trk));
   const o=applyOpt(s,ev,id);lifeMoments();
@@ -136,7 +136,7 @@ function checkMilestones(){
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s))});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
+function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);G.grade=lifeScore(s);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s)),g:G.grade.grade});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
   /* the farewell card comes first, then the life replay */
   if(moOn){G.moq=[deathMo()];G.moThen=playReplay;showMoment()}else playReplay()}
 
@@ -149,7 +149,7 @@ const MOMENT={'log.laidOff':'fired','log.layVol':'package','log.car.auto':'auto'
 const MO_EV={crash:1,ill:1,inh:1};
 const MO_BAD=new Set(['fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury']);
 /* smaller events stay as a toast, so the game isn't stopped every year */
-const SMALL=new Set(['log.car.trained','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj']);
+const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj']);
 let moOn=store.get('cl-moments')!==false;
 function setMo(on){moOn=on;document.querySelectorAll('#mo0 button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.mo==='1')===on)));store.set('cl-moments',on)}
 document.querySelectorAll('#mo0 button').forEach(b=>b.addEventListener('click',()=>setMo(b.dataset.mo==='1')));
@@ -162,7 +162,7 @@ function moMoney(kind,m){const s=G.s,v=m&&m.v||{},sal=Math.max(s.lastSal||0,sala
     case 'auto':return{k:'mo.n.sev',v:num(v.a)};
     case 'bizfail':return m.k==='log.bizFail'?{k:'mo.n.gone',v:-num(v.a)}:{k:'mo.n.noInc'};
     case 'crypto':return{k:'mo.n.coin',v:num(v.b)-num(v.a)};
-    case 'crash':return s.crashP>1?{k:'mo.n.stock',v:-s.crashP/.62*.38}:{k:'mo.n.noStock'};
+    case 'crash':{const m=s.crashM||.62;return s.crashP>1?{k:'mo.n.stock',v:-s.crashP/m*(1-m)}:{k:'mo.n.noStock'}}
     case 'burst':return s.house?{k:'mo.n.home',v:-s.house.value/.7*.3}:{k:'mo.n.noHome'};
     case 'broke':return{k:'mo.n.broke',v:0,flat:1};
     case 'divorce':return{k:'mo.n.div',v:-num(v.a)};
@@ -255,7 +255,7 @@ function rankCountry(nw,ci){ci=ci==null?G.s.ci:ci;const p=countryPct(ci,nw),c=I1
 /* four other babies born in the same second: random countries weighted by births, same rules, default choices */
 function bornWithYou(){const s=G.s,tot=C.reduce((a,c)=>a+c[2],0),out=[];
   for(let i=0;i<4;i++){let u=mb(hsh(s.seed,'peer',i))()*tot,ci=0;for(;ci<C.length-1;ci++){u-=C[ci][2];if(u<=0)break}
-    const p=newLife(ci,hsh(s.seed,'peerSeed',i));let g=0,top=0,topAge=0;while(!p.dead&&g++<130){resolveAuto(p);tick(p,yearRand(p.seed,p.age),null);const v=netWorth(p);if(v>top){top=v;topAge=p.dead?p.deathAge:p.age}}
+    const p=newLife(ci,hsh(s.seed,'peerSeed',i),undefined,s.dk);let g=0,top=0,topAge=0;while(!p.dead&&g++<130){resolveAuto(p);tick(p,yearRand(p.seed,p.age),null);const v=netWorth(p);if(v>top){top=v;topAge=p.dead?p.deathAge:p.age}}
     out.push({ci,fam:p.fam,sex:p.sex,age:p.deathAge,nw:netWorth(p),top,topAge})}
   return out}
 /* a sun with one scalloped ring per wealth level; it falls asleep (a moon) when the life ends */
@@ -287,7 +287,7 @@ function selectShare(){const r=document.createRange();r.selectNodeContents($('#s
 /* in Easy, an option's text also gets its hint (skill, pay %, odds); otherwise you only see what you'd know in real life */
 function withHint(a,h){return G.mode==='easy'&&h?tr(a)+(I18N.lang==='en'?' ':'')+tr(h):tr(a)}
 function slipHTML(ev){
-  const s=G.s,os=ev.opts(s),easy=G.mode==='easy';
+  const s=G.s,os=evOpts(s,ev),easy=G.mode==='easy';
   const keys=`<span class="kbd">1</span>–<span class="kbd">${os.length}</span>`;
   return Art.card({cls:'slip',c:Art.frame(ev.id),num:Art.num(ev.id),label:trE(ev.title),name:esc(t('tn.'+ev.id)),win:Art.win(ev.id,'slip-win'),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.decAge',{a:s.age}))}</span><span class="payto">${esc(t('g.payto'))}</span></div>
@@ -312,22 +312,28 @@ function fillProj(){
     el.innerHTML=`${v.v}${barHTML(r,X,v.c)}<span class="pr">${esc(r.alive!=null?t('g.netBy',{a:MS(r.med),age:P.tgt}):risky?t('g.risky',{a:MS(r.lo),b:MS(r.hi)}):t('g.byAge',{a:P.tgt}))}${Math.abs(r.earn)>.05*B?esc(t('g.lifePay',{a:MS(r.earn)})):''}</span>`;
   }
 }
-/* hindsight: how each option typically turned out, shown after you choose (Normal) and on the end card (all modes) */
+/* hindsight: how your choice typically turned out, shown after you choose (Normal), and every option on the end card (all modes) */
 const hv=r=>(r.alive!=null?r.alive*1e12:0)+(r.base?0:r.med);
 function bestOf(h){return h.rows.reduce((b,r)=>!b||hv(r)>hv(b)?r:b,null)}
 function hindHTML(h){
-  const B=G.s.base,X=scaleOf(h.rows),left=Math.max(0,(G.hindEnd||0)-Date.now());
+  const B=G.s.base,left=Math.max(0,(G.hindEnd||0)-Date.now());
   /* only crown a best option when it clearly beats another one */
   const b0=bestOf(h),best=h.rows.some(r=>hv(b0)-hv(r)>=.03*B)?b0:null;
   const top8=h.rows.length>8?new Set([h.pick,b0.id].concat(h.rows.slice().sort((a,b)=>hv(b)-hv(a)).map(r=>r.id))):null;
-  const shown=top8?h.rows.filter(r=>[...top8].slice(0,8).includes(r.id)):h.rows;
-  const rows=shown.map(r=>{const v=valHTML(r,B),mine=r.id===h.pick;return `<li class="hrow${mine?' mine':''}"><span class="ol">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${r===best?`<span class="tag tag-best">${esc(t('g.bestTag'))}</span>`:''}</span><span class="op">${v.v}${barHTML(r,X,v.c)}</span></li>`}).join('');
+  /* Normal shows only your own choice; the others wait for the end card */
+  const own=G.mode==='normal',shown=own?h.rows.filter(r=>r.id===h.pick):top8?h.rows.filter(r=>[...top8].slice(0,8).includes(r.id)):h.rows,X=scaleOf(shown);
+  const rows=shown.map(r=>{const v=valHTML(r,B),mine=r.id===h.pick;return `<li class="hrow${mine?' mine':''}"><span class="ol">${trE(r.label)}${mine?`<span class="tag">${esc(t('g.yours'))}</span>`:''}${!own&&r===best?`<span class="tag tag-best">${esc(t('g.bestTag'))}</span>`:''}</span><span class="op">${v.v}${barHTML(r,X,v.c)}</span></li>`}).join('');
   return Art.card({cls:'slip hind',c:Art.frame(h.id),num:Art.num(h.id),label:trE(h.title),name:esc(t('tn.'+h.id)),body:`
   <div class="slip-top"><span class="stamp">${esc(t('g.hindK',{a:h.age}))}</span></div>
-  <h2>${trE(h.title)}</h2><p class="slip-text">${esc(t('g.hindP',{age:h.tgt}))}${top8?(I18N.lang==='en'?' ':'')+esc(t('g.hindTop',{m:h.rows.length})):''}</p>
+  <h2>${trE(h.title)}</h2><p class="slip-text">${esc(t(own?'g.hindPN':'g.hindP',{age:h.tgt}))}${top8&&!own?(I18N.lang==='en'?' ':'')+esc(t('g.hindTop',{m:h.rows.length})):''}</p>
   <ul class="hrows">${rows}</ul>
   <div class="hfoot"><button class="btn btn-accent" id="hcont" type="button">${esc(t('g.cont'))} <span class="arr">→</span></button><span class="htimer" aria-hidden="true"><i style="animation-duration:${left}ms"></i></span></div>`});
 }
+/* the end grade: a letter from money, happiness, health and relationships (lifeScore in engine.js), with the four parts */
+const GP=[['money','sk'],['happy','ha'],['health','he'],['rel','re']];
+function gradeHTML(g){
+  return `<section class="grade"><div class="g-letter" data-g="${g.grade}"><b>${g.grade}</b></div><div class="g-txt"><h4>${esc(t('g.gradeT'))}</h4><p class="g-sum">${esc(t('g.grade.'+g.grade))}</p><p class="muted g-note">${esc(t('g.gradeNote'))}</p></div>
+  <div class="g-parts">${GP.map(([k,c])=>`<div><div class="sh"><span>${esc(t('g.gp.'+k))}</span><b>${Math.round(g[k])}</b></div><div class="track ${c}"><i style="width:${Math.round(g[k])}%"></i></div></div>`).join('')}</div></section>`}
 /* the same life as the other sex: same family, choices and luck, so only the pay gap, the child penalty and lifespan differ */
 function mirrorHTML(){const s=G.s,m=G.mirror;if(!m)return '';const a=s.deathAge,at=Math.min(a,m.deathAge);
   /* compare at the same age: yours from the chart history, theirs recorded by mirrorLife */
@@ -396,7 +402,8 @@ function endHTML(){
   const story=Math.abs(d)<1?esc(t('g.level')):d>0?esc(t('g.ahead',{a:'\u0001'})).replace('\u0001',`<b class="gain">${fm(d)}</b>`):esc(t('g.behind',{a:'\u0001'})).replace('\u0001',`<b class="loss">${fm(-d)}</b>`);
   const rel=Math.abs(d)<1?M('g.relLevel'):d>0?M('g.relAhead',{a:MN(d)}):M('g.relBehind',{a:MN(-d)});
   const wp=worldPct(s.ci,nw);
-  const share=t('g.share',{c:cn,fam,a:s.deathAge,nw:MN(nw),rel,best:best[0]?M('g.best',{x:best[0].tk.label,v:MS(best[0].v)}):''})+(wp>0?t('g.shareW',{p:pctTxt(wp)}):'');
+  const gr=G.grade||lifeScore(s);
+  const share=t('g.share',{c:cn,fam,a:s.deathAge,nw:MN(nw),rel,best:best[0]?M('g.best',{x:best[0].tk.label,v:MS(best[0].v)}):''})+(wp>0?t('g.shareW',{p:pctTxt(wp)}):'')+t('g.shareG',{g:gr.grade});
   /* you and the four babies born in the same second, ranked by how rich each life got at its peak (wealth at death mostly
      shows how much was spent in retirement) */
   const crowd=[{me:1,ci:s.ci,fam:s.fam,sex:s.sex,age:s.deathAge,nw,top:Math.max(0,peak[1]),topAge:peak[0]}].concat(G.peers||[]).map(p=>Object.assign(p,{w:worldPct(p.ci,p.top)}));
@@ -413,6 +420,7 @@ function endHTML(){
     <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div><canvas class="pix pix-end" id="pixEnd" width="48" height="48" aria-hidden="true"></canvas></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}${s.illDeath?(I18N.lang==='en'?' ':'')+esc(t('g.illEnd',{a:s.deathAge,x:M('ill.'+s.illDeath)})):''}</p>
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
+  ${gradeHTML(gr)}
   ${mirrorHTML()}
   ${stand}
   <div class="elists"><div><h4>${esc(t('g.grew'))}</h4><ul>${li(best)}</ul></div><div><h4>${esc(t('g.cost'))}</h4><ul>${li(worst)}</ul></div></div>

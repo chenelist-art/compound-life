@@ -520,6 +520,18 @@ tbody tr:hover td{background:var(--washi)}
 .egrid div{background:var(--mizu);border:2.5px solid var(--charcoal);border-radius:16px;padding:12px 14px;min-width:0}
 .egrid div:nth-child(2){background:var(--yamabuki)} .egrid div:nth-child(3){background:var(--wakatake)} .egrid div:nth-child(4){background:var(--coral)}
 .egrid b{display:block;font-size:24px;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums}
+/* the end grade: a big letter in a round seal, the verdict, and the four parts as bars */
+.grade{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 18px;align-items:center;padding:14px 16px;border:2.5px solid var(--charcoal);border-radius:16px;background:var(--washi);min-width:0}
+.g-letter{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;border:var(--outline);background:var(--yamabuki);box-shadow:4px 4px 0 var(--charcoal);transform:rotate(-4deg)}
+.g-letter[data-g="S"]{background:var(--wakatake)} .g-letter[data-g="A"]{background:var(--mizu)} .g-letter[data-g="C"]{background:var(--washi)} .g-letter[data-g="D"]{background:var(--coral)}
+.g-letter b{font-size:42px;line-height:1}
+.g-txt{display:grid;gap:2px;min-width:0}
+.g-txt h4{font-size:18px;margin:0}
+.g-sum{margin:0;font-size:17px}
+.g-note{margin:0;font-size:13px}
+.g-parts{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pgrade{display:inline-block;min-width:1.6em;margin-right:8px;text-align:center;border:2px solid var(--charcoal);border-radius:999px;font-size:12.5px;line-height:1.5}
+@media (max-width:700px){.g-parts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .elists{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .elists h4{font-size:16px;margin-bottom:8px}
 .elists ul{list-style:none;margin:0;padding:0}
