@@ -489,9 +489,9 @@ function endHTML(){
    tells what you did and what came of it (from the passbook history), and shows the road not taken: every other option's
    typical result from the 40 futures saved when you chose. You move on yourself (buttons, swipe, ←/→).
    The ending fades the screen to charcoal for "Was it all worth it?", the one dark moment in the design, then back to light. */
-const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip'],'edu'],
-  ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date','p_move'],'wed'],['home',['home','bubble','move'],'home'],['kids',['p_baby'],'p_baby'],
-  ['crisis',['ill','dep','crash','layoff','debt','divorce','p_div','p_break','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
+const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip','cn_gaokao','in_coach','et_exam','de_ausb','sg_ns','ng_nysc'],'edu'],
+  ['job',['job','save','nego','scheme','abroad','jp_shukatsu','cn_city','cn_kaogong','br_concurso','my_jb','in_gulf','pk_gulf','id_pmi','bd_gulf','mx_h2','ph_ofw','vn_xkld','ng_japa','bd_city','vn_city'],'job'],['love',['wed','date','p_move'],'wed'],['home',['home','bubble','move','sg_bto','cn_house','my_first','us_fha','gb_shared','de_buy','id_flpp','br_mcmv','mx_infonavit','ph_house','et_condo'],'home'],['kids',['p_baby'],'p_baby'],
+  ['crisis',['ill','dep','crash','layoff','debt','divorce','p_div','p_break','scam','scam2','us_medbill','my_flood','in_flood','ng_flood','pk_flood','id_flood','bd_flood','br_flood','mx_storm','ph_typhoon','vn_typhoon','ng_infl','pk_infl','et_infl']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
 const RPX={date:'no'}; // choices that mean the stage never happened
 /* a try for a baby only makes a page when a baby came of it (its story is the children's passbook line) */
 const rpOk=d=>d.id!=='p_baby'||G.s.kids.includes(d.age+1);

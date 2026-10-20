@@ -169,11 +169,11 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
    (with chance `p`, and only if `only(s)` allows it at birth); fixed-age events are placed first and
    the rest try to land on years that are still free. Events that missed the draw go into `spare`,
    used only to fill a quiet stretch (see dueEvents). */
-const DENSITY=.5; // scales every event's chance; raise it for more decisions per life (about 50 at .5)
+const DENSITY=.5; // scales every event's chance; raise it for more decisions per life (about 50 at .5). Country cards use their own (dens)
 function planLife(s){const r=mb(hsh(s.seed,'plan')),used={},plan={},spare={};
  for(const e of EV)if(e.win&&e.win[0]===e.win[1]){plan[e.id]=e.win[0];used[e.win[0]]=1}
  for(const e of EV){if(!e.win||e.win[0]===e.win[1])continue;
-  const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p);if(e.only&&!e.only(s))continue;const pick=r()<p*(p<1?DENSITY:1);
+  const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p);if(e.only&&!e.only(s))continue;const pick=r()<p*(p<1?(e.dens||DENSITY):1);
   const[a,b]=e.win;let age=a+Math.floor(r()*(b-a+1));for(let k=0;k<8&&used[age];k++)age=a+Math.floor(r()*(b-a+1));
   if(pick){used[age]=1;plan[e.id]=age}else if(p>0)spare[e.id]=age}
  s.spare=spare;return plan}
@@ -187,7 +187,7 @@ function setSave(s,p){s.savePct=p;if(p>0){const t=T(s,'lot_auto',{kind:'lot',src
 function bet(s,p){const amt=p*liquid(s);const fc=Math.min(Math.max(0,s.cash),amt);s.cash-=fc;withdrawEq(s,amt-fc);s.crypto={stake:amt,res:s.age+2};T(s,'tip',{kind:'custom',label:M(p>.1?'trk.tipBig':'trk.tipSmall'),note:M('note.tipIn',{a:MN(amt)})})}
 function wed(s,m,key){const a=m*s.base,p=s.pt;s.married=true;s.happy+=5;pay(s,a);const t=T(s,'wed'+p.n,{kind:'ghost',label:M(key)});t.spent+=a;t.g+=a;
  p.st='wed';p.wedAt=s.age;p.nw0=netWorth(s);ptLine(s)}
-function buy(s,P){const up=.23*P;pay(s,up);s.house={value:P,mort:.8*P,pay:mPay(.8*P),out:up,rentAv:0,frac:P/price(s),rate:.03,end:s.age+30};T(s,'home',{kind:'custom',label:M(P<price(s)?'trk.flat':'trk.home'),v:-.03*P,note:M('note.homeFees')})}
+function buy(s,P){const up=.23*P,r=.03+(s.rateAdj||0);homeFirst(s);pay(s,up);s.house={value:P,mort:.8*P,pay:amort(.8*P,r,30),out:up,rentAv:0,frac:P/price(s),rate:r,end:s.age+30};T(s,'home',{kind:'custom',label:M(P<price(s)?'trk.flat':'trk.home'),v:-.03*P,note:M('note.homeFees')})}
 function startBiz(s,mode,cap){pay(s,cap);s.biz={mode,cap,res:s.age+2,ok:false,done:false,inc:0,sold:false};T(s,'biz',{kind:'custom',label:M(mode==='full'?'trk.bizFull':'trk.bizSide'),v:-cap,note:M('note.bizIn',{a:MN(cap)})})}
 function crashTrack(s,mode){const P=s.crashP||0;if(P>1)T(s,'crash',{kind:'crash',mode,hold:P,sell:P,label:M(mode==='sell'?'trk.crashSell':'trk.crashHold')})}
 const crashPct=s=>Math.round(100*(1-(s.crashM||.62)));
@@ -351,7 +351,7 @@ function offerSwitch(s,why){if(!s.job)return;s.swAt=s.age+1;s.swWhy=why;delete s
 /* the start of a working year: training fees, a creative or sporting career rising or fading, commission and harvest luck */
 function careerStart(s,yr,L){const j=s.job,c=CAR[j.id],a=s.age,r=evR(s,'carYr'),nm=M('car.a.'+j.id);
  /* training fees come from savings first, the rest goes on the student loan (3%, paid back over ten years) */
- if(j.train>a){const f=c.tr.fee*s.base,fc=Math.min(Math.max(0,s.cash),f);s.cash-=fc;if(f>fc){s.sloan+=f-fc;s.sloanPay=amort(s.sloan,.03,10)}const t=s.trk[j.tk];if(t){t.v-=f;t.fee+=f;carNote(t)}return}
+ if(j.train>a){const f=c.tr.fee*s.base,fc=Math.min(Math.max(0,s.cash),f);s.cash-=fc;if(f>fc){s.sloan+=f-fc;s.sloanPay=slPay(s)}const t=s.trk[j.tk];if(t){t.v-=f;t.fee+=f;carNote(t)}return}
  if(j.train===a){if(evR(s,'trainFail')()<D(s).trainFail){L&&L(M('log.car.trainFail',{x:nm}),'bad');endCareer(s,'fail',a-1);return}L&&L(M('log.car.trained',{x:nm}),'good')}
  if(c.tiers){if(!j.seen){j.seen=1;if(j.tier>=c.tiers[2][1])L&&L(M('log.car.up',{x:nm}),'good')}
   else if((a-j.start)%4===0&&r()<.4){const o=j.tier;j.tier=drawTier(r,c);if(j.tier!==o)L&&L(M(j.tier>o?'log.car.up':'log.car.down',{x:nm}),j.tier>o?'good':'bad')}}
@@ -385,7 +385,7 @@ const ILLT={best:{c:2.5,m:3,h:10,y:2,p:.9},std:{c:.6,m:5,h:15,y:3,p:.8},skip:{c:
 function illP(s){const h=s.health,hp=h>=50?.002+(100-h)*.00004:h>=30?.004+(50-h)*.001:.024+(30-h)*.004;
  return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))}
 function survP(s,k){const ci=s.abroad!=null?s.abroad:s.ci;return clamp(ILLT[k].p+(s.health-50)*.005+(C[ci][4]-75)*.008-Math.max(0,s.age-60)*.006+(s.screen?.05:0),.05,.97)}
-const illYou=(s,k)=>ILLT[k].c*s.base*(s.insured?.15:1);
+const illYou=(s,k)=>ILLT[k].c*s.base*(s.insured?.15:1)*(s.medCut||1);
 const illNote=t=>M('note.ill',{a:MN(t.paid),b:MN(t.lost)});
 function treat(s,k){const b=ILLT[k].c*s.base,you=illYou(s,k);pay(s,you);
  if(s.insured&&b>0){const t=s.trk.ins;if(t){t.saved+=b-you;t.v+=b-you;t.note=insNote(t)}}
@@ -539,7 +539,7 @@ const EV=[
   Hn(O('dip','e.edu.dip',M('e.edu.dip.s',{c:MN(cd)}),s=>startStudy(s,'dip')),M('e.edu.dip.h',{e:ed,p:Math.round(ed*SK*100)})),
   O('work','e.edu.work',M('e.edu.work.s'),s=>{})]}},
 /* choosing a career: every career, grouped by family (grp), locked ones show why. It comes back whenever a career ends */
-{id:'job',when:s=>s.needJob&&s.age>=18&&s.age<64&&!!s.done.edu&&!s.study&&!s.job&&!s.retired,title:M('e.job.t'),def:'civ',
+{id:'job',when:s=>s.needJob&&s.age>=18&&s.age<64&&!!s.done.edu&&!s.study&&!s.job&&!s.retired&&!(s.jobAt>s.age),title:M('e.job.t'),def:'civ',
  text:s=>M(s.lastCar?'e.job.x2':'e.job.x'),
  opts:s=>Object.keys(CAR).map(id=>{const c=CAR[id],a=MN(carStartPay(s,id));
   const sub=c.tr?M('car.s.tr',{n:c.tr.y,p:MN(c.tr.pay*s.base),f:MN(c.tr.fee*s.base),a}):c.req.cap?M('car.s.cap',{c:MN(c.req.cap*s.base),a}):M('car.s',{a});
@@ -605,7 +605,7 @@ const EV=[
   OR('all','e.lend.all',M('e.lend.all.s'),3,go(a,'trk.lend')),
   OR('half','e.lend.half',M('e.lend.half.s',{a:MN(a/2)}),2,go(a/2,'trk.lendHalf')),
   OR('no','e.lend.no',M('e.lend.no.s'),0,s=>{s.happy-=1})]}},
-{id:'car',win:[25,25],when:s=>!s.retired,title:M('e.car.t'),def:'used',
+{id:'car',win:[25,25],when:s=>!s.retired&&C[s.ci][1]!=='SG',title:M('e.car.t'),def:'used',
  text:s=>M('e.car.x'),
  opts:s=>{const B=s.base;return[
   O('new','e.car.new',M('e.car.new.s',{c:MN(1.1*B),p:MN(carPay(1.1*B))}),s=>{s.car={type:'new',bal:1.1*B,pay:carPay(1.1*B)};s.happy+=4;T(s,'car',{kind:'ghost',label:M('trk.carNew')})}),
@@ -623,7 +623,7 @@ const EV=[
   OR('join','e.mlm.join',M('e.mlm.join.s',{a:MN(.12*s.base),b:MN(.04*s.base)}),-6,s=>{pay(s,.12*s.base);T(s,'mlm',{kind:'custom',label:M('trk.mlm'),v:-.12*s.base,note:M('note.paid',{a:MN(.12*s.base)})});rec(s,'mlm',.04*s.base,3);later(s,s.age+3,'mlm')},undefined,M('e.mlm.join.h')),
   OR('buy','e.mlm.buy',M('e.mlm.buy.s',{a:MN(.05*s.base)}),1,s=>spend(s,'mlm',.05*s.base,'trk.mlmBuy')),
   OR('no','e.mlm.no',M('e.mlm.no.s'),0,null)]},
-{id:'abroad',win:[26,35],p:.45,when:job,title:M('e.abroad.t'),def:'stay',
+{id:'abroad',win:[26,35],p:.45,when:s=>job(s)&&s.abroad==null&&!s.ctr,title:M('e.abroad.t'),def:'stay',
  text:s=>M('e.abroad.x',{c:{k:'_c',ci:abroadTo(s)}}),
  opts:s=>{const di=abroadTo(s),ratio=C[di][3]/s.base,m=clamp(.8*ratio,1.3,3),cm=clamp(.7*ratio,1.2,2.6),sal=salary(s);return[
   O('go',M('e.abroad.go',{c:{k:'_c',ci:di}}),M('e.abroad.go.s',{c:{k:'_c',ci:di},a:MN(m*sal),b:MN(sal),p:Math.round((cm-1)*100),m:MN(.2*s.base)}),s=>{pay(s,.2*s.base);s.abroad=di;s.costMul=cm;s.happy-=4;bump(s,'abroad',m,M('trk.abroad',{c:{k:'_c',ci:di}}))}),
@@ -687,13 +687,13 @@ const EV=[
  opts:s=>[
   Hn(O('yes','e.health.yes',M('e.health.yes.s',{a:MN(.02*s.base)}),s=>{pay(s,.02*s.base);s.screen=true;s.health+=2}),M('e.health.yes.h')),
   O('no','e.health.no',M('e.health.no.s'),s=>{})]},
-{id:'home',win:[31,31],when:s=>!s.house&&!!s.job&&!s.retired,title:M('e.home.t'),def:'rent',
+{id:'home',win:[31,31],when:s=>!s.house&&!!s.job&&!s.retired&&!(s.hWait>s.age),title:M('e.home.t'),def:'rent',
  text:s=>M('e.home.x',{p:MN(price(s))}),
  opts:s=>{const P=price(s),liq=liquid(s);return[
   O('buy','e.home.buy',M('e.home.buy.s',{d:MN(.23*P),m:MN(mPay(.8*P))}),s=>buy(s,P),liq>=.23*P||M('e.home.need',{n:MN(.23*P),h:MN(liq)})),
   O('small','e.home.small',M('e.home.small.s',{d:MN(.138*P),m:MN(mPay(.48*P))}),s=>buy(s,.6*P),liq>=.138*P||M('e.home.need',{n:MN(.138*P),h:MN(liq)})),
   O('rent','e.home.rent',M('e.home.rent.s',{r:MN(rent(s))}),s=>{})]}},
-{id:'rates',win:[32,52],p:.8,when:s=>!!s.house&&s.house.mort>.2*s.house.value,title:M('e.rates.t'),def:'ride',
+{id:'rates',win:[32,52],p:.8,when:s=>!!s.house&&!s.house.fixed&&s.house.mort>.2*s.house.value,title:M('e.rates.t'),def:'ride',
  text:s=>{const h=s.house,n=Math.max(1,(h.end||s.age+20)-s.age);return M('e.rates.x',{a:MN(h.pay),b:MN(amort(h.mort,.065,n))})},
  opts:s=>{const h=s.house,x=Math.min(.3*h.mort,.5*liquid(s)),ride=s=>{setRate(s.house,.065,s.age);T(s,'rates',{kind:'custom',label:M('trk.rates'),note:M('note.rates')});later(s,s.age+2+Math.floor(evR(s,'rateLen')()*4),'rate')};return[
   O('fix','e.rates.fix',M('e.rates.fix.s',{a:MN(.01*h.mort)}),s=>{pay(s,.01*s.house.mort);setRate(s.house,.05,s.age);T(s,'rates',{kind:'custom',label:M('trk.ratesFix'),v:-.01*s.house.mort,note:M('note.rates')});later(s,s.age+5,'rate')}),
@@ -1105,16 +1105,37 @@ const insNote=t=>M('note.ins',{p:MN(t.prem),c:MN(t.saved)});
 /* gold and bonds have their own ups and downs; fixed-rate accounts grow steadily; some funds charge yearly fees */
 function lotR(l,r,yr){return(l.rate!=null?l.rate:l.t==='gold'?.015+.15*yr.gd:l.t==='bond'?.015+.05*yr.bd:r)-(l.fee||0)}
 /* yearly costs you signed up for (pets, gyms, premiums, helping parents); negative ones are income */
-function recCost(s,a){let c=0;for(const r of s.rec){if(a>=r.until)continue;c+=r.amt;if(r.h)s.health+=r.h;const t=r.id&&s.trk[r.id];if(t&&r.amt){if(t.kind==='ghost'){t.spent+=r.amt;t.g+=r.amt}else{t.v-=r.amt;t.paid=(t.paid||0)+r.amt;t.note=M(r.amt<0?'note.earned':'note.paid',{a:MN(Math.abs(t.paid))})}}}return c}
+function recCost(s,a){let c=0;for(const r of s.rec){if(a>=r.until)continue;c+=r.amt;if(r.h)s.health+=r.h;const t=r.id&&s.trk[r.id];if(t&&r.amt){if(t.kind==='ghost'){t.spent+=r.amt;t.g+=r.amt}else{t.v-=r.amt;t.paid=(t.paid||0)+r.amt;t.note=t.nk?M(t.nk,{a:MN(t.paid),b:MN(t.saved||0)}):M(r.amt<0?'note.earned':'note.paid',{a:MN(Math.abs(t.paid))})}}}return c}
+/* ---------- hooks for country cards (js/country.js) ----------
+   student loans: a rate (s.sloanR, real; 3% unless set), a term in years (s.sloanN), or repayments as a share of pay above a
+   threshold (s.sloanInc {r share, th threshold in typical wages, end age it is written off, pslf age a public-service job clears it,
+   waive: unpaid interest is dropped}) */
+const slR=s=>s.sloanR!=null?s.sloanR:.03;
+const slPay=s=>amort(s.sloan,slR(s)||1e-6,s.sloanN||10);
+/* careers that count as public service for US loan forgiveness */
+const PUB={civ:1,teach:1,nurse:1,doc:1};
+function slForgive(s,a,L){const q=s.sloanInc;if(!(a>=q.end||q.pslf&&a>=q.pslf&&s.job&&PUB[s.job.id]))return;const w=s.sloan;s.sloan=0;s.sloanInc=null;
+ const t=T(s,'sloanW',{kind:'custom',label:M('trk.sloanW')});t.v+=w;t.note=M('note.sloanW',{a:MN(w)});L&&L(M('log.sloanW',{a:MN(w)}),'good')}
+/* the state pension in retirement: about 18% of a typical wage, from s.penAt (if set) and times s.penM; s.penX adds a scheme's
+   own pension {a a year, at age, tk passbook line}. The difference from the usual pension shows on the card's passbook line */
+function statePen(s,a){const b=.18*s.base;let v=a>=(s.penAt||0)?b*(s.penM||1):0;const t=s.penTk&&s.trk[s.penTk];if(t&&v!==b){t.v+=v-b;t.got=(t.got||0)+v-b;t.note=M('note.penC',{a:MS(t.got)})}
+ const x=s.penX;if(x&&a>=x.at){v+=x.a;const t2=s.trk[x.tk];if(t2){t2.v+=x.a;t2.saved=(t2.saved||0)+x.a;t2.note=M('note.penX',{a:MN(t2.paid||0),b:MN(t2.saved)})}}return v}
+/* what a health scheme saved on a bill goes on its passbook line */
+function medSaved(s,x){const t=s.medTk&&s.trk[s.medTk];if(!t||!(x>0))return;t.v+=x;t.saved=(t.saved||0)+x;t.note=M(t.nk||'note.med',{a:MN(t.paid||0),b:MN(t.saved)})}
+/* buying a first home: a Lifetime ISA unlocks for it */
+function homeFirst(s){if(!s.house&&s.lots.lisa)s.lots.lisa.lock=0}
+/* a layoff: Brazil's FGTS pays out what is in the account */
+function onLaid(s,L){if(typeof cLaid==='function')cLaid(s,L)}
 /* money you put aside each year into plans: an insurance savings plan, a children's education fund, a retirement account */
 function plans(s,a,work){let c=0;
  if(s.ilp&&a<s.ilp.until){c+=s.ilp.amt;addLot(s,'ilp',s.ilp.amt)}
  if(s.kidEdu==='fund')for(const b of s.kids)if(a<b+18){const x=s.kidFee/18;c+=x;addLot(s,'kidedu',x)}
+ for(const d of s.dca||[]){if(a>=d.until||(d.noHouse&&s.house))continue;const x=d.p?d.p*work:d.amt;if(!(x>0))continue;c+=x;addLot(s,d.lot,x*(1+(d.bonus||0)))}
  if(s.scheme&&work>0){const x=s.scheme.p*work,l=s.lots[s.scheme.lot];c+=x;addLot(s,s.scheme.lot,x);if(l)l.v+=x*s.scheme.rel+Math.min(s.scheme.p,s.scheme.match)*work}
  return c}
 function kidFees(s,a,L){if(!s.kidEdu)return;for(const b of s.kids){if(a!==b+18)continue;
  if(s.kidEdu==='loan'){s.happy-=2;L&&L(M('log.kidLoan'),'');continue}
- let f=s.kidFee;const l=s.lots.kidedu;if(l&&l.v>0){const x=Math.min(l.v,f);l.v-=x;l.tout+=x;f-=x}
+ let f=s.kidFee*(s.kidFeeM||1);const l=s.lots.kidedu;if(l&&l.v>0){const x=Math.min(l.v,f);l.v-=x;l.tout+=x;f-=x}
  if(f>0){pay(s,f);const t=T(s,'kidfees',{kind:'custom',label:M('trk.kidFees')});t.v-=f;t.note=M('note.paid',{a:MN(-t.v)})}
  L&&L(M('log.kidUni',{a:MN(s.kidFee)}),'good')}}
 
@@ -1143,12 +1164,14 @@ function tick(s,yr,L){
  /* a partner: dating costs, or (living together, married) their take-home pay and their living costs */
  const pt=a>=18?ptYear(s,a):{net:0,cost:0};
  if(a>=18){
-  if(s.study){
+  if(s.nsUntil>a){const al=s.nsPay*B,d=al-(s.nsCost||.35)*B*cm+pt.net-pt.cost;s.earned+=al;out.gross=al;if(s.study)s.study.end++;
+   if(d>=0)s.cash+=d;else pay(s,-d);out.saved=d;const t=s.trk.ns;if(t){t.v-=Math.max(0,carStartPay(s,'civ')-al);t.paid+=al;t.note=M('note.ns',{a:MN(t.paid)})}
+  }else if(s.study){
    const st=s.study,part=st.pt*B;s.earned+=part;out.gross=part;
    const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,carStartPay(s,'civ')-part);
    const d=part-.35*B+pt.net-pt.cost;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
    addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
-   if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?amort(s.sloan,.03,10):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
+   if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?slPay(s):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
    if(s.job)careerStart(s,yr,L);
    const sal=s.job?salary(s):0;s.lastSal=sal;
@@ -1169,14 +1192,14 @@ function tick(s,yr,L){
     if(s.ill&&s.ill.at===a){const c=s.ill.off*work,t=s.trk.ill;work-=c;if(t){t.lost+=c;t.v-=c;t.note=illNote(t)}}
     if(dp){const c=(s.dep.how==='off'&&s.dep.at===a?.33:.3)*work,t=s.trk.dep;work-=c;if(t){t.lost+=c;t.v-=c;t.note=depNote(t)}}
     /* layoffs: each career has its own risk, much higher in a crash year (none while training); a switch card follows */
-    const cr=CAR[s.job.id],trn=s.job.train>a,lp=trn?0:cr.lay[a===s.crashAge?1:0]*D(s).lay;
-    if(yr.jl<lp||s.layAt===a){work*=.5;L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad');offerSwitch(s,'lay')}
+    const cr=CAR[s.job.id],trn=s.job.train>a,lp=trn?0:cr.lay[a===s.crashAge?1:0]*D(s).lay*(s.layM||1);
+    if(yr.jl<lp||s.layAt===a){work*=.5;onLaid(s,L);L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad');offerSwitch(s,'lay')}
     const den=1+SK*sk;
     for(const k in s.skillSrc){if(k==='base')continue;const t=s.trk['sk_'+k];if(!t)continue;const ex=sal*SK*s.skillSrc[k]/den;t.gain+=ex;t.per=ex}
     if(s.levelGrind&&s.trk.grind){const t=s.trk.grind,ex=sal*.18*s.levelGrind/(1+.18*s.level);t.gain+=ex;t.per=ex}
     for(const k in s.bump){const t=s.trk[k];if(t)t.v+=sal*(1-1/s.bump[k])}
     carPaid(s,work);
-    let pp=.07+(fo==='grind'?.08*fk:0)+sk*.0015+(s.rel-50)*.0008;pp*=cr.pp||1;if(s.uncle)pp*=.7;if(dp)pp*=.4;
+    let pp=.07+(fo==='grind'?.08*fk:0)+sk*.0015+(s.rel-50)*.0008;pp*=(cr.pp||1)*(s.ppM||1);if(s.uncle)pp*=.7;if(dp)pp*=.4;
     if(fo==='grind')s.grindY++;
     if(cr.gr>0&&!trn&&s.level<6&&yr.pr<pp){s.level++;if(fo==='grind'){s.levelGrind++;T(s,'grind',{kind:'skill',label:M('trk.grind')})}L&&L(M('log.promo',{n:s.level,a:MN(salary(s))}),'good')}
     if(!trn)s.exp++;
@@ -1190,13 +1213,14 @@ function tick(s,yr,L){
    /* on Normal and Hard, spending creeps up with take-home pay above a typical wage */
    const hs=housing(s),liv=.5*B*cm+D(s).creep*Math.max(0,net-pt.net-B);
    let fixed=liv+hs+pt.cost;
-   if(s.trk.abroad&&cm>1)s.trk.abroad.v-=(liv+(s.house?0:hs))*(1-1/cm);
+   {const at=s.abroad!=null&&s.trk.abroad?s.trk.abroad:s.ctr?s.trk[s.ctr]:null;if(at&&cm!==1)at.v-=(liv+(s.house?0:hs))*(1-1/cm)}
    const kc=kidsCost(s,a);if(kc){fixed+=kc;const t=s.trk.kids;if(t){t.cost+=kc;t.v-=kc;t.note=M('note.kids',{c:MN(t.cost)})}}
    fixed+=s.car?.05*B:.03*B;
    const ct=s.car&&s.trk[s.car.trk||'car'];
    if(ct){ct.spent+=.02*B;ct.g+=.02*B}
    if(s.car&&s.car.bal>0){s.car.bal*=1.06;const p=Math.min(s.car.pay,s.car.bal);s.car.bal-=p;if(s.car.bal<1)s.car.bal=0;fixed+=p;if(ct){ct.spent+=p;ct.g+=p}}
-   if(s.sloan>0){s.sloan*=1.03;const p=Math.min(s.sloanPay||s.sloan*.12,s.sloan);s.sloan-=p;fixed+=p;if(s.sloan<1){s.sloan=0;L&&L(M('log.loanPaid'),'good')}}
+   if(s.sloan>0){const q=s.sloanInc,due=q?q.r*Math.max(0,gross-q.th*B):s.sloanPay||s.sloan*.12,i=s.sloan*slR(s);s.sloan+=q&&q.waive?Math.min(i,due):i;const p=Math.min(due,s.sloan);s.sloan-=p;fixed+=p;
+    if(q&&s.sloan>=1)slForgive(s,a,L);if(s.sloan<1){s.sloan=0;L&&L(M('log.loanPaid'),'good')}}
    if(s.insured){const p=.035*B*s.insMul;fixed+=p;const t=s.trk.ins;if(t){t.prem+=p;t.v-=p;t.note=insNote(t)}}
    if(fo==='learn'&&employed){fixed+=.03*B;const t=s.trk.sk_learn;if(t)t.cost+=.03*B}
    if(fo==='people'){const c=.03*B;fixed+=c;const t=T(s,'people',{kind:'ghost',label:M('trk.people')});t.spent+=c;t.g+=c}
@@ -1209,7 +1233,7 @@ function tick(s,yr,L){
    const sur=avail-auto;saved+=auto;
    if(sur>=0){const lf=(s.cutDebt&&s.debt>0)?.4:lf0;let sv=sur-lf*sur;if(s.trk.habit)s.trk.habit.v-=s.habit*sur;if(s.trk.life){const d=(s.life-.85)*sur;s.trk.life.spent+=d;s.trk.life.g+=d}if(s.debt>0){const p=Math.min(sv,s.debt);s.debt-=p;sv-=p}s.cash+=sv;saved+=sv;if(s.cutDebt&&s.debt>0)s.happy-=2}
    else{/* while training (doctors, lawyers) the shortfall goes on the student loan */
-    if(s.job&&s.job.train>a){const x=-sur,fc=Math.min(Math.max(0,s.cash),x);s.cash-=fc;s.sloan+=x-fc;s.sloanPay=amort(s.sloan,.03,10)}else pay(s,-sur);saved+=sur}
+    if(s.job&&s.job.train>a){const x=-sur,fc=Math.min(Math.max(0,s.cash),x);s.cash-=fc;s.sloan+=x-fc;s.sloanPay=slPay(s)}else pay(s,-sur);saved+=sur}
    if(s.cutDebt&&s.debt<=0)s.cutDebt=false;
    if(s.debt>0&&s.cash>.2*B){const p=Math.min(s.debt,s.cash-.2*B);s.cash-=p;s.debt-=p}
    if(s.debt<1)s.debt=0;
@@ -1217,7 +1241,7 @@ function tick(s,yr,L){
   }else{
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold)side=s.biz.inc;
    const r2=s.ret2&&a<s.ret2.until?s.ret2.inc:0;if(r2&&s.trk.ret2){const t=s.trk.ret2;t.v+=r2;t.note=M('note.earned',{a:MN(t.v)})}
-   const inc=s.pension+.18*B+side+r2;s.earned+=inc;out.gross=inc;
+   const inc=s.pension+statePen(s,a)+side+r2;s.earned+=inc;out.gross=inc;
    if(s.pension&&s.trk.gov){const t=s.trk.gov;t.recv+=s.pension;t.v+=s.pension;t.note=M('note.pension',{p:MN(s.pension),r:MN(t.recv),l:MN(t.lost)})}
    let need=.5*B*cm+.25*B*(lf0/.85)+housing(s)+(s.car?.05*B:.03*B)+pt.cost;
    const kc=kidsCost(s,a);if(kc){need+=kc;const t=s.trk.kids;if(t){t.cost+=kc;t.v-=kc;t.note=M('note.kids',{c:MN(t.cost)})}}
@@ -1240,7 +1264,7 @@ function tick(s,yr,L){
   s.health=clamp(s.health,3,100);
   if(a>=25&&s.illAge<0&&evR(s,'illRoll')()<illP(s)){s.illAge=a+1;const u=evR(s,'illType')();s.illType=u<.45?'cancer':u<.8?'heart':'stroke'}
   const mp=(.02+Math.max(0,70-s.health)/900+a/3500)*D(s).med;
-  if(yr.md<mp){const bill=B*.6*(.5+yr.ma*1.5)*(s.screen?.7:1);let you=bill;if(s.insured){you=.15*bill;const t=s.trk.ins;if(t){t.saved+=bill-you;t.v+=bill-you;t.note=insNote(t)}}
+  if(yr.md<mp){const b0=B*.6*(.5+yr.ma*1.5)*(s.screen?.7:1),bill=b0*(s.medCut||1);medSaved(s,b0-bill);let you=bill;if(s.insured){you=.15*bill;const t=s.trk.ins;if(t){t.saved+=bill-you;t.v+=bill-you;t.note=insNote(t)}}
    if(s.retired)payRet(s,you);else pay(s,you);s.health=clamp(s.health-4,3,100);L&&L(M('log.med',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):M('log.medSelf')}),'bad');
    chipIn(s,you,'helpMed',L)}
   /* on Normal and Hard, an unexpected bill now and then: the car, the flat, a family emergency, a fine, a theft */

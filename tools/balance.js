@@ -13,7 +13,7 @@ const fs=require('fs'),path=require('path'),vm=require('vm');
 const ROOT=path.join(__dirname,'..');
 const ctx={console};vm.createContext(ctx);
 /* ENGINE=path runs another copy of the engine, for example an older one to compare against */
-for(const f of[path.join(ROOT,'js/i18n.js'),process.env.ENGINE||path.join(ROOT,'js/engine.js')])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+for(const f of[path.join(ROOT,'js/i18n.js'),process.env.ENGINE||path.join(ROOT,'js/engine.js'),path.join(ROOT,'js/country.js')])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
 const E=vm.runInContext(`({C,EV,CAR,newLife,tick,yearRand,dueEvents,applyOpt,netWorth,clone,mb,hsh,carStartPay,lifeScore,salary,skill,evOpts:typeof evOpts==='function'?evOpts:(s,ev)=>ev.opts(s)})`,ctx);
 const args=process.argv.slice(2),DIFFS=['easy','normal','hard'];
 const onlyD=args.find(a=>DIFFS.includes(a)),N=+(args.find(a=>/^\d+$/.test(a))||500),OPT=args.includes('opt');
