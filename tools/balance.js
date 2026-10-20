@@ -23,12 +23,12 @@ const FOC=['learn','grind','hustle','balance','people'];
 const SMART={hobby:['code','music'],allow:['bank'],tuition:['yes','free'],phone1:['wait'],pocket:['fund'],loot:['skip'],teen:['school'],
  summer:['exam'],edu:['uni','dip'],switch:['stay'],cc:['full'],move:['share'],bnpl:['skip'],efund:['build'],nego:['ask'],holiday:['skip'],
  insure:['yes'],lend:['no'],car:['none'],gym:['run'],mlm:['no'],abroad:['go'],phone:['keep'],tip:['skip'],pet:['no'],scam:['no'],
- bonus:['inv'],cert:['mba','cert'],agent:['term'],wed:['reg'],gold:['index'],health:['yes'],home:['buy','small'],rates:['fix'],kids:['k0'],
+ bonus:['inv'],cert:['mba','cert'],agent:['term'],wed:['reg'],gold:['index'],health:['yes'],home:['buy','small'],rates:['fix'],
  edufund:['fund'],biz:['no'],crash:['buy','hold'],layoff:['take'],bubble:['sell','hold'],idle:['inv'],parents:['sib'],divorce:['counsel'],
  roof:['fix'],car2:['keep'],fire:['keep'],pivot:['re'],life:['frugal'],inh:['inv'],ret:['65'],charity:['no'],glide:['mix'],ltc:['yes'],
  travel:['home'],grandkid:['no'],room:['rent'],annuity:['buy'],ret2:['yes'],club:['garden'],downsize:['stay'],medcover:['keep'],
  health2:['priv'],scam2:['check'],will:['will'],hearing:['basic'],reverse:['no'],move2:['stay'],gtrip:['no'],funeral:['none'],
- debt:['sell','cut'],friends:['read'],peer:['old'],trip:['work'],date:['solo'],team:['never'],fwed:['skip'],mentor:['yes'],credit:['talk'],
+ debt:['sell','cut'],friends:['read'],peer:['old'],trip:['work'],date:['yes'],team:['never'],fwed:['skip'],mentor:['yes'],credit:['talk'],
  network:['follow'],uncle:['no'],sibfees:['no'],cny:['skip'],cosign:['no'],away:['go'],bizpal:['no'],reunion:['skip'],fsick:['visit'],
  carers:['share'],inhfight:['fair'],grandsit:['no'],ill:['best','std'],dep:['ther']};
 const pctOf=id=>+String(id).replace(/\D/g,'')||0;
@@ -50,7 +50,8 @@ BOTS.mixed={pick:(s,ev,os)=>BOTS[mix(s,ev.id)].pick(s,ev,os),focus:s=>BOTS[mix(s
 /* ---------- playing a life ---------- */
 const open=(s,ev)=>E.evOpts(s,ev).filter(o=>o.ok===undefined||o.ok===true);
 function pickCountry(seed){const tot=E.C.reduce((a,c)=>a+c[2],0);let u=E.mb(E.hsh(seed,'country'))()*tot;for(let i=0;i<E.C.length;i++){u-=E.C[i][2];if(u<=0)return i}return 0}
-function born(seed,dk){return E.newLife(pickCountry(seed),seed,undefined,dk)}
+/* bots don't use the Life choices panel: love and family follow the autopilot's typical path (autoRel) */
+function born(seed,dk){const s=E.newLife(pickCountry(seed),seed,undefined,dk);s.auto=true;return s}
 /* plays on until death; `hook(s, ev, options)` sees every decision before it is made; `rec` collects setbacks */
 function play(s,bot,hook,rec){let g=0;
  const L=rec?(m)=>{if(m&&SETBACK[m.k])rec[SETBACK[m.k]]=1}:null;

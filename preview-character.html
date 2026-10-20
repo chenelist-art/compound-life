@@ -119,6 +119,9 @@ tile($('outfits'),S({fit:'foot',sex:'f'}),name('car.foot','Footballer')+' ♀');
  [S({partner:true,kids:[9,6,2,1,0]}),'Five children'],[S({kids:[7,4]}),'Single parent'],[S({kids:[1],sex:'f'}),'Single parent, baby ♀'],
  [S({partner:true,age:70,kids:[40,38],retired:true}),'Grandparents, grown children'],[S({partner:true,house:true,vehicle:true,wealth:2,kids:[6],mood:'happy'}),'Home, car, rich'],[S({house:true,vehicle:true}),'Single, home and car']
 ].forEach(([s,l])=>tile($('family'),s,l));
+/* a partner walking in (dating) or away (a break-up or a divorce): replays every few seconds */
+[[S({partner:true,pmove:'in',mood:'happy'}),'Partner walks in'],[S({partner:true,pmove:'out',mood:'sad',kids:[6]}),'Partner walks away']].forEach(([st,l])=>{
+ const c=tile($('family'),st,l);setInterval(()=>{Pixel.set(c,Object.assign({},st,{pmove:null}));Pixel.set(c,st)},3200)});
 
 /* one life, by age */
 let sex='m';

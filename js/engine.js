@@ -150,12 +150,13 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
   cash:0,debt:0,sloan:0,sloanPay:0,lots:{},house:null,car:null,job:null,level:0,levelGrind:0,exp:0,
   study:null,cert:null,savePct:0,life:.85,insured:false,married:false,kids:[],biz:null,crypto:null,
   focus:'balance',hustleYears:0,retireAge:null,retired:false,pension:0,
-  crashAge:34+Math.floor(r()*17),inheritAge:46+Math.floor(r()*14),marryRoll:r(),
+  crashAge:34+Math.floor(r()*17),inheritAge:46+Math.floor(r()*14),
   done:{},trk:{},earned:0,outUntil:0,sold:0,lastSal:0,lastInc:0,pivoted:false,pivotYear:-1,
   cutDebt:false,debtSeen:-99,noDeath:false,milestones:{},brokeLogged:0,
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
   kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
   rel:50,offUntil:0,uncle:false,refN:0,lonely:0,
+  pt:null,ptN:0,meetAt:null,meetCar:null,look:-1,tryAt:null,ask:null,heal:null,acts:[],hist:{},
   ill:null,illAge:-1,illType:null,dep:null,depAge:-1,lowHap:0,grindY:0,
   needJob:true,lastCar:null,carN:0,carGone:{},swAt:null,swWhy:null,
   acc:{n:0,h:0,hl:0,r:0,an:0,nw:0,bad:0}};
@@ -184,7 +185,8 @@ function startStudy(s,k){const cost=eduCost(s,k);const lab=M(k==='uni'?'lbl.uni'
 function startCert(s,k){const fee=k==='mba'?s.base:.3*s.base;const lab=M(k==='mba'?'lbl.mba':'lbl.cert');s.cert={end:s.age+(k==='mba'?2:1),kind:k,label:lab,eff:learnLuck(s,'cert')};pay(s,fee);const t=T(s,'sk_cert',{kind:'skill',label:lab});t.cost+=fee}
 function setSave(s,p){s.savePct=p;if(p>0){const t=T(s,'lot_auto',{kind:'lot',src:'auto'});t.label=M('trk.auto',{p:Math.round(p*100)})}}
 function bet(s,p){const amt=p*liquid(s);const fc=Math.min(Math.max(0,s.cash),amt);s.cash-=fc;withdrawEq(s,amt-fc);s.crypto={stake:amt,res:s.age+2};T(s,'tip',{kind:'custom',label:M(p>.1?'trk.tipBig':'trk.tipSmall'),note:M('note.tipIn',{a:MN(amt)})})}
-function wed(s,m,key){const a=m*s.base;s.married=true;s.happy+=5;pay(s,a);const t=T(s,'wed',{kind:'ghost',label:M(key)});t.spent+=a;t.g+=a}
+function wed(s,m,key){const a=m*s.base,p=s.pt;s.married=true;s.happy+=5;pay(s,a);const t=T(s,'wed'+p.n,{kind:'ghost',label:M(key)});t.spent+=a;t.g+=a;
+ p.st='wed';p.wedAt=s.age;p.nw0=netWorth(s);ptLine(s)}
 function buy(s,P){const up=.23*P;pay(s,up);s.house={value:P,mort:.8*P,pay:mPay(.8*P),out:up,rentAv:0,frac:P/price(s),rate:.03,end:s.age+30};T(s,'home',{kind:'custom',label:M(P<price(s)?'trk.flat':'trk.home'),v:-.03*P,note:M('note.homeFees')})}
 function startBiz(s,mode,cap){pay(s,cap);s.biz={mode,cap,res:s.age+2,ok:false,done:false,inc:0,sold:false};T(s,'biz',{kind:'custom',label:M(mode==='full'?'trk.bizFull':'trk.bizSide'),v:-cap,note:M('note.bizIn',{a:MN(cap)})})}
 function crashTrack(s,mode){const P=s.crashP||0;if(P>1)T(s,'crash',{kind:'crash',mode,hold:P,sell:P,label:M(mode==='sell'?'trk.crashSell':'trk.crashHold')})}
@@ -395,8 +397,85 @@ const depFee=s=>.08*s.base*(s.insured?.5:1);
 const depNote=t=>M('note.dep',{a:MN(t.lost),b:MN(t.paid)});
 function depStart(s,how,yrs){s.dep={how,at:s.age,until:s.age+yrs};T(s,'dep',{kind:'custom',label:M('trk.dep'),lost:0,paid:0,note:depNote({lost:0,paid:0})})}
 
-/* happiness right after having 0–3 children: the first child brings the most */
-const KIDH=[0,4,6,7];
+/* happiness when a child is born: the first brings the most */
+const KIDH=[4,2,1];
+/* ---------- love and family: meeting someone, dating, living together, marriage, children, splitting up ----------
+   Game rules, not published data. While you're single (18 to 70) there's a yearly chance to meet someone (meetP); the 'date'
+   card then asks whether to start dating. Everything after that is yours to decide in the Life choices panel (relActs,
+   relAct): move in together, propose (the 'wed' card), try for a baby, break up or divorce. s.pt is the partner:
+   {n (1st, 2nd… partner), st 'date' | 'live' | 'wed', car (their career), q (their pay luck), exp (years of experience),
+   at (your age when you met), from (moved in), nw0 (net worth at the wedding), tk (their passbook line)}.
+   Partners can also end it (dating couples more often); a marriage ends through the old divorce rules (LATER.div).
+   Living together or married, the partner's pay (after tax) joins the household and so do their living costs (the same as
+   yours; the home is shared). Once they're 65 they get the state pension, as you do. */
+/* a partner's career, shaped by the country: [weight in a poorer country, weight in a richer one]. A country sits between
+   the two by its typical wage, on a log scale from $3k to $35k a year */
+const PTJ={acct:[1,4],mkt:[1,4],swe:[.3,3],bank:[.3,2],civ:[3,4],teach:[3,4],nurse:[2,4],doc:[.3,1],law:[.3,1],chef:[3,2],elec:[2,2],
+ mech:[2,2],cons:[5,2],drv:[4,3],fact:[6,2],farm:[14,.5],design:[.5,2],hawker:[6,1],shop:[4,2],prop:[1,1.5],ins:[1,1.5]};
+function ptCar(s,r){const k=clamp(Math.log(s.base/3000)/Math.log(35000/3000),0,1),w={};let tot=0;
+ for(const id in PTJ){w[id]=PTJ[id][0]*(1-k)+PTJ[id][1]*k;tot+=w[id]}let u=r()*tot;for(const id in w){u-=w[id];if(u<=0)return id}return 'civ'}
+/* the yearly chance of meeting someone while single: lower with age, higher with good Relationships, the People focus,
+   or in a year you went looking */
+function meetP(s,a){const b=a<36?.14:a<51?.09:.05;return clamp(b+(s.rel-50)*.003+(s.focus==='people'&&!s.retired?.12:0)+(s.look===a?.4:0),.02,.8)}
+/* the chance a year of trying brings a baby, by your age (the partner is taken to be about your age) */
+const babyP=a=>a<30?.85:a<35?.75:a<40?.55:a<45?.3:.1;
+/* divorce by country: [legal fees, child support a year for each child under 18], in years of a typical wage. Rough
+   estimates of a contested divorce: lawyers cost most in the US and the UK, little where most couples divorce by
+   agreement (Japan, China) */
+const DIVC={US:[.6,.15],GB:[.5,.12],DE:[.4,.13],SG:[.5,.12],JP:[.1,.06],MY:[.3,.1],CN:[.2,.1],IN:[.3,.08],BR:[.3,.1],MX:[.3,.1]};
+const divC=s=>DIVC[C[s.ci][1]]||[.25,.08];
+function startDating(s){const n=s.ptN=(s.ptN||0)+1,r=evR(s,'pt'+n);s.pt={n,st:'date',car:s.meetCar||ptCar(s,r),q:.75+.5*r(),exp:Math.max(0,Math.round((s.age-21)*.8)),at:s.age};s.happy+=3}
+/* their pay: the career's typical multiple for the country, their luck and experience (half a year's pay in a layoff year) */
+function ptPay(s){const p=s.pt;if(!p||p.st==='date'||p.ret)return 0;return s.base*carR(s,p.car)*p.q*Math.pow(1+.015*Math.min(p.exp,25),D(s).pay)*(p.lay===s.age?.5:1)}
+/* their passbook line opens when you move in or marry */
+function ptLine(s){const p=s.pt;if(p.tk)return;p.tk='pt'+p.n;p.from=s.age;T(s,p.tk,{kind:'custom',label:M('trk.ptNow',{x:M('car.'+p.car),a:s.age}),paid:0,cost:0,note:M('note.pt0')})}
+/* a partner's year: dating costs a little; living together, their take-home pay comes in and their living costs go out */
+function ptYear(s,a){const p=s.pt,B=s.base,cm=s.costMul||1;if(!p)return{net:0,cost:0};
+ if(p.st==='date'){const c=.04*B*cm,t=T(s,'date'+p.n,{kind:'ghost',label:M('trk.dating',{a:p.at})});t.spent+=c;t.g+=c;return{net:0,cost:c}}
+ if(!p.ret&&a>=65)p.ret=1;
+ let net;if(p.ret)net=.18*B;else{if(evR(s,'ptLay')()<CAR[p.car].lay[a===s.crashAge?1:0])p.lay=a;net=netOf(s,ptPay(s));p.exp++}
+ const cost=.5*B*cm,t=s.trk[p.tk];if(t){t.v+=net-cost;t.paid+=net;t.cost+=cost;t.note=M('note.pt',{a:MN(t.paid),b:MN(t.cost)})}
+ return{net,cost}}
+/* the partner leaves your life: close their passbook line */
+function ptEnd(s){const p=s.pt;if(!p)return;const t=p.tk&&s.trk[p.tk];if(t)t.label=M('trk.pt',{x:M('car.'+p.car),a:p.from,b:s.age});
+ s.pt=null;s.married=false;s.ask=null;s.tryAt=null}
+/* a hit to Happiness that fades over a few years (see tick) */
+function heal(s,yrs,d){s.heal={until:s.age+yrs,yrs,d}}
+/* breaking up (dating or living together): living together means moving out */
+function splitUp(s,by,L){const p=s.pt;if(!p)return;const live=p.st==='live',c=live?.1*s.base:0;ptEnd(s);
+ if(c)spend(s,'moveOut'+p.n,c,'trk.moveOut');
+ s.happy=clamp(s.happy-(live?8:5),0,100);rl(s,by==='me'?-2:-3);heal(s,live?3:2,live?6:4);
+ L&&L(M(by==='me'?'log.rel.break':'log.rel.left',{a:MN(c)}),'bad')}
+/* a divorce: legal fees, half of what you built together since the wedding (the house, savings and investments,
+   retirement accounts too), child support for children under 18, and a Happiness hit that fades over about four years */
+function divorce(s,by,L){const p=s.pt;if(!p||!s.married)return;const k=divC(s),B=s.base,before=netWorth(s);pay(s,k[0]*B);
+ const A=Math.max(0,s.cash)+eqTot(s)+(s.house?Math.max(0,s.house.value-s.house.mort):0),gain=netWorth(s)-(p.nw0||0),f=A>0?clamp(.5*Math.max(0,gain)/A,0,.5):0;
+ if(f>0){if(s.cash>0)s.cash*=1-f;for(const id in s.lots){const l=s.lots[id],x=l.v*f;l.v-=x;l.tout+=x}if(s.house){s.house.value*=1-f;s.house.mort*=1-f;setRate(s.house,s.house.rate||.03,s.age)}}
+ const kids=s.kids.filter(b=>s.age>=b&&s.age<b+18);for(const b of kids)rec(s,'support',k[1]*B,b+18-s.age);
+ if(kids.length)T(s,'support',{kind:'custom',label:M('trk.support'),note:M('note.support0')});
+ const loss=before-netWorth(s),t=T(s,'div'+p.n,{kind:'custom',label:M('trk.divorce')});t.v-=loss;t.note=M('note.divorce',{a:MN(loss)});
+ ptEnd(s);s.happy=clamp(s.happy-12,0,100);rl(s,-4);heal(s,4,8);L&&L(M('log.divorce',{a:MN(loss)}),'bad')}
+/* the Life choices panel: what makes sense right now, each {id, ok} (ok is true, or why it can't be done this year) */
+function relActs(s){if(s.dead||s.age<18)return[];const p=s.pt,a=s.age,o=[];
+ if(!p){if(a<70)o.push({id:'look',ok:s.look===a?M('lc.look.on'):true});return o}
+ if(p.st==='date')o.push({id:'move',ok:true});
+ if(p.st!=='wed')o.push({id:'wed',ok:true});
+ if(p.st!=='date'&&a<=45&&s.kids.length<5)o.push({id:'baby',ok:s.tryAt===a?M('lc.baby.on'):s.kids.some(b=>b>a)?M('lc.baby.due'):true});
+ o.push({id:p.st==='wed'?'div':'break',ok:true});return o}
+/* do one of them now (the mirror life replays them from s.acts). Proposing brings up the wedding card at once */
+function relAct(s,id,L){const p=s.pt,a=s.age,x=relActs(s).find(o=>o.id===id);if(!x||x.ok!==true)return false;s.acts.push([a,id]);
+ if(id==='look'){spend(s,'look',.02*s.base,'trk.look');s.look=a;L&&L(M('log.rel.look'),'')}
+ else if(id==='move'){p.st='live';ptLine(s);rl(s,3);s.happy+=3;L&&L(M('log.rel.move'),'good')}
+ else if(id==='wed')s.ask='wed';
+ else if(id==='baby'){s.tryAt=a;L&&L(M('log.rel.try'),'good')}
+ else if(id==='break')splitUp(s,'me',L);
+ else if(id==='div')divorce(s,'me',L);
+ return true}
+/* lives nobody steers (the autopilot twin, the simulated futures, the babies born with you, the balance bots) follow a
+   typical path: marry after a couple of years together, and have a child or two before 40 */
+function autoRel(s,a){const p=s.pt;if(!p)return;const r=evR(s,'auto');
+ if(!s.married&&a-p.at>=2&&r()<.35){s.ask='wed';return}
+ if(s.married&&a<40&&s.kids.length<2&&!s.kids.some(b=>b>a)&&r()<.4)s.tryAt=a+1}
 /* children under 6 at this age (sleepless nights) */
 const smallKids=(s,a)=>s.kids.filter(b=>a>=b&&a<b+6).length;
 /* ---------- events ----------
@@ -589,7 +668,8 @@ const EV=[
   Hn(O('ilp','e.agent.ilp',M('e.agent.ilp.s',{a:MN(.08*s.base)}),s=>{s.ilp={amt:.08*s.base,until:s.age+20};mkLot(s,'ilp',{fee:.025},'trk.ilp')}),M('e.agent.ilp.h')),
   O('term','e.agent.term',M('e.agent.term.s',{a:MN(.015*s.base)}),s=>{T(s,'term',{kind:'custom',label:M('trk.term')});rec(s,'term',.015*s.base,25);s.termTo=s.age+25;s.happy+=2}),
   O('no','e.agent.no',M('e.agent.no.s'),s=>{})]},
-{id:'wed',win:[30,30],when:s=>s.marryRoll<.4+.0065*s.rel,title:M('e.wed.t'),def:'modest',
+/* the wedding comes up when you propose (the Life choices panel, or the autopilot's own timing; see relAct and autoRel) */
+{id:'wed',when:s=>s.ask==='wed'&&!!s.pt&&!s.married,again:s=>{delete s.done.wed;s.ask=null},title:M('e.wed.t'),def:'modest',
  text:s=>M('e.wed.x'),
  opts:s=>{const B=s.base;return[
   OR('big','e.wed.big',M('e.wed.big.s',{a:MN(1.6*B)}),4,s=>{wed(s,1.6,'trk.wedBig');s.happy+=4}),
@@ -619,9 +699,6 @@ const EV=[
   O('fix','e.rates.fix',M('e.rates.fix.s',{a:MN(.01*h.mort)}),s=>{pay(s,.01*s.house.mort);setRate(s.house,.05,s.age);T(s,'rates',{kind:'custom',label:M('trk.ratesFix'),v:-.01*s.house.mort,note:M('note.rates')});later(s,s.age+5,'rate')}),
   O('pay','e.rates.pay',M('e.rates.pay.s',{a:MN(x)}),s=>{pay(s,x);s.house.mort-=x;s.house.out+=x;ride(s)},x>.05*h.mort||M('e.rates.payNo')),
   O('ride','e.rates.ride',M('e.rates.ride.s'),ride)]}},
-{id:'kids',win:[33,33],when:s=>s.married,title:M('e.kids.t'),def:'k0',mirror:true,
- text:s=>M('e.kids.x',{a:MN(.15*s.base)}),hint:s=>s.sex==='f'&&CHILDPEN[workCode(s)]>0?M('e.kids.h',{p:CHILDPEN[workCode(s)]}):null,
- opts:s=>[0,1,2,3].map(n=>({id:'k'+n,label:n?M('e.kids.n',{n}):M('e.kids.0'),sub:n?M('e.kids.n.s',{a:MN(n*.15*s.base),h:KIDH[n]}):M('e.kids.0.s'),go:s=>{for(let i=0;i<n;i++)s.kids.push(s.age+i*2);s.happy+=KIDH[n];if(n)T(s,'kids',{kind:'custom',label:M('trk.kids',{n}),cost:0,note:M('note.kids0')})}}))},
 {id:'edufund',win:[34,46],p:.85,when:s=>s.kids.length>0,title:M('e.edufund.t'),def:'later',
  text:s=>M('e.edufund.x',{a:MN(s.uni*s.base*.6)}),
  opts:s=>{const f=s.uni*s.base*.6,set=k=>s=>{s.kidEdu=k;s.kidFee=f;if(k==='fund')mkLot(s,'kidedu',{},'trk.kidedu')};return[
@@ -843,12 +920,12 @@ const EV=[
   OR('ask','e.trip.ask',M('e.trip.ask.s',{a:MN(a)}),3,s=>{s.happy+=3;later(s,19,'tripDebt',{a})}),
   OR('work','e.trip.work',M('e.trip.work.s',{a:MN(a)}),3,s=>{s.earned+=a;s.happy+=1;s.skillSrc.base=Math.max(0,s.skillSrc.base-1)},undefined,M('hx.skLess',{n:1})),
   OR('stay','e.trip.stay',M('e.trip.stay.s'),0,s=>{})]}},
-{id:'date',win:[18,24],p:.85,title:M('e.date.t'),def:'simple',
- text:s=>M('e.date.x'),
+/* you met someone (see meetP in tick): it comes back each time you meet someone new while single */
+{id:'date',when:s=>s.meetAt===s.age&&!s.pt,again:s=>{delete s.done.date;s.meetAt=null},title:M('e.date.t'),def:'yes',
+ text:s=>M('e.date.x',{x:M('car.a.'+s.meetCar)}),
  opts:s=>[
-  OR('fancy','e.date.fancy',M('e.date.fancy.s',{a:MN(.15*s.base)}),4,s=>{spend(s,'date',.15*s.base,'trk.dateFancy');s.happy+=4;s.marryRoll-=.06}),
-  OR('simple','e.date.simple',M('e.date.simple.s',{a:MN(.06*s.base)}),3,s=>{spend(s,'date',.06*s.base,'trk.date');s.happy+=3;s.marryRoll-=.05}),
-  OR('solo','e.date.solo',M('e.date.solo.s'),-1,s=>addSkill(s,'base',1.5),undefined,M('hx.sk',{n:1.5}))]},
+  OR('yes','e.date.yes',M('e.date.yes.s',{a:MN(.04*s.base)}),3,startDating,undefined,M('e.date.yes.h')),
+  OR('no','e.date.no',M('e.date.no.s'),0,null)]},
 {id:'team',win:[22,32],p:.7,when:job,title:M('e.team.t'),def:'some',
  text:s=>M('e.team.x',{a:MN(.05*s.base)}),
  opts:s=>{const a=.05*s.base;return[
@@ -974,7 +1051,7 @@ function dueEvents(s){if(s.dead)return[];const d=EV.filter(e=>!s.done[e.id]&&due
    the bank will still lend is greyed out. The default never is, so every card can be answered */
 function canPay(s,ev,o){if(o.id===ev.def)return true;const c=clone(s),co=ev.opts(c).find(x=>x.id===o.id);co.go(c);return !((c.acc.gw||0)>(s.acc.gw||0)+1e-9)}
 function evOpts(s,ev){const os=ev.opts(s);for(const o of os)if((o.ok===undefined||o.ok===true)&&!canPay(s,ev,o))o.ok=M('g.cantPay');return os}
-function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true)||!canPay(s,ev,o))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.lastDec=s.age;if(ev.again)ev.again(s);return o}
+function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true)||!canPay(s,ev,o))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.hist[ev.id+'@'+s.age]=o.id;s.lastDec=s.age;if(ev.again)ev.again(s);return o}
 function resolveAuto(s){let g=0,ev;while((ev=dueEvents(s)[0])&&g++<30)applyOpt(s,ev,ev.def)}
 
 /* ---------- consequences that arrive years later ---------- */
@@ -990,8 +1067,7 @@ const LATER={
  burst:(s,x,L)=>{const down=evR(s,'burst')()<.6,m=down?.7:1.15;s.hm*=m;if(s.house)s.house.value*=m;const t=s.trk.bubble;if(t){t.v=(1-m)*t.ref;t.note=M(down?'note.bubbleDodge':'note.bubbleMiss',{a:MN(Math.abs(t.v))})}L&&L(M(down?'log.burst':'log.boom'),down?'bad':'good')},
  lay:(s,x,L)=>{if(!s.job||s.retired)return;if(evR(s,'lay')()<x.p){s.layAt=s.age;s.layVol=false;s.level=Math.max(0,s.level-1)}else L&&L(M('log.layNo'),'good')},
  div:(s,x,L)=>{if(!s.married)return;if(evR(s,'div')()>=x.p*clamp(1.6-s.rel/62,.4,1.6)){L&&L(M('log.divNo'),'good');return}
-  const before=netWorth(s);withdrawEq(s,.45*eqTot(s));if(s.cash>0)s.cash*=.55;if(s.house){s.house.value*=.55;s.house.mort*=.55;setRate(s.house,s.house.rate||.03,s.age)}pay(s,.2*s.base);
-  const loss=before-netWorth(s),t=T(s,'marriage',{kind:'custom',label:M('trk.divorce')});t.label=M('trk.divorce');t.v-=loss;t.note=M('note.divorce',{a:MN(loss)});s.married=false;s.happy-=12;L&&L(M('log.divorce',{a:MN(loss)}),'bad')},
+  divorce(s,'them',L)},
  care:(s,x,L)=>{if(evR(s,'care')()>=.4)return;const amt=.8*s.base;s.rec.push({id:'',amt:amt*(s.ltc?.3:1),until:s.age+3,h:0});if(s.ltc){const t=s.trk.ltc;if(t){t.v+=amt*.7*3;t.note=M('note.ltcPaid',{a:MN(amt*.7*3)})}}L&&L(M(s.ltc?'log.careIns':'log.care',{a:MN(amt)}),'bad')},
  tripDebt:(s,x,L)=>{spend(s,'trip',x.a,'trk.trip');L&&L(M('log.tripDebt',{a:MN(x.a)}),'')},
  mentor:(s,x,L)=>{if(evR(s,'mentor')()<relP(s,x.p))refer(s,'mentorRef',1.1,'trk.mentorRef',L,'log.mentorRef')},
@@ -1064,11 +1140,13 @@ function tick(s,yr,L){
  if(D(s).rise)s.hm*=1+D(s).rise;
  if(s.debt>0){s.debt*=1.18;debtCap(s,1)}
  const sk=skill(s),lf0=clamp(s.life+s.habit,.3,1);
+ /* a partner: dating costs, or (living together, married) their take-home pay and their living costs */
+ const pt=a>=18?ptYear(s,a):{net:0,cost:0};
  if(a>=18){
   if(s.study){
    const st=s.study,part=st.pt*B;s.earned+=part;out.gross=part;
    const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,carStartPay(s,'civ')-part);
-   const d=part-.35*B;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
+   const d=part-.35*B+pt.net-pt.cost;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
    addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
    if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?amort(s.sloan,.03,10):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
@@ -1108,10 +1186,10 @@ function tick(s,yr,L){
    if(employed&&s.job)careerEnd(s,L);
    let hus=0;if(fo==='hustle'){s.hustleYears++;hus=B*.08*(1+.2*Math.min(s.hustleYears,10))*(1+SK*sk*.5)*fk;const t=T(s,'hustle',{kind:'custom',label:M('trk.hustle'),yrs:0});t.v+=hus;t.yrs++;t.note=M('note.hustle',{n:t.yrs,a:MN(hus)})}
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold){side=s.biz.inc;s.biz.inc*=1.06;if(tb){tb.v+=side;tb.note=M('note.bizSide',{a:MN(side)})}}
-   const gross=work+hus+side,net=netOf(s,gross);
+   const gross=work+hus+side,net=netOf(s,gross)+pt.net;
    /* on Normal and Hard, spending creeps up with take-home pay above a typical wage */
-   const hs=housing(s),liv=.5*B*cm+D(s).creep*Math.max(0,net-B);
-   let fixed=liv+hs;
+   const hs=housing(s),liv=.5*B*cm+D(s).creep*Math.max(0,net-pt.net-B);
+   let fixed=liv+hs+pt.cost;
    if(s.trk.abroad&&cm>1)s.trk.abroad.v-=(liv+(s.house?0:hs))*(1-1/cm);
    const kc=kidsCost(s,a);if(kc){fixed+=kc;const t=s.trk.kids;if(t){t.cost+=kc;t.v-=kc;t.note=M('note.kids',{c:MN(t.cost)})}}
    fixed+=s.car?.05*B:.03*B;
@@ -1141,12 +1219,12 @@ function tick(s,yr,L){
    const r2=s.ret2&&a<s.ret2.until?s.ret2.inc:0;if(r2&&s.trk.ret2){const t=s.trk.ret2;t.v+=r2;t.note=M('note.earned',{a:MN(t.v)})}
    const inc=s.pension+.18*B+side+r2;s.earned+=inc;out.gross=inc;
    if(s.pension&&s.trk.gov){const t=s.trk.gov;t.recv+=s.pension;t.v+=s.pension;t.note=M('note.pension',{p:MN(s.pension),r:MN(t.recv),l:MN(t.lost)})}
-   let need=.5*B*cm+.25*B*(lf0/.85)+housing(s)+(s.car?.05*B:.03*B);
+   let need=.5*B*cm+.25*B*(lf0/.85)+housing(s)+(s.car?.05*B:.03*B)+pt.cost;
    const kc=kidsCost(s,a);if(kc){need+=kc;const t=s.trk.kids;if(t){t.cost+=kc;t.v-=kc;t.note=M('note.kids',{c:MN(t.cost)})}}
    if(s.insured){const p=.035*B*s.insMul;need+=p;const t=s.trk.ins;if(t){t.prem+=p;t.v-=p;t.note=insNote(t)}}
    if(s.debt>0){const p=.25*s.debt;s.debt-=p;need+=p}
    need+=recCost(s,a)+plans(s,a,0);
-   const d=inc-need;
+   const d=inc+pt.net-need;
    if(d>=0){s.cash+=d;out.saved=d}else{const short=payRet(s,-d);out.saved=d;if(short>0){s.happy-=4;s.acc.bad++;if(!s.brokeLogged){s.brokeLogged=1;L&&L(M('log.broke'),'bad')}
     if(s.rel>=40&&evR(s,'helpBroke')()<(s.rel-30)/100){const h=.5*short;s.cash+=h;helped(s,h);L&&L(M('log.helpBroke',{a:MN(h)}),'good')}}}
   }
@@ -1168,8 +1246,10 @@ function tick(s,yr,L){
   /* on Normal and Hard, an unexpected bill now and then: the car, the flat, a family emergency, a fine, a theft */
   if(D(s).shock&&evR(s,'shock')()<D(s).shock){const r=evR(s,'shockK'),ks=['fam','fine','theft',s.car?'car':'fam',s.house?'home':'flat'],k=ks[Math.floor(r()*ks.length)],c=(.12+.4*r())*B;
    if(s.retired)payRet(s,c);else pay(s,c);const t=T(s,'shock',{kind:'custom',label:M('trk.shock'),n:0,paid:0});t.n++;t.paid+=c;t.v-=c;t.note=M('note.shock',{n:t.n,a:MN(t.paid)});L&&L(M('log.shock.'+k,{a:MN(c)}),'bad')}
-  const nw=netWorth(s);let tg=48+9*Math.log10(1+Math.min(D(s).wcap,Math.max(0,nw)/B))-(s.debt>.3*B?10:0)+(s.married?4:0)+[0,4,5,5][Math.min(3,s.kids.length)]+(s.health-60)/8;
+  const nw=netWorth(s);let tg=48+9*Math.log10(1+Math.min(D(s).wcap,Math.max(0,nw)/B))-(s.debt>.3*B?10:0)+(s.pt?{date:2,live:3,wed:4}[s.pt.st]:a<40?1.5:0)+[0,4,5,5][Math.min(3,s.kids.length)]+(s.health-60)/8;
   tg+=(s.rel-50)/12;
+  /* a break-up or divorce hurts, then fades over a few years */
+  if(s.heal&&a<s.heal.until)tg-=s.heal.d*(s.heal.until-a)/s.heal.yrs;
   /* on Normal and Hard, saving a big share of your pay means a tighter budget */
   if(job(s))tg-=D(s).frug*(Math.max(0,100*(s.savePct+(s.scheme?s.scheme.p:0))-10)+50*(.85-s.life));
   if(!s.retired&&!s.study){if(fo==='balance')tg+=5*fk;if(fo==='grind')tg-=5;if(fo==='people')tg+=3*fk}
@@ -1186,12 +1266,21 @@ function tick(s,yr,L){
   if(s.lowHap>=2&&!s.dep&&s.depAge<0&&evR(s,'depRoll')()<.5)s.depAge=a+1;
   // Relationships drift down unless you give people time; marriage, children and retirement help, and they pull back toward the
   // middle: a single kind gesture fades within a few years, how you spend your years is what lasts
-  let dr=-1+(s.married?.4:0)+[0,.3,.45,.5][Math.min(3,s.kids.length)]+(45-s.rel)*.05;
+  let dr=-1+(s.pt?{date:.1,live:.3,wed:.4}[s.pt.st]:a>=60?-.5:0)+[0,.3,.45,.5][Math.min(3,s.kids.length)]+(45-s.rel)*.05;
   if(s.retired)dr+=.5;else if(!s.study){const fd={people:4,balance:1.5,learn:0,grind:-1,hustle:-.6}[fo]||0;dr+=fd>0?fd*fk:fd;
    /* long-hours careers (the ones that cost Happiness) leave less time for people on Normal and Hard */
    if(job(s)&&CAR[s.job.id].hp<0)dr+=.5*CAR[s.job.id].hp*(D(s).toll-1)}
   rl(s,4*dr);
   if(s.married&&s.rel<25&&!s.later.some(x=>x.k==='div')&&evR(s,'lowrel')()<.04)later(s,a+1,'div',{p:1});
+  /* a partner may end it: dating couples more often than those living together (a marriage ends through LATER.div) */
+  if(s.pt&&s.pt.st!=='wed'&&s.pt.at<a&&evR(s,'ptLeave')()<(s.pt.st==='date'?.13:.05)*clamp(1.6-s.rel/62,.4,1.6))splitUp(s,'them',L);
+  /* a year of trying for a baby: if it works, the baby is born next year */
+  if(s.tryAt===a){s.tryAt=null;if(s.pt&&s.pt.st!=='date'){const ok=evR(s,'baby')()<babyP(a);
+   if(ok){s.kids.push(a+1);const t=T(s,'kids',{kind:'custom',cost:0});t.label=M('trk.kids',{n:s.kids.length});if(!t.cost)t.note=M('note.kidsDue')}
+   L&&L(M(ok?'log.rel.preg':'log.rel.noBaby'),ok?'good':'')}}
+  /* meeting someone while single: the 'date' card comes up next year */
+  if(!s.pt&&a<70&&s.meetAt==null&&evR(s,'meet')()<meetP(s,a)){s.meetAt=a+1;s.meetCar=ptCar(s,evR(s,'meetCar'))}
+  if(s.auto)autoRel(s,a);
   // skills for next year
   if(a>=45&&s.done.pivot==='stay'&&!s.retired)s.skillSrc.base=Math.max(0,s.skillSrc.base-.8);
   if(!s.retired&&!s.study){
@@ -1199,7 +1288,7 @@ function tick(s,yr,L){
    if(fo==='learn'){addSkill(s,'learn',(a<50?3.5:2)*fk*learnLuck(s,'learnYr'),M('trk.learn'));const t=s.trk.sk_learn;if(t){t.years=(t.years||0)+1;t.label=M('trk.learnN',{n:t.years})}}
    if(s.cert&&a<s.cert.end)addSkill(s,'cert',7*(s.cert.eff||1),s.cert.label);
   }
-  for(const b of s.kids)if(b===a)L&&L(M('log.child'),'good');
+  for(const b of s.kids)if(b===a){s.happy=clamp(s.happy+KIDH[Math.min(2,s.kids.filter(x=>x<=a).length-1)],0,100);L&&L(M('log.child'),'good')}
   if(s.ill&&!s.ill.over&&a+1>=s.ill.until){s.ill.over=1;s.health=clamp(s.health+6,3,100);L&&L(M('log.illRec'),'good')}
   if(s.dep&&!s.dep.over&&a+1>=s.dep.until){s.dep.over=1;s.happy=clamp(s.happy+8,0,100);L&&L(M('log.depEnd'),'good')}
   // lifespan: each year adds that year's risk of dying; you die once the total passes the luck drawn at birth (dieAt).
@@ -1223,8 +1312,9 @@ function tick(s,yr,L){
    Health         half its average, half how long you lived compared with your country's life expectancy
    Relationships  its average over every year lived (25 counts as nothing, 75 as full marks)
    The yearly sums are kept in s.acc by tick(). The grade S, A, B, C or D comes from the total (cut-offs in GR.cut, set with
-   tools/balance.js so that S is rare and an autopilot life on Normal gets about a C). */
-const GR={x:10,bad:.5,w:{money:.25,happy:.25,health:.25,rel:.25},cut:[[93,'S'],[85,'A'],[72,'B'],[58,'C']]};
+   tools/balance.js so that S is rare and an autopilot life on Normal gets about a C; raised when the autopilot began to
+   date, marry and have children by itself, which keeps the grades where they were). */
+const GR={x:10,bad:.5,w:{money:.25,happy:.25,health:.25,rel:.25},cut:[[95,'S'],[88,'A'],[77,'B'],[62,'C']]};
 /* each part is shown from 0 to 100, but the total uses the parts before that cut-off (a part keeps falling below 0 and rises
    slowly above 100), so a little more or less still counts at the extremes */
 const soft=v=>v>100?100+(v-100)/4:v<0?-20*(1-Math.exp(v/20)):v;
@@ -1249,12 +1339,15 @@ function trkView(s,t){
    Same seed (family, markets, luck), the same option wherever the same decision comes up (the default otherwise), and the same
    focus each year (foc: age → focus). Records net worth and lifetime pay at age `at` for a fair comparison. */
 function mirrorLife(s0,foc,at){const m=newLife(s0.ci,s0.seed,s0.sex==='f'?'m':'f',s0.dk);let g=0;
- while(!m.dead&&g++<130){let k=0,ev;while((ev=dueEvents(m)[0])&&k++<40)applyOpt(m,ev,s0.done[ev.id]!=null?s0.done[ev.id]:ev.def);
+ /* the option picked at this age (cards that come back are kept by age in s.hist), then the last one picked, then the default */
+ const pick=ev=>{const h=s0.hist&&s0.hist[ev.id+'@'+m.age];return h!=null?h:s0.done[ev.id]!=null?s0.done[ev.id]:ev.def};
+ const run=()=>{let k=0,ev;while((ev=dueEvents(m)[0])&&k++<40)applyOpt(m,ev,pick(ev))};
+ while(!m.dead&&g++<130){run();for(const[x,id]of s0.acts||[])if(x===m.age)relAct(m,id,null);run();
   if(foc[m.age])m.focus=foc[m.age];if(m.age===at){m.nwAt=netWorth(m);m.earnAt=m.earned}tick(m,yearRand(m.seed,m.age),null)}
  if(m.nwAt==null){m.nwAt=netWorth(m);m.earnAt=m.earned}return m}
 
 /* ---------- simulated futures ---------- */
-function MC(s,fn,N,tgt){const res=[];for(let i=0;i<N;i++){const c=clone(s);c.noDeath=true;c.seed=hsh(s.seed,'mc',i);
+function MC(s,fn,N,tgt){const res=[];for(let i=0;i<N;i++){const c=clone(s);c.noDeath=true;c.auto=true;c.seed=hsh(s.seed,'mc',i);
   if(c.crashAge>c.age){const r=mb(hsh(c.seed,'cr'))();const lo=Math.max(c.age+1,34);c.crashAge=lo>50?lo:lo+Math.floor(r*(51-lo));c.crashM=inR(mb(hsh(c.seed,'crM'))(),D(c).crash)}
   if((c.lostAt>c.age||c.lostAt<0)&&c.age<60){const r=mb(hsh(c.seed,'lost')),lo=Math.max(c.age+1,25);c.lostAt=r()<D(c).lost*(61-lo)/36?lo+Math.floor(r()*(61-lo)):-99}
   fn(c);let g=0;while(c.age<tgt&&!c.dead&&g++<130){resolveAuto(c);tick(c,yearRand(c.seed,c.age),null)}res.push([netWorth(c),c.earned,c.illDied?0:1])}return res}

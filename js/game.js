@@ -61,13 +61,13 @@ function backToSetup(){closeReplay(true);closeMoment();G.moq=[];G.moThen=null;cl
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
-  const s=G.s;G.snapS=snap(s);
+  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},lcArm:null,ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  const s=G.s;G.t.auto=true;G.snapS=snap(s);
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
   $('#noteSerial').textContent='SC '+(seed>>>0).toString(16).toUpperCase().padStart(8,'0');
   $('#setup').hidden=true;$('#game').hidden=false;$('#gstat').hidden=false;$('#gctrlLive').hidden=false;
-  buildFocus();window.scrollTo(0,0);render();schedule();
+  buildFocus();buildLife();window.scrollTo(0,0);render();schedule();
 }
 /* country names inside stored messages are resolved when shown */
 const rx=x=>{if(x&&typeof x==='object'&&x.k==='_c')return I18N.cname(x.ci);if(x&&typeof x==='object'&&x.k&&x.v){const v={};for(const n in x.v)v[n]=(x.v[n]&&x.v[n].k==='_c')?I18N.cname(x.v[n].ci):x.v[n];return t(x.k,v)}return tr(x)};
@@ -92,7 +92,7 @@ function advance(){
   if(flushMoments(()=>{render();schedule()}))return 'moment';
   return 'ok';
 }
-function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended||G.mom)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
+function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended||G.mom||G.lcArm)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
 function skipAhead(){if(G.hind)endHind();if(G.pending||G.ended||G.mom)return;clearTimeout(G.timer);let g=0,r;do{r=advance()}while(r==='ok'&&g++<150);if(r==='ok'){render();schedule()}}
 function showDecision(ev){
   const s=G.s;clearTimeout(G.timer);
@@ -144,12 +144,14 @@ function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s
 /* diary lines that are big moments, and the card each one opens (the line under the title is the diary line itself) */
 const MOMENT={'log.laidOff':'fired','log.layVol':'package','log.car.auto':'auto','log.bizFail':'bizfail','log.car.fail':'bizfail','log.coinDown':'crypto','log.burst':'burst',
   'log.broke':'broke','log.divorce':'divorce','log.car.injEnd':'injury','log.promo':'promo','log.car.up':'careerup','log.grad':'grad','log.bizOk':'bizup','log.car.ok':'bizup',
-  'log.car.exit':'exit','log.child':'child','log.retire':'retired'};
+  'log.car.exit':'exit','log.child':'child','log.retire':'retired','log.rel.move':'together','log.rel.break':'breakup','log.rel.left':'left','log.rel.try':'trying'};
 /* decision cards that open with a big moment: the moment shows first, then the decision */
 const MO_EV={crash:1,ill:1,inh:1};
-const MO_BAD=new Set(['fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury']);
+const MO_BAD=new Set(['fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury','breakup','left']);
+/* moments that bring a partner or a child: hearts instead of sparkles, and the partner walks in */
+const LOVE=new Set(['married','child','dating','together']),PT_IN=new Set(['dating']),PT_OUT=new Set(['breakup','left','divorce']);
 /* smaller events stay as a toast, so the game isn't stopped every year */
-const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj']);
+const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj','log.rel.look','log.rel.preg','log.rel.noBaby']);
 let moOn=store.get('cl-moments')!==false;
 function setMo(on){moOn=on;document.querySelectorAll('#mo0 button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.mo==='1')===on)));store.set('cl-moments',on)}
 document.querySelectorAll('#mo0 button').forEach(b=>b.addEventListener('click',()=>setMo(b.dataset.mo==='1')));
@@ -172,7 +174,11 @@ function moMoney(kind,m){const s=G.s,v=m&&m.v||{},sal=Math.max(s.lastSal||0,sala
     case 'grad':return s.sloan>0?{k:'mo.n.loan',v:-s.sloan}:{k:'mo.n.noLoan'};
     case 'bizup':return m.k==='log.bizOk'?{k:'mo.n.inc',v:num(v.a)}:raise>0?{k:'mo.n.raise',v:raise}:null;
     case 'exit':return{k:'mo.n.cash',v:num(v.a)};
-    case 'married':return s.trk.wed&&s.trk.wed.spent>0?{k:'mo.n.wed',v:-s.trk.wed.spent}:null;
+    case 'married':{const w=s.pt&&s.trk['wed'+s.pt.n];return w&&w.spent>0?{k:'mo.n.wed',v:-w.spent}:null}
+    case 'dating':return{k:'mo.n.date',v:-.04*s.base};
+    case 'together':return ptPay(s)>0?{k:'mo.n.ptPay',v:ptPay(s)}:null;
+    case 'breakup':case 'left':return num(v.a)>0?{k:'mo.n.move',v:-num(v.a)}:null;
+    case 'trying':return{k:'mo.n.try',v:-.15*s.base};
     case 'child':return{k:'mo.n.kid',v:-.15*s.base};
     case 'inh':return{k:'mo.n.inh',v:inhAmt(s)};
     case 'house':return s.house.pay>0?{k:'mo.n.mort',v:s.house.pay}:null;
@@ -180,15 +186,16 @@ function moMoney(kind,m){const s=G.s,v=m&&m.v||{},sal=Math.max(s.lastSal||0,sala
   }return null}
 /* queue a card (one of each kind at a time); with the cards off it is a toast instead, and so is a promotion within three years of the last promotion card */
 function moment(kind,line,title){const s=G.s;if(!s||G.ended||G.moq.some(x=>x.kind===kind))return;
-  if(kind==='grad'||kind==='child')line=M('mo.'+kind+'.x');
+  if(['grad','child','dating','together','breakup','left','trying'].includes(kind))line=M('mo.'+kind+'.x');
   const o={kind,tone:MO_BAD.has(kind)?'bad':'good',age:s.age,title:title||M('mo.'+kind+'.t'),line,money:moMoney(kind,line)};
   const up=kind==='promo'||kind==='careerup';if(up&&G.promoAt!=null&&s.age-G.promoAt<3){toast(line);return}
   if(moOn){if(up)G.promoAt=s.age;G.moq.push(o)}else toast(o.title)}
 function deathMo(){const s=G.s,nw=netWorth(s);return{kind:'death',tone:'end',age:s.deathAge,title:M('mo.death.t',{a:s.deathAge}),
   line:s.illDeath?M('mo.die.ill',{x:M('ill.'+s.illDeath)}):M(s.deathAge>=Math.max(70,s.le-3)?'mo.die.old':'mo.die.soon'),money:{k:nw<0?'mo.n.debt':'mo.n.leave',v:nw,flat:1}}}
 /* moments that show in the life itself rather than in the diary: a wedding, a new job, the last mortgage payment */
-const snap=s=>({m:!!s.married,j:s.job?s.job.tk:null,h:s.house?s.house.mort:-1});
+const snap=s=>({m:!!s.married,p:s.pt?s.pt.n:0,j:s.job?s.job.tk:null,h:s.house?s.house.mort:-1});
 function lifeMoments(){const s=G.s,a=G.snapS||snap(s),b=snap(s);G.snapS=b;
+  if(b.p&&b.p!==a.p)moment('dating');
   if(b.m&&!a.m)moment('married',M('mo.married.x'));
   if(b.j&&b.j!==a.j)moment('hired',M(s.job.train>s.age?'mo.hired.tx':'mo.hired.x',{x:M('car.a.'+s.job.id)}));
   if(a.h>=1&&b.h>=0&&b.h<1)moment('house',M('mo.house.x'))}
@@ -205,10 +212,12 @@ function moPose(o){const ps=Object.assign({},Pixel.stateOf(G.s));
   if(o.tone==='end')ps.sleep=true;
   else if(o.tone==='bad'){ps.face=o.kind==='ill'?'sick':'sad';if(o.kind==='ill')ps.ill='gown';if(o.kind==='broke')ps.emote='sweat'}
   else ps.face='happy';
+  /* the partner walks in for a new love, and walks away at a break-up or a divorce */
+  if(PT_IN.has(o.kind))Object.assign(ps,{partner:true,pmove:'in'});else if(PT_OUT.has(o.kind))Object.assign(ps,{partner:true,pmove:'out'});
   return ps}
 function paintMoment(){const o=G.mom,el=$('#moment');if(!o||!el)return;el.dataset.kind=o.kind;el.innerHTML=moHTML(o);
   const cv=el.querySelector('.pix-mo');Pixel.set(cv,moPose(o));clearInterval(G.moCheer);
-  if(o.tone==='good'){const k=o.kind==='married'||o.kind==='child'?'love':'yay';Pixel.cheer(cv,k);if(!reduce)G.moCheer=setInterval(()=>Pixel.cheer(cv,k),2600)}
+  if(o.tone==='good'){const k=LOVE.has(o.kind)?'love':'yay';Pixel.cheer(cv,k);if(!reduce)G.moCheer=setInterval(()=>Pixel.cheer(cv,k),2600)}
   $('#moGo').onclick=endMoment}
 function showMoment(){G.mom=G.moq.shift();clearTimeout(G.timer);let el=$('#moment');
   if(!el){el=document.createElement('div');el.id='moment';el.className='moment';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','moT');document.body.appendChild(el)}
@@ -236,7 +245,7 @@ function render(){
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
   /* the pixel character: this year's look, kept per age for the replay; it jumps at a wedding and other big moments */
   const ps=Pixel.stateOf(s);G.pix[age]=ps;Pixel.set($('#pix'),ps);
-  if((s.married&&!G.wasM)||s.kids.length>G.nKids)G.cheer='love';G.wasM=s.married;G.nKids=s.kids.length;if(G.cheer&&!s.dead)Pixel.cheer($('#pix'),G.cheer);G.cheer=0
+  const nk=s.kids.filter(b=>b<=s.age).length;if((s.married&&!G.wasM)||nk>G.nKids)G.cheer='love';G.wasM=s.married;G.nKids=nk;if(G.cheer&&!s.dead)Pixel.cheer($('#pix'),G.cheer);G.cheer=0
   const sk=skill(s);$('#skv').textContent=Math.round(sk);$('#skb').style.width=clamp(sk,0,100)+'%';$('#skx').textContent=t('g.skx',{p:Math.round(SK*sk*100)});
   $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';$('#rev').textContent=Math.round(s.rel);$('#reb').style.width=s.rel+'%';
   $('#chips').innerHTML=SRC.filter(k=>(s.skillSrc[k]||0)>=.5).map(k=>{const v=s.skillSrc[k];const name=k==='edu'&&s.trk.sk_edu?tr(s.trk.sk_edu.label):t('src.'+k);return `<span class="chip"><b>${esc(name)}</b> ${esc(t('g.chipSk',{n:Math.round(v)}))} · <span class="gain">${esc(t('g.chipPay',{p:Math.round(SK*v*100)}))}</span></span>`}).join('');
@@ -244,7 +253,7 @@ function render(){
   $('#sealcap').textContent=L<6?t('g.ring',{n:L,a:MN(TH[L]*s.base)}):t('g.ringAll');
   drawSeal($('#seal'),nw,s.base,age,s.dead);
   $('#play').textContent=t(G.playing?'g.pause':'g.play');$('#play').disabled=G.ended;$('#skip').disabled=G.ended||!!G.pending;
-  renderSlot();updFocus();drawChart();renderLedger();renderLog();
+  renderSlot();updFocus();updLife();drawChart();renderLedger();renderLog();
 }
 /* the career in the header: "Nurse · level 2", "Doctor, in training", or just the name where there are no levels */
 function jobTxt(s){const j=M('car.'+s.job.id);return s.job.train>s.age?t('g.train',{j}):CAR[s.job.id].gr>0?t('g.joblvl',{j,n:s.level}):t('g.job1',{j})}
@@ -255,7 +264,7 @@ function rankCountry(nw,ci){ci=ci==null?G.s.ci:ci;const p=countryPct(ci,nw),c=I1
 /* four other babies born in the same second: random countries weighted by births, same rules, default choices */
 function bornWithYou(){const s=G.s,tot=C.reduce((a,c)=>a+c[2],0),out=[];
   for(let i=0;i<4;i++){let u=mb(hsh(s.seed,'peer',i))()*tot,ci=0;for(;ci<C.length-1;ci++){u-=C[ci][2];if(u<=0)break}
-    const p=newLife(ci,hsh(s.seed,'peerSeed',i),undefined,s.dk);let g=0,top=0,topAge=0;while(!p.dead&&g++<130){resolveAuto(p);tick(p,yearRand(p.seed,p.age),null);const v=netWorth(p);if(v>top){top=v;topAge=p.dead?p.deathAge:p.age}}
+    const p=newLife(ci,hsh(s.seed,'peerSeed',i),undefined,s.dk);p.auto=true;let g=0,top=0,topAge=0;while(!p.dead&&g++<130){resolveAuto(p);tick(p,yearRand(p.seed,p.age),null);const v=netWorth(p);if(v>top){top=v;topAge=p.dead?p.deathAge:p.age}}
     out.push({ci,fam:p.fam,sex:p.sex,age:p.deathAge,nw:netWorth(p),top,topAge})}
   return out}
 /* a sun with one scalloped ring per wealth level; it falls asleep (a moon) when the life ends */
@@ -377,6 +386,51 @@ function updFocus(){
     b.setAttribute('aria-pressed',String(cur));b.classList.toggle('next',next);b.disabled=s.retired;
     b.querySelector('.fc-tag').textContent=next?t(s.age<18?'g.fAt18':'g.fNext'):cur&&!s.retired?t('g.current'):''});
 }
+/* Life choices: love and family, decided whenever you like while the life runs (only what makes sense right now). It sits
+   under the focus cards on wide screens, and opens from a tab on the bottom bar on smaller ones. Breaking up and divorcing
+   ask for a second tap. Easy also shows what each choice does (hints); outcomes stay hidden otherwise */
+const HEART='<svg viewBox="0 0 16 14" aria-hidden="true" focusable="false"><path d="M8 13 C2 9 0.5 6 1.5 3.5 C2.6 1 6 0.6 8 3.4 C10 0.6 13.4 1 14.5 3.5 C15.5 6 14 9 8 13 Z"/></svg>';
+function buildLife(){
+  let el=$('#lcWrap');if(!el){el=document.createElement('section');el.id='lcWrap';el.className='fr-life';$('#frail').appendChild(el)}
+  el.setAttribute('aria-labelledby','lcT');
+  el.innerHTML=`<button type="button" class="lc-tab" id="lcTab" aria-expanded="false" aria-controls="lcBody">${HEART}<span>${esc(t('lc.t'))}</span></button>
+  <div class="lc-body" id="lcBody"><h3 id="lcT">${esc(t('lc.t'))}</h3><p class="lc-st" id="lcSt" aria-live="polite"></p><div class="lc-acts" id="lcActs"></div></div>`;
+  $('#lcActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)lifeAct(b.dataset.a)});
+  $('#lcTab').onclick=()=>{const o=!el.classList.contains('open');el.classList.toggle('open',o);$('#lcTab').setAttribute('aria-expanded',String(o));if(o)G.lcKey=null;updLife()};
+  G.lcKey=null;updLife()}
+function lcStatus(s){if(s.age<18)return t('lc.kid');const p=s.pt,sp=I18N.lang==='en'?' ':'';let x;
+  if(!p)x=t('lc.st.single');
+  else if(p.st==='date')x=t('lc.st.date',{a:p.at,x:M('car.a.'+p.car)});
+  else{x=t(p.st==='wed'?'lc.st.wed':'lc.st.live',{a:p.st==='wed'?p.wedAt:p.from});x+=sp+(p.ret?t('lc.ret'):t('lc.pay',{a:MN(ptPay(s)||0),x:M('car.a.'+p.car)}))}
+  const n=s.kids.filter(b=>b<=s.age).length;if(n)x+=sp+t('lc.kids',{n});return x}
+function lcSub(s,id){const B=s.base;switch(id){
+  case 'look':return M('lc.look.s',{a:MN(.02*B)});case 'baby':return M('lc.baby.s',{a:MN(.15*B)});
+  case 'div':return M('lc.div.s',{a:MN(divC(s)[0]*B)});default:return M('lc.'+id+'.s')}}
+function lcHint(s,id){if(G.mode!=='easy')return null;const sp=I18N.lang==='en'?' ':'';
+  if(id==='baby'){let h=t('lc.baby.h',{p:Math.round(babyP(s.age)*100)});if(s.sex==='f'&&CHILDPEN[workCode(s)]>0&&!s.kids.length)h+=sp+t('e.kids.h',{p:CHILDPEN[workCode(s)]});return h}
+  return ['look','move','break','div'].includes(id)?t('lc.'+id+'.h'):null}
+function updLife(){
+  const s=G.s,el=$('#lcWrap');if(!s||!el)return;
+  /* while a card or a moment is open the buttons stay, greyed out */
+  const busy=!!(G.ended||G.pending||G.hind||G.mom||s.dead),acts=relActs(s);
+  $('#lcSt').textContent=lcStatus(s)+(busy&&!G.ended&&s.age>=18?(I18N.lang==='en'?' ':'')+t('lc.busy'):'');
+  $('#lcTab').classList.toggle('has',!busy&&acts.some(a=>a.ok===true));
+  const html=acts.map(a=>{const dis=busy||a.ok!==true,arm=G.lcArm===a.id,sub=a.ok!==true?tr(a.ok):arm?t('lc.sure'):withHint(lcSub(s,a.id),lcHint(s,a.id));
+    return `<button type="button" class="lc-btn${arm?' arm':''}" data-a="${a.id}"${dis?' disabled':''}><span class="lc-n">${esc(t('lc.'+a.id))}</span><span class="lc-s">${esc(sub)}</span></button>`}).join('');
+  /* rebuild only when something changed, so a click (or the keyboard focus) isn't lost as the years go by */
+  if(html!==G.lcKey){G.lcKey=html;$('#lcActs').innerHTML=html}}
+function lifeAct(id){
+  const s=G.s;if(!s||G.ended||G.pending||G.hind||G.mom||RPY.el)return;
+  /* breaking up and divorcing need a second tap within a few seconds */
+  /* (time stands still while it waits) */
+  if((id==='break'||id==='div')&&G.lcArm!==id){G.lcArm=id;clearTimeout(G.timer);clearTimeout(G.lcArmT);G.lcArmT=setTimeout(()=>{G.lcArm=null;updLife();schedule()},4000);updLife();return}
+  G.lcArm=null;clearTimeout(G.lcArmT);
+  const had=new Set(Object.keys(s.trk)),age=s.age;
+  if(!relAct(s,id,(m,k)=>addLog(m,k)))return;
+  /* kept for the life replay; the wedding is recorded by its own card */
+  if(id!=='wed'){G.dec.push({id:'p_'+id,age,title:M('lc.'+id),label:M('lc.'+id),pick:id,def:null,trk:id==='baby'?['kids']:Object.keys(s.trk).filter(k=>!had.has(k)),rows:[]});G.marks.push({a:age,t:M('lc.'+id)})}
+  $('#lcWrap').classList.remove('open');$('#lcTab').setAttribute('aria-expanded','false');
+  lifeMoments();recordTh();clearTimeout(G.timer);next()}
 function spark(id,v){
   const h=G.th[id]||[];const c=cls(v)||'flat';
   if(h.length<2)return `<svg class="spark" viewBox="0 0 64 26" aria-hidden="true"><line class="z" x1="0" y1="13" x2="64" y2="13"/><circle class="${c}" cx="60" cy="13" r="2.5"/></svg>`;
@@ -436,9 +490,11 @@ function endHTML(){
    typical result from the 40 futures saved when you chose. You move on yourself (buttons, swipe, ←/→).
    The ending fades the screen to charcoal for "Was it all worth it?", the one dark moment in the design, then back to light. */
 const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip'],'edu'],
-  ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date'],'wed'],['home',['home','bubble','move'],'home'],['kids',['kids'],'kids'],
-  ['crisis',['ill','dep','crash','layoff','debt','divorce','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
-const RPX={kids:'k0',date:'solo'}; // choices that mean the stage never happened
+  ['job',['job','save','nego','scheme','abroad'],'job'],['love',['wed','date','p_move'],'wed'],['home',['home','bubble','move'],'home'],['kids',['p_baby'],'p_baby'],
+  ['crisis',['ill','dep','crash','layoff','debt','divorce','p_div','p_break','scam','scam2']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
+const RPX={date:'no'}; // choices that mean the stage never happened
+/* a try for a baby only makes a page when a baby came of it (its story is the children's passbook line) */
+const rpOk=d=>d.id!=='p_baby'||G.s.kids.includes(d.age+1);
 const RPY={};
 const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
 const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};
@@ -446,7 +502,7 @@ function replayPages(){
   const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),story:[M('rp.t.born',{x:M('sex.kid.'+s.sex),c:{k:'_c',ci:s.ci},fam:M('fam.'+s.fam)})]}];
   const page=(st,d)=>({st,age:d.age,title:d.title,d,story:decStory(d)}),big=d=>Math.abs(decVal(d)||0);
   const old=s.retired&&s.retireAge!=null?s.retireAge+1:65; // old age comes after retirement
-  for(const[st,ids,anchor]of RP){const ds=G.dec.filter(d=>ids.includes(d.id)&&RPX[d.id]!==d.pick&&(st!=='old'||d.age>=old));if(!ds.length)continue;
+  for(const[st,ids,anchor]of RP){const ds=G.dec.filter(d=>ids.includes(d.id)&&RPX[d.id]!==d.pick&&rpOk(d)&&(st!=='old'||d.age>=old));if(!ds.length)continue;
     /* hard times: up to two pages, illness and depression first */
     if(st==='crisis'){const w=d=>d.id==='ill'?2:d.id==='dep'?1:0;ds.sort((a,b)=>w(b)-w(a)||big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page(st,d)));continue}
     pg.push(page(st,ds.find(d=>d.id===anchor)||ds.sort((a,b)=>big(b)-big(a))[0]))}
@@ -681,7 +737,7 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){buildFocus();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText();paintMoment()}});
+  if(G.s){buildFocus();buildLife();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText();paintMoment()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});

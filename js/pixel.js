@@ -217,23 +217,24 @@ function scene(st,fr){const sc=buf();fr=fr||{};
  sprite(sc,l=>l.rect(0,FY+2,W,H-FY-2,WA));
  if(st.house)house(sc);if(st.vehicle)car(sc);
  const stg=stageOf(st.age),ks=st.kids||[],grown=stg==='adult'||stg==='elder',couple=st.partner&&grown,sad=st.mood==='sad'||st.dep;
- const mainX=couple?17:24,partX=30,sq=s=>s||0,up=fr.up||0;
+ /* pmove: the partner walks in from the right (a new love) or walks away (a break-up); fr.pm is how far off they are */
+ const leave=couple&&st.pmove==='out',both=couple&&!leave,mainX=couple?17:24,partX=30+(fr.pm||0),sq=s=>s||0,up=fr.up||0;
  /* walking children hold a free hand (player's left, partner's right), babies are carried */
- const walk=grown?ks.filter(a=>a>=3).slice(0,2):[],carry=grown?ks.filter(a=>a<3).slice(0,couple?2:1):[];
- const slots=couple?[{p:'m',side:-1},{p:'p',side:1}]:[{p:'m',side:-1},{p:'m',side:1}],hold={m:{},p:{}};
+ const walk=grown?ks.filter(a=>a>=3).slice(0,2):[],carry=grown?ks.filter(a=>a<3).slice(0,both?2:1):[];
+ const slots=both?[{p:'m',side:-1},{p:'p',side:1}]:[{p:'m',side:-1},{p:'m',side:1}],hold={m:{},p:{}};
  const kids=walk.map((a,i)=>{const s=slots[i],pg=geo(stg,s.p==='m'?mainX:partX,FY,0),hand=s.side<0?{x:pg.bx0-3,y:pg.by0+5}:{x:pg.bx1+2,y:pg.by0+5};
   hold[s.p][s.side<0?'L':'R']=hand;const sz=a<10?'kid':'kteen',bw=SZ[sz].bw;return{a,i,sz,hand,cx:s.side<0?hand.x-1-(bw>>1):hand.x+2+(bw>>1),side:-s.side}});
  /* the partner first (behind), then the player, then the children in front */
  if(couple){const old=stg==='elder',f=st.sex==='f';
   figure(sc,{sz:stg,cx:partX,fy:FY,sq:sq(fr.sq2),style:f?'tuft':'bun',hair:old?MI:CH,fit:st.wealth>=2?casual(2):casual(1,['foot','mkt','music','esp','infl','hawker','actor'].includes(st.fit)?2:3),
-   face:fr.blink2&&!sad?'blink':sad?'normal':old?'sleepy':'happy',hold:hold.p,watch:st.wealth>=2})}
+   face:leave?'normal':fr.blink2&&!sad?'blink':sad?'normal':old?'sleepy':'happy',hold:leave?{}:hold.p,watch:st.wealth>=2})}
  let mg;
  if(stg==='baby')mg=figure(sc,{sz:'baby',cx:mainX,fy:FY-up,sq:sq(fr.sq),tilt:fr.tilt,style:'curl',fit:{sh:MI},face:faceOf(st,fr),sprout:1});
  else{const fit=st.ill==='gown'?GOWN:st.fit?OUT[st.fit]||casual(st.wealth,0):st.study?STUDY:stg==='teen'?SCHOOL:casual(st.wealth,0),
    old=stg==='elder',free=!(fit.props||[]).some(p=>!p.side)&&!fit.up&&!hold.m.R;
   mg=figure(sc,{sz:stg,cx:mainX,fy:FY-up,sq:sq(fr.sq),tilt:fr.tilt,style:st.sex==='f'?(old?'bun':'bob'):'short',hair:old?MI:CH,fit,face:faceOf(st,fr),sprout:1,
    hold:hold.m,watch:st.wealth>=2&&stg!=='child',plaster:st.ill==='band',gown:st.ill==='gown',extra:old&&!st.sleep&&free?[P.cane]:[]})}
- carry.forEach((a,i)=>{const cx=i===0&&couple?partX:mainX,g=geo(stg,cx,FY,0);bundle(sc,cx,g.by0+1,[YA,CO][i])});
+ carry.forEach((a,i)=>{const cx=i===0&&both?partX:mainX,g=geo(stg,cx,FY,0);bundle(sc,cx,g.by0+1,[YA,CO][i])});
  kids.forEach(k=>{figure(sc,{sz:k.sz,cx:k.cx,fy:FY,sq:k.i===0?sq(fr.sq3):0,style:k.i%2?'pig':'tuft',fit:{sh:[CO,YA][k.i],pa:MI},
    face:fr.blink3&&k.i===1?'blink':sad?'normal':k.i?'normal':'happy',hold:k.side<0?{L:k.hand}:{R:k.hand}});sprite(sc,l=>l.rect(k.hand.x,k.hand.y,2,2,WH))});
  const more=ks.length-(grown?walk.length+carry.length:0);if(grown&&more>0)text(sc,'+'+more,W-4*String(more).length-5,2);
@@ -247,7 +248,7 @@ function paint(cv,st,fr){if(cv.width!==W){cv.width=W;cv.height=H}const ctx=cv.ge
 /* ---------- a life's state (engine globals: netWorth, sick, depressed) ---------- */
 function stateOf(s){const age=s.dead?s.deathAge:s.age,nw=netWorth(s),B=s.base,h=s.happy;
  return{age,sex:s.sex,fit:s.job&&!s.retired&&!s.study&&!(s.job.train>s.age)?s.job.id:s.job&&s.job.train>s.age?(s.job.id==='doc'?'doc':'law'):null,
-  study:!!s.study,partner:!!s.married,kids:s.kids.map(b=>age-b).filter(a=>a>=0),
+  study:!!s.study,partner:!!s.pt,kids:s.kids.map(b=>age-b).filter(a=>a>=0),
   wealth:nw<.5*B?0:nw<10*B?1:2,house:!!s.house,vehicle:!!s.car,mood:h>=70?'happy':h>=35?'flat':'sad',
   ill:s.illAge===s.age&&!s.dead?'gown':sick(s)?'band':null,dep:depressed(s),sleep:!!s.dead,
   broke:!s.dead&&(s.debt>.3*B||nw+s.sloan<-.25*B),retired:!!s.retired&&!s.dead}}
@@ -261,10 +262,12 @@ function frame(e,t){const f={},c=e.cheer>t,tt=t+e.off;
   const tc=tt%7400;if(tc>5600&&tc<6800)f.tilt=Math.floor(tt/7400)%2?1:-1;f.k=Math.floor(tt/220)}
  if(c){const p=1-(e.cheer-t)/1400;f.em=e.kind;f.p=reduce?.5:p;f.cheer=1;
   if(!reduce){const k=Math.min(13,Math.floor(p*14));f.up=[0,0,2,4,5,6,6,5,4,2,0,0,0,0][k];f.sq=[1,1,-1,-1,0,0,0,0,-1,-1,1,1,0,0][k];f.tilt=0}}
+ /* the partner walking in or away over 1.5 s (with reduced motion: already in, or halfway out) */
+ const pm=e.st&&e.st.pmove;if(pm){const p=reduce?(pm==='out'?.6:1):Math.min(1,(t-e.t0)/1500);f.pm=Math.round(pm==='out'?p*24:(1-p)*24);if(p<1&&!reduce)f.sq2=Math.floor(t/110)%2?1:0}
  return f}
 function tick(){const t=performance.now();for(const[cv,e]of live){if(!cv.isConnected){live.delete(cv);continue}const f=frame(e,t),key=JSON.stringify(f);if(key!==e.key){e.key=key;paint(cv,e.st,f)}}
  if(!live.size){clearInterval(timer);timer=null}}
-function set(cv,st,still){if(!cv||!st)return;let e=live.get(cv);if(!e){e={off:Math.random()*3000};if(!still)live.set(cv,e)}e.st=st;e.key='';paint(cv,st,frame(e,performance.now()));
+function set(cv,st,still){if(!cv||!st)return;let e=live.get(cv);if(!e){e={off:Math.random()*3000};if(!still)live.set(cv,e)}if(!e.st||e.st.pmove!==st.pmove)e.t0=performance.now();e.st=st;e.key='';paint(cv,st,frame(e,performance.now()));
  if(!still&&!timer)timer=setInterval(tick,reduce?400:60)}
 function cheer(cv,kind){const e=live.get(cv);if(e){e.cheer=performance.now()+1400;e.kind=kind||'yay';e.key=''}}
 window.Pixel={stateOf,set,cheer,paint,scene,frame,W,H};
