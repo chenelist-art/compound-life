@@ -577,9 +577,11 @@ body.rp-open{overflow:hidden}
 .replay.fade{opacity:0;pointer-events:none}
 .rp-top{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;max-width:1180px;margin:0 auto}
 .rp-mid{display:grid;grid-template-rows:clamp(210px,40vh,340px) minmax(0,1fr);gap:12px;width:100%;max-width:1180px;margin:0 auto;min-height:0}
-/* the drawing: a window onto a long world that pans to follow the pen */
+/* the drawing: a window onto a strip of frames, one per scene. Only the strip moves (one slide between scenes) */
 .rp-world{position:relative;min-height:0;border:var(--outline);border-radius:22px;background:var(--washi);overflow:hidden;cursor:pointer;touch-action:pan-y}
-.rp-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rp-strip{position:absolute;inset:0;will-change:transform;transform:translate3d(0,0,0)}
+.rp-defs{position:absolute;width:0;height:0;overflow:hidden}
+.rp-svg{position:absolute;top:0;left:0;width:100%;height:100%;display:block;overflow:hidden}
 .rp-svg *{stroke-linecap:round;stroke-linejoin:round}
 .rp-lines *{fill:none;stroke:var(--charcoal);stroke-width:calc(var(--lw) * 1px)}
 .rp-lines .th{stroke-width:calc(var(--tw) * 1px)}

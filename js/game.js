@@ -560,90 +560,105 @@ function pixAt(a){let k=-1;for(const x in G.pix)if(+x<=a&&+x>k)k=+x;return G.pix
 function rpPix(root){root.querySelectorAll('canvas.pix-rp').forEach(c=>Pixel.set(c,pixAt(+c.dataset.age)))}
 
 /* ---------- the drawing: one charcoal line across the whole life ----------
-   The world is one inline SVG, WH units high. Scenes stand SW apart on the ground, which is your net-worth line (ages
-   between two scenes are spread evenly between them). Each scene is a stage drawing from Art.stageArt drawn twice: a
-   line layer whose strokes draw themselves one after another (pathLength=1, stroke-dashoffset animated with the Web
-   Animations API) and a layer of flat palette fills that fades in once the lines are done. The pen (a small dot) sits at
-   the tip of whatever is being drawn and the view pans to follow it. Tapping the drawing speeds the scene up; a scene you
-   come back to is shown finished at once; with reduced motion every scene is shown finished. */
-const SW=230,SS=1.35,WH=240,GTOP=162,GBOT=222,X0=24;
+   Each scene has its own frame, exactly the size of the drawing box: a small inline SVG, WH units high, standing in a
+   horizontal strip of frames. The view never moves while a scene draws. Moving on slides the strip once (0.5 s,
+   ease-in-out, a CSS transform on the strip only, so the browser can do it without repainting). In each frame the
+   ground is your net-worth line: it comes in at the left edge, at the height where the frame before left off, runs to the
+   scene in the middle, and after the scene is drawn and its words have shown it runs on to the right edge, where the next
+   frame picks it up. So it still reads as one line. Each scene is a stage drawing from Art.stageArt drawn twice: a line
+   layer whose strokes draw themselves one after another (pathLength=1, stroke-dashoffset animated with the Web Animations
+   API) and a layer of flat palette fills that fades in once the lines are done. The pen (a small dot) sits at the tip of
+   whatever is being drawn. Tapping the drawing speeds the scene up; a scene you come back to is shown finished; with
+   reduced motion every scene is shown finished and frames change without sliding. */
+const SS=1.35,WH=240,GTOP=162,GBOT=222,SLIDE=500;
 const SHAPES='path,circle,rect,ellipse,line,polyline,polygon';
-function rpWorld(){
-  const pages=RPY.pages,n=pages.length,s=G.s,X=pages.map((p,i)=>X0+70+i*SW+SW/2),END=X[n-1]+SW*.8;
-  const ages=pages.map(p=>p.st==='end'?s.deathAge:p.age);
-  const xAt=a=>{if(a<=ages[0])return X[0];for(let i=1;i<n;i++)if(a<=ages[i])return ages[i]===ages[i-1]?X[i]:X[i-1]+(a-ages[i-1])/(ages[i]-ages[i-1])*(X[i]-X[i-1]);return X[n-1]};
-  let lo=0,hi=1;for(const p of G.hs){lo=Math.min(lo,p[1]);hi=Math.max(hi,p[1])}
-  const Y=v=>GBOT-(v-lo)/(hi-lo)*(GBOT-GTOP),gy=a=>Y(nwAt(a)),z=Y(0);
-  /* the ground, one path per stretch: up to the first scene, between scenes (a point a year), and the last stretch */
-  const pts=(a0,a1)=>{const o=[];for(let a=a0;a<=a1;a++)o.push([xAt(a),gy(a)]);if(!o.length||o[o.length-1][0]<xAt(a1))o.push([xAt(a1),gy(a1)]);return o};
-  const segs=[[[X0,gy(0)],[X[0],gy(0)]]];
-  for(let i=1;i<n;i++)segs.push([[X[i-1],gy(ages[i-1])]].concat(pts(ages[i-1]+1,ages[i])));
-  const last=gy(s.deathAge);segs.push([[X[n-1],last],[END,last]]);
-  const d=ps=>'M'+ps.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
-  const all=[].concat(...segs),earth=`M${X0} ${WH+10} L`+all.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+` L${END} ${WH+10} Z`,area=`M${X0} ${z.toFixed(1)} L`+all.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+` L${END} ${z.toFixed(1)} Z`;
-  /* scenes stand on the highest ground under them, in an arch of the stage's colour. The drawing is cut off at its base;
-     the arch's colour runs on down to the net-worth line, which is drawn over it */
+/* the life's net-worth scale, shared by every frame: [lo, hi, y of zero] */
+function rpScale(){let lo=0,hi=1;for(const p of G.hs){lo=Math.min(lo,p[1]);hi=Math.max(hi,p[1])}const Y=v=>GBOT-(v-lo)/(hi-lo)*(GBOT-GTOP);return{Y,z:Y(0)}}
+/* net worth at a fractional age (the passbook keeps one value a year) */
+const nwF=a=>{const f=Math.floor(a),c=Math.ceil(a);return f===c?nwAt(a):nwAt(f)+(nwAt(c)-nwAt(f))*(a-f)};
+/* frame i, W units wide: its ground runs from the halfway age to the scene before, through the scene's age at the centre,
+   to the halfway age to the next scene (the life's last age in the last frame) */
+function rpFrameSVG(i,W,Y,z){
+  const pages=RPY.pages,n=pages.length,s=G.s,age=p=>p.st==='end'?s.deathAge:p.age,a=age(pages[i]);
+  const aL=i?(age(pages[i-1])+a)/2:a,aR=i<n-1?(a+age(pages[i+1]))/2:a,gy=x=>Y(nwF(x)),C=W/2;
+  const half=(a0,a1,x0,x1)=>{const o=[[x0,gy(a0)]];if(a1>a0)for(let k=Math.floor(a0)+1;k<a1;k++)o.push([x0+(k-a0)/(a1-a0)*(x1-x0),gy(k)]);o.push([x1,gy(a1)]);return o};
+  const pin=half(aL,a,0,C),pout=half(a,aR,C,W),d=ps=>'M'+ps.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
+  const area=(ps,x0,x1)=>`M${x0.toFixed(1)} ${z.toFixed(1)} L`+ps.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+` L${x1.toFixed(1)} ${z.toFixed(1)} Z`;
+  const all=pin.concat(pout),earth=`M0 ${WH+10} L`+all.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+` L${W.toFixed(1)} ${WH+10} Z`;
+  const ar=(ps,x0,x1,h)=>`<g class="rp-ar" data-h="${h}"><path class="rp-up" clip-path="url(#rpUp)" d="${area(ps,x0,x1)}"/><path class="rp-dn" clip-path="url(#rpDn)" d="${area(ps,x0,x1)}"/><path class="rp-zero" d="M${x0.toFixed(1)} ${z.toFixed(1)} H${x1.toFixed(1)}"/></g>`;
+  /* the scene stands on the highest ground under it, in an arch of the stage's colour; the drawing is cut off at its base
+     and the arch's colour runs on down to the net-worth line, which is drawn over it */
+  let base=gy(a);for(const q of all)if(Math.abs(q[0]-C)<=66*SS)base=Math.min(base,q[1]);
+  const at=`transform="translate(${(C-60*SS).toFixed(1)} ${(base-80*SS).toFixed(1)}) scale(${SS})"`,id=pages[i].st,art=Art.stageArt(id);
   const ARCH='M-6 80 V34 A66 66 0 0 1 126 34 V80',SKIRT='M-6 150 V34 A66 66 0 0 1 126 34 V150 Z';
-  const base=i=>{let y=gy(ages[i]);for(const q of all)if(Math.abs(q[0]-X[i])<=66*SS)y=Math.min(y,q[1]);return y};
-  const at=i=>`data-i="${i}" transform="translate(${(X[i]-60*SS).toFixed(1)} ${(base(i)-80*SS).toFixed(1)}) scale(${SS})"`;
-  const parts=pages.map((p,i)=>{const id=p.st,art=Art.stageArt(id);
-    return{f:`<g class="rp-fill" ${at(i)} style="--wb:var(${Art.stageBg(id)})"><path class="rp-bg" d="${SKIRT}"/><g clip-path="url(#rpCut)">${art}</g></g>`,
-      l:`<g class="rp-lines" ${at(i)} clip-path="url(#rpCut)"><path d="${ARCH}"/>${art}</g>`}});
-  /* the last thing the pen draws: a tiny star at the end of the line */
-  const sx=END-26,sy=last-38;let st='';for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,q=k%2?5:11;st+=(k?'L':'M')+(sx+q*Math.cos(a)).toFixed(1)+' '+(sy+q*Math.sin(a)).toFixed(1)}
-  Object.assign(RPY,{X,END});
-  return `<svg class="rp-svg" aria-hidden="true" focusable="false"><defs><clipPath id="rpCut" clipPathUnits="userSpaceOnUse"><rect x="-60" y="-90" width="240" height="170.5"/></clipPath>
-    <clipPath id="rpReveal" clipPathUnits="userSpaceOnUse"><rect id="rpRevR" x="0" y="0" width="0" height="${WH}"/></clipPath>
-    <clipPath id="rpUp" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="${END+40}" height="${z.toFixed(1)}"/></clipPath><clipPath id="rpDn" clipPathUnits="userSpaceOnUse"><rect x="0" y="${z.toFixed(1)}" width="${END+40}" height="${WH}"/></clipPath></defs>
-    <g id="rpCam">${parts.map(q=>q.f).join('')}<path class="rp-earth" d="${earth}"/><g clip-path="url(#rpReveal)"><path class="rp-up" clip-path="url(#rpUp)" d="${area}"/><path class="rp-dn" clip-path="url(#rpDn)" d="${area}"/><path class="rp-zero" d="M${X0} ${z.toFixed(1)} H${END}"/></g>
-    ${parts.map(q=>q.l).join('')}${segs.map((q,i)=>`<path class="rp-gl" data-seg="${i}" d="${d(q)}"/>`).join('')}
-    <g class="rp-fill" data-i="star"><path class="ya" d="${st}Z"/></g><g class="rp-lines" data-i="star"><path d="${st}Z"/></g></g></svg>`}
+  /* the last frame ends with a small star, drawn slowly after the last scene */
+  let star='';if(i===n-1){const sx=W-Math.min(34,W*.1),sy=gy(aR)-38;let st='';for(let k=0;k<10;k++){const t2=-Math.PI/2+k*Math.PI/5,q=k%2?5:11;st+=(k?'L':'M')+(sx+q*Math.cos(t2)).toFixed(1)+' '+(sy+q*Math.sin(t2)).toFixed(1)}
+    star=`<g class="rp-fill" data-i="star"><path class="ya" d="${st}Z"/></g><g class="rp-lines" data-i="star"><path d="${st}Z"/></g>`}
+  return `<svg class="rp-svg" data-f="${i}" style="left:${i*100}%" viewBox="0 0 ${W.toFixed(1)} ${WH}" aria-hidden="true" focusable="false">
+   <g class="rp-fill" data-i="${i}" ${at} style="--wb:var(${Art.stageBg(id)})"><path class="rp-bg" d="${SKIRT}"/><g clip-path="url(#rpCut)">${art}</g></g>
+   <path class="rp-earth" d="${earth}"/>${ar(pin,0,C,'in')}${ar(pout,C,W,'out')}
+   <g class="rp-lines" data-i="${i}" ${at} clip-path="url(#rpCut)"><path d="${ARCH}"/>${art}</g>
+   <path class="rp-gl" data-h="in" d="${d(pin)}"/><path class="rp-gl" data-h="out" d="${d(pout)}"/>${star}</svg>`}
+/* (re)build every frame for the box's current size; scenes already drawn are shown finished */
+function rpBuild(){
+  const box=RPY.box,w=box.clientWidth,h=box.clientHeight;if(!h||!w)return;const f=h/WH,W=w/f;
+  if(RPY.W&&Math.abs(W-RPY.W)<.5&&Math.abs(f-RPY.f)<.001)return;
+  rpFinish();RPY.W=W;RPY.f=f;const{Y,z}=rpScale(),st=RPY.strip;
+  st.style.setProperty('--gw',(3/f).toFixed(3));st.style.setProperty('--lw',(3/f/SS).toFixed(3));st.style.setProperty('--tw',(2.2/f/SS).toFixed(3));
+  RPY.defs.innerHTML=`<defs><clipPath id="rpCut" clipPathUnits="userSpaceOnUse"><rect x="-60" y="-90" width="240" height="170.5"/></clipPath>
+   <clipPath id="rpUp" clipPathUnits="userSpaceOnUse"><rect x="-10" y="0" width="${(W+20).toFixed(1)}" height="${z.toFixed(1)}"/></clipPath>
+   <clipPath id="rpDn" clipPathUnits="userSpaceOnUse"><rect x="-10" y="${z.toFixed(1)}" width="${(W+20).toFixed(1)}" height="${WH}"/></clipPath></defs>`;
+  st.innerHTML=RPY.pages.map((p,i)=>rpFrameSVG(i,W,Y,z)).join('');rpPrep(st);
+  for(const k in RPY.drawn)if(RPY.drawn[k])rpShow(k==='star'?k:+k);
+  rpPlace(Math.max(0,RPY.i))}
 /* get every line ready to draw: hidden, with a length of 1 so a dash offset of 1 hides it and 0 shows all of it */
-function rpPrep(svg){
-  svg.querySelectorAll('.rp-lines .ns').forEach(e=>e.remove());
-  svg.querySelectorAll('.rp-lines, .rp-gl').forEach(g=>{for(const e of g.matches(SHAPES)?[g]:g.querySelectorAll(SHAPES)){e.setAttribute('pathLength','1');e.style.strokeDasharray='1 1';e.style.strokeDashoffset='1';e.style.opacity='0'}});
-  svg.querySelectorAll('.rp-fill').forEach(g=>g.style.opacity='0')}
-/* the lines of scene i, in drawing order: the stretch of ground that leads to it, then its strokes */
-function rpLines(i){const svg=RPY.svg,sc=svg.querySelector(`.rp-lines[data-i="${i}"]`),fl=svg.querySelector(`.rp-fill[data-i="${i}"]`),gl=typeof i==='number'?svg.querySelector(`.rp-gl[data-seg="${i}"]`):svg.querySelector(`.rp-gl[data-seg="${RPY.pages.length}"]`);
-  return{fl,els:[gl].concat([...sc.querySelectorAll('*')].filter(e=>e.matches(SHAPES)))}}
+function rpPrep(root){
+  root.querySelectorAll('.rp-lines .ns').forEach(e=>e.remove());
+  root.querySelectorAll('.rp-lines, .rp-gl').forEach(g=>{for(const e of g.matches(SHAPES)?[g]:g.querySelectorAll(SHAPES)){e.setAttribute('pathLength','1');e.style.strokeDasharray='1 1';e.style.strokeDashoffset='1';e.style.opacity='0'}});
+  root.querySelectorAll('.rp-fill, .rp-ar').forEach(g=>g.style.opacity='0')}
+/* scene i's parts, in drawing order: the ground coming in and the colour under it, the scene's strokes, its fills, then
+   the ground going out to the right edge and the colour under that ('star': the last frame's star) */
+function rpParts(i){const st=RPY.strip;
+  if(i==='star'){const fr=st.querySelector(`.rp-svg[data-f="${RPY.pages.length-1}"]`);return{lines:[...fr.querySelector('.rp-lines[data-i="star"]').querySelectorAll(SHAPES)],fl:fr.querySelector('.rp-fill[data-i="star"]')}}
+  const fr=st.querySelector(`.rp-svg[data-f="${i}"]`),q=s=>fr.querySelector(s);
+  return{gin:q('.rp-gl[data-h="in"]'),ain:q('.rp-ar[data-h="in"]'),lines:[...q('.rp-lines').querySelectorAll(SHAPES)],fl:q('.rp-fill'),gout:q('.rp-gl[data-h="out"]'),aout:q('.rp-ar[data-h="out"]')}}
 /* show scene i finished, at once */
-function rpShow(i){const{fl,els}=rpLines(i);for(const e of els){for(const a of e.getAnimations())a.cancel();e.style.opacity='1';e.style.strokeDashoffset='0'}
-  for(const a of fl.getAnimations())a.cancel();fl.style.opacity='1';RPY.drawn[i]=1;rpRev(typeof i==='number'?RPY.X[i]:RPY.END)}
-function rpRev(x){if(x>RPY.rev){RPY.rev=x;RPY.revR.setAttribute('width',x.toFixed(1))}}
-/* draw scene i: about 0.6 s of ground, about 1.8 s of strokes (each as long as its share of the ink), then the colours,
-   then the words. slow stretches it (the last stroke of the life) */
+function rpShow(i){const p=rpParts(i);
+  for(const e of[p.gin,p.gout].concat(p.lines)){if(!e)continue;for(const a of e.getAnimations())a.cancel();e.style.opacity='1';e.style.strokeDashoffset='0'}
+  for(const g of[p.fl,p.ain,p.aout]){if(!g)continue;for(const a of g.getAnimations())a.cancel();g.style.opacity='1'}RPY.drawn[i]=1}
+/* draw scene i: about 0.6 s of ground coming in, about 1.8 s of strokes (each as long as its share of the ink), the
+   colours, the words, then the ground going out to the next frame. slow stretches it (the last stroke of the life) */
 function rpDraw(i,txt,slow){
-  const{fl,els}=rpLines(i),k=slow||1,lens=els.map(e=>{try{return Math.max(4,e.getTotalLength())}catch(x){return 30}});
-  const ink=lens.slice(1).reduce((a,b)=>a+b,0)||1,anims=[];let at=0;
-  els.forEach((e,j)=>{const dur=k*(j?Math.min(420,Math.max(70,1800*lens[j]/ink)):(i===0?450:650));
-    anims.push({e,len:lens[j],a:e.animate([{opacity:0,strokeDashoffset:1},{opacity:1,strokeDashoffset:1,offset:.01},{opacity:1,strokeDashoffset:0}],{duration:dur,delay:at,fill:'both',easing:'linear'})});at+=dur+(j?25:60)});
-  const fa=fl.animate([{opacity:0},{opacity:1}],{duration:600*k,delay:at,fill:'both',easing:'ease-out'});
-  const all=anims.map(x=>x.a).concat(fa);
-  if(txt)all.push(txt.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:450,delay:at+250,fill:'both',easing:'ease-out'}));
-  RPY.run={i,anims,all};fa.finished.then(()=>{if(RPY.run&&RPY.run.i===i){RPY.drawn[i]=1;rpRev(typeof i==='number'?RPY.X[i]:RPY.END)}}).catch(()=>{});
-  return Promise.all(all.map(a=>a.finished)).then(()=>{if(RPY.run&&RPY.run.i===i)RPY.run=null}).catch(()=>{})}
+  const p=rpParts(i),k=slow||1,anims=[],all=[];let at=0;
+  const len=e=>{try{return Math.max(4,e.getTotalLength())}catch(x){return 30}};
+  const stroke=(e,dur)=>{const a=e.animate([{opacity:0,strokeDashoffset:1},{opacity:1,strokeDashoffset:1,offset:.01},{opacity:1,strokeDashoffset:0}],{duration:dur,delay:at,fill:'both',easing:'linear'});anims.push({e,len:len(e),a});all.push(a);return dur};
+  const fade=(g,dur,d0)=>{if(g)all.push(g.animate([{opacity:0},{opacity:1}],{duration:dur,delay:d0,fill:'both',easing:'ease-out'}))};
+  if(p.gin){fade(p.ain,(i===0?450:650)*k,at);at+=stroke(p.gin,(i===0?450:650)*k)+60}
+  const lens=p.lines.map(len),ink=lens.reduce((a,b)=>a+b,0)||1;
+  p.lines.forEach((e,j)=>{at+=stroke(e,k*Math.min(420,Math.max(70,1800*lens[j]/ink)))+25});
+  fade(p.fl,600*k,at);at+=600*k;
+  if(txt)all.push(txt.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:450,delay:at-350,fill:'both',easing:'ease-out'}));
+  if(p.gout){at+=150;fade(p.aout,500,at);stroke(p.gout,500)}
+  RPY.run={i,anims,all};
+  return Promise.all(all.map(a=>a.finished)).then(()=>{if(RPY.run&&RPY.run.i===i){RPY.drawn[i]=1;RPY.run=null}}).catch(()=>{})}
 /* finish whatever is being drawn now (a tap speeds it up instead) */
-function rpFinish(){const r=RPY.run;if(!r)return;for(const a of r.all)a.finish();RPY.run=null}
+function rpFinish(){const r=RPY.run;if(!r)return;for(const a of r.all)a.finish();RPY.drawn[r.i]=1;RPY.run=null}
 function rpFast(){const r=RPY.run;if(r)for(const a of r.all)a.updatePlaybackRate?a.updatePlaybackRate(6):(a.playbackRate=6)}
-/* every frame: put the pen on the tip of the stroke being drawn, follow it with the view, reveal the ground colours */
-function rpFrame(ts){
+/* the strip of frames: frame i in view (no animation) */
+function rpPlace(i){const s=RPY.slide;if(s){s.cancel();RPY.slide=null}RPY.strip.style.transform=`translate3d(${-i*RPY.box.clientWidth}px,0,0)`}
+/* slide to frame i: one quick, smooth move (only the strip's transform changes) */
+function rpSlide(i){
+  if(RPY.slide)RPY.slide.finish();const w=RPY.box.clientWidth,to=`translate3d(${-i*w}px,0,0)`,from=RPY.strip.style.transform||'translate3d(0px,0,0)';
+  if(reduce||from===to){rpPlace(i);return Promise.resolve()}
+  const a=RPY.slide=RPY.strip.animate([{transform:from},{transform:to}],{duration:SLIDE,easing:'ease-in-out'});RPY.strip.style.transform=to;
+  return a.finished.then(()=>{if(RPY.slide===a)RPY.slide=null},()=>{})}
+/* every frame: put the pen on the tip of the stroke being drawn (the frames don't move while drawing) */
+function rpFrame(){
   if(!RPY.el)return;RPY.raf=requestAnimationFrame(rpFrame);
-  const dt=Math.min(.1,(ts-(RPY.ts||ts))/1000);RPY.ts=ts;
-  const box=RPY.box,w=box.clientWidth,h=box.clientHeight;if(!h)return;const f=h/WH,vw=w/f;
-  let tip=null;const r=RPY.run;
-  let ground=false;
-  if(r)for(const [j,x] of r.anims.entries()){const c=x.a.effect.getComputedTiming();if(c.progress!=null&&c.progress>0&&c.progress<1&&x.a.playState==='running'){try{
-    const p=x.e.getPointAtLength(c.progress*x.len),m=x.e.getCTM(),cm=RPY.cam.getCTM();tip=new DOMPoint(p.x,p.y).matrixTransform(cm.inverse().multiply(m));ground=j===0}catch(e){}break}}
-  let target=RPY.focus;
-  if(tip){target=tip.x-vw*.45;if(ground)rpRev(tip.x)}
-  target=clamp(target,0,Math.max(0,RPY.END+30-vw));
-  RPY.camX=reduce||RPY.jump?target:RPY.camX+(target-RPY.camX)*(1-Math.exp(-dt*(r?3.2:5)));RPY.jump=false;
-  RPY.cam.setAttribute('transform',`translate(${(-RPY.camX).toFixed(2)} 0)`);
-  const pen=RPY.pen;if(tip){pen.style.opacity='1';pen.style.transform=`translate(${((tip.x-RPY.camX)*f).toFixed(1)}px,${(tip.y*f).toFixed(1)}px)`}else pen.style.opacity='0';
-}
-/* the world's size follows its box: the view is WH units high, and lines stay about 3px wide */
-function rpSize(){const svg=RPY.svg,w=RPY.box.clientWidth,h=RPY.box.clientHeight;if(!h)return;const f=h/WH;
-  svg.setAttribute('viewBox',`0 0 ${(w/f).toFixed(1)} ${WH}`);svg.style.setProperty('--gw',(3/f).toFixed(3));svg.style.setProperty('--lw',(3/f/SS).toFixed(3));svg.style.setProperty('--tw',(2.2/f/SS).toFixed(3))}
+  const r=RPY.run,pen=RPY.pen;let tip=null;
+  if(r&&!RPY.slide)for(const x of r.anims){const c=x.a.effect.getComputedTiming();if(c.progress!=null&&c.progress>0&&c.progress<1&&x.a.playState==='running'){try{
+    if(!x.m)x.m=x.e.getCTM();tip=new DOMPoint(...(p=>[p.x,p.y])(x.e.getPointAtLength(c.progress*x.len))).matrixTransform(x.m)}catch(e){}break}}
+  if(tip){pen.style.opacity='1';pen.style.transform=`translate3d(${tip.x.toFixed(1)}px,${tip.y.toFixed(1)}px,0)`}else if(pen.style.opacity!=='0')pen.style.opacity='0'}
 function rpNav(){const e=RPY.el,n=RPY.pages.length,i=RPY.i;
   e.querySelector('#rpN').textContent=t('rp.n',{i:i+1,n});e.querySelector('#rpPrev').disabled=i<=0;
   e.querySelector('#rpNext').innerHTML=i>=n-1?`${esc(t('rp.fin'))} <span class="arr">→</span>`:`${esc(t('rp.next'))} <span class="arr">›</span>`}
@@ -651,19 +666,22 @@ function rpText(){const e=RPY.el;if(!e)return;e.setAttribute('aria-label',t('rp.
   e.querySelector('#rpSkip').innerHTML=`${esc(t('rp.skip'))} <span class="arr">»</span>`;e.querySelector('#rpQ').textContent=t('rp.q');
   e.querySelector('#rpPrev').innerHTML=`<span class="arr">‹</span> ${esc(t('rp.prev'))}`;e.querySelector('#rpHint').textContent=t('rp.hint');rpNav();
   const tx=e.querySelector('#rpTin');if(RPY.i>=0){tx.innerHTML=sceneText(RPY.pages[RPY.i]);rpPix(tx);if(!(RPY.run&&RPY.run.i===RPY.i))tx.style.opacity='1'}}
-/* go to scene i: the next new scene is drawn; one already drawn (going back, or forward again) is shown at once */
+/* go to scene i: whatever is drawing finishes first (nothing moves while lines draw), then the strip slides once; a new
+   scene is drawn after the slide, one already drawn (going back, or forward again) is simply there */
 function rpGo(i){
   const e=RPY.el,n=RPY.pages.length;if(!e||RPY.ending||i<0)return;if(i>=n){rpFinale();return}if(i===RPY.i)return;
-  rpFinish();RPY.i=i;RPY.focus=RPY.X[i]-RPY.box.clientWidth/(RPY.box.clientHeight/WH)/2;
+  rpFinish();const first=RPY.i<0;RPY.i=i;
   const tx=e.querySelector('#rpTin');for(const a of tx.getAnimations())a.cancel();tx.innerHTML=sceneText(RPY.pages[i]);rpPix(tx);e.querySelector('#rpTxt').scrollTop=0;
   const mid=e.querySelector('.rp-mid');if(mid.scrollTop)mid.scrollTop=0;rpNav();
-  if(RPY.drawn[i]||reduce){for(let k=0;k<=i;k++)if(!RPY.drawn[k])rpShow(k);tx.style.opacity='1';RPY.jump=reduce;return}
   for(let k=0;k<i;k++)if(!RPY.drawn[k])rpShow(k);
-  tx.style.opacity='0';rpDraw(i,tx)}
+  if(RPY.drawn[i]||reduce){if(!RPY.drawn[i])rpShow(i);tx.style.opacity='1';if(first)rpPlace(i);else rpSlide(i);return}
+  tx.style.opacity='0';
+  if(first){rpPlace(i);rpDraw(i,tx);return}
+  rpSlide(i).then(()=>{if(RPY.el&&RPY.i===i&&!RPY.drawn[i]&&!RPY.run)rpDraw(i,tx)})}
 /* after the last scene: the line slows down and draws one last small star, then the ending */
 function rpFinale(){
   const e=RPY.el;if(!e||RPY.ending)return;rpFinish();RPY.ending=true;
-  e.querySelector('#rpNext').disabled=true;e.querySelector('#rpPrev').disabled=true;RPY.focus=RPY.END;
+  e.querySelector('#rpNext').disabled=true;e.querySelector('#rpPrev').disabled=true;
   if(reduce){rpShow('star');rpEnd();return}
   rpDraw('star',null,1.8).then(()=>RPY.timers.push(setTimeout(rpEnd,900)))}
 /* the ending: fade to charcoal, the question in washi white, hold ~3 s, back to light and into the end card */
@@ -679,25 +697,25 @@ function rpEnd(){
 function playReplay(){
   closeReplay(true);if(!G.s||!G.ended)return;
   const el=document.createElement('div');el.className='replay';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');
-  Object.assign(RPY,{el,pages:replayPages(),i:-1,ending:false,timers:[],drawn:{},run:null,rev:0,camX:0,focus:0,jump:true,ts:0});
+  Object.assign(RPY,{el,pages:replayPages(),i:-1,ending:false,timers:[],drawn:{},run:null,slide:null,W:0,f:0});
   el.innerHTML=`<div class="rp-top"><span class="kicker" id="rpK"></span><button class="btn btn-ghost" id="rpSkip" type="button"></button></div>
-  <div class="rp-mid"><div class="rp-world" id="rpWorld">${rpWorld()}<span class="rp-pen" id="rpPen" aria-hidden="true"></span></div><div class="card rp-txt" id="rpTxt"><div class="rp-tin" id="rpTin" aria-live="polite"></div></div></div>
+  <div class="rp-mid"><div class="rp-world" id="rpWorld"><svg class="rp-defs" width="0" height="0" aria-hidden="true" focusable="false"></svg><div class="rp-strip" id="rpStrip"></div><span class="rp-pen" id="rpPen" aria-hidden="true"></span></div><div class="card rp-txt" id="rpTxt"><div class="rp-tin" id="rpTin" aria-live="polite"></div></div></div>
   <div class="rp-nav"><button class="btn btn-ghost" id="rpPrev" type="button"></button><span class="rp-pg"><b id="rpN"></b><span id="rpHint"></span></span><button class="btn btn-accent" id="rpNext" type="button"></button></div>
   <p class="rp-q" id="rpQ"></p>`;
   document.body.appendChild(el);document.body.classList.add('rp-open');
-  Object.assign(RPY,{box:el.querySelector('#rpWorld'),svg:el.querySelector('.rp-svg'),cam:el.querySelector('#rpCam'),pen:el.querySelector('#rpPen'),revR:el.querySelector('#rpRevR')});
-  rpPrep(RPY.svg);rpSize();
+  Object.assign(RPY,{box:el.querySelector('#rpWorld'),strip:el.querySelector('#rpStrip'),defs:el.querySelector('.rp-defs'),pen:el.querySelector('#rpPen')});
+  rpBuild();
   el.querySelector('#rpSkip').onclick=()=>closeReplay();el.querySelector('#rpPrev').onclick=()=>rpGo(RPY.i-1);el.querySelector('#rpNext').onclick=()=>rpGo(RPY.i+1);
   /* a tap on the drawing speeds up the scene being drawn */
   RPY.box.addEventListener('click',rpFast);
   /* swipe on phones: left for the next scene, right for the one before */
   let sx=null,sy=0;el.addEventListener('touchstart',ev=>{const p=ev.touches[0];sx=p.clientX;sy=p.clientY},{passive:true});
   el.addEventListener('touchend',ev=>{if(sx==null)return;const p=ev.changedTouches[0],dx=p.clientX-sx,dy=p.clientY-sy;sx=null;if(Math.abs(dx)>50&&Math.abs(dx)>1.5*Math.abs(dy))rpGo(RPY.i+(dx<0?1:-1))},{passive:true});
-  /* the drawing keeps its size in step with its box (the layout settles after the words arrive, and on rotation) */
-  RPY.ro=new ResizeObserver(()=>{if(RPY.el)rpSize()});RPY.ro.observe(RPY.box);
+  /* the frames are rebuilt if the box changes size (the layout settles after the words arrive, and on rotation) */
+  RPY.ro=new ResizeObserver(()=>{if(RPY.el)rpBuild()});RPY.ro.observe(RPY.box);
   rpGo(0);rpText();RPY.raf=requestAnimationFrame(rpFrame);el.querySelector('#rpNext').focus({preventScroll:true});
 }
-function closeReplay(now){const el=RPY.el;if(!el)return;for(const x of RPY.timers||[])clearTimeout(x);cancelAnimationFrame(RPY.raf);if(RPY.ro)RPY.ro.disconnect();RPY.el=null;RPY.run=null;document.body.classList.remove('rp-open');
+function closeReplay(now){const el=RPY.el;if(!el)return;for(const x of RPY.timers||[])clearTimeout(x);cancelAnimationFrame(RPY.raf);if(RPY.ro)RPY.ro.disconnect();if(RPY.slide)RPY.slide.cancel();RPY.el=null;RPY.run=null;RPY.slide=null;document.body.classList.remove('rp-open');
   if(now)el.remove();else{el.classList.add('fade');setTimeout(()=>el.remove(),800)}
   const a=$('#again');if(a)a.focus({preventScroll:true})}
 
