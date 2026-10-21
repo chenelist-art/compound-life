@@ -399,6 +399,7 @@
  "g.shareW": "最后比全世界{p}%的成年人更富有。",
  "h.f2p3": "你在世界上的位置：财富排名使用瑞银<a href=\"https://www.ubs.com/global/en/wealthmanagement/insights/global-wealth-report.html\" target=\"_blank\" rel=\"noopener\">《2023年全球财富报告》</a>和《2023年全球财富数据手册》（2022年底，全球54亿成年人）；收入排名使用<a href=\"https://pip.worldbank.org/\" target=\"_blank\" rel=\"noopener\">世界银行贫困与不平等平台</a>（2022年，2021年购买力平价美元）；游戏里的金额按<a href=\"https://data.worldbank.org/\" target=\"_blank\" rel=\"noopener\">世界银行</a>2022年的物价水平换算成美元。国内排名、全球中位数以下的财富排名和收入排名都是估算。",
  "trk.child": "童年课外班",
+ "trk.teenStudy": "中学时多下的功夫",
  "trk.habitSpend": "从小养成的花钱习惯",
  "trk.k401": "有公司配对的401(k)",
  "trk.epf": "EPF自愿缴款",
