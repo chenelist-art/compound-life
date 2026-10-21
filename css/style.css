@@ -349,6 +349,18 @@ tbody tr:hover td{background:var(--washi)}
 .toast{display:flex;gap:12px;align-items:center;background:var(--yamabuki);color:var(--charcoal);padding:12px 20px;border-radius:999px;border:var(--outline);box-shadow:var(--pop)}
 .toast::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--coral);border:2.5px solid var(--charcoal);flex:none}
 @media (prefers-reduced-motion: no-preference){.toast{animation:pop .35s cubic-bezier(.2,.8,.2,1.2)}@keyframes pop{from{transform:translateY(8px) scale(.96);opacity:0}}}
+/* small moments of the year: pop-ups stacked in a corner (above the focus bar on phones) that fade on their own */
+.txs{position:fixed;z-index:60;right:max(16px,env(safe-area-inset-right,0px));bottom:16px;width:min(360px,calc(100vw - 32px));margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.tx{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:baseline;background:var(--washi);border:2.5px solid var(--charcoal);border-radius:16px;padding:8px 14px 9px;box-shadow:3px 3px 0 var(--charcoal);font-size:14px;line-height:1.4}
+.tx::before{content:"";grid-row:1;align-self:center;width:10px;height:10px;border-radius:50%;border:2px solid var(--charcoal);background:var(--mizu)}
+.tx-good::before{background:var(--wakatake)}
+.tx-bad::before{background:var(--coral)}
+.tx-age{display:none}
+.tx-m{min-width:0}
+.tx-fx{grid-column:2;font-size:13px}
+@media (prefers-reduced-motion: no-preference){.tx{animation:pop .35s cubic-bezier(.2,.8,.2,1.2) both}.tx.out{opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s}}
+@media (prefers-reduced-motion: reduce){.tx.out{display:none}}
+@media (max-width:1199px){.txs{left:max(16px,env(safe-area-inset-left,0px));right:auto;width:auto;max-width:calc(100vw - 32px)}.tx{font-size:13px;padding:7px 12px 8px}}
 /* big moment cards: a tarot card that flips in over the game, which is washed out behind a washi veil (light theme, so "dimmed" means faded, not dark) */
 .moment{position:fixed;inset:0;z-index:105;display:grid;place-items:center;padding:16px;overflow-y:auto;background:var(--washi);background:color-mix(in srgb,var(--washi) 82%,transparent)}
 .mo-card{width:min(440px,100%);margin:auto}

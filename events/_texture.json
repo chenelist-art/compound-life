@@ -1,0 +1,61 @@
+{
+ "about": "Small moments that need no decision: weather, hobbies, small wins and losses, family news, health, school, work gossip, festivals. Each year 2–4 that fit the life pop up (texYear in js/deck.js). Fields are in events/README.md (Small moments). Game rules, not data.",
+ "groups": [
+  {"id": "toddler", "about": "ages 1–5", "when": {"age": [1, 5]}, "moments": [
+   {"id": "b_steps", "cat": "family", "once": true, "when": {"age": [1, 2]}, "en": "You took your first wobbly steps, straight into the sofa.", "zh": "你迈出了摇摇晃晃的第一步，一头撞上了沙发。", "zht": "你踏出了搖搖晃晃的第一步，一頭撞上了沙發。"},
+   {"id": "b_word", "cat": "home", "once": true, "when": {"age": [1, 2]}, "en": "Your first real word was “no”. Everyone laughed.", "zh": "你学会的第一个词是“不要”，大家都笑了。", "zht": "你學會的第一個詞是「不要」，大家都笑了。"},
+   {"id": "b_puddle", "cat": "weather", "en": "You found the biggest puddle on the street and jumped in it. Twice.", "zh": "你找到了街上最大的水坑，跳了进去，还跳了两次。", "zht": "你找到街上最大的水坑，跳了進去，還跳了兩次。"},
+   {"id": "b_cold", "cat": "health", "fx": {"health": -1}, "en": "A runny nose and a cough kept you at home for a week.", "zh": "流鼻涕加咳嗽，你在家待了一个星期。", "zht": "流鼻水加咳嗽，你在家待了一個星期。"},
+   {"id": "b_cat", "cat": "hobby", "en": "A neighbour’s cat let you stroke it. You talked about it for days.", "zh": "邻居家的猫让你摸了摸，你念叨了好几天。", "zht": "鄰居家的貓讓你摸了摸，你念了好幾天。"},
+   {"id": "b_crayon", "cat": "loss", "en": "You drew a huge sun on the wall in crayon. Nobody liked it as much as you did.", "zh": "你用蜡笔在墙上画了一个大太阳，可惜只有你自己喜欢。", "zht": "你用蠟筆在牆上畫了一個大太陽，可惜只有你自己喜歡。"},
+   {"id": "b_slide", "cat": "win", "when": {"age": [2, 5]}, "en": "You went down the big slide all by yourself.", "zh": "你自己一个人滑下了大滑梯。", "zht": "你自己一個人溜下了大溜滑梯。"},
+   {"id": "b_story", "cat": "family", "who": {"role": "parent", "pick": "closest"}, "fx": {"happy": 1, "bond": 2}, "en": "{P} read you the same bedtime story every night. You knew it by heart.", "zh": "{P}每晚给你讲同一个睡前故事，你都会背了。", "zht": "{P}每晚給你講同一個睡前故事，你都會背了。"},
+   {"id": "b_kinder", "cat": "school", "once": true, "when": {"age": [3, 5]}, "en": "Your first day at kindergarten: you cried, then didn’t want to go home.", "zh": "上幼儿园第一天，你先是大哭，后来却不肯回家。", "zht": "上幼兒園第一天，你先是大哭，後來卻不肯回家。"},
+   {"id": "b_song", "cat": "home", "en": "Your grandmother taught you a song from when she was little.", "zh": "奶奶教你唱了一首她小时候的歌。", "zht": "奶奶教你唱了一首她小時候的歌。"},
+   {"id": "b_shoes", "cat": "win", "when": {"family": ["working", "middle", "rich"]}, "en": "New shoes that light up when you walk. You stamped everywhere.", "zh": "你有了一双走路会发光的新鞋，到哪儿都使劲跺脚。", "zht": "你有了一雙走路會發光的新鞋，到哪裡都用力跺腳。"},
+   {"id": "b_party", "cat": "family", "when": {"family": "rich", "age": [3, 5]}, "en": "Your birthday party had a hired magician and a cake taller than you.", "zh": "你的生日派对请了魔术师，蛋糕比你还高。", "zht": "你的生日派對請了魔術師，蛋糕比你還高。"},
+   {"id": "b_handdown", "cat": "home", "when": {"family": ["poor", "working"], "age": [3, 5]}, "en": "Your shoes were a cousin’s, a size too big. You grew into them.", "zh": "你穿着表哥留下的鞋，大了一号，后来慢慢合脚了。", "zht": "你穿著表哥留下的鞋，大了一號，後來慢慢合腳了。"}
+  ]},
+  {"id": "child", "about": "ages 6–12", "when": {"age": [6, 12]}, "moments": [
+   {"id": "c_spell", "cat": "school", "fx": {"happy": 1}, "en": "You came first in the class spelling test and got a gold star.", "zh": "你在班上的听写比赛拿了第一，得到一颗金星。", "zht": "你在班上的聽寫比賽拿了第一，得到一顆金星貼紙。"},
+   {"id": "c_bike", "cat": "hobby", "once": true, "when": {"age": [6, 10]}, "en": "You learned to ride a bike. Your knees paid for it.", "zh": "你学会了骑自行车，膝盖为此付出了代价。", "zht": "你學會了騎腳踏車，膝蓋為此付出了代價。"},
+   {"id": "c_rain", "cat": "weather", "en": "Rain cancelled sports day. You played cards in the classroom instead.", "zh": "运动会因为下雨取消了，你们在教室里打了一整天牌。", "zht": "運動會因為下雨取消了，你們在教室裡玩了一整天的牌。"},
+   {"id": "c_swear", "cat": "friends", "who": {"role": "friend"}, "fx": {"rel": 1, "bond": 3}, "en": "You and {n} swore to be friends forever, in writing.", "zh": "你和{n}写下誓言：要做一辈子的朋友。", "zht": "你和{n}寫下誓言：要當一輩子的朋友。"},
+   {"id": "c_pencil", "cat": "loss", "en": "You lost your favourite pencil case on the bus.", "zh": "你在公交车上弄丢了最喜欢的铅笔盒。", "zht": "你在公車上弄丟了最喜歡的鉛筆盒。"},
+   {"id": "c_arm", "cat": "health", "fx": {"health": -2}, "en": "You broke your arm falling out of a tree. The whole class signed the cast.", "zh": "你从树上摔下来，摔断了胳膊，全班都在石膏上签了名。", "zht": "你從樹上摔下來，摔斷了手臂，全班都在石膏上簽了名。"},
+   {"id": "c_tooth", "cat": "health", "once": true, "when": {"age": [6, 7]}, "en": "Your first baby tooth came out in an apple.", "zh": "你的第一颗乳牙掉在了苹果上。", "zht": "你的第一顆乳牙掉在蘋果上。"},
+   {"id": "c_play", "cat": "school", "en": "You played a tree in the school play. You had one line, and you shouted it.", "zh": "学校演话剧，你演一棵树，只有一句台词，你喊得特别响。", "zht": "學校演話劇，你演一棵樹，只有一句台詞，你喊得特別大聲。"},
+   {"id": "c_maths", "cat": "school", "fx": {"happy": -1}, "en": "A maths test came back covered in red. You hid it for a week.", "zh": "数学试卷满是红叉，你把它藏了一个星期。", "zht": "數學考卷滿是紅叉，你把它藏了一個星期。"},
+   {"id": "c_comics", "cat": "hobby", "en": "You spent the whole summer reading comics under the covers with a torch.", "zh": "整个暑假你都躲在被窝里打着手电筒看漫画。", "zht": "整個暑假你都躲在被窩裡拿手電筒看漫畫。"},
+   {"id": "c_street", "cat": "hobby", "en": "You played football in the street until it was too dark to see the ball.", "zh": "你在街上踢球，一直踢到天黑看不见球。", "zht": "你在街上踢球，一直踢到天黑看不見球。"},
+   {"id": "c_coin", "cat": "win", "en": "You found a coin on the pavement and felt rich for a whole afternoon.", "zh": "你在路边捡到一枚硬币，整个下午都觉得自己很富有。", "zht": "你在路邊撿到一枚硬幣，整個下午都覺得自己很有錢。"},
+   {"id": "c_fallout", "cat": "friends", "who": {"role": "friend"}, "en": "You fell out with {n} over a game, and made up the next day.", "zh": "你和{n}因为一个游戏吵翻了，第二天又和好了。", "zht": "你和{n}因為一個遊戲吵翻了，隔天又和好了。"},
+   {"id": "c_chores", "cat": "home", "when": {"family": "poor"}, "en": "Every day after school you helped at home, fetching water and washing clothes.", "zh": "放学后你每天都帮家里干活，打水、洗衣服。", "zht": "放學後你每天都幫家裡做事，提水、洗衣服。"},
+   {"id": "c_tv", "cat": "home", "en": "Your family watched the same TV series together every evening.", "zh": "每天晚上全家一起看同一部电视剧。", "zht": "每天晚上全家一起看同一部連續劇。"},
+   {"id": "c_heat", "cat": "weather", "en": "A heatwave: school closed early and you lived on ice lollies.", "zh": "热浪来袭，学校提前放学，你靠冰棍过日子。", "zht": "熱浪來襲，學校提早放學，你靠冰棒過日子。"},
+   {"id": "c_drawing", "cat": "win", "fx": {"happy": 2}, "en": "Your drawing was pinned up in the school hall.", "zh": "你的画被贴在了学校大厅里。", "zht": "你的畫被貼在學校大廳。"},
+   {"id": "c_glasses", "cat": "health", "once": true, "en": "You got your first glasses and could see the leaves on the trees.", "zh": "你配了第一副眼镜，第一次看清了树上的叶子。", "zht": "你配了第一副眼鏡，第一次看清楚樹上的葉子。"},
+   {"id": "c_seaside", "cat": "family", "when": {"family": ["middle", "rich"]}, "en": "A family trip to the seaside: sunburn, sandcastles and one lost sandal.", "zh": "全家去海边玩：晒伤、沙堡，还丢了一只凉鞋。", "zht": "全家去海邊玩：曬傷、沙堡，還弄丟了一隻涼鞋。"},
+   {"id": "c_lice", "cat": "health", "en": "Head lice went round the whole class, and you didn’t escape.", "zh": "全班都长了头虱，你也没逃过。", "zht": "全班都長了頭蝨，你也沒逃過。"},
+   {"id": "c_tutor", "cat": "school", "when": {"family": ["middle", "rich"]}, "fx": {"happy": -1}, "en": "Extra lessons after school, three evenings a week.", "zh": "放学后还要去补习班，一周三个晚上。", "zht": "放學後還要去補習班，一週三個晚上。"}
+  ]},
+  {"id": "teen", "about": "ages 13–17", "when": {"age": [13, 17]}, "moments": [
+   {"id": "t_exam", "cat": "school", "fx": {"happy": 2}, "en": "You passed a hard exam you were sure you’d failed.", "zh": "一场你以为肯定考砸的难考，你居然过了。", "zht": "一場你以為一定考砸的難考，你居然過了。"},
+   {"id": "t_crush", "cat": "friends", "en": "You had a crush on someone in your class and told nobody. Well, one person.", "zh": "你暗恋班上的一个人，谁都没告诉。嗯，只告诉了一个人。", "zht": "你暗戀班上的一個人，誰都沒說。嗯，只跟一個人說了。"},
+   {"id": "t_band", "cat": "hobby", "en": "You and some friends started a band. You knew three songs, all badly.", "zh": "你和几个朋友组了个乐队，会弹三首歌，都弹得不太好。", "zht": "你和幾個朋友組了個樂團，會彈三首歌，都彈得不太好。"},
+   {"id": "t_spot", "cat": "health", "fx": {"happy": -1}, "en": "A huge spot appeared on your nose on class photo day.", "zh": "拍集体照那天，你鼻子上冒出一颗大痘痘。", "zht": "拍團體照那天，你鼻子上冒出一顆大痘痘。"},
+   {"id": "t_screen", "cat": "loss", "en": "You cracked your phone screen, then used it like that for two more years.", "zh": "你把手机屏幕摔裂了，又凑合用了两年。", "zht": "你把手機螢幕摔裂了，又將就用了兩年。"},
+   {"id": "t_parttime", "cat": "work", "when": {"age": [15, 17]}, "en": "Your first part-time job: stacking shelves on Saturdays.", "zh": "你的第一份兼职：每周六在超市理货。", "zht": "你的第一份打工：每週六在超市補貨。"},
+   {"id": "t_cup", "cat": "win", "fx": {"health": 2}, "en": "Your team won the school tournament, and you scored the last goal.", "zh": "你们队赢了校际比赛，最后一球是你进的。", "zht": "你們隊贏了校際比賽，最後一球是你踢進的。"},
+   {"id": "t_embarrass", "cat": "family", "who": {"role": "parent"}, "en": "{P} embarrassed you in front of your friends. You sulked all day.", "zh": "{P}在你朋友面前让你丢脸，你一整天都不理人。", "zht": "{P}在你朋友面前讓你丟臉，你一整天都不理人。"},
+   {"id": "t_overslept", "cat": "school", "en": "You overslept on the day of a big test and ran all the way to school.", "zh": "大考那天你睡过头了，一路跑到学校。", "zht": "大考那天你睡過頭了，一路跑到學校。"},
+   {"id": "t_novel", "cat": "hobby", "fx": {"happy": 1}, "en": "You read a novel that changed how you saw the world, and told everyone about it.", "zh": "你读了一本改变你看世界方式的小说，见人就推荐。", "zht": "你讀了一本改變你看世界方式的小說，見人就推薦。"},
+   {"id": "t_blackout", "cat": "weather", "en": "A storm cut the power for two days. You played board games by candlelight.", "zh": "暴风雨让家里停电两天，你们点着蜡烛玩桌游。", "zht": "暴風雨讓家裡停電兩天，你們點著蠟燭玩桌遊。"},
+   {"id": "t_grew", "cat": "health", "once": true, "en": "You grew ten centimetres in a year. None of your trousers fit.", "zh": "你一年长高了十厘米，裤子都短了。", "zht": "你一年長高了十公分，褲子都短了。"},
+   {"id": "t_gaming", "cat": "hobby", "fx": {"health": -1}, "en": "You stayed up far too late playing games online with friends.", "zh": "你和朋友在网上打游戏，熬到很晚。", "zht": "你和朋友在網路上打電動，熬到很晚。"},
+   {"id": "t_shirt", "cat": "family", "who": {"role": "sib", "age": [11, 30]}, "en": "{P} borrowed your favourite shirt without asking. Again.", "zh": "{P}又没打招呼就穿走了你最喜欢的衣服。", "zht": "{P}又沒說一聲就穿走了你最喜歡的衣服。"},
+   {"id": "t_teacher", "cat": "school", "en": "A teacher told you that you were good at this. You remembered it for years.", "zh": "一位老师说你在这方面很有天分，你记了很多年。", "zht": "一位老師說你在這方面很有天分，你記了好多年。"},
+   {"id": "t_party", "cat": "friends", "en": "At the end-of-year class party you stood by the wall all night, then danced to the last song.", "zh": "期末联欢会上你大半个晚上都靠墙站着，最后一首歌才去跳舞。", "zht": "期末聯歡會上你大半個晚上都靠牆站著，最後一首歌才下去跳舞。"}
+  ]}
+ ]
+}

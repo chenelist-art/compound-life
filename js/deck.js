@@ -132,8 +132,45 @@ for(const[k,src]of ent(D.later))laterKind(k,src,'e');
 for(const[n,t]of ent(D.templates))for(const[k,src]of ent(t.later))laterKind(k,src,'e.'+t.key);
 for(const e of D.events)for(const[k,src]of ent(e.later))laterKind(k,src,'e.'+e.id);
 
+/* ---------- life texture: small moments that need no decision (events/_texture.json) ----------
+   Weather, a hobby, a small win or loss, family news, school, work gossip, a festival. Each moment belongs to a group with
+   conditions (an age stage, a country, a career, a family, wealth); its own conditions and a person ("who") narrow it further.
+   Each year texYear() deals 2–4 that fit the life, at most one per kind (cat), favouring ones not seen yet; a moment comes
+   back only after "again" years (default 10), or never with "once". About one in four has a small effect ("fx": cash as a
+   share of a typical wage, happy, health, rel, bond with the person). Game rules, not data. Only the player's own life gets
+   them (game.js and the validator call texYear; the twin, the 40 futures and the bots don't), so they never change a
+   projection. */
+const TXA=10,TXK={win:'good',loss:'bad'};
+let TX=null;
+function texPrep(){TX=[];for(const g of D.texture||[])for(const m of g.moments){
+ const who=m.who||g.who||null,wt=who&&who.test!=null?ES.expr(who.test,{vars:['p']}):null,fx=m.fx||null;
+ const tone=m.tone||(fx?((fx.cash||0)+(fx.happy||0)+(fx.health||0)+(fx.rel||0)>=0?'good':'bad'):TXK[m.cat||g.cat]||'');
+ TX.push({id:m.id,cat:m.cat||g.cat,w:m.w==null?1:m.w,once:!!(m.once||g.once),again:m.again!=null?m.again:g.again!=null?g.again:TXA,fx,tone,who,
+  wt:wt?(s,p)=>!!wt({s,v:{p},L:null,p:'tx'}):null,when:[cond(g.when,{vars:[]},{}),cond(m.when,{vars:[]},{})].filter(Boolean)})}}
+function texFire(s,x,p){const f=x.fx||{},o={id:x.id,cat:x.cat,tone:x.tone,age:s.age},v={};
+ if(p){v.p=pplWho(s,p,0);v.P=pplWho(s,p,1);v.n=M(p.n)}
+ o.m=M('tx.'+x.id,v);
+ /* money only from 18: a child's small wins and losses are their parents' */
+ if(f.cash&&s.age>=18){const a=Math.abs(f.cash)*s.base;if(f.cash>0)s.cash+=a;else if(s.retired)payRet(s,a);else pay(s,a);o.a=MS(f.cash>0?a:-a);o.v=f.cash}
+ if(f.happy){s.happy=clamp(s.happy+f.happy,0,100);o.happy=f.happy}
+ if(f.health){s.health=clamp(s.health+f.health,3,100);o.health=f.health}
+ if(f.rel){rl(s,f.rel);o.rel=f.rel}
+ if(f.bond&&p)pplBond(s,p,f.bond);
+ return o}
+function texYear(s,L){if(!L||s.dead)return;if(!TX)texPrep();
+ const a=s.age,r=evR(s,'tex'),seen=s.tx||(s.tx={}),cats=new Set(),ok=[];
+ for(const x of TX){const last=seen[x.id];if(last!=null&&(x.once||a-last<x.again))continue;
+  let good=true;for(const f of x.when)if(!f(s)){good=false;break}if(!good)continue;
+  let p=null;if(x.who){p=pplFind(s,x.who,x.wt?q=>x.wt(s,q):null);if(!p)continue}
+  ok.push([x,p,x.w*(last==null?4:1)])}
+ let n=2+(r()<.45)+(r()<.12);
+ while(n-->0){const c=ok.filter(o=>!cats.has(o[0].cat));if(!c.length)break;let tot=0;for(const o of c)tot+=o[2];
+  let u=r()*tot,pick=c[c.length-1];for(const o of c){u-=o[2];if(u<=0){pick=o;break}}
+  const[x,p]=pick;cats.add(x.cat);seen[x.id]=a;L(texFire(s,x,p))}}
+R.texYear=texYear;
+
 /* ---------- the deck ---------- */
 D.events.forEach((e,i)=>EV.push(make(e,i)));
 for(const e of EV){EVBY[e.id]=e;if(!e.win)EVX.push(e)}
-R.Deck={compileAll(){for(const e of EV)e._prep()},COND,STAT};
+R.Deck={compileAll(){for(const e of EV)e._prep();if(!TX)texPrep()},COND,STAT};
 })(typeof window!=='undefined'?window:globalThis);

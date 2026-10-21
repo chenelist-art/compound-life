@@ -58,7 +58,7 @@ function reveal(ci,sex){
   step();
   $('#rgo').onclick=()=>startLife(ci,seed,life.sex);
 }
-function backToSetup(){closeReplay(true);closeMoment();G.moq=[];G.moThen=null;clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
+function backToSetup(){texClear();closeReplay(true);closeMoment();G.moq=[];G.moThen=null;clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
@@ -84,6 +84,7 @@ function advance(){
   if(G.nextF&&s.age>=18&&!s.retired){s.focus=G.nextF;G.nextF=null;addLog(M('log.focus',{x:M('f.'+s.focus)}),'choice')}
   resolveTwin();const a=s.age,yr=yearRand(s.seed,a);G.foc[a]=s.focus;G.ea[a]=s.earned;G.salPrev=salary(s);
   if(a===6)addLog(M('log.school'),'',a);
+  texYear(s,texShow);
   const out=tick(s,yr,(m,k)=>addLog(m,k,a));s.lastInc=out.gross;if(out.gross>G.peakInc)G.peakInc=out.gross;
   if(!G.t.dead){tick(G.t,yr,null);G.ht.push([G.t.dead?G.t.deathAge+1:G.t.age,netWorth(G.t)])}
   G.hs.push([s.dead?a+1:s.age,netWorth(s)]);recordTh();
@@ -137,8 +138,25 @@ function checkMilestones(){
   for(const x of [1e5,1e6,1e7])if(nw>=x&&!m['n'+x]){m['n'+x]=1;const l=M('ms.'+(x===1e5?'1e5':x===1e6?'1e6':'1e7'));addLog(M('log.nw',{l}),'good');toast(M('g.toastNw',{l}))}
   const L=level(nw,s.base);if(L>(m.ring||0)){m.ring=L;addLog(M('log.ring',{n:TH[L-1]}),'good');toast(M('g.toastRing',{n:TH[L-1]}))}
 }
+/* small moments that need no decision (texYear in js/deck.js): pop-ups that stack in a corner and fade on their own, never
+   stopping time. Money always shows (you'd know it); stat changes only in Easy, like the Relationships hints */
+const TX_MS=4200,TX_MAX=4;
+function texHTML(o){const st=G.mode==='easy'?['happy','health','rel'].filter(k=>o[k]).map(k=>t('g.txSt',{x:t('g.gp.'+k),n:(o[k]>0?'+':'−')+Math.abs(o[k])})):[];
+  return '<span class="tx-m">'+esc(tr(o.m))+'</span>'+(o.a||st.length?'<span class="tx-fx">'+(o.a?'<span class="'+(o.v>0?'gain':'loss')+'">'+esc(tr(o.a))+'</span>':'')+(st.length?' '+esc(st.join(' · ')):'')+'</span>':'')}
+function texShow(o){const box=$('#txs');if(!box||G.ended)return;box.setAttribute('aria-label',t('g.txAria'));
+  const li=document.createElement('li');li.className='tx tx-'+(o.tone||'n');li._o=o;li.innerHTML=texHTML(o);
+  /* a year's moments come one after another */
+  const k=box.querySelectorAll('.tx:not(.out)').length,d=reduce?0:Math.min(k,3)*.18;li.style.animationDelay=d+'s';
+  box.appendChild(li);texPlace();
+  const old=[...box.querySelectorAll('.tx:not(.out)')];for(const x of old.slice(0,Math.max(0,old.length-TX_MAX)))texGo(x);
+  li._t=setTimeout(()=>texGo(li),TX_MS+d*1000)}
+function texGo(li){if(li._gone)return;li._gone=1;clearTimeout(li._t);li.classList.add('out');setTimeout(()=>li.remove(),reduce?0:350)}
+function texClear(){const box=$('#txs');if(box)for(const li of[...box.children])texGo(li)}
+/* above the focus bar on phones (and the Life choices tab on it), in the corner on wide screens */
+function texPlace(){const box=$('#txs'),fr=$('#frail');if(!box||!fr)return;box.style.bottom=getComputedStyle(fr).position==='fixed'?(fr.offsetHeight+40)+'px':''}
+function texLang(){const box=$('#txs');if(box)for(const li of box.children)if(li._o)li.innerHTML=texHTML(li._o)}
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);G.grade=lifeScore(s);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s)),g:G.grade.grade});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
+function endLife(){texClear();G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);G.grade=lifeScore(s);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s)),g:G.grade.grade});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
   /* the farewell card comes first, then the life replay */
   if(moOn){G.moq=[deathMo()];G.moThen=playReplay;showMoment()}else playReplay()}
 
@@ -773,7 +791,7 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){buildFocus();buildLife();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);rpText();paintMoment()}});
+  if(G.s){buildFocus();buildLife();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);texLang();rpText();paintMoment()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});

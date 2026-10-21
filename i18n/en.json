@@ -839,5 +839,7 @@
  "rp.t.sibs": "Waiting at home: {l}.",
  "rp.t.who": "It was about {p}.",
  "rp.t.close": "Closest to you at the end: {l}.",
- "rp.ppl": "Around you: {l}"
+ "rp.ppl": "Around you: {l}",
+ "g.txSt": "{x} {n}",
+ "g.txAria": "Small moments of the year"
 }

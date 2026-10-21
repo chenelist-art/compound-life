@@ -5,6 +5,7 @@
    - every option's default exists, and the default can always be picked
    - text: English, Simplified and Traditional Chinese all present, with the same {placeholders}; nothing missing
    - every tarot name and drawing exists; every follow-up card (next) and consequence (later) exists
+   - small moments (events/_texture.json): fields, conditions, effects, text in the three languages
    - gen/ matches the sources (run node tools/build.js after editing)
    - then it plays lives with random choices in all three languages and reports crashes, cards whose default can't be
      picked, and text that comes out as a raw key or with an unfilled {placeholder}
@@ -20,6 +21,10 @@ const OPT_KEYS=new Set(['each','as','max','id','let','show','label','sub','hint'
 const WHO_KEYS=new Set(['role','age','test','pick','dead']),WHO_ROLES=['mother','father','parent','sib','friend','pt','kid','boss','mentor'];
 const TPL_KEYS=new Set(['key','about','defaults','let','fn','opts','later','i18n']);
 const BG=new Set(['co','ya','mi','wa','wh']);
+/* small moments: their kinds, fields and effects (fx: cash is a share of a typical wage; the rest are points) */
+const TX_CATS=['weather','hobby','win','loss','family','health','school','work','festival','home','friends','money'];
+const TX_GROUP=new Set(['id','about','cat','when','who','again','once','moments']),TX_KEYS=new Set(['id','cat','when','who','w','once','again','fx','tone','en','zh','zht']);
+const TX_FX={cash:.05,happy:4,health:4,rel:4,bond:8};
 
 /* the game's code in a sandbox, for compiling scripts and for the simulation */
 function sandbox(gen,langs){const ctx={console};vm.createContext(ctx);
@@ -181,6 +186,34 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
   for(const ev of users)for(const p of need)if(!(p in Object.assign({},t.defaults,ev.with)))E(ev._file+' '+ev.id+'.with','template "'+name+'" needs "'+p+'" (other events give it)')}
  for(const[k,v]of Object.entries(data.later)){if(laterKinds.has(k))E('events/_shared.json later.'+k,'already defined in '+laterKinds.get(k));laterKinds.set(k,'_shared');compile('events/_shared.json later.'+k,v,'script',{vars:['x'],fns:[],pre:'e'})}
 
+ /* ---------- small moments with no decision (events/_texture.json) ---------- */
+ const txIds=new Set();let txN=0,txFx=0;
+ for(const g of data.texture||[]){const gw='events/_texture.json '+(g.id||'(group without id)');
+  for(const k of Object.keys(g))if(!TX_GROUP.has(k))E(gw,'unknown field "'+k+'"');
+  if(!Array.isArray(g.moments)){E(gw,'needs "moments": [...]');continue}
+  const gsc={vars:[],fns:[],pre:'tx'};condition(gw+'.when',g.when,gsc,false);
+  for(const m of g.moments){const w=gw+' '+(m.id||'(no id)');txN++;
+   for(const k of Object.keys(m))if(!TX_KEYS.has(k))E(w,'unknown field "'+k+'"');
+   if(typeof m.id!=='string'||!/^[a-z][a-z0-9_]*$/.test(m.id)){E(w,'"id" should be lower-case letters, digits and _');continue}
+   if(txIds.has(m.id))E(w,'id already used');txIds.add(m.id);
+   const cat=m.cat||g.cat;if(!TX_CATS.includes(cat))E(w,'"cat" is one of '+TX_CATS.join(', '));
+   condition(w+'.when',m.when,gsc,false);
+   const ages=[g.when&&g.when.age,m.when&&m.when.age].filter(Boolean);if(!ages.length)E(w,'needs an age window ("when": {"age": [from, to]}) here or on its group');
+   const top=Math.min(...ages.map(x=>x[1]));
+   const who=m.who||g.who;if(who){if(!WHO_ROLES.includes(who.role))E(w+'.who','role is one of '+WHO_ROLES.join(', '));for(const k of Object.keys(who))if(!WHO_KEYS.has(k))E(w+'.who','unknown field "'+k+'"');
+    if(who.test!=null)compile(w+'.who.test',who.test,'expr',{vars:['p'],fns:[],pre:'tx'})}
+   if(m.w!=null&&!(m.w>0&&m.w<=5))E(w+'.w','a weight between 0 and 5 (1 is usual)');
+   const ag=m.again!=null?m.again:g.again;if(ag!=null&&!(Number.isInteger(ag)&&ag>=1))E(w+'.again','years before it can come back: a whole number');
+   if(m.tone!=null&&!['good','bad',''].includes(m.tone))E(w+'.tone','good, bad or ""');
+   if(m.fx!=null){txFx++;if(typeof m.fx!=='object'||!Object.keys(m.fx).length)E(w+'.fx','should be {"cash": .01, "happy": 1, …}');
+    for(const[k,v]of Object.entries(m.fx||{})){if(!(k in TX_FX)){E(w+'.fx','unknown effect "'+k+'" ('+Object.keys(TX_FX).join(', ')+')');continue}
+     if(typeof v!=='number'||!v||Math.abs(v)>TX_FX[k])E(w+'.fx.'+k,'a small number, at most '+TX_FX[k]+' either way')}
+    if(m.fx.cash&&top<18)E(w+'.fx.cash','money moves only from 18 (a child’s are their parents’)');if(m.fx.bond&&!who)E(w+'.fx.bond','needs a "who"')}
+   for(const L of LANGS){if(typeof m[L]!=='string'||!m[L].trim()){E(w,'text in '+L+' is missing');continue}
+    const h=holes(m[L]);for(const x of h){if(!['p','P','n'].includes(x))E(w,'('+L+') uses {'+x+'}; moments can show {p} "your sister Mei", {P} "Your sister Mei" and {n} "Mei"');else if(!who)E(w,'('+L+') uses {'+x+'} but has no "who"')}
+    if(L!=='en'&&typeof m.en==='string'){const a=holes(m.en);for(const x of h)if(!a.has(x))E(w,'('+L+') uses {'+x+'}, the English does not');for(const x of a)if(!h.has(x))E(w,'('+L+') has no {'+x+'}, the English does')}}}}
+ if(txN&&(txFx/txN<.18||txFx/txN>.33))W('events/_texture.json',Math.round(100*txFx/txN)+'% of moments have an effect; about a quarter is the aim');
+
  /* ---------- what scripts read: real fields only ---------- */
 /* a field is real if a life starts with it, the engine sets it, or a script creates it with = (a += on an unknown field is a typo) */
  const known=new Set([...fields,...sets]);
@@ -209,7 +242,7 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
  /* ---------- play ---------- */
  let sim=null;if(!errors.length){const c=chainTest(data);if(c)E('engine',c)}
  if(opt.sim&&!errors.length)sim=simulate(gen,opt.sim,errors,warnings);
- report(errors,warnings,data,sim);return{errors,warnings,sim}}
+ report(errors,warnings,data,sim,{n:txN,fx:txFx});return{errors,warnings,sim}}
 
 /* follow-up cards work end to end: a tiny deck where a choice at 10 schedules a card three years later (with a value it
    carries), and a script schedules another with next(); each must come once, at its year, showing the value */
@@ -226,11 +259,11 @@ function chainTest(data){const T=(en)=>({en,zh:en,zht:en});
 /* plays lives with random choices, as a player would (options, Life choices, focus), in all three languages */
 function simulate(gen,n,errors,warnings){const{ctx,run}=sandbox(gen,LANGS);run('gen/events.js',gen['gen/events.js']);run('js/deck.js');
  try{vm.runInContext('Deck.compileAll()',ctx)}catch(e){errors.push('compiling: '+e.message);return null}
- ctx.__n=n;const r=vm.runInContext(`(()=>{const LANGS=['en','zh','zht'],bad=[],seen={},raw=new Set(),miss=new Set(),noDef=new Set();let cards=0,deaths=0;
+ ctx.__n=n;const r=vm.runInContext(`(()=>{const LANGS=['en','zh','zht'],bad=[],seen={},raw=new Set(),miss=new Set(),noDef=new Set(),tx={};let cards=0,deaths=0,txY=0,yrs=0;
   const keyLike=/^[a-z][a-zA-Z0-9]*(\\.[\\w-]+)+$/;
   const look=(x,where)=>{if(x==null||x===true)return;for(const L of LANGS){I18N.set(L);const s=tr(x);if(keyLike.test(s))raw.add(s+' ('+where+')');const h=/\\{\\w+[}:]/.exec(s);if(h)miss.add(where+': '+s)}I18N.set('en')};
   for(let i=0;i<__n;i++){const dk=['easy','normal','hard'][i%3],s=newLife(i%C.length,7919*i+13,null,dk),r=mb(hsh(i,'validate'));let g=0;
-   try{while(!s.dead&&g++<130){
+   try{while(!s.dead&&g++<130){yrs++;
     if(r()<.2){const a=relActs(s).filter(x=>x.ok===true);if(a.length){const id=a[Math.floor(r()*a.length)].id;if(id!=='div'&&id!=='break'||r()<.2)relAct(s,id,(m,k)=>look(m,'diary'))}}
     if(r()<.1)s.focus=['learn','grind','hustle','balance','people'][Math.floor(r()*5)];
     let k=0,ev;while((ev=dueEvents(s)[0])&&k++<40){cards++;seen[ev.id]=(seen[ev.id]||0)+1;
@@ -239,22 +272,25 @@ function simulate(gen,n,errors,warnings){const{ctx,run}=sandbox(gen,LANGS);run('
      const os=evOpts(s,ev);const d=os.find(o=>o.id===ev.def);if(!d||(d.ok!==undefined&&d.ok!==true))noDef.add(ev.id);
      for(const o of os){look(o.label,ev.id+'.'+o.id+' label');look(o.sub,ev.id+'.'+o.id+' sub');if(o.hint)look(o.hint,ev.id+'.'+o.id+' hint');if(o.ok!==undefined&&o.ok!==true)look(o.ok,ev.id+'.'+o.id+' ok')}
      const ok=os.filter(o=>o.ok===undefined||o.ok===true),pick=r()<.3?ev.def:(ok[Math.floor(r()*ok.length)]||os[0]).id;applyOpt(s,ev,pick)}
+    texYear(s,o=>{look(o.m,'moment '+o.id);if(o.a)look(o.a,'moment '+o.id+' money');tx[o.id]=(tx[o.id]||0)+1;txY++});
     tick(s,yearRand(s.seed,s.age),(m)=>look(m,'diary'))}
     for(const t of Object.values(s.trk)){const v=trkView(s,t);look(t.label,'passbook');look(v.note,'passbook note')}
     if(s.dead)deaths++}catch(e){bad.push('life '+i+' (age '+s.age+'): '+(e.stack||e.message).split('\\n').slice(0,3).join(' | '))}}
-  return{cards,deaths,bad,seen,raw:[...raw],miss:[...miss],noDef:[...noDef]}})()`,ctx);
+  return{cards,deaths,bad,seen,raw:[...raw],miss:[...miss],noDef:[...noDef],tx,txY,yrs}})()`,ctx);
  for(const b of r.bad.slice(0,15))errors.push('simulation: '+b);if(r.bad.length>15)errors.push('simulation: …and '+(r.bad.length-15)+' more crashes');
  for(const k of r.raw.slice(0,30))errors.push('simulation: text missing for '+k);
  for(const k of r.miss.slice(0,30))errors.push('simulation: unfilled placeholder in '+k);
  for(const id of r.noDef)errors.push('simulation: '+id+': the default option was missing or could not be picked');
- return{lives:n,cards:r.cards,seen:r.seen}}
+ return{lives:n,cards:r.cards,seen:r.seen,tx:r.tx,txY:r.txY,yrs:r.yrs}}
 
-function report(errors,warnings,data,sim){
+function report(errors,warnings,data,sim,tx){
  for(const w of warnings)console.log('  warning  '+w);
  for(const e of errors)console.log('  ERROR    '+e);
  const nEv=data.events.length,tpl=Object.keys(data.templates).length;
  let line=nEv+' events in '+data.files.length+' files, '+tpl+' templates';
  if(sim){const never=data.events.filter(e=>!sim.seen[e.id]).map(e=>e.id);line+='; played '+sim.lives+' lives ('+sim.cards+' cards)'+(never.length?', '+never.length+' events never came up'+(never.length<=12?' ('+never.join(', ')+')':''):'')}
+ if(tx&&tx.n){line+='; '+tx.n+' small moments ('+Math.round(100*tx.fx/tx.n)+'% with an effect)';
+  if(sim&&sim.yrs){const all=(data.texture||[]).flatMap(g=>g.moments.map(m=>m.id)),never=all.filter(id=>!sim.tx[id]);line+=', '+(sim.txY/sim.yrs).toFixed(1)+' a year'+(never.length?', '+never.length+' never came up'+(never.length<=12?' ('+never.join(', ')+')':''):'')}}
  console.log((errors.length?'✗ ':'✓ ')+line+(errors.length?': '+errors.length+' error'+(errors.length>1?'s':''):'')+(warnings.length?', '+warnings.length+' warning'+(warnings.length>1?'s':''):''))}
 
 module.exports={check,chainTest};

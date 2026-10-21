@@ -219,6 +219,36 @@ inflation), the options live once in `_shared.json` under `templates`, with thei
 (`e.flood.cover`…). An event uses one with `"use": "flood"` and gives the numbers in `"with"`; the template's scripts know
 the event's id as `id`. Its card title and text are still the event's own.
 
+## Small moments (no decision)
+
+`_texture.json` holds the little things that happen in a year without asking you anything: weather, a hobby, a small win
+or loss, family news, health, school, work gossip, a festival. Each year 2–4 that fit the life pop up in the corner of the
+screen for a few seconds (not in the diary, never stopping time). They are grouped by who they fit; a group's conditions
+and a moment's own both must hold.
+
+```json
+{"id": "teen", "when": {"age": [13, 17]}, "moments": [
+ {"id": "t_exam", "cat": "school", "fx": {"happy": 2}, "en": "You passed a hard exam you were sure you’d failed.", "zh": "…", "zht": "…"},
+ {"id": "t_shirt", "cat": "family", "who": {"role": "sib", "age": [11, 30]}, "en": "{P} borrowed your favourite shirt without asking. Again.", "zh": "…", "zht": "…"}
+]}
+```
+
+| Field | Meaning |
+|---|---|
+| `id` | unique among moments: lower-case letters, digits and `_`; its text becomes `tx.<id>` |
+| `cat` | its kind (on the moment or the group): weather, hobby, win, loss, family, health, school, work, festival, home, friends, money. A year never has two of the same kind |
+| `when` | the same checks as an event's `when` (age, country, family, careerType, career, partner, kids, kidAge, retired, stats…). Every moment needs an `age` window, on itself or its group |
+| `who` | a person it is about, as on cards (`role`, `age`, `test`, `pick`); the text shows them as `{p}` "your sister Mei", `{P}` "Your sister Mei" or `{n}` "Mei" |
+| `fx` | a small effect, for about one moment in four: `cash` (a share of a typical wage, ±.05 at most, only from 18), `happy`, `health`, `rel` (±4 at most), `bond` (closeness with the person, ±8) |
+| `w` | how likely it is next to the others that fit (1 is usual) |
+| `once` / `again` | once a life, or the years before it can come back (10 if not given) |
+| `tone` | good, bad or "": the colour of its dot (otherwise worked out from `fx` and `cat`) |
+| `en`, `zh`, `zht` | the text in English, Simplified and Traditional Chinese (Taiwan wording) |
+
+Money always shows on the pop-up; Happiness, Health and Relationships changes only in Easy. Only the player's own life
+gets these (not the twin, the 40 futures or the balance bots), so they never change a projection. Keep them short (one
+sentence), concrete, calm and kind.
+
 ## Checklist for a new event
 
 1. Copy a similar event and give it a new `id`.
