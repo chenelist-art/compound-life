@@ -500,6 +500,691 @@
      ".none.h": "以後拿助學金的機會較小。"
     }
    }
+  },
+  {
+   "id": "sg_srs",
+   "src": "Supplementary Retirement Scheme: citizens can pay in up to $15,300 a year with matching tax relief; only 50% of withdrawals are taxed from the statutory retirement age, while earlier withdrawals are fully taxed with a 5% penalty (MOF; IRAS, 2025). $15,300 ≈ 0.58 and $8,000 ≈ 0.3 of the game’s typical wage. The net tax saving (15%) is an ESTIMATE for a higher earner.",
+   "age": [30, 58],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"salary": "> 3 * base"}},
+   "def": "none",
+   "tarot": "save2",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "opts": [
+    {"id": "max", "sub": {"a": "MN(.58 * base)"}, "hint": true, "do": "yearly('sg_srs', {amt: .58 * base, until: 63, bonus: .15}, {lock: 63}, 'trk.sg_srs')"},
+    {"id": "half", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "yearly('sg_srs', {amt: .3 * base, until: 63, bonus: .15}, {lock: 63}, 'trk.sg_srs')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The SRS",
+     ".x": "Your tax bill has grown. Paying into the Supplementary Retirement Scheme cuts it, but the money is locked until retirement age.",
+     ".max": "Pay in the maximum, $15,300",
+     ".max.s": "About {a} a year, invested.",
+     ".max.h": "Tax saved adds about 15%, even after tax on withdrawal.",
+     ".half": "Pay in about half",
+     ".half.s": "About {a} a year, invested.",
+     ".half.h": "Tax saved adds about 15%, even after tax on withdrawal.",
+     ".none": "Pay the tax",
+     ".none.s": "Your money stays flexible.",
+     "trk.sg_srs": "SRS savings"
+    },
+    "zh": {
+     ".t": "补充退休计划（SRS）",
+     ".x": "你的税单越来越大。存进补充退休计划可以少缴税，但钱要锁到退休年龄。",
+     ".max": "存满$15,300",
+     ".max.s": "每年大约{a}，拿去投资。",
+     ".max.h": "就算提取时要缴税，省下的税还是大约多15%。",
+     ".half": "存一半左右",
+     ".half.s": "每年大约{a}，拿去投资。",
+     ".half.h": "就算提取时要缴税，省下的税还是大约多15%。",
+     ".none": "照缴税",
+     ".none.s": "钱比较灵活。",
+     "trk.sg_srs": "SRS储蓄"
+    },
+    "zht": {
+     ".t": "退休輔助計畫（SRS）",
+     ".x": "你的稅單越來越大。存進退休輔助計畫可以少繳稅，但錢要鎖到退休年齡。",
+     ".max": "存滿$15,300",
+     ".max.s": "每年大約{a}，拿去投資。",
+     ".max.h": "就算提領時要繳稅，省下的稅還是大約多15%。",
+     ".half": "存一半左右",
+     ".half.s": "每年大約{a}，拿去投資。",
+     ".half.h": "就算提領時要繳稅，省下的稅還是大約多15%。",
+     ".none": "照繳稅",
+     ".none.s": "錢比較靈活。",
+     "trk.sg_srs": "SRS儲蓄"
+    }
+   }
+  },
+  {
+   "id": "sg_topup",
+   "src": "CPF interest: Ordinary Account 2.5%, Special Account 4% (CPF Board, 2025); cash top-ups to your own Special Account earn tax relief of up to $8,000 a year under the Retirement Sum Topping-Up scheme, and OA savings can be moved to the SA before 55 but not back (CPF Board). Before inflation of about 2%, OA ≈ 0.5% and SA ≈ 2% real. $8,000 ≈ 0.3 of the game’s typical wage; tax relief taken as 7%, an ESTIMATE.",
+   "age": [30, 55],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"liquid": "> .3 * base"}},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "opts": [
+    {"id": "cash", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "pay(.3 * base); mkLot('cpfsa', {rate: .02, lock: 65}, 'trk.sg_sa'); addLot('cpfsa', .32 * base)"},
+    {"id": "move", "show": "!!lots.cpf && lots.cpf.v > .5 * base", "hint": true, "do": "const x = .3 * lots.cpf.v; lots.cpf.v -= x; lots.cpf.tout += x; mkLot('cpfsa', {rate: .025, lock: 65}, 'trk.sg_sa'); addLot('cpfsa', x)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Topping up your CPF",
+     ".x": "A colleague tops up her CPF Special Account every year: 4% interest and a lower tax bill.",
+     ".cash": "Top up $8,000 in cash",
+     ".cash.s": "About {a}, locked until 65.",
+     ".cash.h": "About 2% a year above inflation, plus tax relief.",
+     ".move": "Move part of your Ordinary Account to the Special Account",
+     ".move.s": "It can no longer be used for housing.",
+     ".move.h": "4% instead of 2.5% before inflation.",
+     ".none": "Leave it",
+     ".none.s": "Keep cash for now.",
+     "trk.sg_sa": "CPF Special Account top-up"
+    },
+    "zh": {
+     ".t": "填补自己的公积金",
+     ".x": "有个同事每年都给自己的公积金特别户头填补：4%利息，还能少缴税。",
+     ".cash": "用现金填补$8,000",
+     ".cash.s": "大约{a}，锁到65岁。",
+     ".cash.h": "扣除通胀后每年约2%，还有税务减免。",
+     ".move": "把普通户头的一部分转去特别户头",
+     ".move.s": "以后就不能拿来付房子了。",
+     ".move.h": "利率从2.5%变成4%（未扣通胀）。",
+     ".none": "不动",
+     ".none.s": "现金先留着。",
+     "trk.sg_sa": "公积金特别户头填补"
+    },
+    "zht": {
+     ".t": "填補自己的公積金",
+     ".x": "有個同事每年都給自己的公積金特別戶頭填補：4%利息，還能少繳稅。",
+     ".cash": "用現金填補$8,000",
+     ".cash.s": "大約{a}，鎖到65歲。",
+     ".cash.h": "扣除通膨後每年約2%，還有稅務減免。",
+     ".move": "把普通戶頭的一部分轉去特別戶頭",
+     ".move.s": "以後就不能拿來付房子了。",
+     ".move.h": "利率從2.5%變成4%（未扣通膨）。",
+     ".none": "不動",
+     ".none.s": "現金先留著。",
+     "trk.sg_sa": "公積金特別戶頭填補"
+    }
+   }
+  },
+  {
+   "id": "sg_shield",
+   "src": "Integrated Shield Plans: private add-ons to MediShield Life, paid partly from MediSave; since April 2019 new riders must leave at least 5% co-payment (MOH). Premiums rise steeply with age. The sizes used (premium multipliers) are an ESTIMATE.",
+   "age": [30, 55],
+   "weight": 0.5,
+   "when": {"insured": false},
+   "def": "basic",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "rider", "hint": true, "do": "insured = true; insMul = 1.2; T('ins', {kind: 'custom', label: M('trk.ins'), prem: 0, saved: 0, note: M('note.ins0')})", "next": {"event": "sg_shield2", "in": [8, 15], "p": 0.7}},
+    {"id": "ip", "hint": true, "do": "insured = true; insMul = .8; T('ins', {kind: 'custom', label: M('trk.ins'), prem: 0, saved: 0, note: M('note.ins0')})"},
+    {"id": "basic", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An Integrated Shield Plan",
+     ".x": "MediShield Life covers you in a public ward. An agent offers a private Integrated Shield Plan, with or without a rider that covers almost all of the bill.",
+     ".rider": "A private plan with a rider",
+     ".rider.s": "Higher premiums, partly from MediSave.",
+     ".rider.h": "Pays most big bills; premiums rise a lot with age.",
+     ".ip": "A private plan without a rider",
+     ".ip.s": "Lower premiums; you pay a share of each bill.",
+     ".ip.h": "Pays most big bills, at a lower premium.",
+     ".basic": "MediShield Life only",
+     ".basic.s": "No extra premium.",
+     ".basic.h": "Big bills beyond a public ward are yours."
+    },
+    "zh": {
+     ".t": "综合健保计划",
+     ".x": "终身健保只保公立医院普通病房。保险经纪推荐私人综合健保计划，可以加附加险，几乎全额理赔。",
+     ".rider": "私人计划加附加险",
+     ".rider.s": "保费较高，部分用保健储蓄付。",
+     ".rider.h": "大笔账单大多能赔；保费随年龄大涨。",
+     ".ip": "私人计划，不加附加险",
+     ".ip.s": "保费较低；每张账单自付一部分。",
+     ".ip.h": "大笔账单大多能赔，保费较低。",
+     ".basic": "只要终身健保",
+     ".basic.s": "不用额外保费。",
+     ".basic.h": "超出公立病房的大笔费用要自己付。"
+    },
+    "zht": {
+     ".t": "綜合健保計畫",
+     ".x": "終身健保只保公立醫院普通病房。保險業務員推薦私人綜合健保計畫，可以加附約，幾乎全額理賠。",
+     ".rider": "私人計畫加附約",
+     ".rider.s": "保費較高，部分用保健儲蓄付。",
+     ".rider.h": "大筆帳單大多能賠；保費隨年齡大漲。",
+     ".ip": "私人計畫，不加附約",
+     ".ip.s": "保費較低；每張帳單自付一部分。",
+     ".ip.h": "大筆帳單大多能賠，保費較低。",
+     ".basic": "只要終身健保",
+     ".basic.s": "不用額外保費。",
+     ".basic.h": "超出公立病房的大筆費用要自己付。"
+    }
+   }
+  },
+  {
+   "id": "sg_shield2",
+   "src": "Rider premiums rise sharply in later age bands and cannot be paid from MediSave (MOH; insurer premium tables, 2025). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"insured": true},
+   "def": "keep",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "insMul = insMul * 1.6"},
+    {"id": "drop", "hint": true, "do": "insMul = insMul * .6; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The rider gets expensive",
+     ".x": "Your rider premium has doubled in a few years, and all of it is in cash.",
+     ".keep": "Keep the rider",
+     ".keep.s": "Almost full cover.",
+     ".keep.h": "About 60% more a year.",
+     ".drop": "Drop the rider",
+     ".drop.s": "Keep the plan, pay a share of bills.",
+     ".drop.h": "Happiness −1."
+    },
+    "zh": {
+     ".t": "附加险变贵了",
+     ".x": "你的附加险保费几年内翻了一倍，而且全部要付现金。",
+     ".keep": "保留附加险",
+     ".keep.s": "几乎全额保障。",
+     ".keep.h": "每年多大约60%。",
+     ".drop": "退掉附加险",
+     ".drop.s": "保留计划，账单自付一部分。",
+     ".drop.h": "幸福感 −1。"
+    },
+    "zht": {
+     ".t": "附約變貴了",
+     ".x": "你的附約保費幾年內翻了一倍，而且全部要付現金。",
+     ".keep": "保留附約",
+     ".keep.s": "幾乎全額保障。",
+     ".keep.h": "每年多大約60%。",
+     ".drop": "退掉附約",
+     ".drop.s": "保留計畫，帳單自付一部分。",
+     ".drop.h": "幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "sg_skills",
+   "src": "SkillsFuture: a $4,000 Mid-Career credit for every Singaporean at 40 (MOF, Budget 2024), and from 1 May 2025 a training allowance of 50% of recent income, up to $3,000 a month, for full-time courses, for up to 24 months in a lifetime (MOE, Mar 2025). Pay and skill effects are an ESTIMATE.",
+   "age": [40, 50],
+   "weight": 0.5,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "cert",
+   "art": {"draw": "gradloan", "bg": "mi"},
+   "opts": [
+    {"id": "part", "hint": true, "do": "addSkill('learn', 2, M('trk.learn')); bump('sg_skills', 1.03, M('trk.sg_skills')); happy -= 1"},
+    {"id": "full", "hint": true, "do": "tmpPay('sg_lvl', .5, 1, 'trk.sg_lvl'); addSkill('learn', 3, M('trk.learn')); bump('sg_skills', 1.05, M('trk.sg_skills'))", "next": {"event": "sg_skills2", "in": [1, 2], "p": 0.4}},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your SkillsFuture credit",
+     ".x": "You have $4,000 of SkillsFuture credit for mid-career training. You could study part-time, or full-time with a training allowance.",
+     ".part": "A part-time diploma",
+     ".part.s": "Paid by the credit; evenings for a year.",
+     ".part.h": "Skill +2, pay about 3% higher, Happiness −1.",
+     ".full": "A year of full-time study",
+     ".full.s": "Half your income as an allowance for the year.",
+     ".full.h": "Skill +3, pay about 5% higher; some find a better job afterwards.",
+     ".none": "Let the credit sit",
+     ".none.s": "It doesn’t expire.",
+     "trk.sg_skills": "Mid-career training",
+     "trk.sg_lvl": "A year of full-time study"
+    },
+    "zh": {
+     ".t": "技能创前程补助",
+     ".x": "你有$4,000的技能创前程中年补助。可以兼读，也可以全时读书领培训津贴。",
+     ".part": "兼读文凭课程",
+     ".part.s": "由补助支付；读一年的晚上。",
+     ".part.h": "技能 +2，工资大约高3%，幸福感 −1。",
+     ".full": "全时读一年",
+     ".full.s": "这一年领一半收入的津贴。",
+     ".full.h": "技能 +3，工资大约高5%；有些人读完会找到更好的工作。",
+     ".none": "先不用",
+     ".none.s": "补助不会过期。",
+     "trk.sg_skills": "中年培训",
+     "trk.sg_lvl": "全时读书一年"
+    },
+    "zht": {
+     ".t": "技能創前程補助",
+     ".x": "你有$4,000的技能創前程中年補助。可以兼讀，也可以全時讀書領培訓津貼。",
+     ".part": "兼讀文憑課程",
+     ".part.s": "由補助支付；讀一年的晚上。",
+     ".part.h": "技能 +2，薪水大約高3%，幸福感 −1。",
+     ".full": "全時讀一年",
+     ".full.s": "這一年領一半收入的津貼。",
+     ".full.h": "技能 +3，薪水大約高5%；有些人讀完會找到更好的工作。",
+     ".none": "先不用",
+     ".none.s": "補助不會過期。",
+     "trk.sg_skills": "中年培訓",
+     "trk.sg_lvl": "全時讀書一年"
+    }
+   }
+  },
+  {
+   "id": "sg_skills2",
+   "src": "ESTIMATE: game rule (some mid-career trainees move to better-paid jobs).",
+   "chain": true,
+   "when": {"working": true},
+   "def": "take",
+   "tarot": "cert",
+   "art": {"draw": "suit", "bg": "wa"},
+   "opts": [
+    {"id": "take", "hint": true, "do": "bump('sg_skills2', 1.08, M('trk.sg_skills2')); happy -= 1"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job in your new field",
+     ".x": "A firm you met through your course offers you a job using your new skills.",
+     ".take": "Take it",
+     ".take.s": "A fresh start at 40-something.",
+     ".take.h": "Pay about 8% higher. Happiness −1 while you settle in.",
+     ".stay": "Stay where you are",
+     ".stay.s": "Use the skills where you are.",
+     "trk.sg_skills2": "A job after retraining"
+    },
+    "zh": {
+     ".t": "新领域的工作",
+     ".x": "进修时认识的公司给你一个用得上新技能的职位。",
+     ".take": "接受",
+     ".take.s": "四十几岁重新出发。",
+     ".take.h": "工资大约高8%。适应期间幸福感 −1。",
+     ".stay": "留在原地",
+     ".stay.s": "在现在的公司用新技能。",
+     "trk.sg_skills2": "进修后的新工作"
+    },
+    "zht": {
+     ".t": "新領域的工作",
+     ".x": "進修時認識的公司給你一個用得上新技能的職位。",
+     ".take": "接受",
+     ".take.s": "四十幾歲重新出發。",
+     ".take.h": "薪水大約高8%。適應期間幸福感 −1。",
+     ".stay": "留在原地",
+     ".stay.s": "在現在的公司用新技能。",
+     "trk.sg_skills2": "進修後的新工作"
+    }
+   }
+  },
+  {
+   "id": "sg_helper",
+   "src": "Migrant domestic workers: a monthly levy of $300, or $60 for households with a Singaporean child under 16 or an elderly person (MOM, 2025), plus a salary of about $600–750 a month and food and lodging. About $10,000 a year in all ≈ 0.38 of the game’s typical wage. Infant care after subsidy is about $700–1,000 a month for many families (ECDA), about 0.35. Amounts are an ESTIMATE.",
+   "age": [30, 44],
+   "weight": 0.5,
+   "when": {"working": true, "kidAge": [0, 3]},
+   "def": "infant",
+   "tarot": "grandkid",
+   "art": {"draw": "baby", "bg": "ya"},
+   "opts": [
+    {"id": "helper", "sub": {"a": "MN(.38 * base)"}, "hint": true, "do": "T('sg_helper', {kind: 'custom', label: M('trk.sg_helper')}); rec('sg_helper', .38 * base, 6); happy += 3; health += 1"},
+    {"id": "infant", "sub": {"a": "MN(.35 * base)"}, "do": "T('sg_helper', {kind: 'custom', label: M('trk.sg_infant')}); rec('sg_helper', .35 * base, 3)"},
+    {"id": "gran", "show": "!!person('mother') || !!person('father')", "rel": 2, "do": "bond('parent', 4); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Help at home",
+     ".x": "With a baby and two jobs, many families you know have a live-in helper.",
+     ".helper": "Hire a helper",
+     ".helper.s": "About {a} a year in salary, levy and upkeep.",
+     ".helper.h": "Happiness +3, Health +1: a lot more rest.",
+     ".infant": "Infant care",
+     ".infant.s": "About {a} a year after subsidies.",
+     ".gran": "The grandparents",
+     ".gran.s": "Free, with plenty of advice.",
+     "trk.sg_helper": "A domestic helper",
+     "trk.sg_infant": "Infant care"
+    },
+    "zh": {
+     ".t": "请家庭帮佣",
+     ".x": "有了宝宝，夫妻俩都在上班，你认识的很多家庭都请了住家女佣。",
+     ".helper": "请女佣",
+     ".helper.s": "工资、劳工税和开销每年大约{a}。",
+     ".helper.h": "幸福感 +3，健康 +1：可以多休息。",
+     ".infant": "婴儿托育中心",
+     ".infant.s": "补贴后每年大约{a}。",
+     ".gran": "让爷爷奶奶带",
+     ".gran.s": "不花钱，意见也很多。",
+     "trk.sg_helper": "家庭帮佣",
+     "trk.sg_infant": "婴儿托育"
+    },
+    "zht": {
+     ".t": "請家庭幫傭",
+     ".x": "有了寶寶，夫妻倆都在上班，你認識的很多家庭都請了住家幫傭。",
+     ".helper": "請幫傭",
+     ".helper.s": "薪水、勞工稅和開銷每年大約{a}。",
+     ".helper.h": "幸福感 +3，健康 +1：可以多休息。",
+     ".infant": "嬰兒托育中心",
+     ".infant.s": "補貼後每年大約{a}。",
+     ".gran": "讓阿公阿嬤帶",
+     ".gran.s": "不花錢，意見也很多。",
+     "trk.sg_helper": "家庭幫傭",
+     "trk.sg_infant": "嬰兒托育"
+    }
+   }
+  },
+  {
+   "id": "sg_reemploy",
+   "src": "Retirement and re-employment: from 1 July 2026 the minimum retirement age is 64 and employers must offer re-employment to eligible staff up to 69 (MOM; Retirement and Re-employment Notifications 2026). Re-employment terms can include lower pay; the 15% cut here is an ESTIMATE.",
+   "age": [63, 64],
+   "weight": 0.8,
+   "when": {"working": true},
+   "def": "plan",
+   "tarot": "ret2",
+   "art": {"draw": "penclock", "bg": "ya"},
+   "opts": [
+    {"id": "stay", "hint": true, "do": "bump('sg_reemp', .85, M('trk.sg_reemp')); retireAge = Math.max(retireAge || 0, 69)"},
+    {"id": "plan"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Re-employment",
+     ".x": "You have reached retirement age. Your employer offers to re-employ you on a new contract, on slightly lower pay.",
+     ".stay": "Stay on until 69",
+     ".stay.s": "A new contract until 69.",
+     ".stay.h": "Pay about 15% lower, but years more income.",
+     ".plan": "Retire as you planned",
+     ".plan.s": "No change.",
+     "trk.sg_reemp": "Re-employed after 64"
+    },
+    "zh": {
+     ".t": "重新雇用",
+     ".x": "你到退休年龄了。公司愿意用新合约重新雇用你，薪水稍微低一点。",
+     ".stay": "留到69岁",
+     ".stay.s": "新合约做到69岁。",
+     ".stay.h": "工资低大约15%，但多了好几年收入。",
+     ".plan": "照原计划退休",
+     ".plan.s": "不变。",
+     "trk.sg_reemp": "64岁后重新雇用"
+    },
+    "zht": {
+     ".t": "重新僱用",
+     ".x": "你到退休年齡了。公司願意用新合約重新僱用你，薪水稍微低一點。",
+     ".stay": "留到69歲",
+     ".stay.s": "新合約做到69歲。",
+     ".stay.h": "薪水低大約15%，但多了好幾年收入。",
+     ".plan": "照原計畫退休",
+     ".plan.s": "不變。",
+     "trk.sg_reemp": "64歲後重新僱用"
+    }
+   }
+  },
+  {
+   "id": "sg_uni",
+   "src": "University fees: subsidised fees for citizens at NUS are about $8,250–8,950 a year for most courses (NUS, AY2024/25), while international students in the UK pay about £20,000–30,000 a year plus living costs (UCAS and university fee pages, 2025). About $200,000 for a UK degree ≈ 7.7 of the game’s typical wage. Pay effects are an ESTIMATE.",
+   "age": [18, 19],
+   "weight": 0.4,
+   "when": {"studying": true, "test": "study.k === 'uni'"},
+   "def": "local",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "wa"},
+   "opts": [
+    {"id": "local", "do": ""},
+    {"id": "uk", "sub": {"a": "MN(7.7 * base)", "b": "fam === 'middle' || fam === 'rich' ? M('.paid') : M('.loan')"}, "hint": true, "do": "if (fam === 'middle' || fam === 'rich') famPay('sg_uni', 7.7); else sloan += 7.7 * base; bump('sg_uni', 1.02, M('trk.sg_uni')); happy += 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Local or overseas?",
+     ".x": "You have a place at a local university. A British university has also offered you a place.",
+     ".local": "Stay local",
+     ".local.s": "Subsidised fees.",
+     ".uk": "Go to the UK",
+     ".uk.s": "About {a} in all.{b}",
+     ".paid": " Your parents pay.",
+     ".loan": " On a student loan.",
+     ".uk.h": "Happiness +3; pay about 2% higher for life.",
+     "trk.sg_uni": "A degree from the UK"
+    },
+    "zh": {
+     ".t": "本地还是出国？",
+     ".x": "你考上了本地大学，也拿到英国大学的录取。",
+     ".local": "留在本地",
+     ".local.s": "有补贴的学费。",
+     ".uk": "去英国",
+     ".uk.s": "总共大约{a}。{b}",
+     ".paid": "由爸妈出。",
+     ".loan": "靠助学贷款。",
+     ".uk.h": "幸福感 +3；一辈子的工资大约高2%。",
+     "trk.sg_uni": "英国学位"
+    },
+    "zht": {
+     ".t": "本地還是出國？",
+     ".x": "你考上了本地大學，也拿到英國大學的錄取。",
+     ".local": "留在本地",
+     ".local.s": "有補貼的學費。",
+     ".uk": "去英國",
+     ".uk.s": "總共大約{a}。{b}",
+     ".paid": "由爸媽出。",
+     ".loan": "靠就學貸款。",
+     ".uk.h": "幸福感 +3；一輩子的薪水大約高2%。",
+     "trk.sg_uni": "英國學位"
+    }
+   }
+  },
+  {
+   "id": "sg_bank",
+   "src": "Savings: bonus-interest accounts (e.g. UOB One, OCBC 360) pay higher rates only if you credit your salary and spend on the bank’s card; 6-month Treasury bills have yielded roughly 2–4% in 2023–2025 (MAS auction results). After about 2% inflation, both are close to 0–1.5%. Rates and the spending habit are an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "none",
+   "tarot": "save",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "let": {"a": "Math.min(1.5 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "bonus", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('sg_bonus', a, {rate: .012}, 'trk.sg_bonus'); habit += .01; T('habit', {kind: 'custom', label: M('trk.habitSpend')})"},
+    {"id": "tbill", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('sg_tbill', a, {rate: .01}, 'trk.sg_tbill')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Making your cash work",
+     ".x": "Your savings sit in an account paying almost nothing. Banks advertise bonus interest, and the government sells Treasury bills.",
+     ".bonus": "A bonus-interest account",
+     ".bonus.s": "{a}; you must credit your salary and spend on their card.",
+     ".bonus.h": "About 1.2% above inflation, and you get used to spending on the card.",
+     ".tbill": "Treasury bills",
+     ".tbill.s": "{a}, rolled over every six months.",
+     ".tbill.h": "About 1% above inflation, no strings.",
+     ".none": "Leave it",
+     ".none.s": "Easy to reach.",
+     "trk.sg_bonus": "Bonus-interest account",
+     "trk.sg_tbill": "Treasury bills"
+    },
+    "zh": {
+     ".t": "让存款生息",
+     ".x": "你的存款放在几乎没利息的户头里。银行在推红利利率，政府也在卖国库券。",
+     ".bonus": "红利利率户头",
+     ".bonus.s": "{a}；要入薪，还要刷他们的卡。",
+     ".bonus.h": "扣除通胀后大约1.2%，而且会习惯刷卡消费。",
+     ".tbill": "国库券",
+     ".tbill.s": "{a}，每六个月滚存。",
+     ".tbill.h": "扣除通胀后大约1%，没有附加条件。",
+     ".none": "不动",
+     ".none.s": "随时拿得到。",
+     "trk.sg_bonus": "红利利率户头",
+     "trk.sg_tbill": "国库券"
+    },
+    "zht": {
+     ".t": "讓存款生息",
+     ".x": "你的存款放在幾乎沒利息的帳戶裡。銀行在推紅利利率，政府也在賣國庫券。",
+     ".bonus": "紅利利率帳戶",
+     ".bonus.s": "{a}；要入薪，還要刷他們的卡。",
+     ".bonus.h": "扣除通膨後大約1.2%，而且會習慣刷卡消費。",
+     ".tbill": "國庫券",
+     ".tbill.s": "{a}，每六個月滾存。",
+     ".tbill.h": "扣除通膨後大約1%，沒有附加條件。",
+     ".none": "不動",
+     ".none.s": "隨時拿得到。",
+     "trk.sg_bonus": "紅利利率帳戶",
+     "trk.sg_tbill": "國庫券"
+    }
+   }
+  },
+  {
+   "id": "sg_phg",
+   "src": "Proximity Housing Grant: $30,000 for buying a resale HDB flat to live with your parents, or $20,000 to live within 4 km of them (HDB, 2025). $30,000 ≈ 1.15 of the game’s typical wage. HDB loans charge 2.6% (HDB), about 1% after inflation.",
+   "age": [25, 40],
+   "weight": 0.4,
+   "when": {"house": false, "working": true, "test": "!(hWait > age) && (!!person('mother') || !!person('father'))"},
+   "def": "wait",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": "price()", "liq": "liquid()", "g": "1.15 * base"},
+   "vars": {"a": "MN(g)"},
+   "opts": [
+    {"id": "near", "sub": {"a": "MN(.77 * g)"}, "ok": "liq + .77 * g >= .23 * P || M('e.home.need', { n: MN(.23 * P), h: MN(liq) })", "rel": 2, "do": "cash += .77 * g; bond('parent', 4); buyAt(P, { dp: .2, fee: .03, r: .01, n: 25, lk: 'trk.sg_phg', fixed: true })"},
+    {"id": "with", "sub": {"a": "MN(g)"}, "ok": "liq + g >= .23 * P || M('e.home.need', { n: MN(.23 * P), h: MN(liq) })", "hint": true, "rel": 3, "do": "cash += g; bond('parent', 8); happy -= 1; buyAt(P, { dp: .2, fee: .03, r: .01, n: 25, lk: 'trk.sg_phg', fixed: true })"},
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A flat near your parents",
+     ".x": "A resale flat has come up near your parents. Buying it would earn a Proximity Housing Grant of up to {a}.",
+     ".near": "Buy it, near your parents",
+     ".near.s": "A {a} grant towards the price.",
+     ".with": "Buy it and live with your parents",
+     ".with.s": "A {a} grant towards the price.",
+     ".with.h": "Happiness −1: less privacy, closer family.",
+     ".wait": "Keep waiting for a new flat",
+     ".wait.s": "No change.",
+     "trk.sg_phg": "A resale flat near your parents"
+    },
+    "zh": {
+     ".t": "靠近父母的组屋",
+     ".x": "爸妈家附近有间转售组屋。买下来可以拿到最多{a}的就近房屋津贴。",
+     ".near": "买下来，住在爸妈附近",
+     ".near.s": "{a}津贴抵房价。",
+     ".with": "买下来，跟爸妈一起住",
+     ".with.s": "{a}津贴抵房价。",
+     ".with.h": "幸福感 −1：隐私少了，家人更亲。",
+     ".wait": "继续等新组屋",
+     ".wait.s": "不变。",
+     "trk.sg_phg": "靠近父母的转售组屋"
+    },
+    "zht": {
+     ".t": "靠近父母的組屋",
+     ".x": "爸媽家附近有間轉售組屋。買下來可以拿到最多{a}的就近房屋津貼。",
+     ".near": "買下來，住在爸媽附近",
+     ".near.s": "{a}津貼抵房價。",
+     ".with": "買下來，跟爸媽一起住",
+     ".with.s": "{a}津貼抵房價。",
+     ".with.h": "幸福感 −1：隱私少了，家人更親。",
+     ".wait": "繼續等新組屋",
+     ".wait.s": "不變。",
+     "trk.sg_phg": "靠近父母的轉售組屋"
+    }
+   }
+  },
+  {
+   "id": "sg_loan",
+   "src": "Moneylenders: licensed moneylenders may charge at most 4% a month and late fees of $60 a month (Ministry of Law, Moneylenders Rules, 2015); unlicensed lenders (“Ah Long”) are illegal and use harassment (Singapore Police Force). $2,000 ≈ 0.08 of the game’s typical wage. Costs are an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.3,
+   "when": {"working": true, "stats": {"liquid": "< .05 * base"}},
+   "def": "family",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"a": ".08 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "licensed", "hint": true, "do": "debt += 1.3 * a"},
+    {"id": "family", "rel": -1, "do": "bond('parent', -2)"},
+    {"id": "shark", "hint": true, "do": "debt += 1.5 * a; happy -= 2", "next": {"event": "sg_loan2", "in": 1, "p": 0.7}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Short of money",
+     ".x": "An unexpected bill means you need {a} before payday, and you have nothing saved.",
+     ".licensed": "A licensed moneylender",
+     ".licensed.s": "Up to 4% interest a month.",
+     ".licensed.h": "Expensive, but legal and capped.",
+     ".family": "Ask your family",
+     ".family.s": "An awkward conversation. They help.",
+     ".shark": "The lender in the text message",
+     ".shark.s": "Fast, no questions asked.",
+     ".shark.h": "Unlicensed lenders are illegal and often harass borrowers for more."
+    },
+    "zh": {
+     ".t": "手头很紧",
+     ".x": "一张意外的账单，你发薪前需要{a}，可是一点存款都没有。",
+     ".licensed": "找持牌放贷人",
+     ".licensed.s": "月利率最高4%。",
+     ".licensed.h": "很贵，但合法，有上限。",
+     ".family": "向家人开口",
+     ".family.s": "有点尴尬，但他们帮了你。",
+     ".shark": "短信里的放贷人",
+     ".shark.s": "很快，不问原因。",
+     ".shark.h": "无牌放贷是违法的，常常骚扰借款人要更多钱。"
+    },
+    "zht": {
+     ".t": "手頭很緊",
+     ".x": "一張意外的帳單，你發薪前需要{a}，可是一點存款都沒有。",
+     ".licensed": "找合法放貸業者",
+     ".licensed.s": "月利率最高4%。",
+     ".licensed.h": "很貴，但合法，有上限。",
+     ".family": "向家人開口",
+     ".family.s": "有點尷尬，但他們幫了你。",
+     ".shark": "簡訊裡的放貸人",
+     ".shark.s": "很快，不問原因。",
+     ".shark.h": "無牌放貸是違法的，常常騷擾借款人要更多錢。"
+    }
+   }
+  },
+  {
+   "id": "sg_loan2",
+   "src": "The Singapore Police Force advises borrowers harassed by unlicensed moneylenders to call the police; harassment is a crime under the Moneylenders Act (SPF). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "police",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "mi"},
+   "opts": [
+    {"id": "police", "hint": true, "do": "happy -= 2"},
+    {"id": "pay", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "pay(.1 * base); happy -= 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Red paint on the door",
+     ".x": "The lender says you owe twice what you borrowed. Someone has splashed paint on your door.",
+     ".police": "Call the police",
+     ".police.s": "They take it seriously.",
+     ".police.h": "Happiness −2 for a stressful few weeks; the harassment stops.",
+     ".pay": "Pay them to make it stop",
+     ".pay.s": "About {a} more.",
+     ".pay.h": "Happiness −3. Paying often brings more demands."
+    },
+    "zh": {
+     ".t": "门上被泼红漆",
+     ".x": "放贷的人说你欠的钱翻了一倍。有人在你家门上泼了油漆。",
+     ".police": "报警",
+     ".police.s": "警方很重视。",
+     ".police.h": "紧张几个星期，幸福感 −2；骚扰停了。",
+     ".pay": "付钱了事",
+     ".pay.s": "再付大约{a}。",
+     ".pay.h": "幸福感 −3。付了常常会被要更多。"
+    },
+    "zht": {
+     ".t": "門上被潑紅漆",
+     ".x": "放貸的人說你欠的錢翻了一倍。有人在你家門上潑了油漆。",
+     ".police": "報警",
+     ".police.s": "警方很重視。",
+     ".police.h": "緊張幾個星期，幸福感 −2；騷擾停了。",
+     ".pay": "付錢了事",
+     ".pay.s": "再付大約{a}。",
+     ".pay.h": "幸福感 −3。付了常常會被要更多。"
+    }
+   }
   }
  ]
 }

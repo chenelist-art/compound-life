@@ -409,6 +409,689 @@
      "trk.sspn": "SSPN"
     }
    }
+  },
+  {
+   "id": "my_medcard",
+   "src": "Medical insurance repricing: after premium rises of up to 40–70% in 2024, Bank Negara Malaysia’s interim measures (20 Dec 2024, until end-2026) spread increases over at least three years so that at least 80% of policyholders see less than 10% a year, and pause increases for a year for over-60s on the minimum plan (BNM via CodeBlue and RinggitPlus, Dec 2024). Co-payment plans with a deductible or co-pay are cheaper. Sizes here (+25% for keeping full cover, −10% for a co-payment plan) are an ESTIMATE.",
+   "age": [28, 58],
+   "weight": 0.55,
+   "when": {"insured": true},
+   "def": "keep",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "insMul = insMul * 1.25", "next": {"event": "my_medcard2", "in": [3, 6], "p": 0.5}},
+    {"id": "copay", "hint": true, "do": "insMul = insMul * .9; happy -= 1"},
+    {"id": "drop", "hint": true, "do": "insured = false; const t = trk.ins; if (t) t.note = M('note.insOff')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your medical card",
+     ".x": "Your medical card premium is going up again, by a third over the next three years. The insurer also offers a cheaper plan where you pay part of each bill.",
+     ".keep": "Keep full cover",
+     ".keep.s": "Pay the higher premium.",
+     ".keep.h": "About 25% more a year, and more rises are likely later.",
+     ".copay": "Switch to a co-payment plan",
+     ".copay.s": "A lower premium; you pay a share of each claim.",
+     ".copay.h": "Happiness −1: less peace of mind.",
+     ".drop": "Cancel it",
+     ".drop.s": "No more premiums; public hospitals if you are ill.",
+     ".drop.h": "Big private bills would be yours alone.",
+     "note.insOff": "Cancelled."
+    },
+    "zh": {
+     ".t": "你的医疗卡",
+     ".x": "你的医疗卡保费又要涨了，三年内涨三分之一。保险公司也有更便宜的共付计划：每张账单你自付一部分。",
+     ".keep": "保留全额保障",
+     ".keep.s": "付更高的保费。",
+     ".keep.h": "每年多大约25%，以后很可能还会涨。",
+     ".copay": "改成共付计划",
+     ".copay.s": "保费低一些；每次理赔要自付一部分。",
+     ".copay.h": "幸福感 −1：没那么安心。",
+     ".drop": "退保",
+     ".drop.s": "不用再付保费；生病就去公立医院。",
+     ".drop.h": "大笔私立医院账单就得自己付。",
+     "note.insOff": "已退保。"
+    },
+    "zht": {
+     ".t": "你的醫療卡",
+     ".x": "你的醫療卡保費又要漲了，三年內漲三分之一。保險公司也有更便宜的共付方案：每張帳單你自付一部分。",
+     ".keep": "保留全額保障",
+     ".keep.s": "付更高的保費。",
+     ".keep.h": "每年多大約25%，以後很可能還會漲。",
+     ".copay": "改成共付方案",
+     ".copay.s": "保費低一些；每次理賠要自付一部分。",
+     ".copay.h": "幸福感 −1：沒那麼安心。",
+     ".drop": "退保",
+     ".drop.s": "不用再付保費；生病就去公立醫院。",
+     ".drop.h": "大筆私立醫院帳單就得自己付。",
+     "note.insOff": "已退保。"
+    }
+   }
+  },
+  {
+   "id": "my_medcard2",
+   "src": "Medical insurance premiums also rise by age band, which BNM’s 2024 measures do not cap (BNM, Dec 2024). The size here is an ESTIMATE.",
+   "chain": true,
+   "when": {"insured": true},
+   "def": "keep",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "insMul = insMul * 1.3"},
+    {"id": "drop", "do": "insured = false; const t = trk.ins; if (t) t.note = M('note.insOff')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Into a new age band",
+     ".x": "You have moved into an older age band, and your medical card premium jumps again.",
+     ".keep": "Keep paying",
+     ".keep.s": "Cover stays the same.",
+     ".keep.h": "About 30% more a year.",
+     ".drop": "Cancel it",
+     ".drop.s": "Public hospitals from now on."
+    },
+    "zh": {
+     ".t": "进入新的年龄级距",
+     ".x": "你进入了较高的年龄级距，医疗卡保费又跳了一级。",
+     ".keep": "继续缴",
+     ".keep.s": "保障不变。",
+     ".keep.h": "每年多大约30%。",
+     ".drop": "退保",
+     ".drop.s": "以后看公立医院。"
+    },
+    "zht": {
+     ".t": "進入新的年齡級距",
+     ".x": "你進入了較高的年齡級距，醫療卡保費又跳了一級。",
+     ".keep": "繼續繳",
+     ".keep.s": "保障不變。",
+     ".keep.h": "每年多大約30%。",
+     ".drop": "退保",
+     ".drop.s": "以後看公立醫院。"
+    }
+   }
+  },
+  {
+   "id": "my_isaraan",
+   "src": "i-Saraan: EPF’s scheme for the self-employed; from 1 Jan 2025 the government adds 20% of what you pay in, up to RM500 a year and RM5,000 in a lifetime, so RM2,500 a year earns the full RM500 (EPF; Budget 2025; extended into 2026). RM2,500 ≈ 0.12 and RM1,000 ≈ 0.05 of the game’s typical wage. EPF savings are locked until 55.",
+   "age": [25, 55],
+   "weight": 0.5,
+   "when": {"working": true, "selfEmployed": true},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "opts": [
+    {"id": "full", "sub": {"a": "MN(.12 * base)"}, "hint": true, "do": "yearly('isaraan', {amt: .12 * base, until: 55, bonus: .2}, {lock: 55, rate: .03}, 'trk.my_isaraan')"},
+    {"id": "some", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "yearly('isaraan', {amt: .05 * base, until: 55, bonus: .2}, {lock: 55, rate: .03}, 'trk.my_isaraan')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "i-Saraan",
+     ".x": "Working for yourself, nobody pays into your EPF. Under i-Saraan the government adds 20% to whatever you put in, up to RM500 a year.",
+     ".full": "Pay in RM2,500 a year",
+     ".full.s": "About {a} a year, locked until 55.",
+     ".full.h": "The full RM500 top-up every year, and EPF’s dividend on top.",
+     ".some": "Pay in RM1,000 a year",
+     ".some.s": "About {a} a year, locked until 55.",
+     ".some.h": "A RM200 top-up a year.",
+     ".none": "Not now",
+     ".none.s": "Keep the money for the business.",
+     "trk.my_isaraan": "i-Saraan savings"
+    },
+    "zh": {
+     ".t": "i-Saraan自愿缴纳",
+     ".x": "自雇的话没人帮你缴公积金。在i-Saraan计划下，你存多少，政府就加20%，每年最多RM500。",
+     ".full": "每年存RM2,500",
+     ".full.s": "每年大约{a}，锁到55岁。",
+     ".full.h": "每年拿满RM500补贴，还有公积金的股息。",
+     ".some": "每年存RM1,000",
+     ".some.s": "每年大约{a}，锁到55岁。",
+     ".some.h": "每年RM200补贴。",
+     ".none": "暂时不存",
+     ".none.s": "钱留给生意用。",
+     "trk.my_isaraan": "i-Saraan储蓄"
+    },
+    "zht": {
+     ".t": "i-Saraan自願繳納",
+     ".x": "自僱的話沒人幫你繳公積金。在i-Saraan計畫下，你存多少，政府就加20%，每年最多RM500。",
+     ".full": "每年存RM2,500",
+     ".full.s": "每年大約{a}，鎖到55歲。",
+     ".full.h": "每年拿滿RM500補貼，還有公積金的股息。",
+     ".some": "每年存RM1,000",
+     ".some.s": "每年大約{a}，鎖到55歲。",
+     ".some.h": "每年RM200補貼。",
+     ".none": "暫時不存",
+     ".none.s": "錢留給生意用。",
+     "trk.my_isaraan": "i-Saraan儲蓄"
+    }
+   }
+  },
+  {
+   "id": "my_hp",
+   "src": "Hire purchase: Malaysian car loans charge a flat rate on the original amount for the whole term (Hire-Purchase Act 1967), so a 3% flat rate over 9 years costs about 5.5% a year in effective terms. A RM40,000 car ≈ 1.9 of the game’s typical wage; 9 years at 3% flat ≈ RM5,600 a year (0.27), 5 years at 2.5% flat ≈ RM9,000 a year (0.43). Rates are typical bank offers, an ESTIMATE.",
+   "age": [28, 45],
+   "weight": 0.45,
+   "when": {"car": true, "working": true},
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "nine", "sub": {"a": "MN(.27 * base)"}, "hint": true, "do": "T('my_hp', {kind: 'ghost', label: M('trk.my_hp')}); rec('my_hp', .27 * base, 9); happy += 3"},
+    {"id": "five", "sub": {"a": "MN(.43 * base)"}, "hint": true, "do": "T('my_hp', {kind: 'ghost', label: M('trk.my_hp')}); rec('my_hp', .43 * base, 5); happy += 3"},
+    {"id": "keep", "hint": true, "do": "if (roll('my_hp') < .4) pay(.05 * base)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new car on hire purchase",
+     ".x": "Your old car keeps breaking down. A new local car costs about RM40,000, and the dealer offers a loan over five or nine years.",
+     ".nine": "Nine years at 3% flat",
+     ".nine.s": "About {a} a year, the lowest monthly payment.",
+     ".nine.h": "A flat rate is charged on the full loan for all nine years: about 5.5% a year in real terms.",
+     ".five": "Five years at 2.5% flat",
+     ".five.s": "About {a} a year.",
+     ".five.h": "Higher payments, but less interest overall.",
+     ".keep": "Keep fixing the old one",
+     ".keep.s": "A repair now and then.",
+     ".keep.h": "Old cars need repairs more often.",
+     "trk.my_hp": "Car hire purchase"
+    },
+    "zh": {
+     ".t": "分期买新车",
+     ".x": "旧车老是坏。一辆新的国产车大约RM40,000，经销商可以帮你办五年或九年的分期。",
+     ".nine": "九年，3%平息",
+     ".nine.s": "每年大约{a}，月供最低。",
+     ".nine.h": "平息是按整笔贷款算九年利息：实际年利率大约5.5%。",
+     ".five": "五年，2.5%平息",
+     ".five.s": "每年大约{a}。",
+     ".five.h": "月供较高，但总利息比较少。",
+     ".keep": "继续修旧车",
+     ".keep.s": "偶尔修一修。",
+     ".keep.h": "旧车比较常要修。",
+     "trk.my_hp": "汽车分期"
+    },
+    "zht": {
+     ".t": "分期買新車",
+     ".x": "舊車老是壞。一台新的國產車大約RM40,000，經銷商可以幫你辦五年或九年的分期。",
+     ".nine": "九年，3%平息",
+     ".nine.s": "每年大約{a}，月付最低。",
+     ".nine.h": "平息是按整筆貸款算九年利息：實際年利率大約5.5%。",
+     ".five": "五年，2.5%平息",
+     ".five.s": "每年大約{a}。",
+     ".five.h": "月付較高，但總利息比較少。",
+     ".keep": "繼續修舊車",
+     ".keep.s": "偶爾修一修。",
+     ".keep.h": "舊車比較常要修。",
+     "trk.my_hp": "汽車分期"
+    }
+   }
+  },
+  {
+   "id": "my_preu",
+   "src": "After SPM: the one-year matriculation programme (Ministry of Education) is free with a monthly allowance; STPM (Form Six, 1.5 years) is free in government schools and known as hard; private foundation or A-level courses cost about RM15,000–30,000 (college fee pages, 2025). RM16,000 ≈ 0.76 of the game’s typical wage. Skill effects are a game rule.",
+   "age": [16, 17],
+   "weight": 0.55,
+   "when": {"test": "!leftAt || leftAt > age"},
+   "def": "stpm",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "matrik", "hint": true, "do": "addSkill('teen', 2, M('trk.teenStudy'))"},
+    {"id": "stpm", "hint": true, "do": "addSkill('teen', 2.5, M('trk.teenStudy')); happy -= 2"},
+    {"id": "private", "sub": {"a": "MN(.76 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('teen', 2, M('trk.teenStudy')); happy += 1; famPay('my_preu', .76)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After SPM",
+     ".x": "Your SPM results are out. There are three roads to university.",
+     ".matrik": "Matriculation",
+     ".matrik.s": "One year, free, with a small allowance.",
+     ".matrik.h": "Skill +2.",
+     ".stpm": "STPM (Form Six)",
+     ".stpm.s": "A year and a half, free, and famously hard.",
+     ".stpm.h": "Skill +2.5, Happiness −2.",
+     ".private": "A private foundation course",
+     ".private.s": "About {a}, paid by your family.{b}",
+     ".private.h": "Skill +2, Happiness +1."
+    },
+    "zh": {
+     ".t": "SPM之后",
+     ".x": "SPM成绩出来了。上大学有三条路。",
+     ".matrik": "预科班（Matrikulasi）",
+     ".matrik.s": "一年，免费，还有一点津贴。",
+     ".matrik.h": "技能 +2。",
+     ".stpm": "中六（STPM）",
+     ".stpm.s": "一年半，免费，出了名的难。",
+     ".stpm.h": "技能 +2.5，幸福感 −2。",
+     ".private": "私立大学预科",
+     ".private.s": "大约{a}，由家里出。{b}",
+     ".private.h": "技能 +2，幸福感 +1。"
+    },
+    "zht": {
+     ".t": "SPM之後",
+     ".x": "SPM成績出來了。上大學有三條路。",
+     ".matrik": "預科班（Matrikulasi）",
+     ".matrik.s": "一年，免費，還有一點津貼。",
+     ".matrik.h": "技能 +2。",
+     ".stpm": "中六（STPM）",
+     ".stpm.s": "一年半，免費，出了名的難。",
+     ".stpm.h": "技能 +2.5，幸福感 −2。",
+     ".private": "私立大學預科",
+     ".private.s": "大約{a}，由家裡出。{b}",
+     ".private.h": "技能 +2，幸福感 +1。"
+    }
+   }
+  },
+  {
+   "id": "my_twin",
+   "src": "Twinning degrees: a “2+1” programme (two years at a Malaysian private university, one in the UK or Australia) costs roughly RM100,000–150,000 in all, against RM300,000+ for a full degree abroad (university fee pages and guides, 2025); a public university degree costs far less. RM100,000 ≈ 4.8 of the game’s typical wage. Pay effects are an ESTIMATE.",
+   "age": [18, 19],
+   "weight": 0.4,
+   "if": {"family": ["middle", "rich"]},
+   "when": {"studying": true, "test": "study.k === 'uni'"},
+   "def": "local",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "ya"},
+   "opts": [
+    {"id": "local", "do": ""},
+    {"id": "twin", "sub": {"a": "MN(4.8 * base)"}, "hint": true, "do": "famPay('my_twin', 4.8); bump('my_twin', 1.03, M('trk.my_twin')); happy += 2"},
+    {"id": "abroad", "sub": {"a": "MN(14 * base)"}, "hint": true, "do": "famPay('my_twin', 14); bump('my_twin', 1.05, M('trk.my_twin')); happy += 4"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A degree from abroad?",
+     ".x": "You have a place at a public university. Your parents could afford a twinning degree, or even a full degree overseas.",
+     ".local": "The public university",
+     ".local.s": "Low fees.",
+     ".twin": "A 2+1 twinning degree",
+     ".twin.s": "About {a} in all, paid by your parents.",
+     ".twin.h": "Pay about 3% higher for life; it comes out of what they would leave you.",
+     ".abroad": "A full degree overseas",
+     ".abroad.s": "About {a} in all, paid by your parents.",
+     ".abroad.h": "Pay about 5% higher for life, Happiness +4; it comes out of what they would leave you.",
+     "trk.my_twin": "A degree from abroad"
+    },
+    "zh": {
+     ".t": "要不要拿外国文凭？",
+     ".x": "你考上了国立大学。爸妈也负担得起双联课程，甚至全程出国念书。",
+     ".local": "念国立大学",
+     ".local.s": "学费低。",
+     ".twin": "2+1双联课程",
+     ".twin.s": "总共大约{a}，由爸妈出。",
+     ".twin.h": "一辈子的工资大约高3%；这笔钱会从他们留给你的遗产里扣。",
+     ".abroad": "全程出国念",
+     ".abroad.s": "总共大约{a}，由爸妈出。",
+     ".abroad.h": "一辈子的工资大约高5%，幸福感 +4；这笔钱会从他们留给你的遗产里扣。",
+     "trk.my_twin": "外国文凭"
+    },
+    "zht": {
+     ".t": "要不要拿外國文憑？",
+     ".x": "你考上了國立大學。爸媽也負擔得起雙聯課程，甚至全程出國念書。",
+     ".local": "念國立大學",
+     ".local.s": "學費低。",
+     ".twin": "2+1雙聯課程",
+     ".twin.s": "總共大約{a}，由爸媽出。",
+     ".twin.h": "一輩子的薪水大約高3%；這筆錢會從他們留給你的遺產裡扣。",
+     ".abroad": "全程出國念",
+     ".abroad.s": "總共大約{a}，由爸媽出。",
+     ".abroad.h": "一輩子的薪水大約高5%，幸福感 +4；這筆錢會從他們留給你的遺產裡扣。",
+     "trk.my_twin": "外國文憑"
+    }
+   }
+  },
+  {
+   "id": "my_hantaran",
+   "src": "Weddings: Malay weddings include hantaran (gifts and money from the groom’s side) and a kenduri (feast); totals of RM30,000 or more are often reported, and many couples borrow (news reports and wedding planners, 2023–2025). RM25,000 ≈ 1.2 of the game’s typical wage. Amounts are an ESTIMATE.",
+   "age": [25, 35],
+   "weight": 0.45,
+   "when": {"partner": ["dating", "living"]},
+   "def": "modest",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "ya"},
+   "opts": [
+    {"id": "grand", "sub": {"a": "MN(1.2 * base)"}, "hint": true, "rel": 3, "do": "spend('my_wed', 1.2 * base, 'trk.my_wed'); happy += 3"},
+    {"id": "modest", "sub": {"a": "MN(.4 * base)"}, "rel": 1, "do": "spend('my_wed', .4 * base, 'trk.my_wed'); happy += 1"},
+    {"id": "simple", "sub": {"a": "MN(.1 * base)"}, "hint": true, "rel": -2, "do": "spend('my_wed', .1 * base, 'trk.my_wed')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Planning a wedding",
+     ".x": "You and your partner are thinking of marrying, and both families have expectations: gifts, a dowry and a feast for hundreds.",
+     ".grand": "A big wedding for the whole kampung",
+     ".grand.s": "About {a}.",
+     ".grand.h": "Happiness +3, and the families are delighted.",
+     ".modest": "A modest feast",
+     ".modest.s": "About {a}.",
+     ".simple": "Just the ceremony and a family dinner",
+     ".simple.s": "About {a}.",
+     ".simple.h": "Some relatives are disappointed.",
+     "trk.my_wed": "Wedding costs"
+    },
+    "zh": {
+     ".t": "筹备婚礼",
+     ".x": "你和伴侣在考虑结婚，两边家人都有期待：聘礼、礼金和几百人的喜宴。",
+     ".grand": "办场全村来的大婚礼",
+     ".grand.s": "大约{a}。",
+     ".grand.h": "幸福感 +3，两家人都很高兴。",
+     ".modest": "办个简单的喜宴",
+     ".modest.s": "大约{a}。",
+     ".simple": "只办仪式和家庭晚餐",
+     ".simple.s": "大约{a}。",
+     ".simple.h": "有些亲戚会失望。",
+     "trk.my_wed": "婚礼开销"
+    },
+    "zht": {
+     ".t": "籌備婚禮",
+     ".x": "你和伴侶在考慮結婚，兩邊家人都有期待：聘禮、禮金和幾百人的喜宴。",
+     ".grand": "辦場全村來的大婚禮",
+     ".grand.s": "大約{a}。",
+     ".grand.h": "幸福感 +3，兩家人都很高興。",
+     ".modest": "辦個簡單的喜宴",
+     ".modest.s": "大約{a}。",
+     ".simple": "只辦儀式和家庭晚餐",
+     ".simple.s": "大約{a}。",
+     ".simple.h": "有些親戚會失望。",
+     "trk.my_wed": "婚禮開銷"
+    }
+   }
+  },
+  {
+   "id": "my_prs",
+   "src": "Private Retirement Schemes: contributions earn income tax relief of up to RM3,000 a year (LHDN, YA2024) and are locked until 55 except for allowed withdrawals. RM3,000 ≈ 0.14 of the game’s typical wage. The tax saved (taken as 10% of the contribution) is an ESTIMATE for a middle earner.",
+   "age": [28, 55],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"salary": "> 1.5 * base"}},
+   "def": "none",
+   "tarot": "save2",
+   "art": {"draw": "penjar", "bg": "mi"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.14 * base)"}, "hint": true, "do": "yearly('my_prs', {amt: .14 * base, until: 55, bonus: .1}, {lock: 55, fee: .015}, 'trk.my_prs')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A private retirement scheme",
+     ".x": "Your accountant points out that paying into a Private Retirement Scheme earns tax relief of up to RM3,000 a year.",
+     ".yes": "Put in RM3,000 a year",
+     ".yes.s": "About {a} a year, locked until 55.",
+     ".yes.h": "The tax saved adds about a tenth; PRS funds charge about 1.5% a year.",
+     ".none": "Skip it",
+     ".none.s": "Keep the money flexible.",
+     "trk.my_prs": "Private Retirement Scheme"
+    },
+    "zh": {
+     ".t": "私人退休计划",
+     ".x": "会计师提醒你，投资私人退休计划（PRS）每年可以扣税最多RM3,000。",
+     ".yes": "每年投RM3,000",
+     ".yes.s": "每年大约{a}，锁到55岁。",
+     ".yes.h": "省下的税大约多一成；PRS基金每年收费大约1.5%。",
+     ".none": "不投",
+     ".none.s": "钱放着比较灵活。",
+     "trk.my_prs": "私人退休计划"
+    },
+    "zht": {
+     ".t": "私人退休計畫",
+     ".x": "會計師提醒你，投資私人退休計畫（PRS）每年可以扣稅最多RM3,000。",
+     ".yes": "每年投RM3,000",
+     ".yes.s": "每年大約{a}，鎖到55歲。",
+     ".yes.h": "省下的稅大約多一成；PRS基金每年收費大約1.5%。",
+     ".none": "不投",
+     ".none.s": "錢放著比較靈活。",
+     "trk.my_prs": "私人退休計畫"
+    }
+   }
+  },
+  {
+   "id": "my_peka",
+   "src": "PeKa B40: free health screening for lower-income Malaysians aged 40 and over (ProtectHealth, Ministry of Health). Public clinics (Klinik Kesihatan) charge about RM1 to register for citizens (MOH). The chance of finding high blood pressure is an ESTIMATE.",
+   "age": [40, 60],
+   "weight": 0.5,
+   "if": {"family": ["poor", "working"]},
+   "def": "go",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "go", "hint": true, "do": "screen = true", "next": {"event": "my_peka2", "in": 1, "p": 0.3}},
+    {"id": "skip", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Free screening",
+     ".x": "A letter says you qualify for free health screening under PeKa B40.",
+     ".go": "Go for the check",
+     ".go.s": "Free, at a clinic near you.",
+     ".go.h": "Problems found early are much easier to treat.",
+     ".skip": "Not now",
+     ".skip.s": "You feel fine.",
+     ".skip.h": "Without screening, illness is found later."
+    },
+    "zh": {
+     ".t": "免费健康检查",
+     ".x": "一封信说你符合PeKa B40免费健康检查的资格。",
+     ".go": "去检查",
+     ".go.s": "免费，在附近诊所。",
+     ".go.h": "问题越早发现越好治。",
+     ".skip": "先不去",
+     ".skip.s": "你觉得自己没事。",
+     ".skip.h": "不检查，疾病就会晚一点发现。"
+    },
+    "zht": {
+     ".t": "免費健康檢查",
+     ".x": "一封信說你符合PeKa B40免費健康檢查的資格。",
+     ".go": "去檢查",
+     ".go.s": "免費，在附近診所。",
+     ".go.h": "問題越早發現越好治。",
+     ".skip": "先不去",
+     ".skip.s": "你覺得自己沒事。",
+     ".skip.h": "不檢查，疾病就會晚一點發現。"
+    }
+   }
+  },
+  {
+   "id": "my_peka2",
+   "src": "Klinik Kesihatan (public clinics) treat chronic conditions for about RM1 a visit for citizens; private GPs charge much more (MOH; private clinic fee schedules). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "kk",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "kk", "hint": true, "do": "health += 2; happy -= 1"},
+    {"id": "gp", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('my_gp', {kind: 'ghost', label: M('trk.my_gp')}); rec('my_gp', .02 * base, 10); health += 2"},
+    {"id": "ignore", "hint": true, "do": "health -= 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "High blood pressure",
+     ".x": "The screening found high blood pressure. You will need tablets and check-ups.",
+     ".kk": "Treatment at the government clinic",
+     ".kk.s": "Almost free, with long waits.",
+     ".kk.h": "Health +2, Happiness −1.",
+     ".gp": "A private GP",
+     ".gp.s": "About {a} a year.",
+     ".gp.h": "Health +2.",
+     ".ignore": "Ignore it",
+     ".ignore.s": "You feel fine.",
+     ".ignore.h": "Health −3.",
+     "trk.my_gp": "Private GP visits"
+    },
+    "zh": {
+     ".t": "高血压",
+     ".x": "检查发现你有高血压，要吃药、定期复诊。",
+     ".kk": "去政府诊所治疗",
+     ".kk.s": "几乎免费，但要等很久。",
+     ".kk.h": "健康 +2，幸福感 −1。",
+     ".gp": "看私人诊所",
+     ".gp.s": "每年大约{a}。",
+     ".gp.h": "健康 +2。",
+     ".ignore": "不理它",
+     ".ignore.s": "你觉得没事。",
+     ".ignore.h": "健康 −3。",
+     "trk.my_gp": "私人诊所费用"
+    },
+    "zht": {
+     ".t": "高血壓",
+     ".x": "檢查發現你有高血壓，要吃藥、定期回診。",
+     ".kk": "去政府診所治療",
+     ".kk.s": "幾乎免費，但要等很久。",
+     ".kk.h": "健康 +2，幸福感 −1。",
+     ".gp": "看私人診所",
+     ".gp.s": "每年大約{a}。",
+     ".gp.h": "健康 +2。",
+     ".ignore": "不理它",
+     ".ignore.s": "你覺得沒事。",
+     ".ignore.h": "健康 −3。",
+     "trk.my_gp": "私人診所費用"
+    }
+   }
+  },
+  {
+   "id": "my_gig",
+   "src": "E-hailing drivers in Malaysia must be covered by PERKESO’s Self-Employment Social Security Scheme (SKSPS, Act 789); the lowest plan costs RM232.80 a year (PERKESO, 2024), about 0.011 of the game’s typical wage, and pays medical costs and lost income after an accident. Weekend earnings (≈ RM2,000 a year) and accident odds are an ESTIMATE.",
+   "age": [22, 50],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "moto", "bg": "co"},
+   "opts": [
+    {"id": "cover", "sub": {"a": "MN(.1 * base)", "b": "MN(.011 * base)"}, "hint": true, "do": "T('my_gig', {kind: 'custom', label: M('trk.my_gig')}); rec('my_gig', -.089 * base, 3, -.3)", "next": {"event": "my_gig2", "in": [1, 3], "p": 0.12, "data": {"c": "1"}}},
+    {"id": "drive", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "T('my_gig', {kind: 'custom', label: M('trk.my_gig')}); rec('my_gig', -.1 * base, 3, -.3)", "next": {"event": "my_gig2", "in": [1, 3], "p": 0.12, "data": {"c": "0"}}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Driving on weekends",
+     ".x": "You could drive for an e-hailing app at weekends with your own car.",
+     ".cover": "Drive, with PERKESO accident cover",
+     ".cover.s": "About {a} a year, less {b} for the cover.",
+     ".cover.h": "Health a little lower each year; accidents are covered.",
+     ".drive": "Drive, and skip the cover",
+     ".drive.s": "About {a} a year.",
+     ".drive.h": "Health a little lower each year; an accident would be on you.",
+     ".no": "Rest at weekends",
+     ".no.s": "One job is enough.",
+     "trk.my_gig": "Weekend e-hailing"
+    },
+    "zh": {
+     ".t": "周末开网约车",
+     ".x": "你可以周末用自己的车跑网约车。",
+     ".cover": "跑，也买PERKESO保障",
+     ".cover.s": "每年大约{a}，扣掉保障费{b}。",
+     ".cover.h": "健康每年少一点；出车祸有保障。",
+     ".drive": "跑，但不买保障",
+     ".drive.s": "每年大约{a}。",
+     ".drive.h": "健康每年少一点；出车祸要自己负责。",
+     ".no": "周末休息",
+     ".no.s": "一份工作就够了。",
+     "trk.my_gig": "周末网约车"
+    },
+    "zht": {
+     ".t": "週末開網約車",
+     ".x": "你可以週末用自己的車跑網約車。",
+     ".cover": "跑，也買PERKESO保障",
+     ".cover.s": "每年大約{a}，扣掉保障費{b}。",
+     ".cover.h": "健康每年少一點；出車禍有保障。",
+     ".drive": "跑，但不買保障",
+     ".drive.s": "每年大約{a}。",
+     ".drive.h": "健康每年少一點；出車禍要自己負責。",
+     ".no": "週末休息",
+     ".no.s": "一份工作就夠了。",
+     "trk.my_gig": "週末網約車"
+    }
+   }
+  },
+  {
+   "id": "my_gig2",
+   "src": "PERKESO SKSPS pays medical costs and a daily allowance after an accident at work (PERKESO). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "ok",
+   "tarot": "teen",
+   "art": {"draw": "moto", "bg": "mi"},
+   "vars": {"x": "chain.c === '1' ? M('.cov') : M('.nocov', {a: MN(.15 * base)})"},
+   "opts": [
+    {"id": "ok", "do": "health -= 5; stopRec('my_gig'); if (chain.c !== '1') pay(.15 * base)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An accident on the road",
+     ".x": "A motorbike hits your car while you are carrying a passenger. {x}",
+     ".cov": "PERKESO pays your treatment and lost days.",
+     ".nocov": "With no cover, treatment and repairs cost you {a}.",
+     ".ok": "Give up driving for the app",
+     ".ok.s": "Your weekends are yours again."
+    },
+    "zh": {
+     ".t": "路上出了车祸",
+     ".x": "你载客时被一辆摩托车撞了。{x}",
+     ".cov": "PERKESO付了你的医药费和休息期间的收入。",
+     ".nocov": "没有保障，医药费和修车费花了你{a}。",
+     ".ok": "不跑网约车了",
+     ".ok.s": "周末又是自己的了。"
+    },
+    "zht": {
+     ".t": "路上出了車禍",
+     ".x": "你載客時被一台機車撞了。{x}",
+     ".cov": "PERKESO付了你的醫藥費和休息期間的收入。",
+     ".nocov": "沒有保障，醫藥費和修車費花了你{a}。",
+     ".ok": "不跑網約車了",
+     ".ok.s": "週末又是自己的了。"
+    }
+   }
+  },
+  {
+   "id": "my_epf55",
+   "src": "EPF at 55: members can withdraw all their savings from age 55, or leave them in to keep earning the dividend, 6.30% for 2024 (KWSP, Feb 2025), about 3% after inflation. Many withdraw early and run short later (EPF surveys).",
+   "age": [55, 56],
+   "weight": 0.9,
+   "when": {"test": "!!lots.epf && lots.epf.v > .5 * base"},
+   "def": "keep",
+   "tarot": "ret",
+   "art": {"draw": "cashout", "bg": "mi"},
+   "let": {"v": "lots.epf.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(v)"}, "hint": true, "do": "lots.epf.v = 0; lots.epf.tout += v; cash += v; happy += 2"},
+    {"id": "half", "sub": {"a": "MN(v / 2)"}, "do": "lots.epf.v -= v / 2; lots.epf.tout += v / 2; cash += v / 2; happy += 1"},
+    {"id": "keep", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your EPF at 55",
+     ".x": "You can now take out all of your EPF savings: {a}.",
+     ".all": "Take it all out",
+     ".all.s": "{a} in your bank account.",
+     ".all.h": "Happiness +2, but it no longer earns EPF’s dividend.",
+     ".half": "Take half",
+     ".half.s": "{a} now.",
+     ".keep": "Leave it in",
+     ".keep.s": "Take money out when you need it.",
+     ".keep.h": "EPF has paid about 3% a year above inflation."
+    },
+    "zh": {
+     ".t": "55岁的公积金",
+     ".x": "你现在可以把公积金全部领出来了：{a}。",
+     ".all": "全部领出来",
+     ".all.s": "{a}进你的银行账户。",
+     ".all.h": "幸福感 +2，但就领不到公积金的股息了。",
+     ".half": "领一半",
+     ".half.s": "现在拿{a}。",
+     ".keep": "继续放着",
+     ".keep.s": "需要时再领。",
+     ".keep.h": "公积金扣除通胀后每年大约3%。"
+    },
+    "zht": {
+     ".t": "55歲的公積金",
+     ".x": "你現在可以把公積金全部領出來了：{a}。",
+     ".all": "全部領出來",
+     ".all.s": "{a}進你的銀行帳戶。",
+     ".all.h": "幸福感 +2，但就領不到公積金的股息了。",
+     ".half": "領一半",
+     ".half.s": "現在拿{a}。",
+     ".keep": "繼續放著",
+     ".keep.s": "需要時再領。",
+     ".keep.h": "公積金扣除通膨後每年大約3%。"
+    }
+   }
   }
  ]
 }

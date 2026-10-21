@@ -456,6 +456,689 @@
      ".late.s": "從{n}歲起每年約{a}。"
     }
    }
+  },
+  {
+   "id": "cn_hukou",
+   "src": "Hukou: big cities such as Shanghai and Shenzhen grant local household registration through points for education, tax and years of social insurance, while smaller cities have eased the rules (State Council, five-year plan on people-centred urbanisation, July 2024). A local hukou gives children full access to public schools and the local gaokao. Rural hukou holders keep rights to their village land, which some rent out. Amounts are an ESTIMATE.",
+   "age": [24, 38],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "keep",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "ya"},
+   "opts": [
+    {"id": "city", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "spend('cn_hukou', .2 * base, 'trk.cn_hukou'); kidFeeM = (kidFeeM || 1) * .8; happy += 1"},
+    {"id": "keep", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "T('cn_land', {kind: 'custom', label: M('trk.cn_land')}); rec('cn_land', -.03 * base, 30)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your hukou",
+     ".x": "After years in the city you could earn a local hukou through the points system. Your hometown hukou comes with a share of village farmland.",
+     ".city": "Move your hukou to the city",
+     ".city.s": "About {a} in extra social insurance years and paperwork.",
+     ".city.h": "Happiness +1; your children can go to local schools and sit the local gaokao, which lowers their study costs.",
+     ".keep": "Keep your hometown hukou and the land",
+     ".keep.s": "Rent the land to a neighbour for about {a} a year.",
+     ".keep.h": "Your children may face higher costs to study in the city.",
+     "trk.cn_hukou": "Moving your hukou",
+     "trk.cn_land": "Rent from village land"
+    },
+    "zh": {
+     ".t": "你的户口",
+     ".x": "在城里住了几年，你可以通过积分落户。老家的户口则带着一份村里的承包地。",
+     ".city": "把户口迁到城里",
+     ".city.s": "补缴社保和办手续大约{a}。",
+     ".city.h": "幸福感 +1；孩子能读本地学校、参加本地高考，教育开销会少一些。",
+     ".keep": "保留老家户口和土地",
+     ".keep.s": "把地租给邻居，每年大约{a}。",
+     ".keep.h": "孩子在城里读书可能要花更多钱。",
+     "trk.cn_hukou": "迁户口",
+     "trk.cn_land": "老家土地租金"
+    },
+    "zht": {
+     ".t": "你的戶口",
+     ".x": "在城裡住了幾年，你可以透過積分落戶。老家的戶口則帶著一份村裡的承包地。",
+     ".city": "把戶口遷到城裡",
+     ".city.s": "補繳社保和辦手續大約{a}。",
+     ".city.h": "幸福感 +1；孩子能讀本地學校、參加本地高考，教育開銷會少一些。",
+     ".keep": "保留老家戶口和土地",
+     ".keep.s": "把地租給鄰居，每年大約{a}。",
+     ".keep.h": "孩子在城裡讀書可能要花更多錢。",
+     "trk.cn_hukou": "遷戶口",
+     "trk.cn_land": "老家土地租金"
+    }
+   }
+  },
+  {
+   "id": "cn_caili",
+   "src": "Bride price (彩礼): paid by the groom’s family, often tens of thousands of yuan and far more in some provinces; the government has campaigned against “sky-high bride prices” since the 2023 No. 1 Central Document, and the Supreme People’s Court set rules on returning them in 2024. ¥100,000 ≈ 2.4 and ¥30,000 ≈ 0.7 of the game’s typical wage. Amounts are an ESTIMATE.",
+   "age": [24, 35],
+   "weight": 0.5,
+   "when": {"partner": ["dating", "living"]},
+   "def": "mid",
+   "tarot": "wed",
+   "art": {"draw": "gift", "bg": "co"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(2.4 * base)"}, "hint": true, "rel": 2, "do": "if (sex === 'm') spend('cn_caili', 2.4 * base, 'trk.cn_caili'); else { cash += 1.2 * base; const tq = T('cn_dowry', {kind: 'custom', label: M('trk.cn_dowry')}); tq.v += 1.2 * base } happy += 1"},
+    {"id": "mid", "sub": {"a": "MN(.7 * base)"}, "do": "if (sex === 'm') spend('cn_caili', .7 * base, 'trk.cn_caili'); else cash += .35 * base"},
+    {"id": "none", "hint": true, "rel": -2, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The bride price",
+     ".x": "You and your partner are talking about marriage, and the families are discussing the bride price (caili) the groom’s side should pay.",
+     ".big": "A big bride price, about ¥100,000",
+     ".big.s": "About {a}. If you are the bride, your family returns half as a dowry.",
+     ".big.h": "Happiness +1; the families are proud.",
+     ".mid": "A modest bride price, about ¥30,000",
+     ".mid.s": "About {a}.",
+     ".none": "A token amount only",
+     ".none.s": "The two of you start without debt.",
+     ".none.h": "Some relatives are upset.",
+     "trk.cn_caili": "Bride price",
+     "trk.cn_dowry": "Dowry returned to the couple"
+    },
+    "zh": {
+     ".t": "彩礼",
+     ".x": "你和伴侣在谈婚论嫁，两家人在商量男方该给多少彩礼。",
+     ".big": "高额彩礼，约十万元",
+     ".big.s": "大约{a}。如果你是新娘，娘家会把一半当嫁妆回送。",
+     ".big.h": "幸福感 +1；两家都有面子。",
+     ".mid": "适中的彩礼，约三万元",
+     ".mid.s": "大约{a}。",
+     ".none": "只给象征性的",
+     ".none.s": "两个人没有负担地开始。",
+     ".none.h": "有些亲戚不高兴。",
+     "trk.cn_caili": "彩礼",
+     "trk.cn_dowry": "回送的嫁妆"
+    },
+    "zht": {
+     ".t": "聘金",
+     ".x": "你和伴侶在談婚論嫁，兩家人在商量男方該給多少聘金。",
+     ".big": "高額聘金，約十萬元",
+     ".big.s": "大約{a}。如果你是新娘，娘家會把一半當嫁妝回送。",
+     ".big.h": "幸福感 +1；兩家都有面子。",
+     ".mid": "適中的聘金，約三萬元",
+     ".mid.s": "大約{a}。",
+     ".none": "只給象徵性的",
+     ".none.s": "兩個人沒有負擔地開始。",
+     ".none.h": "有些親戚不高興。",
+     "trk.cn_caili": "聘金",
+     "trk.cn_dowry": "回送的嫁妝"
+    }
+   }
+  },
+  {
+   "id": "cn_tutor",
+   "src": "Tutoring: the 2021 “double reduction” policy (双减, State Council General Office, July 2021) banned for-profit tutoring in core school subjects; many families turned to private home tutors at higher prices, while schools added free after-school services. ¥10,000 a year ≈ 0.24 of the game’s typical wage; amounts and bursary odds are an ESTIMATE.",
+   "age": [30, 48],
+   "weight": 0.5,
+   "when": {"kidAge": [7, 15]},
+   "def": "school",
+   "tarot": "tuition",
+   "art": "tuition",
+   "opts": [
+    {"id": "home", "sub": {"a": "MN(.24 * base)"}, "hint": true, "do": "T('cn_tutor', {kind: 'custom', label: M('trk.cn_tutor')}); rec('cn_tutor', .24 * base, 5); kidWin(.2, .7)"},
+    {"id": "school", "hint": true, "do": "kidWin(.08, .85)"},
+    {"id": "none", "do": "bond('kid', 2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After the tutoring ban",
+     ".x": "Tutoring schools for school subjects were closed by the “double reduction” rules. Other parents now hire private tutors at home.",
+     ".home": "A private tutor at home",
+     ".home.s": "About {a} a year.",
+     ".home.h": "Some tutored children win a bursary for university later.",
+     ".school": "The school’s after-school classes",
+     ".school.s": "Free or nearly so.",
+     ".school.h": "A small chance of a bursary.",
+     ".none": "Let them play",
+     ".none.s": "Weekends together.",
+     "trk.cn_tutor": "Home tutoring"
+    },
+    "zh": {
+     ".t": "“双减”之后",
+     ".x": "“双减”之后学科类补习班关了。其他家长改请家教到家里上课。",
+     ".home": "请家教上门",
+     ".home.s": "每年大约{a}。",
+     ".home.h": "有些补过习的孩子以后能拿大学助学金。",
+     ".school": "学校的课后服务",
+     ".school.s": "免费或几乎免费。",
+     ".school.h": "有一点机会拿助学金。",
+     ".none": "让他们玩",
+     ".none.s": "周末一起过。",
+     "trk.cn_tutor": "家教"
+    },
+    "zht": {
+     ".t": "「雙減」之後",
+     ".x": "「雙減」之後學科類補習班關了。其他家長改請家教到家裡上課。",
+     ".home": "請家教到府",
+     ".home.s": "每年大約{a}。",
+     ".home.h": "有些補過習的孩子以後能拿大學助學金。",
+     ".school": "學校的課後服務",
+     ".school.s": "免費或幾乎免費。",
+     ".school.h": "有一點機會拿助學金。",
+     ".none": "讓他們玩",
+     ".none.s": "週末一起過。",
+     "trk.cn_tutor": "家教"
+    }
+   }
+  },
+  {
+   "id": "cn_p2p",
+   "src": "P2P lending: around 5,000 online lending platforms operated in China in 2015–2018, promising 8–12% a year; by November 2020 regulators said none remained, after waves of collapses and frauds (CBIRC Chairman Guo Shuqing, Nov 2020). Investors recovered little. Amounts are an ESTIMATE.",
+   "age": [25, 40],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "bank",
+   "tarot": "scam",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"a": "Math.min(.5 * base, .5 * liquid())"},
+   "opts": [
+    {"id": "p2p", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('cn_p2p', a, {rate: .08}, 'trk.cn_p2p')", "next": {"event": "cn_p2p2", "in": [1, 3], "p": 0.85}},
+    {"id": "fund", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('cn_fund', a, {}, 'trk.cn_fund')"},
+    {"id": "bank", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A high-yield app",
+     ".x": "A lending app promises 10% a year, guaranteed. Colleagues say they have been paid every month.",
+     ".p2p": "Invest in the app",
+     ".p2p.s": "{a}.",
+     ".p2p.h": "Almost all such platforms later collapsed.",
+     ".fund": "A stock index fund",
+     ".fund.s": "{a}.",
+     ".fund.h": "Rises and falls with the market.",
+     ".bank": "Leave it in the bank",
+     ".bank.s": "Safe, low interest.",
+     ".bank.h": "Slowly eaten by inflation, but safe.",
+     "trk.cn_p2p": "A lending app",
+     "trk.cn_fund": "Index fund"
+    },
+    "zh": {
+     ".t": "高收益理财App",
+     ".x": "有个借贷App保证年化10%。同事说每个月都按时拿到利息。",
+     ".p2p": "投进App",
+     ".p2p.s": "{a}。",
+     ".p2p.h": "这类平台后来几乎全部爆雷。",
+     ".fund": "股票指数基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟着市场涨跌。",
+     ".bank": "放银行",
+     ".bank.s": "安全，利息低。",
+     ".bank.h": "慢慢被通胀吃掉，但很安全。",
+     "trk.cn_p2p": "借贷App",
+     "trk.cn_fund": "指数基金"
+    },
+    "zht": {
+     ".t": "高收益理財App",
+     ".x": "有個借貸App保證年化10%。同事說每個月都按時拿到利息。",
+     ".p2p": "投進App",
+     ".p2p.s": "{a}。",
+     ".p2p.h": "這類平台後來幾乎全部倒閉。",
+     ".fund": "股票指數基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟著市場漲跌。",
+     ".bank": "放銀行",
+     ".bank.s": "安全，利息低。",
+     ".bank.h": "慢慢被通膨吃掉，但很安全。",
+     "trk.cn_p2p": "借貸App",
+     "trk.cn_fund": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "cn_p2p2",
+   "src": "After P2P platforms collapsed, investors registered claims with the police; recoveries were typically a small fraction (news reports on Ezubao and other cases, 2016–2021). The 15% recovery here is an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.cn_p2p && lots.cn_p2p.v > 0"},
+   "def": "claim",
+   "tarot": "scam",
+   "art": {"draw": "bill", "bg": "mi"},
+   "let": {"v": "lots.cn_p2p.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "claim", "hint": true, "do": "lots.cn_p2p.v = 0; lots.cn_p2p.tout += .15 * v; cash += .15 * v; happy -= 3"},
+    {"id": "drop", "do": "lots.cn_p2p.v = 0; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The app has collapsed",
+     ".x": "The lending app has stopped paying and its bosses have disappeared. Your {a} is frozen.",
+     ".claim": "Register your claim with the police",
+     ".claim.s": "Years of waiting.",
+     ".claim.h": "Investors usually get back only a small part.",
+     ".drop": "Write it off",
+     ".drop.s": "Lesson learned."
+    },
+    "zh": {
+     ".t": "平台爆雷了",
+     ".x": "借贷App停止兑付，老板也跑了。你的{a}被冻结了。",
+     ".claim": "向警方登记债权",
+     ".claim.s": "要等好几年。",
+     ".claim.h": "投资人通常只拿回一小部分。",
+     ".drop": "认赔",
+     ".drop.s": "学到教训了。"
+    },
+    "zht": {
+     ".t": "平台倒閉了",
+     ".x": "借貸App停止兌付，老闆也跑了。你的{a}被凍結了。",
+     ".claim": "向警方登記債權",
+     ".claim.s": "要等好幾年。",
+     ".claim.h": "投資人通常只拿回一小部分。",
+     ".drop": "認賠",
+     ".drop.s": "學到教訓了。"
+    }
+   }
+  },
+  {
+   "id": "cn_gjj",
+   "src": "Housing provident fund (住房公积金): employers and employees each pay 5–12% of salary; savings can be withdrawn to pay rent, or kept for a mortgage at 2.6% for first homes over 5 years (PBOC, cut from 2.85%, 8 May 2025), below commercial mortgage rates. The withdrawal size and the rate difference used here are an ESTIMATE.",
+   "age": [24, 40],
+   "weight": 0.45,
+   "when": {"working": true, "house": false},
+   "def": "keep",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "opts": [
+    {"id": "rent", "sub": {"a": "MN(.2 * base)"}, "do": "cash += .2 * base; const tq = T('cn_gjj', {kind: 'custom', label: M('trk.cn_gjj')}); tq.v += .2 * base"},
+    {"id": "keep", "hint": true, "do": "rateAdj = (rateAdj || 0) - .008"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your housing fund",
+     ".x": "Your housing provident fund has built up. You can withdraw it to pay rent, or keep it for a cheaper mortgage later.",
+     ".rent": "Withdraw it for rent",
+     ".rent.s": "About {a} now.",
+     ".keep": "Keep it for a mortgage",
+     ".keep.s": "A 2.6% housing fund loan when you buy.",
+     ".keep.h": "Your future mortgage costs less.",
+     "trk.cn_gjj": "Housing fund withdrawn for rent"
+    },
+    "zh": {
+     ".t": "你的公积金",
+     ".x": "你的住房公积金攒了不少。可以提取来付房租，也可以留着以后办低利率房贷。",
+     ".rent": "提取来付房租",
+     ".rent.s": "现在拿大约{a}。",
+     ".keep": "留着办房贷",
+     ".keep.s": "买房时可以办2.6%的公积金贷款。",
+     ".keep.h": "以后的房贷会便宜一些。",
+     "trk.cn_gjj": "提取公积金付房租"
+    },
+    "zht": {
+     ".t": "你的公積金",
+     ".x": "你的住房公積金攢了不少。可以提領來付房租，也可以留著以後辦低利率房貸。",
+     ".rent": "提領來付房租",
+     ".rent.s": "現在拿大約{a}。",
+     ".keep": "留著辦房貸",
+     ".keep.s": "買房時可以辦2.6%的公積金貸款。",
+     ".keep.h": "以後的房貸會便宜一些。",
+     "trk.cn_gjj": "提領公積金付房租"
+    }
+   }
+  },
+  {
+   "id": "cn_grandma",
+   "src": "Migrant grandparents: about 18 million older people had moved to cities by 2015, 43% of them to look after grandchildren (National Health Commission, Report on China’s Migrant Population Development, 2016). Nursery fees in big cities run to thousands of yuan a month; ¥5,000 ≈ 0.12 of the game’s typical wage. Amounts are an ESTIMATE.",
+   "age": [28, 42],
+   "weight": 0.5,
+   "when": {"kidAge": [0, 3]},
+   "who": {"role": "parent"},
+   "def": "come",
+   "tarot": "grandkid",
+   "art": {"draw": "baby", "bg": "co"},
+   "opts": [
+    {"id": "come", "hint": true, "bond": 4, "do": "happy -= 1; rl(2)"},
+    {"id": "nursery", "sub": {"a": "MN(.12 * base)"}, "do": "T('cn_care', {kind: 'custom', label: M('trk.cn_care')}); rec('cn_care', .12 * base, 3)"},
+    {"id": "quit", "hint": true, "do": "if (working()) tmpPay('cn_quit', .3, 2, 'trk.cn_quit'); bond('kid', 4)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Grandparents to the rescue",
+     ".x": "Your parents offer to leave their hometown and move in with you to look after the baby.",
+     ".come": "Let them come",
+     ".come.s": "Free childcare, and a crowded flat.",
+     ".come.h": "Happiness −1 from the crowding; the family grows closer.",
+     ".nursery": "A private nursery",
+     ".nursery.s": "About {a} a year for three years.",
+     ".quit": "One of you stays home",
+     ".quit.s": "About 70% less pay for two years.",
+     ".quit.h": "Closer to your child.",
+     "trk.cn_care": "Nursery fees",
+     "trk.cn_quit": "Staying home with the baby"
+    },
+    "zh": {
+     ".t": "老人进城带娃",
+     ".x": "爸妈提出离开老家，搬来跟你住，帮你带孩子。",
+     ".come": "让他们来",
+     ".come.s": "免费带娃，家里变挤了。",
+     ".come.h": "挤一点，幸福感 −1；但一家人更亲。",
+     ".nursery": "送私立托育",
+     ".nursery.s": "三年里每年大约{a}。",
+     ".quit": "夫妻其中一人辞职带娃",
+     ".quit.s": "两年少大约七成工资。",
+     ".quit.h": "跟孩子更亲。",
+     "trk.cn_care": "托育费",
+     "trk.cn_quit": "在家带娃"
+    },
+    "zht": {
+     ".t": "老人進城帶孫",
+     ".x": "爸媽提出離開老家，搬來跟你住，幫你帶孩子。",
+     ".come": "讓他們來",
+     ".come.s": "免費帶孫，家裡變擠了。",
+     ".come.h": "擠一點，幸福感 −1；但一家人更親。",
+     ".nursery": "送私立托育",
+     ".nursery.s": "三年裡每年大約{a}。",
+     ".quit": "夫妻其中一人辭職帶孩子",
+     ".quit.s": "兩年少大約七成薪水。",
+     ".quit.h": "跟孩子更親。",
+     "trk.cn_care": "托育費",
+     "trk.cn_quit": "在家帶孩子"
+    }
+   }
+  },
+  {
+   "id": "cn_fanxiang",
+   "src": "Returning home: a growing number of young workers leave tier-one cities for their home provinces, trading lower pay for far cheaper homes and family nearby (NBS Migrant Worker Monitoring Survey, 2023; media reports on “返乡”). Pay, cost and home-price ratios are an ESTIMATE.",
+   "age": [28, 42],
+   "weight": 0.4,
+   "when": {"working": true, "abroad": false},
+   "def": "stay",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "go", "hint": true, "do": "cityMove('cn_fanxiang', .65, .55, .35, 3); happy += 4", "next": {"event": "cn_fanxiang2", "in": [2, 4], "p": 0.4}},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back to your hometown?",
+     ".x": "Rent, the commute and long hours are wearing you down. Your hometown is calling.",
+     ".go": "Move back home",
+     ".go.s": "Pay about a third lower; living costs nearly half; homes far cheaper.",
+     ".go.h": "Happiness +3; closer to family. Good jobs are fewer.",
+     ".stay": "Stay in the big city",
+     ".stay.s": "Keep going.",
+     "trk.cn_fanxiang": "Back in your hometown"
+    },
+    "zh": {
+     ".t": "回老家？",
+     ".x": "房租、通勤和加班让你身心俱疲。老家在召唤你。",
+     ".go": "回老家",
+     ".go.s": "工资低大约三分之一；生活费几乎减半；房价便宜得多。",
+     ".go.h": "幸福感 +3；离家人近了。好工作比较少。",
+     ".stay": "留在大城市",
+     ".stay.s": "继续拼。",
+     "trk.cn_fanxiang": "回老家工作"
+    },
+    "zht": {
+     ".t": "回老家？",
+     ".x": "房租、通勤和加班讓你身心俱疲。老家在召喚你。",
+     ".go": "回老家",
+     ".go.s": "薪水低大約三分之一；生活費幾乎減半；房價便宜得多。",
+     ".go.h": "幸福感 +3；離家人近了。好工作比較少。",
+     ".stay": "留在大城市",
+     ".stay.s": "繼續拚。",
+     "trk.cn_fanxiang": "回老家工作"
+    }
+   }
+  },
+  {
+   "id": "cn_fanxiang2",
+   "src": "ESTIMATE: game rule (some who return home move back to big cities for work).",
+   "chain": true,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "mi"},
+   "opts": [
+    {"id": "back", "hint": true, "do": "bump.cn_fanxiang = 1; costMul = (costMul || 1) / .55; hm = hm / .35; rl(-3); happy -= 2"},
+    {"id": "stay", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The city calls again",
+     ".x": "Your old boss in the city has a job for you at your old pay. Things at home have been quieter than you hoped.",
+     ".back": "Go back to the city",
+     ".back.s": "City pay and city prices again.",
+     ".back.h": "Happiness −2: leaving family again.",
+     ".stay": "Stay home",
+     ".stay.s": "A slower life."
+    },
+    "zh": {
+     ".t": "大城市又在召唤",
+     ".x": "城里的老上司有个职位给你，工资跟以前一样。老家的发展比你想的冷清。",
+     ".back": "回大城市",
+     ".back.s": "城市的工资，也是城市的物价。",
+     ".back.h": "幸福感 −2：又要离开家人。",
+     ".stay": "留在老家",
+     ".stay.s": "慢一点的生活。"
+    },
+    "zht": {
+     ".t": "大城市又在召喚",
+     ".x": "城裡的老上司有個職位給你，薪水跟以前一樣。老家的發展比你想的冷清。",
+     ".back": "回大城市",
+     ".back.s": "城市的薪水，也是城市的物價。",
+     ".back.h": "幸福感 −2：又要離開家人。",
+     ".stay": "留在老家",
+     ".stay.s": "慢一點的生活。"
+    }
+   }
+  },
+  {
+   "id": "cn_plate",
+   "src": "Car plates: Shanghai auctions petrol-car plates monthly, at reported average winning bids around ¥90,000 in recent years (Shanghai Daily reports of the monthly auctions; ESTIMATE for today), while electric cars get a free green plate (Shanghai policy since 2014; plug-in hybrids lost it in 2023). ¥90,000 ≈ 2.2 and a new car after trade-in of ¥60,000 ≈ 1.4 of the game’s typical wage. Running-cost savings are an ESTIMATE.",
+   "age": [28, 45],
+   "weight": 0.4,
+   "when": {"car": true},
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "ev", "sub": {"a": "MN(1.4 * base)"}, "hint": true, "do": "spend('cn_ev', 1.4 * base, 'trk.cn_ev'); T('cn_evS', {kind: 'custom', label: M('trk.cn_evS')}); rec('cn_evS', -.04 * base, 10); happy += 2"},
+    {"id": "petrol", "sub": {"a": "MN(3.6 * base)"}, "hint": true, "do": "spend('cn_petrol', 3.6 * base, 'trk.cn_petrol'); happy += 2"},
+    {"id": "keep", "hint": true, "do": "if (roll('cn_plate') < .4) pay(.05 * base)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new car, a new plate",
+     ".x": "You want a new car. In your city a petrol car needs a plate from the monthly auction; an electric car gets a green plate free.",
+     ".ev": "An electric car with a green plate",
+     ".ev.s": "About {a} after trading in your old car; cheaper to run.",
+     ".ev.h": "Happiness +2, and lower running costs for years.",
+     ".petrol": "A petrol car and an auctioned plate",
+     ".petrol.s": "About {a} including the plate.",
+     ".petrol.h": "Happiness +2.",
+     ".keep": "Keep the old car",
+     ".keep.s": "Free, for now.",
+     ".keep.h": "Old cars need repairs more often.",
+     "trk.cn_ev": "An electric car",
+     "trk.cn_evS": "Running costs saved",
+     "trk.cn_petrol": "A petrol car and plate"
+    },
+    "zh": {
+     ".t": "新车与车牌",
+     ".x": "你想换新车。在你的城市，油车要去每月车牌拍卖会拍牌；电动车可以免费上绿牌。",
+     ".ev": "买电动车，上绿牌",
+     ".ev.s": "旧车折价后大约{a}；用车成本更低。",
+     ".ev.h": "幸福感 +2，未来几年用车更省。",
+     ".petrol": "买油车，去拍牌",
+     ".petrol.s": "含车牌大约{a}。",
+     ".petrol.h": "幸福感 +2。",
+     ".keep": "继续开旧车",
+     ".keep.s": "暂时不花钱。",
+     ".keep.h": "旧车比较常要修。",
+     "trk.cn_ev": "电动车",
+     "trk.cn_evS": "省下的用车成本",
+     "trk.cn_petrol": "油车和车牌"
+    },
+    "zht": {
+     ".t": "新車與車牌",
+     ".x": "你想換新車。在你的城市，油車要去每月車牌拍賣會拍牌；電動車可以免費上綠牌。",
+     ".ev": "買電動車，掛綠牌",
+     ".ev.s": "舊車折價後大約{a}；用車成本更低。",
+     ".ev.h": "幸福感 +2，未來幾年用車更省。",
+     ".petrol": "買油車，去拍牌",
+     ".petrol.s": "含車牌大約{a}。",
+     ".petrol.h": "幸福感 +2。",
+     ".keep": "繼續開舊車",
+     ".keep.s": "暫時不花錢。",
+     ".keep.h": "舊車比較常要修。",
+     "trk.cn_ev": "電動車",
+     "trk.cn_evS": "省下的用車成本",
+     "trk.cn_petrol": "油車和車牌"
+    }
+   }
+  },
+  {
+   "id": "cn_huimin",
+   "src": "Huiminbao (惠民保): city-backed supplementary medical insurance sold alongside basic medical insurance, usually for about ¥50–150 a year, covering large bills above a deductible (NHSA and city programmes, 2023–2025). The premium (¥100 ≈ 0.0025 of the game’s typical wage) and the 15% cut in big bills are an ESTIMATE.",
+   "age": [25, 60],
+   "weight": 0.5,
+   "def": "buy",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.0025 * base)"}, "hint": true, "do": "T('cn_huimin', {kind: 'ghost', label: M('trk.cn_huimin')}); rec('cn_huimin', .0025 * base, 40); medCut = (medCut || 1) * .85"},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "City health cover",
+     ".x": "Your city sells a supplementary health plan for about ¥100 a year that pays part of very large bills.",
+     ".buy": "Buy it",
+     ".buy.s": "About {a} a year.",
+     ".buy.h": "Pays part of big bills above a deductible.",
+     ".no": "Don’t bother",
+     ".no.s": "It probably won’t be needed.",
+     ".no.h": "Big bills fall on you.",
+     "trk.cn_huimin": "Huiminbao premiums"
+    },
+    "zh": {
+     ".t": "惠民保",
+     ".x": "你的城市在卖一种补充医疗保险，一年大约一百元，能赔一部分大额医疗费。",
+     ".buy": "买",
+     ".buy.s": "每年大约{a}。",
+     ".buy.h": "超过起付线的大额费用能赔一部分。",
+     ".no": "不买",
+     ".no.s": "大概用不到。",
+     ".no.h": "大额费用要自己付。",
+     "trk.cn_huimin": "惠民保保费"
+    },
+    "zht": {
+     ".t": "惠民保",
+     ".x": "你的城市在賣一種補充醫療保險，一年大約一百元，能賠一部分大額醫療費。",
+     ".buy": "買",
+     ".buy.s": "每年大約{a}。",
+     ".buy.h": "超過起付線的大額費用能賠一部分。",
+     ".no": "不買",
+     ".no.s": "大概用不到。",
+     ".no.h": "大額費用要自己付。",
+     "trk.cn_huimin": "惠民保保費"
+    }
+   }
+  },
+  {
+   "id": "cn_qifang",
+   "src": "Off-plan flats (期房) sell below completed ones, but in 2022 buyers in more than 300 stalled projects stopped paying their mortgages (Reuters, July 2022), and many unfinished projects took years to complete under the “guaranteed delivery” campaign (保交楼, 2022–2025). The 10% discount and stall odds are an ESTIMATE.",
+   "age": [26, 38],
+   "weight": 0.4,
+   "when": {"house": false, "working": true},
+   "def": "rent",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "opts": [
+    {"id": "off", "sub": {"a": "MN(.9 * P)"}, "ok": "liq >= .23 * .9 * P || M('e.home.need', { n: MN(.23 * .9 * P), h: MN(liq) })", "hint": true, "do": "buyAt(.9 * P, { val: P, dp: .2, fee: .03, r: .03, n: 30, lk: 'trk.cn_qifang' })", "next": {"event": "cn_lanwei", "in": [1, 3], "p": 0.2}},
+    {"id": "done", "sub": {"a": "MN(P)"}, "ok": "liq >= .23 * P || M('e.home.need', { n: MN(.23 * P), h: MN(liq) })", "do": "buyAt(P, { dp: .2, fee: .03, r: .03, n: 30, lk: 'trk.cn_xianfang' })"},
+    {"id": "rent"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A flat still being built",
+     ".x": "A developer is selling flats in a block that is still being built, 10% below finished flats nearby.",
+     ".off": "Buy off plan",
+     ".off.s": "About {a}; keys in two years.",
+     ".off.h": "Some developers run out of money before finishing.",
+     ".done": "Buy a finished flat",
+     ".done.s": "About {a}; move in now.",
+     ".rent": "Keep renting",
+     ".rent.s": "Wait and see.",
+     "trk.cn_qifang": "An off-plan flat",
+     "trk.cn_xianfang": "A finished flat"
+    },
+    "zh": {
+     ".t": "买期房还是现房？",
+     ".x": "开发商在卖还没盖好的期房，比附近现房便宜一成。",
+     ".off": "买期房",
+     ".off.s": "大约{a}；两年后交房。",
+     ".off.h": "有些开发商没盖完就资金断裂。",
+     ".done": "买现房",
+     ".done.s": "大约{a}；马上入住。",
+     ".rent": "继续租房",
+     ".rent.s": "再看看。",
+     "trk.cn_qifang": "期房",
+     "trk.cn_xianfang": "现房"
+    },
+    "zht": {
+     ".t": "買預售屋還是成屋？",
+     ".x": "建商在賣還沒蓋好的預售屋，比附近成屋便宜一成。",
+     ".off": "買預售屋",
+     ".off.s": "大約{a}；兩年後交屋。",
+     ".off.h": "有些建商沒蓋完就資金斷裂。",
+     ".done": "買成屋",
+     ".done.s": "大約{a}；馬上入住。",
+     ".rent": "繼續租房",
+     ".rent.s": "再看看。",
+     "trk.cn_qifang": "預售屋",
+     "trk.cn_xianfang": "成屋"
+    }
+   }
+  },
+  {
+   "id": "cn_lanwei",
+   "src": "Stalled projects: from 2022 local governments pushed developers and banks to finish stalled homes (“保交楼”); buyers kept paying mortgages on unfinished flats, often for years (Reuters; PBOC special loans, 2022–2024). Value losses are an ESTIMATE.",
+   "chain": true,
+   "when": {"house": true},
+   "def": "wait",
+   "tarot": "crash",
+   "art": {"draw": "city", "bg": "co"},
+   "opts": [
+    {"id": "wait", "hint": true, "do": "house.value = house.value * .75; happy -= 4"},
+    {"id": "group", "hint": true, "do": "happy -= 2; house.value = house.value * (roll('cn_lanwei') < .5 ? .95 : .7)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Work has stopped",
+     ".x": "The developer has run out of money and the cranes have stopped. You are paying a mortgage on a flat that isn’t finished.",
+     ".wait": "Keep paying and wait",
+     ".wait.s": "Years of uncertainty.",
+     ".wait.h": "Happiness −4; the flat is worth much less for now.",
+     ".group": "Join the other buyers to press for completion",
+     ".group.s": "Petitions and meetings.",
+     ".group.h": "About half of such projects are finished with government help."
+    },
+    "zh": {
+     ".t": "工地停工了",
+     ".x": "开发商资金断裂，塔吊都停了。你在为一套没盖好的房子还房贷。",
+     ".wait": "继续还贷，等着",
+     ".wait.s": "好几年的不确定。",
+     ".wait.h": "幸福感 −4；房子眼下贬值很多。",
+     ".group": "跟其他业主一起维权",
+     ".group.s": "请愿和开会。",
+     ".group.h": "这类项目大约一半在政府介入后完工。"
+    },
+    "zht": {
+     ".t": "工地停工了",
+     ".x": "建商資金斷裂，塔吊都停了。你在為一間沒蓋好的房子繳房貸。",
+     ".wait": "繼續繳貸款，等著",
+     ".wait.s": "好幾年的不確定。",
+     ".wait.h": "幸福感 −4；房子眼下貶值很多。",
+     ".group": "跟其他屋主一起爭取",
+     ".group.s": "請願和開會。",
+     ".group.h": "這類建案大約一半在政府介入後完工。"
+    }
+   }
   }
  ]
 }

@@ -411,6 +411,685 @@
      ".govt.h": "以後拿獎學金的機會較小。"
     }
    }
+  },
+  {
+   "id": "in_wedding",
+   "src": "Weddings: Indian weddings are often the biggest expense a family makes, and many lower-income families borrow for them; giving or taking dowry is illegal under the Dowry Prohibition Act, 1961. A ₹5 lakh wedding ≈ 5.4, ₹1.5 lakh ≈ 1.6 and a court marriage with a small reception (₹20,000) ≈ 0.2 of the game’s typical wage. Amounts are an ESTIMATE.",
+   "age": [23, 32],
+   "weight": 0.55,
+   "when": {"partner": ["dating", "living"]},
+   "def": "modest",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "grand", "sub": {"a": "MN(5.4 * base)", "b": "famNote()"}, "hint": true, "rel": 3, "do": "famPay('in_wedding', 3.4); spend('in_wed', 2 * base, 'trk.in_wed'); happy += 3"},
+    {"id": "modest", "sub": {"a": "MN(1.6 * base)", "b": "famNote()"}, "rel": 1, "do": "famPay('in_wedding', 1); spend('in_wed', .6 * base, 'trk.in_wed'); happy += 1"},
+    {"id": "court", "sub": {"a": "MN(.2 * base)"}, "hint": true, "rel": -2, "do": "spend('in_wed', .2 * base, 'trk.in_wed')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The wedding",
+     ".x": "You and your partner want to marry. Both families are already talking about guests, venues and gifts, and you have made it clear there will be no dowry.",
+     ".grand": "A grand wedding over three days",
+     ".grand.s": "About {a} in all, mostly from your parents.{b}",
+     ".grand.h": "Happiness +3; the families are proud.",
+     ".modest": "A modest wedding",
+     ".modest.s": "About {a} in all.{b}",
+     ".court": "A court marriage and a small reception",
+     ".court.s": "About {a}.",
+     ".court.h": "Some relatives are upset.",
+     "trk.in_wed": "Wedding costs"
+    },
+    "zh": {
+     ".t": "婚礼",
+     ".x": "你和伴侣想结婚。两边家人已经在讨论宾客、场地和礼物，你也表明了不收不给嫁妆。",
+     ".grand": "办三天的盛大婚礼",
+     ".grand.s": "总共大约{a}，大部分爸妈出。{b}",
+     ".grand.h": "幸福感 +3；两家都有面子。",
+     ".modest": "办简单的婚礼",
+     ".modest.s": "总共大约{a}。{b}",
+     ".court": "法院登记加小型宴客",
+     ".court.s": "大约{a}。",
+     ".court.h": "有些亲戚不高兴。",
+     "trk.in_wed": "婚礼开销"
+    },
+    "zht": {
+     ".t": "婚禮",
+     ".x": "你和伴侶想結婚。兩邊家人已經在討論賓客、場地和禮物，你也表明了不收不給嫁妝。",
+     ".grand": "辦三天的盛大婚禮",
+     ".grand.s": "總共大約{a}，大部分爸媽出。{b}",
+     ".grand.h": "幸福感 +3；兩家都有面子。",
+     ".modest": "辦簡單的婚禮",
+     ".modest.s": "總共大約{a}。{b}",
+     ".court": "法院登記加小型宴客",
+     ".court.s": "大約{a}。",
+     ".court.h": "有些親戚不高興。",
+     "trk.in_wed": "婚禮開銷"
+    }
+   }
+  },
+  {
+   "id": "in_sip",
+   "src": "Saving: monthly SIPs into mutual funds passed 9 crore accounts in 2025 (AMFI); traditional LIC endowment policies, often sold to young earners, have returned about 4–6% a year (financial press analyses), roughly nothing after India’s inflation of about 5%, and lapse with losses if you stop paying. Equity funds have averaged more over the long run with big swings. Amounts and rates are an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.5,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "save",
+   "art": {"draw": "shares", "bg": "ya"},
+   "opts": [
+    {"id": "sip", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "yearly('in_sip', {amt: .1 * base, until: age + 20}, {}, 'trk.in_sip')"},
+    {"id": "lic", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "yearly('in_lic', {amt: .1 * base, until: age + 20}, {rate: 0, lock: age + 20}, 'trk.in_lic')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A monthly investment",
+     ".x": "An uncle who sells LIC policies offers you an endowment plan. A friend says a monthly SIP in an index fund is better.",
+     ".sip": "A SIP in an index fund",
+     ".sip.s": "About {a} a year for 20 years.",
+     ".sip.h": "Stocks have grown well above inflation over the long run, with big falls along the way.",
+     ".lic": "Your uncle’s endowment policy",
+     ".lic.s": "About {a} a year for 20 years, guaranteed.",
+     ".lic.h": "Endowment policies have barely kept up with inflation.",
+     ".none": "Not now",
+     ".none.s": "Keep the money flexible.",
+     "trk.in_sip": "Monthly SIP",
+     "trk.in_lic": "Endowment policy"
+    },
+    "zh": {
+     ".t": "每月定投",
+     ".x": "做LIC保险的叔叔推荐你买储蓄型保单。朋友说每月定投指数基金更好。",
+     ".sip": "定投指数基金",
+     ".sip.s": "20年里每年大约{a}。",
+     ".sip.h": "长期来看股票涨幅远超通胀，但中间会大跌。",
+     ".lic": "买叔叔的储蓄型保单",
+     ".lic.s": "20年里每年大约{a}，保本。",
+     ".lic.h": "储蓄型保单的回报勉强跟上通胀。",
+     ".none": "暂时不要",
+     ".none.s": "钱留着比较灵活。",
+     "trk.in_sip": "每月定投",
+     "trk.in_lic": "储蓄型保单"
+    },
+    "zht": {
+     ".t": "每月定期定額",
+     ".x": "做LIC保險的叔叔推薦你買儲蓄型保單。朋友說每月定期定額買指數基金更好。",
+     ".sip": "定期定額指數基金",
+     ".sip.s": "20年裡每年大約{a}。",
+     ".sip.h": "長期來看股票漲幅遠超通膨，但中間會大跌。",
+     ".lic": "買叔叔的儲蓄型保單",
+     ".lic.s": "20年裡每年大約{a}，保本。",
+     ".lic.h": "儲蓄型保單的報酬勉強跟上通膨。",
+     ".none": "暫時不要",
+     ".none.s": "錢留著比較靈活。",
+     "trk.in_sip": "每月定期定額",
+     "trk.in_lic": "儲蓄型保單"
+    }
+   }
+  },
+  {
+   "id": "in_nps",
+   "src": "National Pension System: an extra income-tax deduction of up to ₹50,000 a year under Section 80CCD(1B) (old tax regime); the money is invested and locked until 60, when 60% can be withdrawn tax-free (PFRDA; Income Tax Act). ₹50,000 ≈ 0.54 of the game’s typical wage. Tax saved, taken as 20%, is an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"salary": "> 4 * base"}},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.54 * base)"}, "hint": true, "do": "yearly('in_nps', {amt: .54 * base, until: 60, bonus: .2}, {lock: 60}, 'trk.in_nps')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The NPS",
+     ".x": "Your tax bill keeps growing. Paying ₹50,000 a year into the National Pension System gives an extra tax deduction.",
+     ".yes": "Pay in ₹50,000 a year",
+     ".yes.s": "About {a} a year, locked until 60.",
+     ".yes.h": "The tax saved adds about a fifth, and it is invested.",
+     ".none": "Skip it",
+     ".none.s": "Pay the tax.",
+     "trk.in_nps": "NPS savings"
+    },
+    "zh": {
+     ".t": "国家养老金计划（NPS）",
+     ".x": "你的税越缴越多。每年存₹50,000到国家养老金计划，可以额外扣税。",
+     ".yes": "每年存₹50,000",
+     ".yes.s": "每年大约{a}，锁到60岁。",
+     ".yes.h": "省下的税大约多两成，而且会拿去投资。",
+     ".none": "不存",
+     ".none.s": "照缴税。",
+     "trk.in_nps": "NPS储蓄"
+    },
+    "zht": {
+     ".t": "國家退休金計畫（NPS）",
+     ".x": "你的稅越繳越多。每年存₹50,000到國家退休金計畫，可以額外扣稅。",
+     ".yes": "每年存₹50,000",
+     ".yes.s": "每年大約{a}，鎖到60歲。",
+     ".yes.h": "省下的稅大約多兩成，而且會拿去投資。",
+     ".none": "不存",
+     ".none.s": "照繳稅。",
+     "trk.in_nps": "NPS儲蓄"
+    }
+   }
+  },
+  {
+   "id": "in_joint",
+   "src": "Joint families: many Indian couples live with the husband’s or wife’s parents, sharing costs and childcare (National Family Health Survey NFHS-5, 2019–21, household structure). Rent savings and effects on relationships are an ESTIMATE.",
+   "age": [25, 35],
+   "weight": 0.45,
+   "when": {"partner": ["living", "married"], "house": false},
+   "who": {"role": "parent"},
+   "def": "own",
+   "tarot": "parents",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "joint", "hint": true, "bond": 5, "do": "rentMul = .2; rentUntil = age + 10; happy -= 2; bond('pt', -3)"},
+    {"id": "own"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Live with the family?",
+     ".x": "Your parents have a big house and want you both to live with them, as a joint family.",
+     ".joint": "Move in with them",
+     ".joint.s": "Almost no rent, shared meals and help with children.",
+     ".joint.h": "Happiness −2: less privacy, some strain with your partner.",
+     ".own": "Keep your own place",
+     ".own.s": "Your own rent, your own rules."
+    },
+    "zh": {
+     ".t": "跟家人同住？",
+     ".x": "爸妈家很大，希望你们俩搬回来，一大家子住在一起。",
+     ".joint": "搬回去住",
+     ".joint.s": "几乎不用房租，一起吃饭，孩子也有人帮忙带。",
+     ".joint.h": "幸福感 −2：隐私少了，跟伴侣有点摩擦。",
+     ".own": "自己住",
+     ".own.s": "自己付房租，自己作主。"
+    },
+    "zht": {
+     ".t": "跟家人同住？",
+     ".x": "爸媽家很大，希望你們倆搬回來，一大家子住在一起。",
+     ".joint": "搬回去住",
+     ".joint.s": "幾乎不用房租，一起吃飯，孩子也有人幫忙帶。",
+     ".joint.h": "幸福感 −2：隱私少了，跟伴侶有點摩擦。",
+     ".own": "自己住",
+     ".own.s": "自己付房租，自己作主。"
+    }
+   }
+  },
+  {
+   "id": "in_upsc",
+   "src": "Civil Services Examination: about 10–13 lakh people apply each year for roughly 1,000 posts (UPSC annual reports, 2023–2024), a success rate near 0.1%; many prepare for years with coaching in Delhi costing ₹1.5–2 lakh (coaching fee pages, 2025). ₹2 lakh ≈ 2.2 of the game’s typical wage. The 3% chance here (for serious candidates) and the pay effect are an ESTIMATE.",
+   "age": [22, 26],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "job",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "wa"},
+   "opts": [
+    {"id": "prep", "sub": {"a": "MN(2.2 * base)"}, "hint": true, "do": "spend('in_coach2', 2.2 * base, 'trk.in_coach2'); tmpPay('in_upscP', .05, 2, 'trk.in_upscP'); happy -= 3; later(age + 2, 'in_upsc', {n: 0})"},
+    {"id": "job"}
+   ],
+   "later": {
+    "in_upsc": "if (roll('in_upsc' + x.n) < .03) { bump('in_ias', 1.3, M('trk.in_ias')); layM = (layM || 1) * .1; happy += 8; log(M('log.in_upscOk'), 'good') } else { log(M('log.in_upscNo'), 'bad'); if (!x.n) next('in_upsc2', 0, {}) }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The civil services dream",
+     ".x": "Your parents dream of you joining the civil service. That means quitting your job to prepare full-time in Delhi for the UPSC exam.",
+     ".prep": "Quit and prepare for two years",
+     ".prep.s": "About {a} in coaching and living costs, and no pay.",
+     ".prep.h": "Happiness −3. Only a tiny share pass; those who do get a secure, respected career.",
+     ".job": "Keep your private-sector job",
+     ".job.s": "Steady pay.",
+     "trk.in_coach2": "Exam coaching in Delhi",
+     "trk.in_upscP": "Two years preparing for the exam",
+     "trk.in_ias": "A civil service career",
+     "log.in_upscOk": "You passed the civil services exam. Your family is overjoyed.",
+     "log.in_upscNo": "You did not make the final list this year."
+    },
+    "zh": {
+     ".t": "公务员梦",
+     ".x": "爸妈梦想你考上公务员。这表示要辞职去德里全职准备UPSC考试。",
+     ".prep": "辞职准备两年",
+     ".prep.s": "补习和生活费大约{a}，还没有收入。",
+     ".prep.h": "幸福感 −3。考上的极少；考上了就是稳定又受人尊敬的职业。",
+     ".job": "留在私人企业",
+     ".job.s": "收入稳定。",
+     "trk.in_coach2": "德里考试补习",
+     "trk.in_upscP": "备考两年",
+     "trk.in_ias": "公务员生涯",
+     "log.in_upscOk": "你考上公务员了，全家欣喜若狂。",
+     "log.in_upscNo": "你今年没能进入最终名单。"
+    },
+    "zht": {
+     ".t": "公務員夢",
+     ".x": "爸媽夢想你考上公務員。這表示要辭職去德里全職準備UPSC考試。",
+     ".prep": "辭職準備兩年",
+     ".prep.s": "補習和生活費大約{a}，還沒有收入。",
+     ".prep.h": "幸福感 −3。考上的極少；考上了就是穩定又受人尊敬的職業。",
+     ".job": "留在私人企業",
+     ".job.s": "收入穩定。",
+     "trk.in_coach2": "德里考試補習",
+     "trk.in_upscP": "備考兩年",
+     "trk.in_ias": "公務員生涯",
+     "log.in_upscOk": "你考上公務員了，全家欣喜若狂。",
+     "log.in_upscNo": "你今年沒能進入最終名單。"
+    }
+   }
+  },
+  {
+   "id": "in_upsc2",
+   "src": "Many candidates make several attempts (up to six for general candidates, UPSC rules). Odds are an ESTIMATE.",
+   "chain": true,
+   "def": "stop",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "co"},
+   "opts": [
+    {"id": "again", "sub": {"a": "MN(1 * base)"}, "hint": true, "do": "spend('in_coach2', base, 'trk.in_coach2'); tmpPay('in_upscP', .05, 1, 'trk.in_upscP'); happy -= 3; later(age + 1, 'in_upsc', {n: 1})"},
+    {"id": "stop", "hint": true, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "One more attempt?",
+     ".x": "You missed the final list. Friends from your coaching class are trying again.",
+     ".again": "Try once more",
+     ".again.s": "About {a} and another year without pay.",
+     ".again.h": "Happiness −3. The odds stay very long.",
+     ".stop": "Go back to a private job",
+     ".stop.s": "Back to earning.",
+     ".stop.h": "Happiness −2: letting go of the dream."
+    },
+    "zh": {
+     ".t": "再考一次？",
+     ".x": "你没进最终名单。补习班的朋友都要再考一次。",
+     ".again": "再拼一次",
+     ".again.s": "大约{a}，又一年没有收入。",
+     ".again.h": "幸福感 −3。机会仍然很小。",
+     ".stop": "回私人企业上班",
+     ".stop.s": "重新开始赚钱。",
+     ".stop.h": "幸福感 −2：放下梦想。"
+    },
+    "zht": {
+     ".t": "再考一次？",
+     ".x": "你沒進最終名單。補習班的朋友都要再考一次。",
+     ".again": "再拚一次",
+     ".again.s": "大約{a}，又一年沒有收入。",
+     ".again.h": "幸福感 −3。機會仍然很小。",
+     ".stop": "回私人企業上班",
+     ".stop.s": "重新開始賺錢。",
+     ".stop.h": "幸福感 −2：放下夢想。"
+    }
+   }
+  },
+  {
+   "id": "in_vayvandana",
+   "src": "Ayushman Vay Vandana: since late 2024 every Indian aged 70 and over can get free hospital cover of ₹5 lakh a year under AB PM-JAY, whatever their income (National Health Authority; over 9.6 million cards issued by end-2025). The 60% cut in bills used here is an ESTIMATE.",
+   "age": [70, 80],
+   "weight": 0.6,
+   "def": "enrol",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "enrol", "hint": true, "do": "medCut = (medCut || 1) * .4"},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Free cover at 70",
+     ".x": "Your grandson shows you how to apply for the Ayushman Vay Vandana card: free hospital cover for everyone over 70.",
+     ".enrol": "Apply for the card",
+     ".enrol.s": "Free, with your Aadhaar and a phone.",
+     ".enrol.h": "Most hospital bills are covered from now on.",
+     ".no": "Don’t bother with the paperwork",
+     ".no.s": "Nothing changes.",
+     ".no.h": "Hospital bills stay yours."
+    },
+    "zh": {
+     ".t": "70岁的免费医保",
+     ".x": "孙子教你申请Ayushman Vay Vandana卡：70岁以上的人都有免费住院保障。",
+     ".enrol": "申请",
+     ".enrol.s": "免费，用Aadhaar和手机就能办。",
+     ".enrol.h": "以后大部分住院费都有保障。",
+     ".no": "懒得办",
+     ".no.s": "没有变化。",
+     ".no.h": "住院费还是自己付。"
+    },
+    "zht": {
+     ".t": "70歲的免費醫保",
+     ".x": "孫子教你申請Ayushman Vay Vandana卡：70歲以上的人都有免費住院保障。",
+     ".enrol": "申請",
+     ".enrol.s": "免費，用Aadhaar和手機就能辦。",
+     ".enrol.h": "以後大部分住院費都有保障。",
+     ".no": "懶得辦",
+     ".no.s": "沒有變化。",
+     ".no.h": "住院費還是自己付。"
+    }
+   }
+  },
+  {
+   "id": "in_goldloan",
+   "src": "Borrowing in an emergency: gold loans from banks and NBFCs cost about 9–18% a year under RBI rules on loan-to-value (RBI, 2024–25), while informal moneylenders often charge 36% a year or more (RBI and NABARD surveys). ₹50,000 ≈ 0.54 of the game’s typical wage. Costs are an ESTIMATE.",
+   "age": [25, 60],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "< .3 * base"}},
+   "def": "gold",
+   "tarot": "gold",
+   "art": {"draw": "gold", "bg": "co"},
+   "let": {"a": ".54 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "gold", "hint": true, "do": "T('in_gold', {kind: 'custom', label: M('trk.in_goldloan')}); rec('in_gold', .14 * base, 5)"},
+    {"id": "lender", "hint": true, "do": "T('in_gold', {kind: 'custom', label: M('trk.in_lender')}); rec('in_gold', .22 * base, 5)"},
+    {"id": "family", "rel": -2, "do": "bond('parent', -3); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A family emergency",
+     ".x": "A relative needs an operation and the family must find {a} this week.",
+     ".gold": "Pledge the family gold for a loan",
+     ".gold.s": "A bank gold loan, repaid over five years.",
+     ".gold.h": "About 9–18% a year: cheaper than most other quick loans.",
+     ".lender": "The local moneylender",
+     ".lender.s": "Cash today, no paperwork.",
+     ".lender.h": "Often 36% a year or more.",
+     ".family": "Ask the wider family to chip in",
+     ".family.s": "No interest, some favours owed.",
+     "trk.in_goldloan": "A gold loan",
+     "trk.in_lender": "A moneylender’s loan"
+    },
+    "zh": {
+     ".t": "家里出急事",
+     ".x": "有亲戚要开刀，家里这个星期得凑出{a}。",
+     ".gold": "拿家里的金饰去抵押贷款",
+     ".gold.s": "银行黄金抵押贷款，五年还清。",
+     ".gold.h": "年利率大约9–18%：比大部分急用贷款便宜。",
+     ".lender": "找本地放贷人",
+     ".lender.s": "今天就拿到现金，不用文件。",
+     ".lender.h": "年利率常常36%以上。",
+     ".family": "请其他亲戚一起凑",
+     ".family.s": "没有利息，但欠了人情。",
+     "trk.in_goldloan": "黄金抵押贷款",
+     "trk.in_lender": "放贷人的借款"
+    },
+    "zht": {
+     ".t": "家裡出急事",
+     ".x": "有親戚要開刀，家裡這個星期得湊出{a}。",
+     ".gold": "拿家裡的金飾去抵押貸款",
+     ".gold.s": "銀行黃金抵押貸款，五年還清。",
+     ".gold.h": "年利率大約9–18%：比大部分急用貸款便宜。",
+     ".lender": "找本地放貸人",
+     ".lender.s": "今天就拿到現金，不用文件。",
+     ".lender.h": "年利率常常36%以上。",
+     ".family": "請其他親戚一起湊",
+     ".family.s": "沒有利息，但欠了人情。",
+     "trk.in_goldloan": "黃金抵押貸款",
+     "trk.in_lender": "放貸人的借款"
+    }
+   }
+  },
+  {
+   "id": "in_plot",
+   "src": "Land: plots in new layouts are a popular investment, but land and property disputes make up about two-thirds of civil cases in Indian courts (DAKSH, Access to Justice Survey, 2016), and unclear titles are common. Price growth and dispute odds are an ESTIMATE.",
+   "age": [30, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> 1.5 * base"}},
+   "def": "none",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "let": {"a": "Math.min(3 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "plot", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('in_plot', a, {rate: .03}, 'trk.in_plot')", "next": {"event": "in_plot2", "in": [2, 6], "p": 0.15}},
+    {"id": "fund", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('in_mf', a, {}, 'trk.in_mf')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A plot of land",
+     ".x": "A broker is selling plots in a new layout on the edge of the city. “Land never loses value,” he says.",
+     ".plot": "Buy a plot",
+     ".plot.s": "{a}.",
+     ".plot.h": "Land near growing cities has risen faster than inflation, but titles are sometimes disputed.",
+     ".fund": "A mutual fund instead",
+     ".fund.s": "{a}.",
+     ".fund.h": "Rises and falls with the stock market.",
+     ".none": "Keep your savings",
+     ".none.s": "No paperwork.",
+     "trk.in_plot": "A plot of land",
+     "trk.in_mf": "Mutual fund"
+    },
+    "zh": {
+     ".t": "买一块地",
+     ".x": "有个中介在卖城郊新规划区的地块。他说：“土地永远不会贬值。”",
+     ".plot": "买一块",
+     ".plot.s": "{a}。",
+     ".plot.h": "城市周边的地涨得比通胀快，但产权有时会有纠纷。",
+     ".fund": "改买共同基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟着股市涨跌。",
+     ".none": "钱留着",
+     ".none.s": "不用办手续。",
+     "trk.in_plot": "一块地",
+     "trk.in_mf": "共同基金"
+    },
+    "zht": {
+     ".t": "買一塊地",
+     ".x": "有個仲介在賣城郊新規劃區的土地。他說：「土地永遠不會貶值。」",
+     ".plot": "買一塊",
+     ".plot.s": "{a}。",
+     ".plot.h": "城市周邊的地漲得比通膨快，但產權有時會有糾紛。",
+     ".fund": "改買共同基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟著股市漲跌。",
+     ".none": "錢留著",
+     ".none.s": "不用辦手續。",
+     "trk.in_plot": "一塊地",
+     "trk.in_mf": "共同基金"
+    }
+   }
+  },
+  {
+   "id": "in_plot2",
+   "src": "Land disputes often take many years in Indian courts (DAKSH, 2016; National Judicial Data Grid). Outcomes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.in_plot && lots.in_plot.v > 0"},
+   "def": "court",
+   "tarot": "inh",
+   "art": {"draw": "exam", "bg": "ya"},
+   "let": {"v": "lots.in_plot.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "court", "sub": {"b": "MN(.5 * base)"}, "hint": true, "do": "spend('in_court', .5 * base, 'trk.in_court'); happy -= 3; if (roll('in_plot2') >= .55) { lots.in_plot.v = 0 }"},
+    {"id": "settle", "hint": true, "do": "lots.in_plot.v = v / 2; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Someone else claims your plot",
+     ".x": "A family has turned up with papers saying your plot, worth about {a}, was never the seller’s to sell.",
+     ".court": "Fight it in court",
+     ".court.s": "About {b} in legal fees, and years of hearings.",
+     ".court.h": "Happiness −3. A bit over half keep their land.",
+     ".settle": "Settle and split it",
+     ".settle.s": "You keep half.",
+     ".settle.h": "Happiness −2.",
+     "trk.in_court": "Legal fees for a land dispute"
+    },
+    "zh": {
+     ".t": "有人说地是他的",
+     ".x": "有一家人拿着文件出现，说你那块值大约{a}的地，卖家根本无权卖。",
+     ".court": "打官司",
+     ".court.s": "律师费大约{b}，还要开好几年庭。",
+     ".court.h": "幸福感 −3。一半多一点能保住土地。",
+     ".settle": "和解，各分一半",
+     ".settle.s": "你保住一半。",
+     ".settle.h": "幸福感 −2。",
+     "trk.in_court": "土地纠纷律师费"
+    },
+    "zht": {
+     ".t": "有人說地是他的",
+     ".x": "有一家人拿著文件出現，說你那塊值大約{a}的地，賣家根本無權賣。",
+     ".court": "打官司",
+     ".court.s": "律師費大約{b}，還要開好幾年庭。",
+     ".court.h": "幸福感 −3。一半多一點能保住土地。",
+     ".settle": "和解，各分一半",
+     ".settle.s": "你保住一半。",
+     ".settle.h": "幸福感 −2。",
+     "trk.in_court": "土地糾紛律師費"
+    }
+   }
+  },
+  {
+   "id": "in_arrest",
+   "src": "“Digital arrest” scams: fraudsters pose as police or CBI officers on video calls and demand money; Indians reported losing ₹1,935 crore in 2024 across 1.24 lakh cases (Ministry of Home Affairs, Rajya Sabha reply, Mar 2025). There is no such thing as a digital arrest; victims should call the 1930 helpline (I4C). Amounts are an ESTIMATE.",
+   "age": [55, 80],
+   "weight": 0.4,
+   "def": "hang",
+   "tarot": "scam2",
+   "art": {"draw": "wallet", "bg": "co"},
+   "let": {"a": "Math.min(1 * base, .5 * liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "pay", "hint": true, "do": "pay(a); const t = T('in_arr', {kind: 'ghost', label: M('trk.in_arr')}); t.spent += a; t.g += a; happy -= 5"},
+    {"id": "hang", "hint": true, "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A video call from “the police”",
+     ".x": "A man in uniform on a video call says your Aadhaar was used in a crime. You are under “digital arrest” unless you transfer {a} for “verification”.",
+     ".pay": "Transfer the money",
+     ".pay.s": "They say it will be returned.",
+     ".pay.h": "Real police never ask for money on a video call.",
+     ".hang": "Hang up and call 1930",
+     ".hang.s": "The cybercrime helpline.",
+     ".hang.h": "There is no such thing as a digital arrest.",
+     "trk.in_arr": "Lost to a scam call"
+    },
+    "zh": {
+     ".t": "“警察”打来的视频电话",
+     ".x": "视频电话里一个穿制服的人说你的Aadhaar被用来犯罪，你被“数字逮捕”了，除非转{a}去“核实”。",
+     ".pay": "转账",
+     ".pay.s": "他们说之后会退还。",
+     ".pay.h": "真正的警察绝不会在视频电话里要钱。",
+     ".hang": "挂断，打1930",
+     ".hang.s": "网络犯罪热线。",
+     ".hang.h": "根本没有“数字逮捕”这回事。",
+     "trk.in_arr": "被诈骗电话骗走"
+    },
+    "zht": {
+     ".t": "「警察」打來的視訊電話",
+     ".x": "視訊電話裡一個穿制服的人說你的Aadhaar被用來犯罪，你被「數位逮捕」了，除非轉{a}去「查核」。",
+     ".pay": "轉帳",
+     ".pay.s": "他們說之後會退還。",
+     ".pay.h": "真正的警察絕不會在視訊電話裡要錢。",
+     ".hang": "掛斷，打1930",
+     ".hang.s": "網路犯罪專線。",
+     ".hang.h": "根本沒有「數位逮捕」這回事。",
+     "trk.in_arr": "被詐騙電話騙走"
+    }
+   }
+  },
+  {
+   "id": "in_fno",
+   "src": "Futures and options: 93% of more than 1 crore individual F&O traders lost money between FY22 and FY24, an average of about ₹2 lakh each including costs, and over 75% of loss-makers kept trading (SEBI study, 23 Sep 2024). The odds and amounts here are an ESTIMATE based on it.",
+   "age": [22, 40],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"liquid": "> .3 * base"}},
+   "def": "none",
+   "tarot": "tip",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"a": "Math.min(.5 * base, .5 * liquid())"},
+   "opts": [
+    {"id": "trade", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); if (roll('in_fno') < .07) cash += 2 * a; else happy -= 2", "next": {"event": "in_fno2", "in": 1, "p": 0.6}},
+    {"id": "index", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('in_idx', a, {}, 'trk.in_idx')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Options trading",
+     ".x": "A finance influencer says he makes a month’s salary every week trading options. Opening an account on the app takes five minutes.",
+     ".trade": "Try trading options",
+     ".trade.s": "{a} of your savings.",
+     ".trade.h": "Nine in ten individual traders lose money.",
+     ".index": "An index fund instead",
+     ".index.s": "{a}, left alone.",
+     ".index.h": "Grows with the market over the long run.",
+     ".none": "Ignore him",
+     ".none.s": "Unfollow.",
+     "trk.in_idx": "Index fund"
+    },
+    "zh": {
+     ".t": "炒期权",
+     ".x": "一个理财网红说他每周靠炒期权赚一个月工资。在App上开户只要五分钟。",
+     ".trade": "试试炒期权",
+     ".trade.s": "你存款里的{a}。",
+     ".trade.h": "十个散户有九个亏钱。",
+     ".index": "改买指数基金",
+     ".index.s": "{a}，放着不动。",
+     ".index.h": "长期跟着市场成长。",
+     ".none": "不理他",
+     ".none.s": "取消关注。",
+     "trk.in_idx": "指数基金"
+    },
+    "zht": {
+     ".t": "炒選擇權",
+     ".x": "一個理財網紅說他每週靠炒選擇權賺一個月薪水。在App上開戶只要五分鐘。",
+     ".trade": "試試炒選擇權",
+     ".trade.s": "你存款裡的{a}。",
+     ".trade.h": "十個散戶有九個虧錢。",
+     ".index": "改買指數基金",
+     ".index.s": "{a}，放著不動。",
+     ".index.h": "長期跟著市場成長。",
+     ".none": "不理他",
+     ".none.s": "取消追蹤。",
+     "trk.in_idx": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "in_fno2",
+   "src": "Over 75% of loss-making F&O traders kept trading the next year (SEBI study, Sep 2024). Odds are an ESTIMATE.",
+   "chain": true,
+   "when": {"stats": {"liquid": "> .1 * base"}},
+   "def": "stop",
+   "tarot": "tip",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": "Math.min(.5 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "more", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); habit += .01; T('habit', {kind: 'custom', label: M('trk.habitSpend')}); if (roll('in_fno2') < .07) cash += 2 * a; else happy -= 3"},
+    {"id": "stop", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Win it back?",
+     ".x": "Your options account is down. A new strategy video promises to win it all back.",
+     ".more": "Put more in",
+     ".more.s": "{a} more.",
+     ".more.h": "Most traders who chase losses lose more.",
+     ".stop": "Close the account",
+     ".stop.s": "Lesson learned.",
+     ".stop.h": "Happiness −1."
+    },
+    "zh": {
+     ".t": "想把钱赢回来？",
+     ".x": "你的期权账户亏了。有个新策略视频说能全部赢回来。",
+     ".more": "再投一些",
+     ".more.s": "再投{a}。",
+     ".more.h": "追亏损的人大多亏得更多。",
+     ".stop": "把账户关了",
+     ".stop.s": "学到教训了。",
+     ".stop.h": "幸福感 −1。"
+    },
+    "zht": {
+     ".t": "想把錢贏回來？",
+     ".x": "你的選擇權帳戶虧了。有個新策略影片說能全部贏回來。",
+     ".more": "再投一些",
+     ".more.s": "再投{a}。",
+     ".more.h": "追虧損的人大多虧得更多。",
+     ".stop": "把帳戶關了",
+     ".stop.s": "學到教訓了。",
+     ".stop.h": "幸福感 −1。"
+    }
+   }
   }
  ]
 }
