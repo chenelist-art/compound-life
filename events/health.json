@@ -490,6 +490,272 @@
      "log.dep": "醫生告訴你，你得了憂鬱症。"
     }
    }
+  },
+  {
+   "id": "y_party",
+   "age": [18, 22],
+   "weight": 0.4,
+   "def": "some",
+   "tarot": "friends",
+   "art": {"draw": "lantern", "bg": "co"},
+   "opts": [
+    {"id": "lots", "sub": {"a": "MN(.05 * base)"}, "hint": true, "rel": 2, "do": "health -= 2; happy += 3; const t = T('y_party', {kind: 'ghost', label: M('trk.y_party')}); t.spent += .05 * base; t.g += .05 * base"},
+    {"id": "some", "sub": {"a": "MN(.015 * base)"}, "rel": 1, "do": "happy += 1; const t = T('y_party', {kind: 'ghost', label: M('trk.y_party')}); t.spent += .015 * base; t.g += .015 * base"},
+    {"id": "quiet", "hint": true, "do": "health += 1; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Nights out",
+     ".x": "There is something on every night: clubs, bars, birthdays.",
+     ".lots": "Out most nights",
+     ".lots.s": "About {a} this year.",
+     ".lots.h": "Health −2, Happiness +3.",
+     ".some": "Weekends only",
+     ".some.s": "About {a} this year.",
+     ".quiet": "Mostly stay in",
+     ".quiet.s": "Films and early nights.",
+     ".quiet.h": "Health +1, Happiness −1.",
+     "trk.y_party": "Nights out"
+    },
+    "zh": {
+     ".t": "夜生活",
+     ".x": "每晚都有活动：夜店、酒吧、生日会。",
+     ".lots": "几乎每晚都出去",
+     ".lots.s": "今年大约{a}。",
+     ".lots.h": "健康 −2，幸福感 +3。",
+     ".some": "只在周末",
+     ".some.s": "今年大约{a}。",
+     ".quiet": "大多待在家",
+     ".quiet.s": "看电影，早早睡。",
+     ".quiet.h": "健康 +1，幸福感 −1。",
+     "trk.y_party": "夜生活"
+    },
+    "zht": {
+     ".t": "夜生活",
+     ".x": "每晚都有活動：夜店、酒吧、生日派對。",
+     ".lots": "幾乎每晚都出去",
+     ".lots.s": "今年大約{a}。",
+     ".lots.h": "健康 −2，幸福感 +3。",
+     ".some": "只在週末",
+     ".some.s": "今年大約{a}。",
+     ".quiet": "大多待在家",
+     ".quiet.s": "看電影，早早睡。",
+     ".quiet.h": "健康 +1，幸福感 −1。",
+     "trk.y_party": "夜生活"
+    }
+   }
+  },
+  {
+   "id": "y_lasik",
+   "age": [24, 29],
+   "weight": 0.3,
+   "def": "glasses",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "laser", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "spend('y_lasik', .06 * base, 'trk.y_lasik'); happy += 2"},
+    {"id": "glasses", "sub": {"a": "MN(.006 * base)"}, "do": "T('y_glasses', {kind: 'ghost', label: M('trk.y_glasses')}); rec('y_glasses', .006 * base, 30)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Laser eye surgery",
+     ".x": "You have worn glasses since school. An eye clinic offers laser surgery.",
+     ".laser": "Have the surgery",
+     ".laser.s": "About {a} for both eyes.",
+     ".laser.h": "Happiness +2.",
+     ".glasses": "Keep wearing glasses",
+     ".glasses.s": "About {a} a year for new lenses and frames.",
+     "trk.y_lasik": "Laser eye surgery",
+     "trk.y_glasses": "Glasses"
+    },
+    "zh": {
+     ".t": "激光矫正视力",
+     ".x": "你从上学就戴眼镜。有家眼科诊所在推激光手术。",
+     ".laser": "做手术",
+     ".laser.s": "两只眼睛大约{a}。",
+     ".laser.h": "幸福感 +2。",
+     ".glasses": "继续戴眼镜",
+     ".glasses.s": "新镜片和镜框每年大约{a}。",
+     "trk.y_lasik": "激光矫正视力",
+     "trk.y_glasses": "眼镜"
+    },
+    "zht": {
+     ".t": "雷射近視手術",
+     ".x": "你從上學就戴眼鏡。有家眼科診所在推雷射手術。",
+     ".laser": "做手術",
+     ".laser.s": "兩隻眼睛大約{a}。",
+     ".laser.h": "幸福感 +2。",
+     ".glasses": "繼續戴眼鏡",
+     ".glasses.s": "新鏡片和鏡框每年大約{a}。",
+     "trk.y_lasik": "雷射近視手術",
+     "trk.y_glasses": "眼鏡"
+    }
+   }
+  },
+  {
+   "id": "y_teeth",
+   "age": [20, 26],
+   "weight": 0.35,
+   "def": "wait",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "now", "sub": {"a": "MN(.025 * base)"}, "do": "spend('y_teeth', .025 * base, 'trk.y_teeth')"},
+    {"id": "wait", "hint": true, "do": "if (roll('y_teeth') < .5) later(age + 2 + Math.floor(roll('y_teethAt') * 3), 'y_teeth', {})"}
+   ],
+   "later": {
+    "y_teeth": "pay(.05 * base); health -= 2; const t = T('y_teethE', {kind: 'ghost', label: M('trk.y_teethE')}); t.spent += .05 * base; t.g += .05 * base; log(M('log.y_teeth', {a: MN(.05 * base)}), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Wisdom teeth",
+     ".x": "Your dentist says your wisdom teeth are coming in crooked and should come out.",
+     ".now": "Have them out now",
+     ".now.s": "About {a}, and a swollen week.",
+     ".wait": "Wait until they hurt",
+     ".wait.s": "Free for now.",
+     ".wait.h": "About half end up as an emergency, which costs more.",
+     "trk.y_teeth": "Wisdom teeth out",
+     "trk.y_teethE": "Emergency dentist",
+     "log.y_teeth": "Your wisdom teeth flared up. The emergency dentist costs {a}."
+    },
+    "zh": {
+     ".t": "智齿",
+     ".x": "牙医说你的智齿长歪了，最好拔掉。",
+     ".now": "现在拔",
+     ".now.s": "大约{a}，再肿一个星期。",
+     ".wait": "等痛了再说",
+     ".wait.s": "暂时不花钱。",
+     ".wait.h": "大约一半最后会变成急诊，花得更多。",
+     "trk.y_teeth": "拔智齿",
+     "trk.y_teethE": "牙科急诊",
+     "log.y_teeth": "智齿发炎了，牙科急诊花了{a}。"
+    },
+    "zht": {
+     ".t": "智齒",
+     ".x": "牙醫說你的智齒長歪了，最好拔掉。",
+     ".now": "現在拔",
+     ".now.s": "大約{a}，再腫一個星期。",
+     ".wait": "等痛了再說",
+     ".wait.s": "暫時不花錢。",
+     ".wait.h": "大約一半最後會變成急診，花得更多。",
+     "trk.y_teeth": "拔智齒",
+     "trk.y_teethE": "牙科急診",
+     "log.y_teeth": "智齒發炎了，牙科急診花了{a}。"
+    }
+   }
+  },
+  {
+   "id": "y_marathon",
+   "age": [22, 29],
+   "weight": 0.35,
+   "def": "none",
+   "tarot": "gym",
+   "art": "gym",
+   "opts": [
+    {"id": "club", "sub": {"a": "MN(.02 * base)"}, "hint": true, "rel": 2, "do": "spend('y_marathon', .02 * base, 'trk.y_marathon'); health += 4; happy += 2"},
+    {"id": "solo", "hint": true, "do": "health += 2; if (roll('y_marathon') < .1) health -= 3"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A marathon",
+     ".x": "A friend talks you into signing up for a marathon next spring.",
+     ".club": "Train with a running club",
+     ".club.s": "About {a} for fees, shoes and the race.",
+     ".club.h": "Health +4, Happiness +2.",
+     ".solo": "Train alone with an app",
+     ".solo.s": "Free.",
+     ".solo.h": "Health +2. Training alone sometimes leads to injury.",
+     ".none": "Cheer from the side",
+     ".none.s": "Someone has to hold the water.",
+     "trk.y_marathon": "Marathon training"
+    },
+    "zh": {
+     ".t": "跑马拉松",
+     ".x": "朋友说服你报名明年春天的马拉松。",
+     ".club": "跟跑团一起练",
+     ".club.s": "会费、跑鞋和报名费大约{a}。",
+     ".club.h": "健康 +4，幸福感 +2。",
+     ".solo": "自己用App练",
+     ".solo.s": "不花钱。",
+     ".solo.h": "健康 +2。自己练偶尔会受伤。",
+     ".none": "在旁边加油",
+     ".none.s": "总得有人拿水。",
+     "trk.y_marathon": "马拉松训练"
+    },
+    "zht": {
+     ".t": "跑馬拉松",
+     ".x": "朋友說服你報名明年春天的馬拉松。",
+     ".club": "跟跑團一起練",
+     ".club.s": "會費、跑鞋和報名費大約{a}。",
+     ".club.h": "健康 +4，幸福感 +2。",
+     ".solo": "自己用App練",
+     ".solo.s": "不花錢。",
+     ".solo.h": "健康 +2。自己練偶爾會受傷。",
+     ".none": "在旁邊加油",
+     ".none.s": "總得有人拿水。",
+     "trk.y_marathon": "馬拉松訓練"
+    }
+   }
+  },
+  {
+   "id": "y_meals",
+   "age": [22, 29],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "kits",
+   "tarot": "health",
+   "art": {"draw": "feast", "bg": "ya"},
+   "opts": [
+    {"id": "take", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "T('y_meals', {kind: 'ghost', label: M('trk.y_meals')}); rec('y_meals', .04 * base, 5, -.6); happy += 2"},
+    {"id": "kits", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('y_meals', {kind: 'ghost', label: M('trk.y_meals')}); rec('y_meals', .02 * base, 5, .2)"},
+    {"id": "cook", "hint": true, "do": "rec('', 0, 5, .4); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "What’s for dinner?",
+     ".x": "You get home late and tired. The delivery apps are right there.",
+     ".take": "Order in most nights",
+     ".take.s": "About {a} a year more than cooking.",
+     ".take.h": "Happiness +2; Health a little lower each year.",
+     ".kits": "Meal kits",
+     ".kits.s": "About {a} a year more than cooking.",
+     ".kits.h": "Health a little better each year.",
+     ".cook": "Cook in batches at the weekend",
+     ".cook.s": "Cheapest, if you keep it up.",
+     ".cook.h": "Happiness −1; Health better each year.",
+     "trk.y_meals": "Takeaways and meal kits"
+    },
+    "zh": {
+     ".t": "晚餐吃什么？",
+     ".x": "你下班回家又晚又累，外卖App就在手边。",
+     ".take": "几乎每晚叫外卖",
+     ".take.s": "每年比自己煮多花大约{a}。",
+     ".take.h": "幸福感 +2；健康每年少一点。",
+     ".kits": "订料理包",
+     ".kits.s": "每年比自己煮多花大约{a}。",
+     ".kits.h": "健康每年好一点。",
+     ".cook": "周末一次煮好几天的",
+     ".cook.s": "最便宜，前提是要坚持。",
+     ".cook.h": "幸福感 −1；健康每年变好。",
+     "trk.y_meals": "外卖和料理包"
+    },
+    "zht": {
+     ".t": "晚餐吃什麼？",
+     ".x": "你下班回家又晚又累，外送App就在手邊。",
+     ".take": "幾乎每晚叫外送",
+     ".take.s": "每年比自己煮多花大約{a}。",
+     ".take.h": "幸福感 +2；健康每年少一點。",
+     ".kits": "訂料理包",
+     ".kits.s": "每年比自己煮多花大約{a}。",
+     ".kits.h": "健康每年好一點。",
+     ".cook": "週末一次煮好幾天的",
+     ".cook.s": "最便宜，前提是要堅持。",
+     ".cook.h": "幸福感 −1；健康每年變好。",
+     "trk.y_meals": "外送和料理包"
+    }
+   }
   }
  ]
 }

@@ -1078,6 +1078,264 @@
      "trk.grandsit": "幫忙帶孫子"
     }
    }
+  },
+  {
+   "id": "y_parenthelp",
+   "age": [23, 29],
+   "weight": 0.35,
+   "if": {"family": ["middle", "rich"]},
+   "when": {"house": false},
+   "who": {"role": "parent"},
+   "def": "fund",
+   "tarot": "parents",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "let": {"a": ".4 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "fund", "hint": true, "bond": 2, "do": "famPay('y_parenthelp', .4); mkLot('y_dep', {rate: .005, lock: 31}, 'trk.y_dep'); addLot('y_dep', a)"},
+    {"id": "cash", "sub": {"a": "MN(a)"}, "hint": true, "bond": 2, "do": "famPay('y_parenthelp', .4); cash += a"},
+    {"id": "no", "bond": 3, "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Help with a deposit",
+     ".x": "Your parents offer you {a} toward buying your first home one day.",
+     ".fund": "Accept, kept for the home",
+     ".fund.s": "Put away until you are 31.",
+     ".fund.h": "It comes out of what they would leave you later.",
+     ".cash": "Accept it as cash now",
+     ".cash.s": "{a} in your account.",
+     ".cash.h": "It comes out of what they would leave you later.",
+     ".no": "Thank them, but say no",
+     ".no.s": "You want to do it yourself.",
+     "trk.y_dep": "Home deposit from your parents"
+    },
+    "zh": {
+     ".t": "爸妈帮付首付",
+     ".x": "爸妈说愿意给你{a}，以后买第一套房时用。",
+     ".fund": "收下，专门存着买房",
+     ".fund.s": "存到31岁再动。",
+     ".fund.h": "这笔钱会从他们以后留给你的遗产里扣掉。",
+     ".cash": "现在就收现金",
+     ".cash.s": "{a}进你的账户。",
+     ".cash.h": "这笔钱会从他们以后留给你的遗产里扣掉。",
+     ".no": "谢谢，但不收",
+     ".no.s": "你想靠自己。",
+     "trk.y_dep": "爸妈给的首付"
+    },
+    "zht": {
+     ".t": "爸媽幫付頭期款",
+     ".x": "爸媽說願意給你{a}，以後買第一間房時用。",
+     ".fund": "收下，專門存著買房",
+     ".fund.s": "存到31歲再動。",
+     ".fund.h": "這筆錢會從他們以後留給你的遺產裡扣掉。",
+     ".cash": "現在就收現金",
+     ".cash.s": "{a}進你的帳戶。",
+     ".cash.h": "這筆錢會從他們以後留給你的遺產裡扣掉。",
+     ".no": "謝謝，但不收",
+     ".no.s": "你想靠自己。",
+     "trk.y_dep": "爸媽給的頭期款"
+    }
+   }
+  },
+  {
+   "id": "y_support",
+   "age": [22, 29],
+   "weight": 0.4,
+   "if": {"family": ["poor", "working"]},
+   "when": {"working": true},
+   "who": {"role": "parent"},
+   "def": "half",
+   "tarot": "parents",
+   "art": {"draw": "carer", "bg": "ya"},
+   "opts": [
+    {"id": "full", "sub": {"a": "MN(.05 * base)"}, "bond": 6, "rel": 2, "do": "T('y_support', {kind: 'custom', label: M('trk.y_support')}); rec('y_support', .05 * base, 15)"},
+    {"id": "half", "sub": {"a": "MN(.025 * base)"}, "bond": 3, "rel": 1, "do": "T('y_support', {kind: 'custom', label: M('trk.y_support')}); rec('y_support', .025 * base, 15)"},
+    {"id": "none", "hint": true, "bond": -6, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sending money home",
+     ".x": "Your parents are finding it hard to make ends meet. They don’t ask, but you know.",
+     ".full": "Send money every month",
+     ".full.s": "About {a} a year.",
+     ".half": "Send a little when you can",
+     ".half.s": "About {a} a year.",
+     ".none": "You need it yourself",
+     ".none.s": "You visit instead.",
+     ".none.h": "Happiness −2.",
+     "trk.y_support": "Money sent to your parents"
+    },
+    "zh": {
+     ".t": "寄钱回家",
+     ".x": "爸妈日子过得紧巴巴的。他们没开口，但你知道。",
+     ".full": "每个月都寄钱",
+     ".full.s": "每年大约{a}。",
+     ".half": "有余力就寄一点",
+     ".half.s": "每年大约{a}。",
+     ".none": "你自己也需要",
+     ".none.s": "改成多回家看看。",
+     ".none.h": "幸福感 −2。",
+     "trk.y_support": "寄给爸妈的钱"
+    },
+    "zht": {
+     ".t": "寄錢回家",
+     ".x": "爸媽日子過得很拮据。他們沒開口，但你知道。",
+     ".full": "每個月都寄錢",
+     ".full.s": "每年大約{a}。",
+     ".half": "有餘力就寄一點",
+     ".half.s": "每年大約{a}。",
+     ".none": "你自己也需要",
+     ".none.s": "改成多回家看看。",
+     ".none.h": "幸福感 −2。",
+     "trk.y_support": "寄給爸媽的錢"
+    }
+   }
+  },
+  {
+   "id": "y_ptdebt",
+   "age": [23, 29],
+   "weight": 0.35,
+   "when": {"partner": ["dating", "living"]},
+   "who": {"role": "pt"},
+   "def": "budget",
+   "tarot": "wed",
+   "art": {"draw": "bill", "bg": "co"},
+   "vars": {"p": "name(p)", "a": "MN(.15 * base)"},
+   "opts": [
+    {"id": "half", "sub": {"a": "MN(.075 * base)"}, "bond": 5, "do": "pay(.075 * base); T('y_ptdebt', {kind: 'custom', label: M('trk.y_ptdebt'), v: -.075 * base})"},
+    {"id": "budget", "bond": 2, "do": "happy -= 1"},
+    {"id": "apart", "bond": -4}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your partner’s debt",
+     ".x": "{p} tells you they owe {a} on credit cards and are struggling with the payments.",
+     ".half": "Pay off half of it",
+     ".half.s": "{a} of your savings.",
+     ".budget": "Make a budget together",
+     ".budget.s": "Evenings with spreadsheets.",
+     ".apart": "Keep your money separate",
+     ".apart.s": "It’s their debt.",
+     "trk.y_ptdebt": "Helped pay a partner’s debt"
+    },
+    "zh": {
+     ".t": "伴侣的债",
+     ".x": "{p}跟你说自己欠了{a}的卡债，还得很吃力。",
+     ".half": "帮忙还一半",
+     ".half.s": "你存款里的{a}。",
+     ".budget": "一起做预算",
+     ".budget.s": "晚上一起对着表格。",
+     ".apart": "钱各管各的",
+     ".apart.s": "那是他们的债。",
+     "trk.y_ptdebt": "帮伴侣还债"
+    },
+    "zht": {
+     ".t": "伴侶的債",
+     ".x": "{p}跟你說自己欠了{a}的卡債，還得很吃力。",
+     ".half": "幫忙還一半",
+     ".half.s": "你存款裡的{a}。",
+     ".budget": "一起做預算",
+     ".budget.s": "晚上一起對著表格。",
+     ".apart": "錢各管各的",
+     ".apart.s": "那是他們的債。",
+     "trk.y_ptdebt": "幫伴侶還債"
+    }
+   }
+  },
+  {
+   "id": "y_godparent",
+   "age": [22, 29],
+   "weight": 0.35,
+   "who": {"role": "sib", "test": "p.wed"},
+   "def": "yes",
+   "tarot": "grandkid",
+   "art": {"draw": "baby", "bg": "mi"},
+   "vars": {"p": "who(p)"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.01 * base)"}, "bond": 6, "rel": 2, "do": "T('y_god', {kind: 'ghost', label: M('trk.y_god')}); rec('y_god', .01 * base, 18)"},
+    {"id": "no", "bond": -4}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Godparent",
+     ".x": "{p} is expecting a baby and asks you to be a godparent.",
+     ".yes": "Say yes",
+     ".yes.s": "Birthday and holiday presents: about {a} a year until they are grown.",
+     ".no": "Say you are not ready",
+     ".no.s": "They ask someone else.",
+     "trk.y_god": "Presents for your godchild"
+    },
+    "zh": {
+     ".t": "当孩子的干爹干妈",
+     ".x": "{p}快要生宝宝了，请你当孩子的干爹或干妈。",
+     ".yes": "答应",
+     ".yes.s": "生日和节日礼物：每年大约{a}，直到孩子长大。",
+     ".no": "说你还没准备好",
+     ".no.s": "他们找了别人。",
+     "trk.y_god": "给干儿女的礼物"
+    },
+    "zht": {
+     ".t": "當孩子的乾爹乾媽",
+     ".x": "{p}快要生寶寶了，請你當孩子的乾爹或乾媽。",
+     ".yes": "答應",
+     ".yes.s": "生日和節日禮物：每年大約{a}，直到孩子長大。",
+     ".no": "說你還沒準備好",
+     ".no.s": "他們找了別人。",
+     "trk.y_god": "給乾兒女的禮物"
+    }
+   }
+  },
+  {
+   "id": "y_inlaws",
+   "age": [23, 29],
+   "weight": 0.35,
+   "when": {"partner": ["living", "married"]},
+   "who": {"role": "pt"},
+   "def": "mid",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "mi"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(.05 * base)"}, "bond": 4, "rel": 2, "do": "spend('y_inlaws', .05 * base, 'trk.y_inlaws')"},
+    {"id": "mid", "sub": {"a": "MN(.015 * base)"}, "bond": 1, "do": "spend('y_inlaws', .015 * base, 'trk.y_inlaws')"},
+    {"id": "none", "bond": -4, "rel": -1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Meeting the family",
+     ".x": "{p}’s family is holding a big celebration, and everyone brings a generous gift.",
+     ".big": "A generous gift",
+     ".big.s": "About {a}.",
+     ".mid": "A thoughtful, modest gift",
+     ".mid.s": "About {a}.",
+     ".none": "Bring flowers",
+     ".none.s": "Nearly free.",
+     "trk.y_inlaws": "Gifts for your partner’s family"
+    },
+    "zh": {
+     ".t": "见家长",
+     ".x": "{p}家里要办一场大庆祝，大家都会带厚礼。",
+     ".big": "送份厚礼",
+     ".big.s": "大约{a}。",
+     ".mid": "送份用心的小礼",
+     ".mid.s": "大约{a}。",
+     ".none": "带束花就好",
+     ".none.s": "几乎不花钱。",
+     "trk.y_inlaws": "给伴侣家人的礼物"
+    },
+    "zht": {
+     ".t": "見家長",
+     ".x": "{p}家裡要辦一場大慶祝，大家都會帶厚禮。",
+     ".big": "送份厚禮",
+     ".big.s": "大約{a}。",
+     ".mid": "送份用心的小禮",
+     ".mid.s": "大約{a}。",
+     ".none": "帶束花就好",
+     ".none.s": "幾乎不花錢。",
+     "trk.y_inlaws": "給伴侶家人的禮物"
+    }
+   }
   }
  ]
 }

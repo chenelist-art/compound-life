@@ -658,6 +658,402 @@
      "trk.move2": "養生村"
     }
    }
+  },
+  {
+   "id": "y_dorm",
+   "age": [18, 19],
+   "weight": 0.4,
+   "when": {"studying": true},
+   "def": "home",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "halls", "sub": {"a": "MN(.1 * base)"}, "hint": true, "rel": 2, "do": "sloan += .1 * base; happy += 2"},
+    {"id": "share", "sub": {"a": "MN(.04 * base)"}, "hint": true, "rel": 1, "do": "sloan += .04 * base; happy += 1"},
+    {"id": "home", "hint": true, "rel": -1, "do": "bond('parent', 3)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Where to live at university",
+     ".x": "Your course starts in the autumn. Where will you live?",
+     ".halls": "University halls",
+     ".halls.s": "About {a} more on your student loan.",
+     ".halls.h": "Happiness +2.",
+     ".share": "A shared house with friends",
+     ".share.s": "About {a} more on your student loan.",
+     ".share.h": "Happiness +1.",
+     ".home": "Stay at home and commute",
+     ".home.s": "No extra cost.",
+     ".home.h": "You miss some of student life."
+    },
+    "zh": {
+     ".t": "大学住哪里",
+     ".x": "秋天就要开学了。你要住哪里？",
+     ".halls": "住学校宿舍",
+     ".halls.s": "助学贷款多大约{a}。",
+     ".halls.h": "幸福感 +2。",
+     ".share": "跟朋友合租",
+     ".share.s": "助学贷款多大约{a}。",
+     ".share.h": "幸福感 +1。",
+     ".home": "住家里通勤",
+     ".home.s": "不多花钱。",
+     ".home.h": "会错过一些大学生活。"
+    },
+    "zht": {
+     ".t": "大學住哪裡",
+     ".x": "秋天就要開學了。你要住哪裡？",
+     ".halls": "住學校宿舍",
+     ".halls.s": "就學貸款多大約{a}。",
+     ".halls.h": "幸福感 +2。",
+     ".share": "跟朋友合租",
+     ".share.s": "就學貸款多大約{a}。",
+     ".share.h": "幸福感 +1。",
+     ".home": "住家裡通勤",
+     ".home.s": "不多花錢。",
+     ".home.h": "會錯過一些大學生活。"
+    }
+   }
+  },
+  {
+   "id": "y_flat",
+   "age": [22, 29],
+   "weight": 0.4,
+   "when": {"working": true, "house": false},
+   "def": "stay",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "opts": [
+    {"id": "up", "hint": true, "do": "rentMul = 1.3; rentUntil = age + 5; happy += 3"},
+    {"id": "down", "hint": true, "do": "rentMul = .8; rentUntil = age + 5; happy -= 2; T('move', {kind: 'custom', label: M('trk.y_flatD'), note: M('note.move')})"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A nicer flat?",
+     ".x": "Your lease is up. A nicer flat with a balcony has come up, and so has a smaller one further out.",
+     ".up": "The nicer flat",
+     ".up.s": "About 30% more rent for five years.",
+     ".up.h": "Happiness +3.",
+     ".down": "The smaller one",
+     ".down.s": "About 20% less rent for five years.",
+     ".down.h": "Happiness −2.",
+     ".stay": "Renew where you are",
+     ".stay.s": "No change.",
+     "trk.y_flatD": "A smaller flat"
+    },
+    "zh": {
+     ".t": "换个好点的房子？",
+     ".x": "租约到期了。有一间带阳台的好房子，也有一间更小更远的。",
+     ".up": "租好的那间",
+     ".up.s": "五年里房租多大约30%。",
+     ".up.h": "幸福感 +3。",
+     ".down": "租小的那间",
+     ".down.s": "五年里房租少大约20%。",
+     ".down.h": "幸福感 −2。",
+     ".stay": "续租",
+     ".stay.s": "不变。",
+     "trk.y_flatD": "租小一点的房子"
+    },
+    "zht": {
+     ".t": "換個好一點的房子？",
+     ".x": "租約到期了。有一間有陽台的好房子，也有一間更小更遠的。",
+     ".up": "租好的那間",
+     ".up.s": "五年裡房租多大約30%。",
+     ".up.h": "幸福感 +3。",
+     ".down": "租小的那間",
+     ".down.s": "五年裡房租少大約20%。",
+     ".down.h": "幸福感 −2。",
+     ".stay": "續租",
+     ".stay.s": "不變。",
+     "trk.y_flatD": "租小一點的房子"
+    }
+   }
+  },
+  {
+   "id": "y_flatmate",
+   "age": [22, 29],
+   "weight": 0.35,
+   "when": {"house": false, "partner": ["single"]},
+   "def": "no",
+   "tarot": "friends",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "yes", "hint": true, "do": "rentMul = .65; rentUntil = age + 4; happy -= 1; T('move', {kind: 'custom', label: M('trk.y_flatmate'), note: M('note.move')})", "next": {"event": "y_flatmate2", "in": [1, 2], "p": 0.3}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A flatmate?",
+     ".x": "Rent takes a big bite of your pay. A friend of a friend needs a room.",
+     ".yes": "Rent them your spare room",
+     ".yes.s": "Your rent falls by about a third.",
+     ".yes.h": "Happiness −1. Some flatmates turn out to be trouble.",
+     ".no": "Keep the place to yourself",
+     ".no.s": "Peace and quiet.",
+     "trk.y_flatmate": "A flatmate"
+    },
+    "zh": {
+     ".t": "找室友？",
+     ".x": "房租占了工资一大块。朋友的朋友在找房间。",
+     ".yes": "把空房租给他们",
+     ".yes.s": "你的房租少大约三分之一。",
+     ".yes.h": "幸福感 −1。有些室友会惹麻烦。",
+     ".no": "自己住",
+     ".no.s": "清净。",
+     "trk.y_flatmate": "合租室友"
+    },
+    "zht": {
+     ".t": "找室友？",
+     ".x": "房租佔了薪水一大塊。朋友的朋友在找房間。",
+     ".yes": "把空房租給他們",
+     ".yes.s": "你的房租少大約三分之一。",
+     ".yes.h": "幸福感 −1。有些室友會惹麻煩。",
+     ".no": "自己住",
+     ".no.s": "清靜。",
+     "trk.y_flatmate": "合租室友"
+    }
+   }
+  },
+  {
+   "id": "y_flatmate2",
+   "chain": true,
+   "def": "find",
+   "tarot": "friends",
+   "art": {"draw": "bill", "bg": "mi"},
+   "vars": {"a": "MN(.03 * base)"},
+   "opts": [
+    {"id": "find", "sub": {"a": "MN(.03 * base)"}, "do": "pay(.03 * base); happy -= 1"},
+    {"id": "alone", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "pay(.03 * base); rentMul = 1; happy += 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The flatmate leaves",
+     ".x": "Your flatmate moves out overnight, owing {a} in rent and bills.",
+     ".find": "Cover it and find someone new",
+     ".find.s": "{a} out of your pocket.",
+     ".alone": "Cover it and live alone again",
+     ".alone.s": "{a} out of your pocket, and the full rent again.",
+     ".alone.h": "Happiness +2."
+    },
+    "zh": {
+     ".t": "室友跑了",
+     ".x": "室友一夜之间搬走，欠了{a}的房租和水电。",
+     ".find": "先垫上，再找新室友",
+     ".find.s": "自掏腰包{a}。",
+     ".alone": "先垫上，以后自己住",
+     ".alone.s": "自掏腰包{a}，房租也恢复全额。",
+     ".alone.h": "幸福感 +2。"
+    },
+    "zht": {
+     ".t": "室友跑了",
+     ".x": "室友一夜之間搬走，欠了{a}的房租和水電。",
+     ".find": "先墊上，再找新室友",
+     ".find.s": "自掏腰包{a}。",
+     ".alone": "先墊上，以後自己住",
+     ".alone.s": "自掏腰包{a}，房租也恢復全額。",
+     ".alone.h": "幸福感 +2。"
+    }
+   }
+  },
+  {
+   "id": "y_deposit",
+   "age": [22, 29],
+   "weight": 0.35,
+   "when": {"house": false},
+   "def": "drop",
+   "tarot": "cosign",
+   "art": {"draw": "bill", "bg": "ya"},
+   "let": {"a": ".04 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "claim", "sub": {"b": "MN(.005 * base)"}, "hint": true, "do": "spend('y_depositF', .005 * base, 'trk.y_depositF'); if (roll('y_deposit') < .65) cash += a; happy -= 1"},
+    {"id": "half", "sub": {"b": "MN(a / 2)"}, "do": "cash += a / 2"},
+    {"id": "drop", "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The deposit",
+     ".x": "You move out, and the landlord keeps your {a} deposit for “cleaning and damage”.",
+     ".claim": "Take it to a small claims court",
+     ".claim.s": "A {b} fee and some forms.",
+     ".claim.h": "Tenants with photos and receipts usually win.",
+     ".half": "Agree to split it",
+     ".half.s": "You get {b} back.",
+     ".drop": "Let it go",
+     ".drop.s": "Not worth the fight.",
+     "trk.y_depositF": "Small claims fee"
+    },
+    "zh": {
+     ".t": "押金",
+     ".x": "你搬走了，房东以“清洁和损坏”为由扣下{a}押金。",
+     ".claim": "去小额法庭讨",
+     ".claim.s": "手续费{b}，再填些表。",
+     ".claim.h": "有照片和收据的房客通常会赢。",
+     ".half": "同意各退一半",
+     ".half.s": "拿回{b}。",
+     ".drop": "算了",
+     ".drop.s": "不值得吵。",
+     "trk.y_depositF": "小额诉讼费"
+    },
+    "zht": {
+     ".t": "押金",
+     ".x": "你搬走了，房東以「清潔和損壞」為由扣下{a}押金。",
+     ".claim": "去小額法庭討",
+     ".claim.s": "手續費{b}，再填些表。",
+     ".claim.h": "有照片和收據的房客通常會贏。",
+     ".half": "同意各退一半",
+     ".half.s": "拿回{b}。",
+     ".drop": "算了",
+     ".drop.s": "不值得吵。",
+     "trk.y_depositF": "小額訴訟費"
+    }
+   }
+  },
+  {
+   "id": "y_moveback",
+   "age": [23, 27],
+   "weight": 0.3,
+   "when": {"house": false, "partner": ["single"]},
+   "who": {"role": "parent"},
+   "def": "no",
+   "tarot": "parents",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "hint": true, "bond": 4, "do": "rentMul = .15; rentUntil = age + 6; happy -= 3; T('move', {kind: 'custom', label: M('trk.y_moveback'), note: M('note.move')})", "next": {"event": "y_moveout2", "in": 2}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Move back home?",
+     ".x": "Your parents say you could move back into your old room to save money for a while.",
+     ".yes": "Move back",
+     ".yes.s": "You chip in a little for food; no rent.",
+     ".yes.h": "Happiness −3: less independence.",
+     ".no": "Stay independent",
+     ".no.s": "Your own front door.",
+     "trk.y_moveback": "Living with your parents"
+    },
+    "zh": {
+     ".t": "搬回家住？",
+     ".x": "爸妈说你可以搬回以前的房间，存一阵子钱。",
+     ".yes": "搬回去",
+     ".yes.s": "只出一点伙食费，不用房租。",
+     ".yes.h": "幸福感 −3：少了独立。",
+     ".no": "继续自己住",
+     ".no.s": "自己的家门。",
+     "trk.y_moveback": "跟爸妈住"
+    },
+    "zht": {
+     ".t": "搬回家住？",
+     ".x": "爸媽說你可以搬回以前的房間，存一陣子錢。",
+     ".yes": "搬回去",
+     ".yes.s": "只出一點伙食費，不用房租。",
+     ".yes.h": "幸福感 −3：少了獨立。",
+     ".no": "繼續自己住",
+     ".no.s": "自己的家門。",
+     "trk.y_moveback": "跟爸媽住"
+    }
+   }
+  },
+  {
+   "id": "y_moveout2",
+   "chain": true,
+   "when": {"house": false},
+   "who": {"role": "parent"},
+   "def": "out",
+   "tarot": "parents",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "opts": [
+    {"id": "out", "hint": true, "do": "rentMul = 1; happy += 3"},
+    {"id": "stay", "hint": true, "bond": -3, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Time to go?",
+     ".x": "Two years back at home. Your savings look healthy, and your parents are starting to hint.",
+     ".out": "Move out again",
+     ".out.s": "Full rent again.",
+     ".out.h": "Happiness +3.",
+     ".stay": "Stay a while longer",
+     ".stay.s": "Almost no rent.",
+     ".stay.h": "Happiness −2."
+    },
+    "zh": {
+     ".t": "该搬出去了吗？",
+     ".x": "回家住两年了。存款看起来不错，爸妈也开始暗示了。",
+     ".out": "再搬出去",
+     ".out.s": "房租恢复全额。",
+     ".out.h": "幸福感 +3。",
+     ".stay": "再住一阵子",
+     ".stay.s": "几乎不用房租。",
+     ".stay.h": "幸福感 −2。"
+    },
+    "zht": {
+     ".t": "該搬出去了嗎？",
+     ".x": "回家住兩年了。存款看起來不錯，爸媽也開始暗示了。",
+     ".out": "再搬出去",
+     ".out.s": "房租恢復全額。",
+     ".out.h": "幸福感 +3。",
+     ".stay": "再住一陣子",
+     ".stay.s": "幾乎不用房租。",
+     ".stay.h": "幸福感 −2。"
+    }
+   }
+  },
+  {
+   "id": "y_furnish",
+   "age": [20, 27],
+   "weight": 0.35,
+   "when": {"house": false},
+   "def": "used",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "credit", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "debt += .08 * base; happy += 3"},
+    {"id": "flat", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "spend('y_furnish', .04 * base, 'trk.y_furnish'); happy += 1"},
+    {"id": "used", "sub": {"a": "MN(.015 * base)"}, "do": "spend('y_furnish', .015 * base, 'trk.y_furnish')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Furnishing your place",
+     ".x": "Your new place is empty: no bed, no sofa, no table.",
+     ".credit": "New furniture on store credit",
+     ".credit.s": "About {a}, nothing to pay today.",
+     ".credit.h": "Happiness +3. Store credit charges high interest.",
+     ".flat": "Flat-pack furniture, paid now",
+     ".flat.s": "About {a}.",
+     ".flat.h": "Happiness +1.",
+     ".used": "Second-hand from friends and online",
+     ".used.s": "About {a}.",
+     "trk.y_furnish": "Furniture"
+    },
+    "zh": {
+     ".t": "布置新家",
+     ".x": "新住处空荡荡的：没床、没沙发、没桌子。",
+     ".credit": "分期买新家具",
+     ".credit.s": "大约{a}，今天不用付钱。",
+     ".credit.h": "幸福感 +3。分期的利息很高。",
+     ".flat": "付现买组装家具",
+     ".flat.s": "大约{a}。",
+     ".flat.h": "幸福感 +1。",
+     ".used": "跟朋友和网上买二手",
+     ".used.s": "大约{a}。",
+     "trk.y_furnish": "家具"
+    },
+    "zht": {
+     ".t": "布置新家",
+     ".x": "新住處空蕩蕩的：沒床、沒沙發、沒桌子。",
+     ".credit": "分期買新家具",
+     ".credit.s": "大約{a}，今天不用付錢。",
+     ".credit.h": "幸福感 +3。分期的利息很高。",
+     ".flat": "付現買組裝家具",
+     ".flat.s": "大約{a}。",
+     ".flat.h": "幸福感 +1。",
+     ".used": "跟朋友和網路上買二手",
+     ".used.s": "大約{a}。",
+     "trk.y_furnish": "家具"
+    }
+   }
   }
  ]
 }

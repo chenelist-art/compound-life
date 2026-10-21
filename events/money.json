@@ -1578,6 +1578,611 @@
      "note.bizpalIn": "投入{a}，三年後見分曉。"
     }
    }
+  },
+  {
+   "id": "y_invest",
+   "age": [21, 27],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "save",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": "Math.min(.1 * base, liquid())"},
+   "opts": [
+    {"id": "robo", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('y_robo', a, {fee: .005}, 'trk.y_robo')"},
+    {"id": "pick", "sub": {"a": "MN(a)"}, "hint": true, "do": "const u = roll('y_pick'); putIn('y_pick', a, {rate: u < .3 ? .1 : u < .7 ? .02 : -.04}, 'trk.y_pick')"},
+    {"id": "hysa", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('y_hysa', a, {rate: .01}, 'trk.y_hysa')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your first investment",
+     ".x": "You have some savings and want them to grow.",
+     ".robo": "An app that invests for you",
+     ".robo.s": "{a} in a spread of index funds, for a 0.5% yearly fee.",
+     ".robo.h": "Stocks have usually grown about 5% a year after inflation.",
+     ".pick": "Pick shares yourself",
+     ".pick.s": "{a} in a few companies you like.",
+     ".pick.h": "Most people who pick their own shares do worse than an index fund.",
+     ".hysa": "A high-interest savings account",
+     ".hysa.s": "{a}, safe.",
+     ".hysa.h": "About 1% a year above inflation.",
+     ".none": "Leave it in your current account",
+     ".none.s": "Easy to reach.",
+     "trk.y_robo": "Investing app",
+     "trk.y_pick": "Shares you picked",
+     "trk.y_hysa": "High-interest savings"
+    },
+    "zh": {
+     ".t": "第一笔投资",
+     ".x": "你存了一些钱，想让它增值。",
+     ".robo": "让App帮你投资",
+     ".robo.s": "{a}投进一篮子指数基金，每年收0.5%管理费。",
+     ".robo.h": "股票扣除通胀后平均每年约涨5%。",
+     ".pick": "自己选股",
+     ".pick.s": "{a}买几家你看好的公司。",
+     ".pick.h": "大部分自己选股的人，赚得比指数基金少。",
+     ".hysa": "高利率储蓄账户",
+     ".hysa.s": "{a}，很安全。",
+     ".hysa.h": "扣除通胀后每年约1%。",
+     ".none": "放在活期账户",
+     ".none.s": "随时拿得到。",
+     "trk.y_robo": "投资App",
+     "trk.y_pick": "自己选的股票",
+     "trk.y_hysa": "高利率储蓄"
+    },
+    "zht": {
+     ".t": "第一筆投資",
+     ".x": "你存了一些錢，想讓它增值。",
+     ".robo": "讓App幫你投資",
+     ".robo.s": "{a}投進一籃子指數基金，每年收0.5%管理費。",
+     ".robo.h": "股票扣除通膨後平均每年約漲5%。",
+     ".pick": "自己選股",
+     ".pick.s": "{a}買幾家你看好的公司。",
+     ".pick.h": "大部分自己選股的人，賺得比指數基金少。",
+     ".hysa": "高利活存帳戶",
+     ".hysa.s": "{a}，很安全。",
+     ".hysa.h": "扣除通膨後每年約1%。",
+     ".none": "放在活存帳戶",
+     ".none.s": "隨時拿得到。",
+     "trk.y_robo": "投資App",
+     "trk.y_pick": "自己選的股票",
+     "trk.y_hysa": "高利活存"
+    }
+   }
+  },
+  {
+   "id": "y_crypto",
+   "src": "ESTIMATE: game rule (cryptocurrencies have risen and fallen by more than half several times since 2017)",
+   "age": [20, 27],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "tip",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"a": "Math.min(.08 * base, liquid())"},
+   "vars": {"a": "MN(.08 * base)"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "hint": true, "do": "const u = roll('y_crypto'); putIn('y_crypto', a, {rate: u < .25 ? .3 : u < .5 ? 0 : -.3}, 'trk.y_crypto')", "next": {"event": "y_crypto2", "in": [2, 3]}},
+    {"id": "no", "rel": -1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Crypto with friends",
+     ".x": "Your friends have all bought cryptocurrency and talk about nothing else. They say you should put in {a}.",
+     ".buy": "Buy in",
+     ".buy.s": "{a} of your savings.",
+     ".buy.h": "Crypto can double or halve in a year.",
+     ".no": "Stay out",
+     ".no.s": "You feel a little left out.",
+     "trk.y_crypto": "Cryptocurrency"
+    },
+    "zh": {
+     ".t": "跟朋友玩加密货币",
+     ".x": "朋友们都买了加密货币，聊来聊去都是这个。他们叫你也投{a}。",
+     ".buy": "买进",
+     ".buy.s": "你存款里的{a}。",
+     ".buy.h": "加密货币一年内可能翻倍，也可能腰斩。",
+     ".no": "不碰",
+     ".no.s": "觉得有点被冷落。",
+     "trk.y_crypto": "加密货币"
+    },
+    "zht": {
+     ".t": "跟朋友玩加密貨幣",
+     ".x": "朋友們都買了加密貨幣，聊來聊去都是這個。他們叫你也投{a}。",
+     ".buy": "買進",
+     ".buy.s": "你存款裡的{a}。",
+     ".buy.h": "加密貨幣一年內可能翻倍，也可能腰斬。",
+     ".no": "不碰",
+     ".no.s": "覺得有點被冷落。",
+     "trk.y_crypto": "加密貨幣"
+    }
+   }
+  },
+  {
+   "id": "y_crypto2",
+   "chain": true,
+   "when": {"test": "!!lots.y_crypto && lots.y_crypto.v > 0"},
+   "def": "hold",
+   "tarot": "tip",
+   "art": {"draw": "shares", "bg": "wa"},
+   "let": {"v": "lots.y_crypto.v"},
+   "vars": {"a": "MN(v)", "b": "MN(lots.y_crypto.tin)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(v)"}, "do": "lots.y_crypto.v = 0; lots.y_crypto.tout += v; cash += v"},
+    {"id": "hold", "hint": true, "do": "lots.y_crypto.rate = roll('y_crypto2') < .4 ? .15 : -.15"},
+    {"id": "more", "sub": {"a": "MN(Math.min(.05 * base, liquid()))"}, "hint": true, "do": "const m = Math.min(.05 * base, liquid()); pay(m); addLot('y_crypto', m); lots.y_crypto.rate = roll('y_crypto2') < .4 ? .15 : -.15"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Crypto, two years on",
+     ".x": "You put in {b}. Today your coins are worth {a}, and the news is full of predictions both ways.",
+     ".sell": "Sell",
+     ".sell.s": "{a} in your bank account.",
+     ".hold": "Hold",
+     ".hold.s": "Wait and see.",
+     ".hold.h": "Nobody knows which way it goes next; slightly more often down.",
+     ".more": "Buy more",
+     ".more.s": "{a} more of your savings.",
+     ".more.h": "Nobody knows which way it goes next; slightly more often down."
+    },
+    "zh": {
+     ".t": "两年后的加密货币",
+     ".x": "你当初投了{b}，现在值{a}。新闻里看涨看跌的都有。",
+     ".sell": "卖掉",
+     ".sell.s": "{a}进你的银行账户。",
+     ".hold": "继续拿着",
+     ".hold.s": "走着瞧。",
+     ".hold.h": "没人知道接下来怎么走，跌的机会稍微大一点。",
+     ".more": "加码",
+     ".more.s": "再投入存款里的{a}。",
+     ".more.h": "没人知道接下来怎么走，跌的机会稍微大一点。"
+    },
+    "zht": {
+     ".t": "兩年後的加密貨幣",
+     ".x": "你當初投了{b}，現在值{a}。新聞裡看漲看跌的都有。",
+     ".sell": "賣掉",
+     ".sell.s": "{a}進你的銀行帳戶。",
+     ".hold": "繼續抱著",
+     ".hold.s": "走著瞧。",
+     ".hold.h": "沒人知道接下來怎麼走，跌的機會稍微大一點。",
+     ".more": "加碼",
+     ".more.s": "再投入存款裡的{a}。",
+     ".more.h": "沒人知道接下來怎麼走，跌的機會稍微大一點。"
+    }
+   }
+  },
+  {
+   "id": "y_subs",
+   "age": [20, 28],
+   "weight": 0.4,
+   "def": "one",
+   "tarot": "phone",
+   "art": "phone1",
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(.025 * base)"}, "hint": true, "do": "T('y_subs', {kind: 'ghost', label: M('trk.y_subs')}); rec('y_subs', .025 * base, 10); happy += 1"},
+    {"id": "one", "sub": {"a": "MN(.006 * base)"}, "do": "T('y_subs', {kind: 'ghost', label: M('trk.y_subs')}); rec('y_subs', .006 * base, 10)"},
+    {"id": "none", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Subscriptions",
+     ".x": "Streaming, music, games, cloud storage, delivery passes: the monthly charges add up.",
+     ".all": "Keep them all",
+     ".all.s": "About {a} a year.",
+     ".all.h": "Happiness +1.",
+     ".one": "Keep one or two",
+     ".one.s": "About {a} a year.",
+     ".none": "Cancel them all",
+     ".none.s": "Free. Library and radio.",
+     ".none.h": "Happiness −1.",
+     "trk.y_subs": "Subscriptions"
+    },
+    "zh": {
+     ".t": "订阅服务",
+     ".x": "影音、音乐、游戏、云端空间、外卖会员：每个月的扣款加起来不少。",
+     ".all": "全部留着",
+     ".all.s": "每年大约{a}。",
+     ".all.h": "幸福感 +1。",
+     ".one": "只留一两个",
+     ".one.s": "每年大约{a}。",
+     ".none": "全部取消",
+     ".none.s": "不花钱。图书馆和收音机。",
+     ".none.h": "幸福感 −1。",
+     "trk.y_subs": "订阅服务"
+    },
+    "zht": {
+     ".t": "訂閱服務",
+     ".x": "影音、音樂、遊戲、雲端空間、外送會員：每個月的扣款加起來不少。",
+     ".all": "全部留著",
+     ".all.s": "每年大約{a}。",
+     ".all.h": "幸福感 +1。",
+     ".one": "只留一兩個",
+     ".one.s": "每年大約{a}。",
+     ".none": "全部取消",
+     ".none.s": "不花錢。圖書館和收音機。",
+     ".none.h": "幸福感 −1。",
+     "trk.y_subs": "訂閱服務"
+    }
+   }
+  },
+  {
+   "id": "y_refund",
+   "age": [22, 29],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "save",
+   "tarot": "bonus",
+   "art": {"draw": "tax", "bg": "mi"},
+   "let": {"a": ".04 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "spend", "hint": true, "do": "cash += a; spend('y_refund', a, 'trk.y_refund'); happy += 2"},
+    {"id": "save", "do": "cash += a"},
+    {"id": "inv", "do": "cash += a; putIn('y_refundI', a, {}, 'trk.y_refundI')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A tax refund",
+     ".x": "You overpaid tax last year, and {a} comes back to you.",
+     ".spend": "Treat yourself",
+     ".spend.s": "A weekend away and new clothes.",
+     ".spend.h": "Happiness +2.",
+     ".save": "Keep it in the bank",
+     ".save.s": "A little cushion.",
+     ".inv": "Invest it",
+     ".inv.s": "Into an index fund.",
+     "trk.y_refund": "Spent a tax refund",
+     "trk.y_refundI": "Invested a tax refund"
+    },
+    "zh": {
+     ".t": "退税",
+     ".x": "你去年多缴了税，退回{a}。",
+     ".spend": "犒劳自己",
+     ".spend.s": "周末出去玩，买新衣服。",
+     ".spend.h": "幸福感 +2。",
+     ".save": "存银行",
+     ".save.s": "多一点缓冲。",
+     ".inv": "拿去投资",
+     ".inv.s": "投进指数基金。",
+     "trk.y_refund": "花掉的退税",
+     "trk.y_refundI": "退税拿去投资"
+    },
+    "zht": {
+     ".t": "退稅",
+     ".x": "你去年多繳了稅，退回{a}。",
+     ".spend": "犒賞自己",
+     ".spend.s": "週末出去玩，買新衣服。",
+     ".spend.h": "幸福感 +2。",
+     ".save": "存銀行",
+     ".save.s": "多一點緩衝。",
+     ".inv": "拿去投資",
+     ".inv.s": "投進指數基金。",
+     "trk.y_refund": "花掉的退稅",
+     "trk.y_refundI": "退稅拿去投資"
+    }
+   }
+  },
+  {
+   "id": "y_payday",
+   "src": "Payday loans often cost the equivalent of several hundred percent a year (US Consumer Financial Protection Bureau, 2024); the amounts used here are an ESTIMATE",
+   "age": [19, 27],
+   "weight": 0.3,
+   "when": {"working": true, "stats": {"liquid": "< .04 * base"}},
+   "def": "card",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"a": ".04 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "payday", "hint": true, "do": "debt += 1.4 * a", "next": {"event": "y_payday2", "in": 1, "p": 0.5}},
+    {"id": "card", "do": "pay(a)"},
+    {"id": "family", "rel": -1, "do": "bond('parent', -2)"},
+    {"id": "without", "hint": true, "do": "tmpPay('y_without', .9, 1, 'trk.y_without'); happy -= 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Short of money",
+     ".x": "Your car breaks down and you need {a} to fix it before payday. You have almost nothing saved.",
+     ".payday": "A payday loan",
+     ".payday.s": "Cash today, no questions asked. You owe 40% more next month.",
+     ".payday.h": "Many people can’t repay on time and roll the loan over.",
+     ".card": "Put it on a credit card",
+     ".card.s": "High interest if you don’t clear it.",
+     ".family": "Ask your family to help",
+     ".family.s": "A slightly awkward phone call. They lend it.",
+     ".without": "Go without the car for a while",
+     ".without.s": "Long bus rides; you miss a few shifts.",
+     ".without.h": "Pay 10% lower for a year. Happiness −3.",
+     "trk.y_without": "Missed shifts without a car"
+    },
+    "zh": {
+     ".t": "手头很紧",
+     ".x": "发薪日前车坏了，修车要{a}，而你几乎没有存款。",
+     ".payday": "借发薪日贷款",
+     ".payday.s": "今天就拿到钱，不问原因。下个月要多还40%。",
+     ".payday.h": "很多人没办法按时还，只好展期。",
+     ".card": "刷信用卡",
+     ".card.s": "没还清的话利息很高。",
+     ".family": "请家人帮忙",
+     ".family.s": "一通有点尴尬的电话，他们借给你。",
+     ".without": "先不用车",
+     ".without.s": "坐很久的公交，少上几个班。",
+     ".without.h": "一年工资少10%。幸福感 −3。",
+     "trk.y_without": "没车少上的班"
+    },
+    "zht": {
+     ".t": "手頭很緊",
+     ".x": "發薪日前車壞了，修車要{a}，而你幾乎沒有存款。",
+     ".payday": "借發薪日貸款",
+     ".payday.s": "今天就拿到錢，不問原因。下個月要多還40%。",
+     ".payday.h": "很多人沒辦法按時還，只好展期。",
+     ".card": "刷信用卡",
+     ".card.s": "沒還清的話利息很高。",
+     ".family": "請家人幫忙",
+     ".family.s": "一通有點尷尬的電話，他們借給你。",
+     ".without": "先不用車",
+     ".without.s": "搭很久的公車，少上幾個班。",
+     ".without.h": "一年薪水少10%。幸福感 −3。",
+     "trk.y_without": "沒車少上的班"
+    }
+   }
+  },
+  {
+   "id": "y_payday2",
+   "chain": true,
+   "def": "pay",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "wa"},
+   "opts": [
+    {"id": "pay", "hint": true, "do": "happy -= 1"},
+    {"id": "roll", "hint": true, "do": "debt += .03 * base; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The payday loan is due",
+     ".x": "The loan is due, and paying it leaves you short again. The lender offers to roll it over for another fee.",
+     ".pay": "Pay it off and tighten your belt",
+     ".pay.s": "A lean month.",
+     ".pay.h": "Happiness −1.",
+     ".roll": "Roll it over",
+     ".roll.s": "Another fee, and the debt is still there.",
+     ".roll.h": "Happiness −2. Rolled-over loans grow fast."
+    },
+    "zh": {
+     ".t": "发薪日贷款到期了",
+     ".x": "贷款到期了，还完又不够用。放贷的人说可以再付一笔手续费展期。",
+     ".pay": "还清，勒紧裤腰带",
+     ".pay.s": "一个月过得很省。",
+     ".pay.h": "幸福感 −1。",
+     ".roll": "展期",
+     ".roll.s": "又一笔手续费，债还在。",
+     ".roll.h": "幸福感 −2。展期的贷款会越滚越大。"
+    },
+    "zht": {
+     ".t": "發薪日貸款到期了",
+     ".x": "貸款到期了，還完又不夠用。放貸的人說可以再付一筆手續費展期。",
+     ".pay": "還清，勒緊褲帶",
+     ".pay.s": "一個月過得很省。",
+     ".pay.h": "幸福感 −1。",
+     ".roll": "展期",
+     ".roll.s": "又一筆手續費，債還在。",
+     ".roll.h": "幸福感 −2。展期的貸款會越滾越大。"
+    }
+   }
+  },
+  {
+   "id": "y_sloanpay",
+   "age": [22, 29],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"sloan": "> .3 * base", "liquid": "> .1 * base"}},
+   "def": "min",
+   "tarot": "debt",
+   "art": {"draw": "gradloan", "bg": "wa"},
+   "let": {"a": "Math.min(.1 * base, liquid(), sloan)"},
+   "opts": [
+    {"id": "extra", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); sloan -= a; happy += 1"},
+    {"id": "inv", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('y_sloanI', a, {}, 'trk.y_sloanI')"},
+    {"id": "min"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Paying off the student loan",
+     ".x": "You have some savings and a student loan. You could pay part of it off early.",
+     ".extra": "Pay off extra",
+     ".extra.s": "{a} off your student loan.",
+     ".extra.h": "Happiness +1. Worth it if the loan’s interest is higher than what investing would earn.",
+     ".inv": "Invest it instead",
+     ".inv.s": "{a} into an index fund.",
+     ".inv.h": "Stocks have usually grown about 5% a year after inflation; some student loans charge less than that, some more.",
+     ".min": "Just pay the minimum",
+     ".min.s": "Keep your savings.",
+     "trk.y_sloanI": "Invested instead of repaying early"
+    },
+    "zh": {
+     ".t": "提前还助学贷款？",
+     ".x": "你有些存款，也还背着助学贷款，可以提前还一部分。",
+     ".extra": "多还一些",
+     ".extra.s": "还掉{a}助学贷款。",
+     ".extra.h": "幸福感 +1。如果贷款利率比投资回报高，就划算。",
+     ".inv": "改拿去投资",
+     ".inv.s": "{a}投进指数基金。",
+     ".inv.h": "股票扣除通胀后平均每年约涨5%；有些助学贷款利率比这低，有些比这高。",
+     ".min": "照常还最低",
+     ".min.s": "存款留着。",
+     "trk.y_sloanI": "没提前还款，拿去投资"
+    },
+    "zht": {
+     ".t": "提前還就學貸款？",
+     ".x": "你有些存款，也還揹著就學貸款，可以提前還一部分。",
+     ".extra": "多還一些",
+     ".extra.s": "還掉{a}就學貸款。",
+     ".extra.h": "幸福感 +1。如果貸款利率比投資報酬高，就划算。",
+     ".inv": "改拿去投資",
+     ".inv.s": "{a}投進指數基金。",
+     ".inv.h": "股票扣除通膨後平均每年約漲5%；有些就學貸款利率比這低，有些比這高。",
+     ".min": "照常還最低",
+     ".min.s": "存款留著。",
+     "trk.y_sloanI": "沒提前還款，拿去投資"
+    }
+   }
+  },
+  {
+   "id": "y_fomo",
+   "age": [21, 28],
+   "weight": 0.4,
+   "def": "skip",
+   "tarot": "holiday",
+   "art": {"draw": "passport", "bg": "co"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.06 * base)"}, "hint": true, "rel": 2, "do": "spend('y_fomo', .06 * base, 'trk.y_fomo'); happy += 3"},
+    {"id": "skip", "rel": -2, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A trip with the group",
+     ".x": "Your friends are planning a long weekend abroad for someone’s birthday. Flights, a villa and nights out.",
+     ".go": "Go",
+     ".go.s": "About {a}.",
+     ".go.h": "Happiness +3.",
+     ".skip": "Say you can’t afford it",
+     ".skip.s": "You see the photos online.",
+     "trk.y_fomo": "A trip with friends"
+    },
+    "zh": {
+     ".t": "朋友团出游",
+     ".x": "朋友们计划为某人庆生出国玩个长周末：机票、别墅、夜生活。",
+     ".go": "去",
+     ".go.s": "大约{a}。",
+     ".go.h": "幸福感 +3。",
+     ".skip": "说你负担不起",
+     ".skip.s": "你在网上看他们的照片。",
+     "trk.y_fomo": "跟朋友出游"
+    },
+    "zht": {
+     ".t": "朋友團出遊",
+     ".x": "朋友們計畫為某人慶生出國玩個長週末：機票、別墅、夜生活。",
+     ".go": "去",
+     ".go.s": "大約{a}。",
+     ".go.h": "幸福感 +3。",
+     ".skip": "說你負擔不起",
+     ".skip.s": "你在網路上看他們的照片。",
+     "trk.y_fomo": "跟朋友出遊"
+    }
+   }
+  },
+  {
+   "id": "y_luxury",
+   "age": [24, 29],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "phone",
+   "art": {"draw": "gold", "bg": "mi"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(.12 * base)"}, "hint": true, "do": "spend('y_luxury', .12 * base, 'trk.y_luxury'); happy += 3; habit += .01"},
+    {"id": "mid", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('y_luxury', .03 * base, 'trk.y_luxury'); happy += 1"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A reward for yourself",
+     ".x": "You have been working hard. A watch in a shop window has caught your eye.",
+     ".big": "The designer watch",
+     ".big.s": "About {a}.",
+     ".big.h": "Happiness +3 at first; the habit of treating yourself sticks a little.",
+     ".mid": "A nice, ordinary watch",
+     ".mid.s": "About {a}.",
+     ".mid.h": "Happiness +1.",
+     ".none": "Your phone tells the time",
+     ".none.s": "Free.",
+     "trk.y_luxury": "A watch"
+    },
+    "zh": {
+     ".t": "犒赏自己",
+     ".x": "你一直很努力。橱窗里有只表吸引了你。",
+     ".big": "名牌表",
+     ".big.s": "大约{a}。",
+     ".big.h": "一开始幸福感 +3；犒赏自己的习惯会留下一点。",
+     ".mid": "一只普通的好表",
+     ".mid.s": "大约{a}。",
+     ".mid.h": "幸福感 +1。",
+     ".none": "手机就能看时间",
+     ".none.s": "不花钱。",
+     "trk.y_luxury": "手表"
+    },
+    "zht": {
+     ".t": "犒賞自己",
+     ".x": "你一直很努力。櫥窗裡有支錶吸引了你。",
+     ".big": "名牌錶",
+     ".big.s": "大約{a}。",
+     ".big.h": "一開始幸福感 +3；犒賞自己的習慣會留下一點。",
+     ".mid": "一支普通的好錶",
+     ".mid.s": "大約{a}。",
+     ".mid.h": "幸福感 +1。",
+     ".none": "手機就能看時間",
+     ".none.s": "不花錢。",
+     "trk.y_luxury": "手錶"
+    }
+   }
+  },
+  {
+   "id": "y_commute",
+   "age": [22, 29],
+   "weight": 0.35,
+   "when": {"working": true, "car": false},
+   "def": "bus",
+   "tarot": "car2",
+   "art": {"draw": "moto", "bg": "wa"},
+   "opts": [
+    {"id": "bike", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "T('y_bike', {kind: 'custom', label: M('trk.y_bike')}); rec('y_bike', -.015 * base, 10, .3); if (roll('y_bike') < .05) health -= 4"},
+    {"id": "escoot", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('y_escoot', .03 * base, 'trk.y_escoot'); T('y_bike', {kind: 'custom', label: M('trk.y_bike')}); rec('y_bike', -.01 * base, 5)"},
+    {"id": "bus"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Getting to work",
+     ".x": "Fares keep going up. Some colleagues cycle in.",
+     ".bike": "Cycle to work",
+     ".bike.s": "Saves about {a} a year in fares.",
+     ".bike.h": "Health a little better each year; a small risk of a fall.",
+     ".escoot": "Buy an electric scooter",
+     ".escoot.s": "About {a} up front, then cheaper trips.",
+     ".escoot.h": "Saves a little each year for a few years.",
+     ".bus": "Keep taking the bus",
+     ".bus.s": "Reading time.",
+     "trk.y_bike": "Fares saved",
+     "trk.y_escoot": "Electric scooter"
+    },
+    "zh": {
+     ".t": "怎么上班",
+     ".x": "车费一直涨。有些同事骑车上班。",
+     ".bike": "骑车上班",
+     ".bike.s": "每年省下大约{a}的车费。",
+     ".bike.h": "健康每年好一点；有小小的摔车风险。",
+     ".escoot": "买电动滑板车",
+     ".escoot.s": "先花大约{a}，之后通勤更便宜。",
+     ".escoot.h": "几年里每年省一点。",
+     ".bus": "继续坐公交",
+     ".bus.s": "可以看书。",
+     "trk.y_bike": "省下的车费",
+     "trk.y_escoot": "电动滑板车"
+    },
+    "zht": {
+     ".t": "怎麼上班",
+     ".x": "車資一直漲。有些同事騎車上班。",
+     ".bike": "騎車上班",
+     ".bike.s": "每年省下大約{a}的車資。",
+     ".bike.h": "健康每年好一點；有小小的摔車風險。",
+     ".escoot": "買電動滑板車",
+     ".escoot.s": "先花大約{a}，之後通勤更便宜。",
+     ".escoot.h": "幾年裡每年省一點。",
+     ".bus": "繼續搭公車",
+     ".bus.s": "可以看書。",
+     "trk.y_bike": "省下的車資",
+     "trk.y_escoot": "電動滑板車"
+    }
+   }
   }
  ]
 }
