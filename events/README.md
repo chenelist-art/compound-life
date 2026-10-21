@@ -140,6 +140,7 @@ They look like JavaScript but can only touch the life being played:
 | `bump(id, m, M('trk.x'))` / `tmpPay(id, m, years, 'trk.x')` | a lasting / temporary pay change |
 | `mkLot(id, {rate, lock}, 'trk.x')`, `addLot(id, a)`, `putIn(id, a, {…}, 'trk.x')`, `yearly(id, {amt, until}, {…}, 'trk.x')` | savings and investments |
 | `buy(P)`, `buyAt(P, {dp, fee, r, n, lk})` | buy a home |
+| `famPay(id, a)`, `famNote()` | your family pays `a` (in typical wages) for you as a child: a poor or working family borrows it and you help repay it over five years from 22; a better-off one pays from savings, so your inheritance is smaller. `id` is the event (its title names the passbook line). `famNote()` is the line to add under the option (`{b}`) that says they would borrow |
 | `later(age, 'kind', {…})` | a consequence in a later year (see below) |
 | `next('event', years, {…})` | a follow-up card (see below) |
 | `rl(d)` | change Relationships |

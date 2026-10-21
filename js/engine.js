@@ -186,7 +186,9 @@ function price(s){return s.hm*s.base}
 function rent(s){return .03*price(s)}
 function mPay(L){return amort(L,.03,30)}
 function carPay(P){return amort(P,.06,5)}
-function inhAmt(s){return s.fam==='rich'?6*s.base:1.2*s.base}
+/* what your parents leave you; less what they spent on extras for you as a child (famSpent, see famPay in js/verbs.js), with what it
+   could have grown to, down to a quarter of it (game rule) */
+function inhAmt(s){const m=s.fam==='rich'?6:1.2;return Math.max(.25*m,m-1.5*(s.famSpent||0))*s.base}
 function bizP(s){return Math.min(.75,.16+skill(s)*.004+s.hustleYears*.025)}
 function eduCost(s,k){const fp={rich:1,middle:.5}[s.fam]||0;const sc=(k==='uni'&&skill(s)>=26)?.6:0;return s.uni*s.base*(k==='uni'?1:.35)*(1-fp)*(1-sc)}
 function kidsCost(s,a){let c=0;for(const b of s.kids)if(a>=b&&a<b+22)c+=.15*s.base;return c}
@@ -205,7 +207,7 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
   done:{},trk:{},earned:0,outUntil:0,sold:0,lastSal:0,lastInc:0,pivoted:false,pivotYear:-1,
   cutDebt:false,debtSeen:-99,noDeath:false,milestones:{},brokeLogged:0,
   plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
-  kidEdu:null,kidFee:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
+  kidEdu:null,kidFee:0,famSpent:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
   rel:50,offUntil:0,uncle:false,refN:0,lonely:0,
   pt:null,ptN:0,meetAt:null,meetCar:null,look:-1,tryAt:null,ask:null,heal:null,acts:[],hist:{},chain:{},
   ill:null,illAge:-1,illType:null,dep:null,depAge:-1,lowHap:0,grindY:0,

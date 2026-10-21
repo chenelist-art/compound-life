@@ -53,6 +53,13 @@ const upFront=(P,dp,fee)=>MN((dp+(fee!=null?fee:.03))*P),yrPay=(P,dp,r,n)=>MN(am
 function kidWin(s,p,m){later(s,s.age+6,'kidWin',{p,m})}
 /* the family pays for a teenager's coaching; a poorer family borrows, and you help repay it once you work */
 function famCost(s,id,a){if(s.fam==='poor'||s.fam==='working')later(s,22,'famDebt',{id,a:a*s.base})}
+/* the family pays for something for you as a child (a: in typical wages, all of it; id: the event, which names the passbook
+   line): a poor or working family borrows it and you help repay it over five years from 22; a better-off one pays from its
+   savings, which leaves you a smaller inheritance (inhAmt in engine.js). Game rule. famNote(): says so under an option */
+const famLoan=s=>s.fam==='poor'||s.fam==='working';
+function famPay(s,id,a){if(!(a>0))return;const x=M('e.'+id+'.t');if(famLoan(s)){later(s,Math.max(22,s.age+1),'kidLoan',{id:'kl_'+id,a:a*s.base,x});return}
+ s.famSpent=(s.famSpent||0)+a;const t=T(s,'fs_'+id,{kind:'custom',label:M('trk.famSpent',{x}),paid:0});t.paid+=a*s.base;t.v-=1.5*a*s.base;t.note=M('note.famSpent',{a:MN(t.paid)})}
+const famNote=s=>famLoan(s)?M('kid.borrow'):'';
 /* Brazil's FGTS: 8% of pay a year goes into the account (balance capped at eight years' worth, an ESTIMATE of what builds up
    between payouts); on a layoff you take it all plus the 40% fine, or only the fine if you chose saque-aniversário */
 function fgtsBal(s){const f=s.fgts;return .08*Math.max(s.lastSal,s.base)*Math.min(8,Math.max(0,s.age-f.since))}
@@ -67,6 +74,7 @@ Object.assign(LATER,{
  unbump:(s,x)=>{s.bump[x.id]=1;const t=s.trk[x.id];if(t)t.note=M('note.payEnd')},
  ctrEnd:(s,x,L)=>{s.bump[x.id]=1;s.costMul=(s.costMul||1)/x.cm;s.ctr=null;rl(s,3);s.happy+=3;const t=s.trk[x.id];if(t){t.nk='note.ctrEnd';t.note=M('note.ctrEnd',{a:MN(t.paid||0)})}L&&L(M('log.ctrEnd'),'good')},
  kidWin:(s,x,L)=>{if(evR(s,'kidWin')()<x.p){s.kidFeeM=(s.kidFeeM||1)*x.m;L&&L(M('log.kidWin'),'good')}},
+ kidLoan:(s,x,L)=>{T(s,x.id,{kind:'custom',label:M('trk.kidLoan',{x:x.x})});rec(s,x.id,x.a/5,5);L&&L(M('log.kidLoan',{a:MN(x.a),x:x.x}),'')},
  famDebt:(s,x,L)=>{T(s,x.id,{kind:'custom',label:M('trk.famDebt')});rec(s,x.id,x.a/5,5);L&&L(M('log.famDebt',{a:MN(x.a)}),'')}
 });
 
@@ -76,7 +84,7 @@ Object.assign(LATER,{
  /* money */ pay,spend,rec,stopRec,stopYearly,putIn,yearly,addLot,mkLot,withdrawEq,bump,tmpPay,setSave,bet,
  /* passbook */ T,
  /* skill, study and work */ addSkill,startStudy,startCert,learnLuck,edLv,pickCareer,endCareer,offerSwitch,carStartPay,carLock,carHint,startBiz,
- /* home, car, family */ buy,buyAt,homeFirst,wed,startDating,kidWin,famCost,
+ /* home, car, family */ buy,buyAt,homeFirst,wed,startDating,kidWin,famCost,famPay,famNote,
  /* places and schemes */ contract,cityMove,medPlan,penClaim,penScheme,abroadTo,
  /* health */ treat,illYou,survP,depFee,depStart,
  /* markets */ crashSell,crashTrack,crashPct,

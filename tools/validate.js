@@ -52,7 +52,7 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
  const fields=new Set([...Object.keys(life),...engineFields()]),reads=[],writes=new Set(),sets=new Set(),allReads=new Set();
  const art=artNames(),dict=B.texts(data);
  const evById={},laterKinds=new Map(),nextRefs=[];
- for(const k of['div','ill','unbump','ctrEnd','kidWin','famDebt'])laterKinds.set(k,'engine');
+ for(const k of['div','ill','unbump','ctrEnd','kidWin','famDebt','kidLoan'])laterKinds.set(k,'engine');
  const has=(L,k)=>dict[L][k]!=null;
  /* text keys: present in all three languages */
  function needKey(where,key){const miss=LANGS.filter(L=>!has(L,key));if(miss.length)E(where,'missing text "'+key+'" in '+miss.join(', '))}
