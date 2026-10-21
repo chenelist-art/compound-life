@@ -74,7 +74,7 @@ Object.assign(LATER,{
  unbump:(s,x)=>{s.bump[x.id]=1;const t=s.trk[x.id];if(t)t.note=M('note.payEnd')},
  ctrEnd:(s,x,L)=>{s.bump[x.id]=1;s.costMul=(s.costMul||1)/x.cm;s.ctr=null;rl(s,3);s.happy+=3;const t=s.trk[x.id];if(t){t.nk='note.ctrEnd';t.note=M('note.ctrEnd',{a:MN(t.paid||0)})}L&&L(M('log.ctrEnd'),'good')},
  kidWin:(s,x,L)=>{if(evR(s,'kidWin')()<x.p){s.kidFeeM=(s.kidFeeM||1)*x.m;L&&L(M('log.kidWin'),'good')}},
- kidLoan:(s,x,L)=>{T(s,x.id,{kind:'custom',label:M('trk.kidLoan',{x:x.x})});rec(s,x.id,x.a/5,5);L&&L(M('log.kidLoan',{a:MN(x.a),x:x.x}),'')},
+ kidLoan:(s,x,L)=>{T(s,x.id,{kind:'custom',label:M('trk.famLoan',{x:x.x})});rec(s,x.id,x.a/5,5);L&&L(M('log.famLoan',{a:MN(x.a),x:x.x}),'')},
  famDebt:(s,x,L)=>{T(s,x.id,{kind:'custom',label:M('trk.famDebt')});rec(s,x.id,x.a/5,5);L&&L(M('log.famDebt',{a:MN(x.a)}),'')}
 });
 
