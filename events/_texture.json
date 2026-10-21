@@ -216,6 +216,75 @@
    {"id": "e_whenyoung", "cat": "family", "who": {"role": "kid", "test": "p.kids > 0"}, "en": "A grandchild asked what life was like when you were young. You talked for an hour.", "zh": "孙辈问你年轻时的生活是什么样的，你讲了一个小时。", "zht": "孫子問你年輕時的生活是什麼樣子，你講了一個小時。"},
    {"id": "e_flowers", "cat": "hobby", "en": "You finally mastered your phone’s camera. Your family received 400 photos of flowers.", "zh": "你终于学会了用手机拍照，家人收到了四百张花的照片。", "zht": "你終於學會用手機拍照，家人收到了四百張花的照片。"},
    {"id": "e_sunrise", "cat": "weather", "en": "You watched the sunrise and thought about nothing at all. It was lovely.", "zh": "你看着日出，什么都没想，感觉很好。", "zht": "你看著日出，什麼都沒想，感覺很好。"}
+  ]},
+  {"id": "c_IN", "about": "India", "when": {"age": [3,110], "country": "IN"}, "moments": [
+   {"id": "in_diwali", "cat": "festival", "again": 3, "en": "Diwali: oil lamps on every step, sweets from every neighbour, fireworks until late.", "zh": "排灯节：每级台阶都点着油灯，邻居们送来甜点，烟花放到深夜。", "zht": "排燈節：每一級台階都點著油燈，鄰居們送來甜點，煙火放到深夜。"},
+   {"id": "in_holi", "cat": "festival", "again": 3, "en": "Holi: you came home pink, green and blue, and the colour took a week to wash out.", "zh": "洒红节：你回家时一身粉、绿、蓝，颜色洗了一个星期才掉。", "zht": "灑紅節：你回家時一身粉、綠、藍，顏色洗了一個星期才掉。"},
+   {"id": "in_monsoon", "cat": "weather", "again": 4, "en": "The monsoon arrived. The streets turned into rivers and the air finally cooled.", "zh": "季风雨来了，街道成了河，空气终于凉快下来。", "zht": "季風雨來了，街道成了河，空氣終於涼快下來。"},
+   {"id": "in_cricket", "cat": "hobby", "again": 5, "en": "The whole street crowded round one TV for a cricket match. The last over was unbearable.", "zh": "整条街的人围着一台电视看板球比赛，最后一轮紧张得让人受不了。", "zht": "整條街的人圍著一台電視看板球比賽，最後一輪緊張得讓人受不了。"},
+   {"id": "in_wedding", "cat": "family", "when": {"age": [18,110]}, "fx": {"cash": -0.015}, "en": "A cousin’s wedding lasted three days. You danced every night and gave a generous gift.", "zh": "表亲的婚礼办了三天，你每晚都跳舞，还送了一份厚礼。", "zht": "表親的婚禮辦了三天，你每晚都跳舞，還送了一份厚禮。"}
+  ]},
+  {"id": "c_CN", "about": "China", "when": {"age": [3,110], "country": "CN"}, "moments": [
+   {"id": "cn_hongbao", "cat": "festival", "again": 3, "when": {"age": [3,17]}, "en": "Spring Festival: red envelopes from every relative, which your parents then “kept safe” for you.", "zh": "春节你从每位亲戚那里收到红包，然后被爸妈“替你保管”了。", "zht": "春節你從每位親戚那裡收到紅包，然後被爸媽「幫你保管」了。"},
+   {"id": "cn_chunyun", "cat": "festival", "again": 3, "when": {"age": [18,64]}, "fx": {"rel": 1}, "en": "Twelve hours on a packed train to get home for Spring Festival. Worth it.", "zh": "你在挤满人的火车上坐了十二个小时回家过年，值了。", "zht": "你在擠滿人的火車上坐了十二個小時回家過年，值得。"},
+   {"id": "cn_givered", "cat": "money", "again": 4, "when": {"age": [25,110]}, "fx": {"cash": -0.02}, "en": "Spring Festival: this year you were the one handing out red envelopes.", "zh": "春节：今年轮到你给别人发红包了。", "zht": "春節：今年輪到你發紅包給別人了。"},
+   {"id": "cn_mooncake", "cat": "festival", "again": 3, "en": "Mid-Autumn Festival: mooncakes under the full moon. Nobody ever finishes the box.", "zh": "中秋节：在满月下吃月饼，那一盒永远吃不完。", "zht": "中秋節：在滿月下吃月餅，那一盒永遠吃不完。"},
+   {"id": "cn_zongzi", "cat": "festival", "again": 4, "en": "Dragon Boat Festival: you learned to wrap zongzi. Yours fell apart in the pot.", "zh": "端午节你学包粽子，你包的那个在锅里散了。", "zht": "端午節你學包粽子，你包的那顆在鍋裡散開了。"},
+   {"id": "cn_squaredance", "cat": "hobby", "when": {"age": [55,110]}, "fx": {"health": 1}, "en": "You joined the square dancing in the evenings. The music carried three streets away.", "zh": "你开始傍晚去跳广场舞，音乐三条街外都听得见。", "zht": "你開始傍晚去跳廣場舞，音樂三條街外都聽得到。"}
+  ]},
+  {"id": "c_NG", "about": "Nigeria", "when": {"age": [3,110], "country": "NG"}, "moments": [
+   {"id": "ng_harmattan", "cat": "weather", "again": 4, "en": "Harmattan: dusty wind from the Sahara, chapped lips and cold mornings.", "zh": "哈马丹风来了：撒哈拉吹来的沙尘，嘴唇干裂，早晨很冷。", "zht": "哈麥丹風來了：撒哈拉吹來的沙塵，嘴唇乾裂，早上很冷。"},
+   {"id": "ng_light", "cat": "home", "again": 3, "en": "The power went off in the middle of a football match. The whole street groaned together.", "zh": "足球赛看到一半停电了，整条街一起叹气。", "zht": "足球賽看到一半停電了，整條街一起嘆氣。"},
+   {"id": "ng_owambe", "cat": "festival", "again": 3, "when": {"age": [18,110]}, "fx": {"cash": -0.01}, "en": "An owambe party: matching aso-ebi fabric, loud music and food until late. The fabric wasn’t free.", "zh": "参加了一场 owambe 派对：大家穿同款 aso-ebi 布料，音乐震天，吃到深夜。布料可不便宜。", "zht": "參加了一場 owambe 派對：大家穿同款 aso-ebi 布料，音樂震天，吃到深夜。布料可不便宜。"},
+   {"id": "ng_eagles", "cat": "hobby", "again": 5, "en": "The Super Eagles won, and car horns sounded all night.", "zh": "超级雄鹰队赢了，汽车喇叭响了一整夜。", "zht": "超級雄鷹隊贏了，汽車喇叭響了一整夜。"},
+   {"id": "ng_rains", "cat": "weather", "again": 4, "en": "The rainy season came early. The road to the market turned to mud.", "zh": "雨季提前来了，去市场的路变成了泥地。", "zht": "雨季提早來了，去市場的路變成了泥巴路。"},
+   {"id": "ng_jollof", "cat": "friends", "en": "A long argument with friends about whose jollof rice was best. Nobody won.", "zh": "你和朋友争论谁做的西非辣味饭（jollof）最好吃，谁也没赢。", "zht": "你和朋友爭論誰做的西非辣味飯（jollof）最好吃，誰也沒贏。"}
+  ]},
+  {"id": "c_PK", "about": "Pakistan", "when": {"age": [3,110], "country": "PK"}, "moments": [
+   {"id": "pk_eidi", "cat": "festival", "again": 3, "when": {"age": [3,15]}, "en": "Eid: new clothes, sweet sheer khurma, and a little Eidi money from every uncle.", "zh": "开斋节：穿新衣服，喝甜甜的奶粉丝，每位叔伯都塞给你一点过节钱。", "zht": "開齋節：穿新衣服，喝甜甜的奶粉絲，每位叔伯都塞給你一點過節錢。"},
+   {"id": "pk_cricket", "cat": "hobby", "again": 5, "en": "Pakistan won a big cricket match, and the whole neighbourhood came out to celebrate.", "zh": "巴基斯坦赢了一场重要的板球赛，整个街区都出来庆祝。", "zht": "巴基斯坦贏了一場重要的板球賽，整個街區都出來慶祝。"},
+   {"id": "pk_loadshed", "cat": "home", "again": 3, "fx": {"happy": -1}, "en": "Load-shedding: in the hottest month the power went off for hours every afternoon.", "zh": "轮流停电：最热的那个月，每天下午都停电好几个小时。", "zht": "輪流停電：最熱的那個月，每天下午都停電好幾個小時。"},
+   {"id": "pk_14aug", "cat": "festival", "again": 3, "en": "Independence Day: green flags on every roof and whistles that didn’t stop all day.", "zh": "独立日：每个屋顶都挂着绿旗，口哨声一整天没停过。", "zht": "獨立紀念日：每個屋頂都掛著綠旗，哨子聲一整天沒停過。"},
+   {"id": "pk_kites", "cat": "hobby", "when": {"age": [6,30]}, "en": "You flew kites from the rooftop with your cousins until your fingers were sore.", "zh": "你和表兄弟在屋顶放风筝，放到手指都疼了。", "zht": "你和表兄弟在屋頂放風箏，放到手指都痛了。"}
+  ]},
+  {"id": "c_ID", "about": "Indonesia", "when": {"age": [3,110], "country": "ID"}, "moments": [
+   {"id": "id_mudik", "cat": "festival", "again": 3, "when": {"age": [18,64]}, "en": "Mudik: you went home for Lebaran with half the country, and sat in traffic all day.", "zh": "回乡过开斋节（mudik）：你和半个国家的人一起回家，堵了一整天的车。", "zht": "返鄉過開齋節（mudik）：你和半個國家的人一起回家，塞了一整天的車。"},
+   {"id": "id_krupuk", "cat": "festival", "again": 3, "when": {"age": [5,15]}, "fx": {"happy": 1}, "en": "Independence Day games on 17 August: you won the krupuk-eating race.", "zh": "8月17日独立日游戏：你赢了吃虾片比赛。", "zht": "8月17日獨立紀念日遊戲：你贏了吃蝦餅比賽。"},
+   {"id": "id_bukber", "cat": "friends", "again": 3, "en": "Ramadan: breaking the fast with old friends, every week.", "zh": "斋月：每周都和老朋友一起开斋。", "zht": "齋戒月：每週都和老朋友一起開齋。"},
+   {"id": "id_banjir", "cat": "weather", "again": 4, "en": "The rainy season flooded your street knee-deep. You lifted everything onto the table, again.", "zh": "雨季的洪水淹到膝盖，你又把东西都搬到了桌子上。", "zht": "雨季的大水淹到膝蓋，你又把東西都搬到桌子上。"},
+   {"id": "id_ash", "cat": "weather", "en": "A volcano nearby rumbled, and fine ash covered every car for a week.", "zh": "附近的火山隆隆作响，一周里每辆车都蒙着一层细灰。", "zht": "附近的火山隆隆作響，一週裡每輛車都蓋著一層細灰。"},
+   {"id": "id_ojek", "cat": "work", "when": {"working": true}, "en": "You ordered lunch on your phone every day. The delivery rider learned your name.", "zh": "你每天用手机点午餐，外卖骑手都记住了你的名字。", "zht": "你每天用手機點午餐，外送員都記住了你的名字。"}
+  ]},
+  {"id": "c_ET", "about": "Ethiopia", "when": {"age": [3,110], "country": "ET"}, "moments": [
+   {"id": "et_meskel", "cat": "festival", "again": 3, "en": "Meskel: the whole neighbourhood gathered round the great bonfire and watched it fall.", "zh": "十字架节（Meskel）：街坊们围着巨大的篝火，看它慢慢倒下。", "zht": "十字架節（Meskel）：街坊們圍著巨大的營火，看它慢慢倒下。"},
+   {"id": "et_timkat", "cat": "festival", "again": 3, "en": "Timkat: white robes, singing in the streets, and blessed water splashed on everyone.", "zh": "主显节（Timkat）：白袍、街头的歌声，祝福过的水洒向每个人。", "zht": "主顯節（Timkat）：白袍、街頭的歌聲，祝福過的水灑向每個人。"},
+   {"id": "et_newyear", "cat": "festival", "again": 3, "when": {"age": [3,14]}, "en": "Enkutatash, the New Year: you went door to door with flowers and songs.", "zh": "埃塞俄比亚新年：你带着鲜花挨家挨户唱新年歌。", "zht": "衣索比亞新年：你帶著鮮花挨家挨戶唱新年歌。"},
+   {"id": "et_coffee", "cat": "home", "fx": {"rel": 1}, "en": "The coffee ceremony took all afternoon: three rounds, popcorn, and news of everyone.", "zh": "咖啡仪式花了一整个下午：喝三轮，配爆米花，聊遍了所有人的近况。", "zht": "咖啡儀式花了一整個下午：喝三輪，配爆米花，聊遍了所有人的近況。"},
+   {"id": "et_kiremt", "cat": "weather", "again": 4, "en": "The long rains came. Everything turned green, and every road turned to mud.", "zh": "漫长的雨季来了，到处都变绿了，每条路也都成了泥路。", "zht": "漫長的雨季來了，到處都變綠了，每條路也都成了泥巴路。"},
+   {"id": "et_run", "cat": "hobby", "when": {"age": [16,60]}, "fx": {"health": 1}, "en": "You ran the Great Ethiopian Run with thousands of others in matching shirts.", "zh": "你和成千上万穿同款T恤的人一起跑了埃塞俄比亚大长跑。", "zht": "你和成千上萬穿同款T恤的人一起跑了衣索比亞大路跑。"}
+  ]},
+  {"id": "c_US", "about": "United States", "when": {"age": [3,110], "country": "US"}, "moments": [
+   {"id": "us_thanks", "cat": "festival", "again": 3, "en": "Thanksgiving: too much food, one argument about politics, and leftovers for a week.", "zh": "感恩节：吃得太多，为政治吵了一架，剩菜吃了一个星期。", "zht": "感恩節：吃太多，為了政治吵了一架，剩菜吃了一個星期。"},
+   {"id": "us_july4", "cat": "festival", "again": 3, "en": "The Fourth of July: fireworks over town, and a barbecue that went on after dark.", "zh": "七月四日国庆：小镇上空放烟花，烧烤一直吃到天黑以后。", "zht": "七月四日國慶：小鎮上空放煙火，烤肉一直吃到天黑以後。"},
+   {"id": "us_halloween", "cat": "festival", "again": 3, "when": {"age": [4,12]}, "en": "Halloween: you went trick-or-treating as a ghost and came back with a pillowcase of candy.", "zh": "万圣节你扮成幽灵去讨糖，带回了满满一枕套的糖果。", "zht": "萬聖節你扮成幽靈去要糖，帶回了滿滿一枕頭套的糖果。"},
+   {"id": "us_snowday", "cat": "weather", "again": 3, "when": {"age": [5,17]}, "en": "A snow day! School was closed and you built a lopsided snowman.", "zh": "下雪停课！你堆了一个歪歪扭扭的雪人。", "zht": "下雪停課！你堆了一個歪歪扭扭的雪人。"},
+   {"id": "us_yardsale", "cat": "money", "when": {"age": [25,110]}, "fx": {"cash": 0.01}, "en": "You held a yard sale and sold things you’d forgotten you owned.", "zh": "你在院子里办了旧货甩卖，卖掉了好多你都忘了的东西。", "zht": "你在院子裡辦了舊貨拍賣，賣掉了好多你都忘了的東西。"}
+  ]},
+  {"id": "c_BD", "about": "Bangladesh", "when": {"age": [3,110], "country": "BD"}, "moments": [
+   {"id": "bd_boishakh", "cat": "festival", "again": 3, "en": "Pohela Boishakh: red and white clothes, a procession, and panta bhat with hilsa for breakfast.", "zh": "孟加拉新年：穿红白相间的衣服，看游行，早餐吃泡饭配鲥鱼。", "zht": "孟加拉新年：穿紅白相間的衣服，看遊行，早餐吃泡飯配鰣魚。"},
+   {"id": "bd_wade", "cat": "weather", "again": 3, "when": {"age": [6,17]}, "en": "Weeks of monsoon rain. You waded to school with your shoes in your hand.", "zh": "连续几周的季风雨，你拎着鞋蹚水去上学。", "zht": "連續幾週的季風雨，你提著鞋涉水去上學。"},
+   {"id": "bd_cyclone", "cat": "weather", "again": 5, "en": "A cyclone warning: the whole family sat up all night listening to the radio.", "zh": "气旋警报：全家人守着收音机熬了一整夜。", "zht": "氣旋警報：全家人守著收音機熬了一整夜。"},
+   {"id": "bd_eid", "cat": "festival", "again": 3, "en": "Eid: the city emptied as everyone went home to their village.", "zh": "开斋节：大家都回乡下老家，城里一下子空了。", "zht": "開齋節：大家都回鄉下老家，城裡一下子空了。"},
+   {"id": "bd_rickshaw", "cat": "work", "when": {"working": true}, "en": "Every morning your rickshaw driver took the same route, told the same jokes and sang the same song.", "zh": "每天早上那位三轮车夫都走同一条路，讲同样的笑话，唱同一首歌。", "zht": "每天早上那位三輪車伕都走同一條路，講同樣的笑話，唱同一首歌。"},
+   {"id": "bd_tigers", "cat": "hobby", "again": 5, "en": "Bangladesh won a cricket match nobody expected them to win. The streets filled with tiger flags.", "zh": "孟加拉队赢了一场谁都没想到能赢的板球赛，街上到处是老虎旗。", "zht": "孟加拉隊贏了一場誰都沒想到能贏的板球賽，街上到處是老虎旗。"}
+  ]},
+  {"id": "c_BR", "about": "Brazil", "when": {"age": [3,110], "country": "BR"}, "moments": [
+   {"id": "br_carnaval", "cat": "festival", "again": 3, "when": {"age": [10,80]}, "fx": {"happy": 2}, "en": "Carnaval: four days of music in the streets. You had lost your voice by Tuesday.", "zh": "狂欢节：街上四天的音乐，到星期二你嗓子都哑了。", "zht": "嘉年華：街上四天的音樂，到星期二你嗓子都啞了。"},
+   {"id": "br_junina", "cat": "festival", "again": 3, "en": "Festa Junina: you wore a straw hat and danced the quadrilha, badly.", "zh": "六月节：你戴着草帽，跳了一段不太标准的方块舞。", "zht": "六月節：你戴著草帽，跳了一段不太標準的方塊舞。"},
+   {"id": "br_copa", "cat": "hobby", "again": 4, "en": "Brazil played in the World Cup. Work stopped, and everyone watched together.", "zh": "巴西队踢世界杯，大家都停下工作一起看球。", "zht": "巴西隊踢世界盃，大家都停下工作一起看球。"},
+   {"id": "br_churrasco", "cat": "friends", "fx": {"rel": 1}, "en": "A Sunday churrasco with family and friends that lasted until dark.", "zh": "星期天和亲友吃巴西烤肉，一直吃到天黑。", "zht": "星期天和親友吃巴西烤肉，一直吃到天黑。"},
+   {"id": "br_storm", "cat": "weather", "again": 4, "en": "A summer storm flooded the avenue in ten minutes, then the sun came out again.", "zh": "夏天的暴雨十分钟就淹了大道，然后太阳又出来了。", "zht": "夏天的暴雨十分鐘就淹了大道，然後太陽又出來了。"},
+   {"id": "br_natal", "cat": "festival", "again": 3, "en": "Christmas in the heat: dinner at midnight, then a swim the next morning.", "zh": "炎热中过圣诞：午夜吃大餐，第二天早上去游泳。", "zht": "炎熱中過聖誕：午夜吃大餐，隔天早上去游泳。"}
   ]}
  ]
 }
