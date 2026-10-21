@@ -192,9 +192,7 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
  /* a placeholder only another language uses is probably a typo; {b} for the English {a} is the money-without-sign convention */
  for(const k of Object.keys(data.ui.en))for(const L of['zh','zht'])if(data.ui[L][k]!=null){const a=holes(data.ui.en[k]),b=holes(data.ui[L][k]);for(const x of b)if(!a.has(x)&&!(x==='b'&&a.has('a')))W('i18n/'+L+'.json "'+k+'"','uses {'+x+'}, the English does not (fine if the code gives it)')}
  /* ---------- gen/ up to date ---------- */
- if(opt.stale!==false)for(const[f,txt]of Object.entries(gen)){const p=path.join(ROOT,f);if(!fs.existsSync(p)||fs.readFileSync(p,'utf8').replace(/
-/g,'
-')!==txt){E(f,'out of date: run node tools/build.js');break}}
+ if(opt.stale!==false)for(const[f,txt]of Object.entries(gen)){const p=path.join(ROOT,f);if(!fs.existsSync(p)||fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n')!==txt){E(f,'out of date: run node tools/build.js');break}}
  /* ---------- play ---------- */
  let sim=null;if(!errors.length){const c=chainTest(data);if(c)E('engine',c)}
  if(opt.sim&&!errors.length)sim=simulate(gen,opt.sim,errors,warnings);
