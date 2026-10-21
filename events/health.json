@@ -1029,6 +1029,542 @@
      "trk.f_drink": "喝酒的開銷"
     }
    }
+  },
+  {
+   "id": "m_screening",
+   "src": "Bowel, breast and cervical screening lower deaths from those cancers (WHO, Screening programmes: a short guide, 2020)",
+   "age": [45, 59],
+   "weight": 0.35,
+   "when": {"test": "!screen"},
+   "def": "skip",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "spend('m_screen', .015 * base, 'trk.m_screen'); screen = true"},
+    {"id": "skip", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A screening letter",
+     ".x": "A letter invites you for cancer screening, now you have reached the age for it.",
+     ".yes": "Go",
+     ".yes.s": "About {a} for the tests not covered.",
+     ".yes.h": "Cancers found early are much easier to treat.",
+     ".skip": "Put the letter in a drawer",
+     ".skip.s": "You feel fine.",
+     ".skip.h": "Without screening, illness is found later.",
+     "trk.m_screen": "Cancer screening"
+    },
+    "zh": {
+     ".t": "筛检通知",
+     ".x": "一封信通知你到了做癌症筛检的年纪。",
+     ".yes": "去做",
+     ".yes.s": "没给付的检查大约{a}。",
+     ".yes.h": "癌症越早发现越好治。",
+     ".skip": "把信塞进抽屉",
+     ".skip.s": "你觉得自己没事。",
+     ".skip.h": "不筛检，疾病就会晚一点才发现。",
+     "trk.m_screen": "癌症筛检"
+    },
+    "zht": {
+     ".t": "篩檢通知",
+     ".x": "一封信通知你到了做癌症篩檢的年紀。",
+     ".yes": "去做",
+     ".yes.s": "沒給付的檢查大約{a}。",
+     ".yes.h": "癌症越早發現越好治。",
+     ".skip": "把信塞進抽屜",
+     ".skip.s": "你覺得自己沒事。",
+     ".skip.h": "不篩檢，疾病就會晚一點才發現。",
+     "trk.m_screen": "癌症篩檢"
+    }
+   }
+  },
+  {
+   "id": "m_weight",
+   "age": [45, 55],
+   "weight": 0.4,
+   "def": "pills",
+   "tarot": "gym",
+   "art": {"draw": "gauge", "bg": "ya"},
+   "opts": [
+    {"id": "program", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('m_wprog', .03 * base, 'trk.m_wprog'); health += 4; happy -= 1"},
+    {"id": "pills", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "T('m_bp', {kind: 'ghost', label: M('trk.m_bp')}); rec('m_bp', .01 * base, 20); health += 2"},
+    {"id": "ignore", "hint": true, "do": "health -= 3", "next": {"event": "m_diabetes", "in": [3, 6], "p": 0.4}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A warning from the doctor",
+     ".x": "Your blood pressure and blood sugar are both higher than they should be.",
+     ".program": "A diet and exercise programme",
+     ".program.s": "About {a}, and a lot of willpower.",
+     ".program.h": "Health +4, Happiness −1.",
+     ".pills": "Daily tablets",
+     ".pills.s": "About {a} a year.",
+     ".pills.h": "Health +2.",
+     ".ignore": "Carry on as you are",
+     ".ignore.s": "You feel fine.",
+     ".ignore.h": "Health −3. Often turns into diabetes within a few years.",
+     "trk.m_wprog": "Diet and exercise programme",
+     "trk.m_bp": "Blood pressure tablets"
+    },
+    "zh": {
+     ".t": "医生的警告",
+     ".x": "你的血压和血糖都偏高。",
+     ".program": "参加饮食和运动计划",
+     ".program.s": "大约{a}，加上很多意志力。",
+     ".program.h": "健康 +4，幸福感 −1。",
+     ".pills": "每天吃药",
+     ".pills.s": "每年大约{a}。",
+     ".pills.h": "健康 +2。",
+     ".ignore": "照旧",
+     ".ignore.s": "你觉得没事。",
+     ".ignore.h": "健康 −3。常在几年内变成糖尿病。",
+     "trk.m_wprog": "饮食运动计划",
+     "trk.m_bp": "降压药"
+    },
+    "zht": {
+     ".t": "醫生的警告",
+     ".x": "你的血壓和血糖都偏高。",
+     ".program": "參加飲食和運動計畫",
+     ".program.s": "大約{a}，加上很多意志力。",
+     ".program.h": "健康 +4，幸福感 −1。",
+     ".pills": "每天吃藥",
+     ".pills.s": "每年大約{a}。",
+     ".pills.h": "健康 +2。",
+     ".ignore": "照舊",
+     ".ignore.s": "你覺得沒事。",
+     ".ignore.h": "健康 −3。常在幾年內變成糖尿病。",
+     "trk.m_wprog": "飲食運動計畫",
+     "trk.m_bp": "降血壓藥"
+    }
+   }
+  },
+  {
+   "id": "m_diabetes",
+   "src": "Type 2 diabetes is common after years of high blood sugar and needs lifelong treatment (WHO, Diabetes fact sheet 2024)",
+   "chain": true,
+   "def": "meds",
+   "tarot": "gym",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "meds", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('m_diab', {kind: 'ghost', label: M('trk.m_diab')}); rec('m_diab', .02 * base, 30, .2); health += 1"},
+    {"id": "change", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "spend('m_diabL', .02 * base, 'trk.m_diabL'); health += 3; happy -= 2"},
+    {"id": "ignore", "hint": true, "do": "health -= 5"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Diabetes",
+     ".x": "The tests are back: you have type 2 diabetes.",
+     ".meds": "Medication for life",
+     ".meds.s": "About {a} a year.",
+     ".meds.h": "Health +1, then steady.",
+     ".change": "Change everything: food, walking, sleep",
+     ".change.s": "About {a} for a course and a dietitian.",
+     ".change.h": "Health +3, Happiness −2.",
+     ".ignore": "Hope it goes away",
+     ".ignore.s": "It won’t.",
+     ".ignore.h": "Health −5.",
+     "trk.m_diab": "Diabetes medication",
+     "trk.m_diabL": "Diabetes course"
+    },
+    "zh": {
+     ".t": "糖尿病",
+     ".x": "检查结果出来了：你得了二型糖尿病。",
+     ".meds": "终身吃药",
+     ".meds.s": "每年大约{a}。",
+     ".meds.h": "健康 +1，之后稳定。",
+     ".change": "彻底改变饮食、走路、作息",
+     ".change.s": "课程和营养师大约{a}。",
+     ".change.h": "健康 +3，幸福感 −2。",
+     ".ignore": "希望它自己好",
+     ".ignore.s": "不会的。",
+     ".ignore.h": "健康 −5。",
+     "trk.m_diab": "糖尿病药物",
+     "trk.m_diabL": "糖尿病课程"
+    },
+    "zht": {
+     ".t": "糖尿病",
+     ".x": "檢查結果出來了：你得了第二型糖尿病。",
+     ".meds": "終身吃藥",
+     ".meds.s": "每年大約{a}。",
+     ".meds.h": "健康 +1，之後穩定。",
+     ".change": "徹底改變飲食、走路、作息",
+     ".change.s": "課程和營養師大約{a}。",
+     ".change.h": "健康 +3，幸福感 −2。",
+     ".ignore": "希望它自己好",
+     ".ignore.s": "不會的。",
+     ".ignore.h": "健康 −5。",
+     "trk.m_diab": "糖尿病藥物",
+     "trk.m_diabL": "糖尿病課程"
+    }
+   }
+  },
+  {
+   "id": "m_hip",
+   "age": [50, 59],
+   "weight": 0.3,
+   "def": "wait",
+   "tarot": "health2",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('m_hip', .1 * base, 'trk.m_hip'); health += 4"},
+    {"id": "wait", "hint": true, "do": "health -= 2", "next": {"event": "m_hip2", "in": 2}},
+    {"id": "live", "hint": true, "do": "health -= 3; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A worn-out hip",
+     ".x": "Your hip hurts every step. The surgeon says it needs replacing.",
+     ".private": "Pay to have it done now",
+     ".private.s": "About {a}.",
+     ".private.h": "Health +4.",
+     ".wait": "Wait for the free operation",
+     ".wait.s": "Two years on the list.",
+     ".wait.h": "Health −2 while you wait.",
+     ".live": "Live with it",
+     ".live.s": "A walking stick.",
+     ".live.h": "Health −3, Happiness −2.",
+     "trk.m_hip": "Hip replacement"
+    },
+    "zh": {
+     ".t": "髋关节磨损",
+     ".x": "你走每一步髋关节都痛。外科医生说要换人工关节。",
+     ".private": "自费马上做",
+     ".private.s": "大约{a}。",
+     ".private.h": "健康 +4。",
+     ".wait": "排队等免费手术",
+     ".wait.s": "要排两年。",
+     ".wait.h": "等待期间健康 −2。",
+     ".live": "忍着",
+     ".live.s": "拄拐杖。",
+     ".live.h": "健康 −3，幸福感 −2。",
+     "trk.m_hip": "人工髋关节"
+    },
+    "zht": {
+     ".t": "髖關節磨損",
+     ".x": "你走每一步髖關節都痛。外科醫生說要換人工關節。",
+     ".private": "自費馬上做",
+     ".private.s": "大約{a}。",
+     ".private.h": "健康 +4。",
+     ".wait": "排隊等免費手術",
+     ".wait.s": "要排兩年。",
+     ".wait.h": "等待期間健康 −2。",
+     ".live": "忍著",
+     ".live.s": "拄拐杖。",
+     ".live.h": "健康 −3，幸福感 −2。",
+     "trk.m_hip": "人工髖關節"
+    }
+   }
+  },
+  {
+   "id": "m_hip2",
+   "chain": true,
+   "def": "take",
+   "tarot": "health2",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "take", "hint": true, "do": "health += 4; if (working()) tmpPay('m_hip2', .85, 1, 'trk.m_hip2')"},
+    {"id": "later", "hint": true, "do": "health -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your operation date",
+     ".x": "A letter gives you a date for your free hip operation, in a busy month at work.",
+     ".take": "Take the date",
+     ".take.s": "Six weeks off work.",
+     ".take.h": "Health +4; about 15% less pay this year if you work.",
+     ".later": "Ask for a later date",
+     ".later.s": "Back of the queue.",
+     ".later.h": "Health −2.",
+     "trk.m_hip2": "Time off for a hip operation"
+    },
+    "zh": {
+     ".t": "手术日期到了",
+     ".x": "信上说你的免费髋关节手术排在工作最忙的那个月。",
+     ".take": "照排定日期做",
+     ".take.s": "要请六个星期假。",
+     ".take.h": "健康 +4；如果在工作，今年收入少大约15%。",
+     ".later": "改期",
+     ".later.s": "排到最后面。",
+     ".later.h": "健康 −2。",
+     "trk.m_hip2": "髋关节手术请假"
+    },
+    "zht": {
+     ".t": "手術日期到了",
+     ".x": "信上說你的免費髖關節手術排在工作最忙的那個月。",
+     ".take": "照排定日期做",
+     ".take.s": "要請六個星期假。",
+     ".take.h": "健康 +4；如果在工作，今年收入少大約15%。",
+     ".later": "改期",
+     ".later.s": "排到最後面。",
+     ".later.h": "健康 −2。",
+     "trk.m_hip2": "髖關節手術請假"
+    }
+   }
+  },
+  {
+   "id": "m_implants",
+   "age": [50, 59],
+   "weight": 0.3,
+   "def": "dentures",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "implants", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('m_teeth', .1 * base, 'trk.m_teeth'); happy += 2"},
+    {"id": "dentures", "sub": {"a": "MN(.02 * base)"}, "do": "spend('m_teeth', .02 * base, 'trk.m_teeth')"},
+    {"id": "none", "hint": true, "do": "happy -= 2; health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Losing teeth",
+     ".x": "Your dentist says several back teeth have to come out.",
+     ".implants": "Implants",
+     ".implants.s": "About {a}.",
+     ".implants.h": "Happiness +2.",
+     ".dentures": "A partial denture",
+     ".dentures.s": "About {a}.",
+     ".none": "Manage without",
+     ".none.s": "Chew on the other side.",
+     ".none.h": "Happiness −2, Health −1.",
+     "trk.m_teeth": "Dental work"
+    },
+    "zh": {
+     ".t": "牙齿松动",
+     ".x": "牙医说你后面好几颗牙得拔掉。",
+     ".implants": "植牙",
+     ".implants.s": "大约{a}。",
+     ".implants.h": "幸福感 +2。",
+     ".dentures": "做活动假牙",
+     ".dentures.s": "大约{a}。",
+     ".none": "不补",
+     ".none.s": "用另一边嚼。",
+     ".none.h": "幸福感 −2，健康 −1。",
+     "trk.m_teeth": "牙科治疗"
+    },
+    "zht": {
+     ".t": "牙齒鬆動",
+     ".x": "牙醫說你後面好幾顆牙得拔掉。",
+     ".implants": "植牙",
+     ".implants.s": "大約{a}。",
+     ".implants.h": "幸福感 +2。",
+     ".dentures": "做活動假牙",
+     ".dentures.s": "大約{a}。",
+     ".none": "不補",
+     ".none.s": "用另一邊嚼。",
+     ".none.h": "幸福感 −2，健康 −1。",
+     "trk.m_teeth": "牙科治療"
+    }
+   }
+  },
+  {
+   "id": "m_trainer",
+   "age": [45, 59],
+   "weight": 0.35,
+   "def": "none",
+   "tarot": "gym",
+   "art": "gym",
+   "opts": [
+    {"id": "trainer", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "T('m_pt', {kind: 'ghost', label: M('trk.m_pt')}); rec('m_pt', .03 * base, 5, .8)"},
+    {"id": "walk", "hint": true, "rel": 2, "do": "rec('', 0, 5, .4)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Staying strong",
+     ".x": "Your friends are taking their fitness seriously as they get older.",
+     ".trainer": "A personal trainer",
+     ".trainer.s": "About {a} a year.",
+     ".trainer.h": "Health better every year for five years.",
+     ".walk": "Join a walking group",
+     ".walk.s": "Free.",
+     ".walk.h": "Health a little better every year.",
+     ".none": "Not for you",
+     ".none.s": "You are busy enough.",
+     "trk.m_pt": "Personal trainer"
+    },
+    "zh": {
+     ".t": "保持体力",
+     ".x": "朋友们年纪大了，都开始认真锻炼。",
+     ".trainer": "请私人教练",
+     ".trainer.s": "每年大约{a}。",
+     ".trainer.h": "五年里健康每年都变好。",
+     ".walk": "参加健走团",
+     ".walk.s": "不花钱。",
+     ".walk.h": "健康每年好一点。",
+     ".none": "不了",
+     ".none.s": "你够忙了。",
+     "trk.m_pt": "私人教练"
+    },
+    "zht": {
+     ".t": "保持體力",
+     ".x": "朋友們年紀大了，都開始認真鍛鍊。",
+     ".trainer": "請私人教練",
+     ".trainer.s": "每年大約{a}。",
+     ".trainer.h": "五年裡健康每年都變好。",
+     ".walk": "參加健走團",
+     ".walk.s": "不花錢。",
+     ".walk.h": "健康每年好一點。",
+     ".none": "不了",
+     ".none.s": "你夠忙了。",
+     "trk.m_pt": "私人教練"
+    }
+   }
+  },
+  {
+   "id": "m_heart",
+   "age": [50, 59],
+   "weight": 0.3,
+   "when": {"stats": {"health": "< 60"}},
+   "def": "wait",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('m_heart', .03 * base, 'trk.m_heart'); health += 3; screen = true"},
+    {"id": "wait", "hint": true, "do": "if (roll('m_heart') < .1) health -= 6"},
+    {"id": "ignore", "hint": true, "do": "health -= 2; if (roll('m_heart') < .1) health -= 6"}
+   ],
+   "care": ".care",
+   "i18n": {
+    "en": {
+     ".t": "A tight chest",
+     ".x": "You get a tight feeling in your chest when you climb the stairs.",
+     ".care": "Chest pain at rest is an emergency: call for help straight away.",
+     ".private": "Pay for heart tests now",
+     ".private.s": "About {a}.",
+     ".private.h": "Health +3; problems found early.",
+     ".wait": "Wait for a free appointment",
+     ".wait.s": "A few months’ wait.",
+     ".wait.h": "About one in ten has a scare while waiting.",
+     ".ignore": "It is probably nothing",
+     ".ignore.s": "You take the lift.",
+     ".ignore.h": "Health −2, and about one in ten has a scare.",
+     "trk.m_heart": "Heart tests"
+    },
+    "zh": {
+     ".t": "胸闷",
+     ".x": "你爬楼梯时会觉得胸口闷闷的。",
+     ".care": "静止时胸痛是急症，请立刻求助。",
+     ".private": "自费马上做心脏检查",
+     ".private.s": "大约{a}。",
+     ".private.h": "健康 +3；问题能及早发现。",
+     ".wait": "等免费门诊",
+     ".wait.s": "要等几个月。",
+     ".wait.h": "大约十个有一个在等待时出状况。",
+     ".ignore": "大概没什么",
+     ".ignore.s": "改坐电梯。",
+     ".ignore.h": "健康 −2，大约十个有一个会出状况。",
+     "trk.m_heart": "心脏检查"
+    },
+    "zht": {
+     ".t": "胸悶",
+     ".x": "你爬樓梯時會覺得胸口悶悶的。",
+     ".care": "靜止時胸痛是急症，請立刻求助。",
+     ".private": "自費馬上做心臟檢查",
+     ".private.s": "大約{a}。",
+     ".private.h": "健康 +3；問題能及早發現。",
+     ".wait": "等免費門診",
+     ".wait.s": "要等幾個月。",
+     ".wait.h": "大約十個有一個在等待時出狀況。",
+     ".ignore": "大概沒什麼",
+     ".ignore.s": "改搭電梯。",
+     ".ignore.h": "健康 −2，大約十個有一個會出狀況。",
+     "trk.m_heart": "心臟檢查"
+    }
+   }
+  },
+  {
+   "id": "m_insure",
+   "src": "Health insurance premiums rise steeply with age (OECD, Health at a Glance 2023); the 60% surcharge used here is an ESTIMATE",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"insured": false},
+   "def": "no",
+   "tarot": "insure",
+   "art": "insure",
+   "vars": {"a": "MN(.035 * 1.6 * base)"},
+   "opts": [
+    {"id": "yes", "hint": true, "do": "insured = true; insMul = 1.6; T('ins', {kind: 'custom', label: M('trk.ins'), prem: 0, saved: 0, note: M('note.ins0')})"},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Health insurance, at last?",
+     ".x": "You never bought health insurance. At your age a policy costs {a} a year, and covers 85% of big medical bills.",
+     ".yes": "Buy it",
+     ".yes.s": "A fixed cost every year.",
+     ".yes.h": "Big medical bills become more likely from now on.",
+     ".no": "Keep going without",
+     ".no.s": "Keep the money.",
+     ".no.h": "If you fall seriously ill, you pay the whole bill."
+    },
+    "zh": {
+     ".t": "终于要买医疗险？",
+     ".x": "你一直没买医疗险。到了这个年纪，一份保单每年{a}，能付85%的大笔医药费。",
+     ".yes": "买",
+     ".yes.s": "每年固定的开销。",
+     ".yes.h": "从现在起，大笔医药费的机会越来越大。",
+     ".no": "继续不买",
+     ".no.s": "钱留着。",
+     ".no.h": "如果生重病，账单全部自己付。"
+    },
+    "zht": {
+     ".t": "終於要買醫療險？",
+     ".x": "你一直沒買醫療險。到了這個年紀，一份保單每年{a}，能付85%的大筆醫藥費。",
+     ".yes": "買",
+     ".yes.s": "每年固定的開銷。",
+     ".yes.h": "從現在起，大筆醫藥費的機會越來越大。",
+     ".no": "繼續不買",
+     ".no.s": "錢留著。",
+     ".no.h": "如果生重病，帳單全部自己付。"
+    }
+   }
+  },
+  {
+   "id": "m_cataract",
+   "age": [55, 59],
+   "weight": 0.3,
+   "def": "wait",
+   "tarot": "hearing",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "spend('m_eyes', .04 * base, 'trk.m_eyes'); health += 2; happy += 1"},
+    {"id": "wait", "hint": true, "do": "health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Cloudy eyes",
+     ".x": "Driving at night has become hard. The optician says you have cataracts.",
+     ".private": "Have them done privately",
+     ".private.s": "About {a} for both eyes.",
+     ".private.h": "Health +2, Happiness +1.",
+     ".wait": "Wait for the free operation",
+     ".wait.s": "A year or so.",
+     ".wait.h": "Health −1 meanwhile.",
+     "trk.m_eyes": "Cataract surgery"
+    },
+    "zh": {
+     ".t": "视力模糊",
+     ".x": "晚上开车越来越吃力。验光师说你有白内障。",
+     ".private": "自费开刀",
+     ".private.s": "两只眼睛大约{a}。",
+     ".private.h": "健康 +2，幸福感 +1。",
+     ".wait": "排队等免费手术",
+     ".wait.s": "大约一年。",
+     ".wait.h": "等待期间健康 −1。",
+     "trk.m_eyes": "白内障手术"
+    },
+    "zht": {
+     ".t": "視力模糊",
+     ".x": "晚上開車越來越吃力。驗光師說你有白內障。",
+     ".private": "自費開刀",
+     ".private.s": "兩隻眼睛大約{a}。",
+     ".private.h": "健康 +2，幸福感 +1。",
+     ".wait": "排隊等免費手術",
+     ".wait.s": "大約一年。",
+     ".wait.h": "等待期間健康 −1。",
+     "trk.m_eyes": "白內障手術"
+    }
+   }
   }
  ]
 }

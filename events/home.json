@@ -1384,6 +1384,368 @@
      "trk.f_cottageC": "小屋維護費"
     }
    }
+  },
+  {
+   "id": "m_airbnb",
+   "age": [45, 59],
+   "weight": 0.35,
+   "when": {"house": true, "test": "!hasKid(0, 17)"},
+   "def": "no",
+   "tarot": "room",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "T('m_airbnb', {kind: 'custom', label: M('trk.m_airbnb')}); rec('m_airbnb', -.04 * base, 10); happy -= 1", "next": {"event": "m_airbnb2", "in": [2, 4], "p": 0.35}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Rooms for visitors",
+     ".x": "The children’s rooms are empty. Visitors pay well for short stays in your area.",
+     ".yes": "List the rooms",
+     ".yes.s": "About {a} a year.",
+     ".yes.h": "Happiness −1: strangers in the house and a lot of laundry. Cities sometimes change the rules.",
+     ".no": "Keep them for family visits",
+     ".no.s": "Quiet.",
+     "trk.m_airbnb": "Short-let rooms"
+    },
+    "zh": {
+     ".t": "把房间租给游客",
+     ".x": "孩子的房间空了。你们这一带的短租游客出手很大方。",
+     ".yes": "挂上短租网站",
+     ".yes.s": "每年大约{a}。",
+     ".yes.h": "幸福感 −1：家里有陌生人，还要洗很多床单。城市有时会改规定。",
+     ".no": "留给家人回来住",
+     ".no.s": "清静。",
+     "trk.m_airbnb": "短租收入"
+    },
+    "zht": {
+     ".t": "把房間租給遊客",
+     ".x": "孩子的房間空了。你們這一帶的短租遊客出手很大方。",
+     ".yes": "掛上短租網站",
+     ".yes.s": "每年大約{a}。",
+     ".yes.h": "幸福感 −1：家裡有陌生人，還要洗很多床單。城市有時會改規定。",
+     ".no": "留給家人回來住",
+     ".no.s": "清靜。",
+     "trk.m_airbnb": "短租收入"
+    }
+   }
+  },
+  {
+   "id": "m_airbnb2",
+   "chain": true,
+   "def": "register",
+   "tarot": "room",
+   "art": {"draw": "bill", "bg": "ya"},
+   "opts": [
+    {"id": "register", "sub": {"a": "MN(.02 * base)"}, "do": "spend('m_airbnbL', .02 * base, 'trk.m_airbnbL')"},
+    {"id": "stop", "do": "stopRec('m_airbnb'); happy += 1"},
+    {"id": "ignore", "hint": true, "do": "if (roll('m_airbnb2') < .3) { pay(.08 * base); stopRec('m_airbnb'); log(M('log.m_airbnb2'), 'bad') }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "New rules for short lets",
+     ".x": "The city now requires a licence for short lets, with inspections.",
+     ".register": "Get a licence",
+     ".register.s": "About {a} for the licence and safety checks.",
+     ".stop": "Stop letting the rooms",
+     ".stop.s": "The rooms are yours again.",
+     ".ignore": "Carry on without one",
+     ".ignore.s": "Nobody checks, probably.",
+     ".ignore.h": "About three in ten are caught and fined.",
+     "trk.m_airbnbL": "Short-let licence",
+     "log.m_airbnb2": "You were fined for letting rooms without a licence, and had to stop."
+    },
+    "zh": {
+     ".t": "短租新规定",
+     ".x": "市政府规定短租要申请执照，还要接受检查。",
+     ".register": "申请执照",
+     ".register.s": "执照和安全检查大约{a}。",
+     ".stop": "不再出租",
+     ".stop.s": "房间又是自己的了。",
+     ".ignore": "不申请照样租",
+     ".ignore.s": "应该没人查吧。",
+     ".ignore.h": "大约三成会被抓到罚款。",
+     "trk.m_airbnbL": "短租执照",
+     "log.m_airbnb2": "你没执照出租被罚款，只好停了。"
+    },
+    "zht": {
+     ".t": "短租新規定",
+     ".x": "市政府規定短租要申請執照，還要接受檢查。",
+     ".register": "申請執照",
+     ".register.s": "執照和安全檢查大約{a}。",
+     ".stop": "不再出租",
+     ".stop.s": "房間又是自己的了。",
+     ".ignore": "不申請照樣租",
+     ".ignore.s": "應該沒人查吧。",
+     ".ignore.h": "大約三成會被抓到罰款。",
+     "trk.m_airbnbL": "短租執照",
+     "log.m_airbnb2": "你沒執照出租被罰款，只好停了。"
+    }
+   }
+  },
+  {
+   "id": "m_access",
+   "age": [52, 59],
+   "weight": 0.3,
+   "when": {"house": true},
+   "def": "later",
+   "tarot": "roof",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "opts": [
+    {"id": "now", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "spend('m_access', .06 * base, 'trk.m_access'); house.value += .02 * base; health += 1"},
+    {"id": "later", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A home for later life",
+     ".x": "A builder suggests a walk-in shower and a downstairs bedroom, so you can stay in your home as you age.",
+     ".now": "Do it now",
+     ".now.s": "About {a}.",
+     ".now.h": "Health +1: fewer falls.",
+     ".later": "Do it when you need it",
+     ".later.s": "No cost now.",
+     ".later.h": "Building work usually costs more when it is urgent.",
+     "trk.m_access": "Adapting your home"
+    },
+    "zh": {
+     ".t": "为晚年改造房子",
+     ".x": "装修师傅建议装无障碍淋浴间、把卧室搬到楼下，这样老了也能住。",
+     ".now": "现在就改",
+     ".now.s": "大约{a}。",
+     ".now.h": "健康 +1：少跌倒。",
+     ".later": "需要时再说",
+     ".later.s": "现在不花钱。",
+     ".later.h": "急着装修通常更贵。",
+     "trk.m_access": "房屋无障碍改造"
+    },
+    "zht": {
+     ".t": "為晚年改造房子",
+     ".x": "裝修師傅建議裝無障礙淋浴間、把臥室搬到樓下，這樣老了也能住。",
+     ".now": "現在就改",
+     ".now.s": "大約{a}。",
+     ".now.h": "健康 +1：少跌倒。",
+     ".later": "需要時再說",
+     ".later.s": "現在不花錢。",
+     ".later.h": "急著裝修通常更貴。",
+     "trk.m_access": "房屋無障礙改造"
+    }
+   }
+  },
+  {
+   "id": "m_energy",
+   "src": "Heat pumps and insulation cut heating bills; payback is often 7–15 years (IEA, The Future of Heat Pumps 2022); figures used here are an ESTIMATE",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"house": true},
+   "def": "no",
+   "tarot": "roof",
+   "art": {"draw": "solar", "bg": "ya"},
+   "opts": [
+    {"id": "pump", "sub": {"a": "MN(.1 * base)", "b": "MN(.012 * base)"}, "do": "spend('m_pump', .1 * base, 'trk.m_pump'); T('m_heat', {kind: 'custom', label: M('trk.m_heat')}); rec('m_heat', -.012 * base, 25)"},
+    {"id": "insul", "sub": {"a": "MN(.03 * base)", "b": "MN(.006 * base)"}, "do": "spend('m_insul', .03 * base, 'trk.m_insul'); T('m_heat', {kind: 'custom', label: M('trk.m_heat')}); rec('m_heat', -.006 * base, 25)"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Heating bills",
+     ".x": "Your heating bills keep climbing. An engineer suggests a heat pump, or at least better insulation.",
+     ".pump": "Fit a heat pump",
+     ".pump.s": "About {a}; saves about {b} a year.",
+     ".insul": "Insulate the loft and walls",
+     ".insul.s": "About {a}; saves about {b} a year.",
+     ".no": "Wear a jumper",
+     ".no.s": "Free.",
+     "trk.m_pump": "Heat pump",
+     "trk.m_insul": "Insulation",
+     "trk.m_heat": "Heating bills saved"
+    },
+    "zh": {
+     ".t": "暖气费",
+     ".x": "暖气费一直涨。技师建议装热泵，至少也该加强隔热。",
+     ".pump": "装热泵",
+     ".pump.s": "大约{a}；每年省大约{b}。",
+     ".insul": "加强屋顶和墙壁隔热",
+     ".insul.s": "大约{a}；每年省大约{b}。",
+     ".no": "多穿件毛衣",
+     ".no.s": "不花钱。",
+     "trk.m_pump": "热泵",
+     "trk.m_insul": "隔热工程",
+     "trk.m_heat": "省下的暖气费"
+    },
+    "zht": {
+     ".t": "暖氣費",
+     ".x": "暖氣費一直漲。技師建議裝熱泵，至少也該加強隔熱。",
+     ".pump": "裝熱泵",
+     ".pump.s": "大約{a}；每年省大約{b}。",
+     ".insul": "加強屋頂和牆壁隔熱",
+     ".insul.s": "大約{a}；每年省大約{b}。",
+     ".no": "多穿件毛衣",
+     ".no.s": "不花錢。",
+     "trk.m_pump": "熱泵",
+     "trk.m_insul": "隔熱工程",
+     "trk.m_heat": "省下的暖氣費"
+    }
+   }
+  },
+  {
+   "id": "m_fixer",
+   "src": "ESTIMATE: game rule (renovating and selling a run-down house; costs often overrun)",
+   "age": [45, 55],
+   "weight": 0.25,
+   "when": {"stats": {"liquid": "> .6 * base"}},
+   "def": "no",
+   "tarot": "crash",
+   "art": {"draw": "tools", "bg": "co"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.5 * base)"}, "hint": true, "do": "spend('m_fixerB', .5 * base, 'trk.m_fixerB'); happy -= 2; later(age + 2, 'm_fixer', {})"},
+    {"id": "no"}
+   ],
+   "later": {
+    "m_fixer": "const u = roll('m_fixer'), v = (u < .55 ? .7 : u < .85 ? .5 : .32) * base; cash += v; log(M(v > .5 * base ? 'log.m_fixerOk' : 'log.m_fixerNo', {a: MN(v)}), v > .5 * base ? 'good' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A house to do up",
+     ".x": "A run-down house is for sale cheap. Fixed up, it could sell for much more.",
+     ".buy": "Buy it, renovate and sell",
+     ".buy.s": "About {a} for the house and the work.",
+     ".buy.h": "Happiness −2. About half make a good profit; the rest break even or lose. You find out in two years.",
+     ".no": "Leave it to the professionals",
+     ".no.s": "Your weekends stay yours.",
+     "trk.m_fixerB": "A house to renovate",
+     "log.m_fixerOk": "You sold the renovated house for {a}.",
+     "log.m_fixerNo": "The renovation overran. You sold the house for only {a}."
+    },
+    "zh": {
+     ".t": "买旧屋翻新",
+     ".x": "有间破旧的房子便宜卖。翻新后能卖高很多。",
+     ".buy": "买下翻新再卖",
+     ".buy.s": "房子加工程大约{a}。",
+     ".buy.h": "幸福感 −2。大约一半能赚不少，其余打平或亏钱。两年后揭晓。",
+     ".no": "交给专业的人",
+     ".no.s": "周末还是你的。",
+     "trk.m_fixerB": "翻新的旧屋",
+     "log.m_fixerOk": "翻新的房子卖了{a}。",
+     "log.m_fixerNo": "翻新超支了，房子只卖了{a}。"
+    },
+    "zht": {
+     ".t": "買舊屋翻新",
+     ".x": "有間破舊的房子便宜賣。翻新後能賣高很多。",
+     ".buy": "買下翻新再賣",
+     ".buy.s": "房子加工程大約{a}。",
+     ".buy.h": "幸福感 −2。大約一半能賺不少，其餘打平或虧錢。兩年後揭曉。",
+     ".no": "交給專業的人",
+     ".no.s": "週末還是你的。",
+     "trk.m_fixerB": "翻新的舊屋",
+     "log.m_fixerOk": "翻新的房子賣了{a}。",
+     "log.m_fixerNo": "翻新超支了，房子只賣了{a}。"
+    }
+   }
+  },
+  {
+   "id": "m_neighbour",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"house": true},
+   "def": "deal",
+   "tarot": "credit",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "opts": [
+    {"id": "lawyer", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "spend('m_nb', .04 * base, 'trk.m_nb'); happy -= 2; if (roll('m_neighbour') >= .6) house.value -= .04 * base"},
+    {"id": "deal", "hint": true, "do": "happy -= 1; house.value -= .01 * base"},
+    {"id": "ignore", "hint": true, "do": "house.value -= .05 * base; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A row with the neighbours",
+     ".x": "Your new neighbours have built a fence a metre onto your garden.",
+     ".lawyer": "Get a lawyer",
+     ".lawyer.s": "About {a}.",
+     ".lawyer.h": "Happiness −2. About six in ten win their case.",
+     ".deal": "Talk it through and split the difference",
+     ".deal.s": "A slightly smaller garden.",
+     ".deal.h": "Happiness −1.",
+     ".ignore": "Let it go",
+     ".ignore.s": "Not worth the fight.",
+     ".ignore.h": "A boundary problem lowers what your home would sell for. Happiness −2.",
+     "trk.m_nb": "Boundary dispute"
+    },
+    "zh": {
+     ".t": "跟邻居起纠纷",
+     ".x": "新邻居把篱笆往你院子里多盖了一米。",
+     ".lawyer": "请律师",
+     ".lawyer.s": "大约{a}。",
+     ".lawyer.h": "幸福感 −2。大约六成能打赢。",
+     ".deal": "好好谈，各让一步",
+     ".deal.s": "院子小一点。",
+     ".deal.h": "幸福感 −1。",
+     ".ignore": "算了",
+     ".ignore.s": "不值得吵。",
+     ".ignore.h": "边界问题会让房子比较难卖。幸福感 −2。",
+     "trk.m_nb": "边界纠纷"
+    },
+    "zht": {
+     ".t": "跟鄰居起糾紛",
+     ".x": "新鄰居把籬笆往你院子裡多蓋了一公尺。",
+     ".lawyer": "請律師",
+     ".lawyer.s": "大約{a}。",
+     ".lawyer.h": "幸福感 −2。大約六成能打贏。",
+     ".deal": "好好談，各讓一步",
+     ".deal.s": "院子小一點。",
+     ".deal.h": "幸福感 −1。",
+     ".ignore": "算了",
+     ".ignore.s": "不值得吵。",
+     ".ignore.h": "邊界問題會讓房子比較難賣。幸福感 −2。",
+     "trk.m_nb": "邊界糾紛"
+    }
+   }
+  },
+  {
+   "id": "m_annexe",
+   "age": [48, 59],
+   "weight": 0.25,
+   "when": {"house": true},
+   "who": {"role": "parent", "age": [70, 95]},
+   "def": "no",
+   "tarot": "parents",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "vars": {"p": "Folks()"},
+   "opts": [
+    {"id": "build", "sub": {"a": "MN(.3 * base)"}, "hint": true, "bond": 6, "rel": 2, "do": "spend('m_annexe', .3 * base, 'trk.m_annexe'); house.value += .2 * base; happy += 1"},
+    {"id": "no", "bond": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A flat for your parents",
+     ".x": "{p} are finding it hard to manage on their own. You could build a small annexe in your garden for them.",
+     ".build": "Build it",
+     ".build.s": "About {a}.",
+     ".build.h": "Adds about two-thirds of its cost to your home’s value. Happiness +1.",
+     ".no": "Help them find somewhere nearby",
+     ".no.s": "You visit every week.",
+     "trk.m_annexe": "An annexe for your parents"
+    },
+    "zh": {
+     ".t": "给爸妈盖小屋",
+     ".x": "{p}越来越难独自生活。你可以在院子里给他们盖间小屋。",
+     ".build": "盖",
+     ".build.s": "大约{a}。",
+     ".build.h": "房子大约增值花费的三分之二。幸福感 +1。",
+     ".no": "帮他们在附近找房子",
+     ".no.s": "你每周去看他们。",
+     "trk.m_annexe": "给爸妈盖的小屋"
+    },
+    "zht": {
+     ".t": "幫爸媽蓋小屋",
+     ".x": "{p}越來越難獨自生活。你可以在院子裡幫他們蓋間小屋。",
+     ".build": "蓋",
+     ".build.s": "大約{a}。",
+     ".build.h": "房子大約增值花費的三分之二。幸福感 +1。",
+     ".no": "幫他們在附近找房子",
+     ".no.s": "你每週去看他們。",
+     "trk.m_annexe": "幫爸媽蓋的小屋"
+    }
+   }
   }
  ]
 }

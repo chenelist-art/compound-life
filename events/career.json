@@ -2830,6 +2830,603 @@
      "trk.f_wfhR": "完全遠端的工作"
     }
    }
+  },
+  {
+   "id": "m_automate",
+   "age": [45, 55],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "layoff",
+   "art": {"draw": "gauge", "bg": "mi"},
+   "let": {"a": "salary()"},
+   "opts": [
+    {"id": "retrain", "hint": true, "do": "bump('m_auto', .95, M('trk.m_auto')); addSkill('learn', 2, M('trk.learn')); happy -= 2"},
+    {"id": "package", "sub": {"a": "MN(a)"}, "hint": true, "do": "cash += a; const tq = T('m_autoP', {kind: 'custom', label: M('trk.m_autoP')}); tq.v += a; layAt = age; layVol = true"},
+    {"id": "stay", "hint": true, "do": "happy -= 1; if (roll('m_automate') < .5) { layAt = age; layVol = false }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your job and the machines",
+     ".x": "Software can now do much of what your team does. Your employer is reorganising.",
+     ".retrain": "Move to a new role, with training",
+     ".retrain.s": "A slightly lower grade, but a future.",
+     ".retrain.h": "Pay about 5% lower, Skill +2, Happiness −2.",
+     ".package": "Take the leaving package",
+     ".package.s": "A year’s pay, about {a}, and you need a new job.",
+     ".package.h": "Finding work after 50 can take a while.",
+     ".stay": "Keep your head down",
+     ".stay.s": "And hope your job survives.",
+     ".stay.h": "Happiness −1. About half the roles like yours go this year.",
+     "trk.m_auto": "A new role after automation",
+     "trk.m_autoP": "Leaving package"
+    },
+    "zh": {
+     ".t": "工作被机器取代",
+     ".x": "软件已经能做你们团队的大部分工作，公司正在重组。",
+     ".retrain": "转岗并接受培训",
+     ".retrain.s": "职级低一点，但有前途。",
+     ".retrain.h": "工资大约低5%，技能 +2，幸福感 −2。",
+     ".package": "拿补偿离开",
+     ".package.s": "一年工资，大约{a}，然后得找新工作。",
+     ".package.h": "五十岁后找工作可能要花点时间。",
+     ".stay": "低调撑着",
+     ".stay.s": "祈祷工作保得住。",
+     ".stay.h": "幸福感 −1。像你这样的岗位，大约一半今年会被裁。",
+     "trk.m_auto": "自动化后转岗",
+     "trk.m_autoP": "离职补偿"
+    },
+    "zht": {
+     ".t": "工作被機器取代",
+     ".x": "軟體已經能做你們團隊的大部分工作，公司正在重組。",
+     ".retrain": "轉調並接受訓練",
+     ".retrain.s": "職級低一點，但有前途。",
+     ".retrain.h": "薪水大約低5%，技能 +2，幸福感 −2。",
+     ".package": "拿補償離開",
+     ".package.s": "一年薪水，大約{a}，然後得找新工作。",
+     ".package.h": "五十歲後找工作可能要花點時間。",
+     ".stay": "低調撐著",
+     ".stay.s": "祈禱工作保得住。",
+     ".stay.h": "幸福感 −1。像你這樣的職位，大約一半今年會被裁。",
+     "trk.m_auto": "自動化後轉調",
+     "trk.m_autoP": "離職補償"
+    }
+   }
+  },
+  {
+   "id": "m_consult",
+   "age": [48, 59],
+   "weight": 0.3,
+   "when": {"working": true, "careerType": ["office"]},
+   "def": "stay",
+   "tarot": "biz",
+   "art": {"draw": "suit", "bg": "wa"},
+   "opts": [
+    {"id": "go", "hint": true, "do": "bump('m_consult', 1.15, M('trk.m_consult')); layM = (layM || 1) * 2; happy += 2", "next": {"event": "m_consult2", "in": [2, 4], "p": 0.4}},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Go it alone?",
+     ".x": "Former clients say they would hire you directly as a consultant.",
+     ".go": "Become a consultant",
+     ".go.s": "Higher day rates, no employer.",
+     ".go.h": "Pay about 15% higher, Happiness +2, but work can dry up.",
+     ".stay": "Stay employed",
+     ".stay.s": "A steady salary.",
+     "trk.m_consult": "Working as a consultant"
+    },
+    "zh": {
+     ".t": "自己出来做？",
+     ".x": "以前的客户说愿意直接请你当顾问。",
+     ".go": "当独立顾问",
+     ".go.s": "日费更高，没有老板。",
+     ".go.h": "收入大约高15%，幸福感 +2，但案子可能会断。",
+     ".stay": "继续上班",
+     ".stay.s": "稳定的工资。",
+     "trk.m_consult": "当独立顾问"
+    },
+    "zht": {
+     ".t": "自己出來做？",
+     ".x": "以前的客戶說願意直接請你當顧問。",
+     ".go": "當獨立顧問",
+     ".go.s": "日費更高，沒有老闆。",
+     ".go.h": "收入大約高15%，幸福感 +2，但案子可能會斷。",
+     ".stay": "繼續上班",
+     ".stay.s": "穩定的薪水。",
+     "trk.m_consult": "當獨立顧問"
+    }
+   }
+  },
+  {
+   "id": "m_consult2",
+   "chain": true,
+   "when": {"working": true},
+   "def": "cut",
+   "tarot": "biz",
+   "art": {"draw": "bill", "bg": "wa"},
+   "opts": [
+    {"id": "cut", "hint": true, "do": "tmpPay('m_dry', .6, 1, 'trk.m_dry'); happy -= 2"},
+    {"id": "job", "hint": true, "do": "bump.m_consult = 1; layM = (layM || 1) / 2; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A quiet year",
+     ".x": "Two of your biggest clients have cut their budgets. Work has dried up.",
+     ".cut": "Ride it out on less",
+     ".cut.s": "A lean year.",
+     ".cut.h": "About 40% less income this year. Happiness −2.",
+     ".job": "Take a salaried job again",
+     ".job.s": "Steady pay again.",
+     ".job.h": "Your pay goes back to what it was. Happiness −1.",
+     "trk.m_dry": "A quiet year as a consultant"
+    },
+    "zh": {
+     ".t": "生意清淡的一年",
+     ".x": "你最大的两个客户都砍了预算，案子没了。",
+     ".cut": "少赚一点撑过去",
+     ".cut.s": "这一年会很紧。",
+     ".cut.h": "今年收入少大约40%。幸福感 −2。",
+     ".job": "回去领固定工资",
+     ".job.s": "又有稳定收入了。",
+     ".job.h": "收入回到原来的水平。幸福感 −1。",
+     "trk.m_dry": "顾问生意清淡"
+    },
+    "zht": {
+     ".t": "生意清淡的一年",
+     ".x": "你最大的兩個客戶都砍了預算，案子沒了。",
+     ".cut": "少賺一點撐過去",
+     ".cut.s": "這一年會很緊。",
+     ".cut.h": "今年收入少大約40%。幸福感 −2。",
+     ".job": "回去領固定薪水",
+     ".job.s": "又有穩定收入了。",
+     ".job.h": "收入回到原來的水準。幸福感 −1。",
+     "trk.m_dry": "顧問生意清淡"
+    }
+   }
+  },
+  {
+   "id": "m_board",
+   "age": [50, 59],
+   "weight": 0.25,
+   "when": {"working": true, "careerType": ["office"], "stats": {"skill": "> 28"}},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "suit", "bg": "mi"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "T('m_board', {kind: 'custom', label: M('trk.m_board')}); rec('m_board', -.05 * base, 8); happy -= 1", "next": {"event": "m_board2", "in": [2, 5], "p": 0.25}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A seat on a board",
+     ".x": "A company invites you to join its board as a non-executive director.",
+     ".yes": "Accept",
+     ".yes.s": "About {a} a year for a few meetings.",
+     ".yes.h": "Happiness −1: more reading at weekends. Directors share the blame if things go wrong.",
+     ".no": "Decline",
+     ".no.s": "Your evenings stay free.",
+     "trk.m_board": "Board fees"
+    },
+    "zh": {
+     ".t": "董事会席位",
+     ".x": "有家公司邀请你担任独立董事。",
+     ".yes": "接受",
+     ".yes.s": "开几次会，每年大约{a}。",
+     ".yes.h": "幸福感 −1：周末要读更多资料。公司出事董事也有责任。",
+     ".no": "婉拒",
+     ".no.s": "晚上空着。",
+     "trk.m_board": "董事酬劳"
+    },
+    "zht": {
+     ".t": "董事會席位",
+     ".x": "有家公司邀請你擔任獨立董事。",
+     ".yes": "接受",
+     ".yes.s": "開幾次會，每年大約{a}。",
+     ".yes.h": "幸福感 −1：週末要讀更多資料。公司出事董事也有責任。",
+     ".no": "婉拒",
+     ".no.s": "晚上空著。",
+     "trk.m_board": "董事酬勞"
+    }
+   }
+  },
+  {
+   "id": "m_board2",
+   "chain": true,
+   "def": "resign",
+   "tarot": "biz",
+   "art": {"draw": "gauge", "bg": "co"},
+   "opts": [
+    {"id": "resign", "hint": true, "do": "stopRec('m_board'); happy += 1"},
+    {"id": "stay", "hint": true, "do": "happy -= 3; if (roll('m_board2') < .4) { pay(.1 * base); log(M('log.m_board2'), 'bad') }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Trouble on the board",
+     ".x": "The company whose board you sit on is in the news for misleading its investors.",
+     ".resign": "Resign",
+     ".resign.s": "You lose the fees.",
+     ".resign.h": "Happiness +1.",
+     ".stay": "Stay and help fix it",
+     ".stay.s": "Long nights with lawyers.",
+     ".stay.h": "Happiness −3. Directors are sometimes fined.",
+     "log.m_board2": "The regulator fined the board, you included."
+    },
+    "zh": {
+     ".t": "董事会出事了",
+     ".x": "你担任董事的公司上了新闻：涉嫌误导投资人。",
+     ".resign": "辞职",
+     ".resign.s": "董事酬劳没了。",
+     ".resign.h": "幸福感 +1。",
+     ".stay": "留下来收拾",
+     ".stay.s": "跟律师熬夜。",
+     ".stay.h": "幸福感 −3。董事有时会被罚款。",
+     "log.m_board2": "监管机构对董事会罚款，你也在内。"
+    },
+    "zht": {
+     ".t": "董事會出事了",
+     ".x": "你擔任董事的公司上了新聞：涉嫌誤導投資人。",
+     ".resign": "辭職",
+     ".resign.s": "董事酬勞沒了。",
+     ".resign.h": "幸福感 +1。",
+     ".stay": "留下來收拾",
+     ".stay.s": "跟律師熬夜。",
+     ".stay.h": "幸福感 −3。董事有時會被罰款。",
+     "log.m_board2": "主管機關對董事會罰款，你也在內。"
+    }
+   }
+  },
+  {
+   "id": "m_agedisc",
+   "age": [50, 59],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "endure",
+   "tarot": "credit",
+   "art": {"draw": "suit", "bg": "co"},
+   "opts": [
+    {"id": "claim", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('m_legal', .03 * base, 'trk.m_legal'); happy -= 2", "next": {"event": "m_tribunal", "in": 1}},
+    {"id": "leave", "sub": {"a": "MN(.3 * salary())"}, "hint": true, "do": "cash += .3 * salary(); const tq = T('m_agedL', {kind: 'custom', label: M('trk.m_agedL')}); tq.v += .3 * salary(); layAt = age; layVol = true"},
+    {"id": "endure", "hint": true, "do": "happy -= 3; health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Pushed aside",
+     ".x": "Your new boss is twenty years younger and keeps giving your work to others. HR hints you might “move on”.",
+     ".claim": "Bring an age discrimination claim",
+     ".claim.s": "About {a} for a lawyer to start.",
+     ".claim.h": "Happiness −2. Many claims settle; a hearing is a gamble.",
+     ".leave": "Leave quietly with a reference",
+     ".leave.s": "A payment of about {a}, and a job hunt.",
+     ".leave.h": "Finding work after 50 can take a while.",
+     ".endure": "Put up with it",
+     ".endure.s": "Keep your salary.",
+     ".endure.h": "Happiness −3, Health −1.",
+     "trk.m_legal": "Legal fees",
+     "trk.m_agedL": "Leaving payment"
+    },
+    "zh": {
+     ".t": "被边缘化",
+     ".x": "新老板比你小二十岁，一直把你的工作分给别人。人事暗示你可以“另谋高就”。",
+     ".claim": "提出年龄歧视申诉",
+     ".claim.s": "先付律师大约{a}。",
+     ".claim.h": "幸福感 −2。很多申诉会和解；上庭就是赌一把。",
+     ".leave": "拿推荐信安静离开",
+     ".leave.s": "补偿大约{a}，然后找工作。",
+     ".leave.h": "五十岁后找工作可能要花点时间。",
+     ".endure": "忍着",
+     ".endure.s": "工资照领。",
+     ".endure.h": "幸福感 −3，健康 −1。",
+     "trk.m_legal": "律师费",
+     "trk.m_agedL": "离职补偿"
+    },
+    "zht": {
+     ".t": "被邊緣化",
+     ".x": "新老闆比你小二十歲，一直把你的工作分給別人。人資暗示你可以「另謀高就」。",
+     ".claim": "提出年齡歧視申訴",
+     ".claim.s": "先付律師大約{a}。",
+     ".claim.h": "幸福感 −2。很多申訴會和解；上庭就是賭一把。",
+     ".leave": "拿推薦信安靜離開",
+     ".leave.s": "補償大約{a}，然後找工作。",
+     ".leave.h": "五十歲後找工作可能要花點時間。",
+     ".endure": "忍著",
+     ".endure.s": "薪水照領。",
+     ".endure.h": "幸福感 −3，健康 −1。",
+     "trk.m_legal": "律師費",
+     "trk.m_agedL": "離職補償"
+    }
+   }
+  },
+  {
+   "id": "m_tribunal",
+   "chain": true,
+   "def": "settle",
+   "tarot": "credit",
+   "art": {"draw": "exam", "bg": "co"},
+   "opts": [
+    {"id": "settle", "sub": {"a": "MN(.4 * base)"}, "do": "cash += .4 * base; const tq = T('m_trib', {kind: 'custom', label: M('trk.m_trib')}); tq.v += .4 * base; if (working()) { layAt = age; layVol = true }"},
+    {"id": "hearing", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('m_legal', .03 * base, 'trk.m_legal'); if (roll('m_tribunal') < .45) { cash += base; const tq = T('m_trib', {kind: 'custom', label: M('trk.m_trib')}); tq.v += base } else happy -= 3; if (working()) { layAt = age; layVol = true }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Settle or go to a hearing?",
+     ".x": "Your employer offers to settle your claim. Your lawyer thinks a hearing might win more.",
+     ".settle": "Settle",
+     ".settle.s": "{a}, and you leave.",
+     ".hearing": "Go to a hearing",
+     ".hearing.s": "About {a} more in legal fees.",
+     ".hearing.h": "A bit under half of hearings are won, for more than twice the offer.",
+     "trk.m_trib": "Discrimination settlement"
+    },
+    "zh": {
+     ".t": "和解还是上庭？",
+     ".x": "公司提出和解。律师觉得上庭也许能拿更多。",
+     ".settle": "和解",
+     ".settle.s": "拿{a}，然后离职。",
+     ".hearing": "上庭",
+     ".hearing.s": "律师费再多大约{a}。",
+     ".hearing.h": "上庭赢的机会不到一半，赢了能拿两倍多。",
+     "trk.m_trib": "歧视申诉赔偿"
+    },
+    "zht": {
+     ".t": "和解還是上庭？",
+     ".x": "公司提出和解。律師覺得上庭也許能拿更多。",
+     ".settle": "和解",
+     ".settle.s": "拿{a}，然後離職。",
+     ".hearing": "上庭",
+     ".hearing.s": "律師費再多大約{a}。",
+     ".hearing.h": "上庭贏的機會不到一半，贏了能拿兩倍多。",
+     "trk.m_trib": "歧視申訴賠償"
+    }
+   }
+  },
+  {
+   "id": "m_teach",
+   "age": [48, 59],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "mentor",
+   "art": {"draw": "schoolbag", "bg": "wa"},
+   "opts": [
+    {"id": "teach", "hint": true, "do": "bump('m_teach', .8, M('trk.m_teach')); layM = (layM || 1) * .5; happy += 4"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A second career",
+     ".x": "A local college is short of teachers with real experience in your field.",
+     ".teach": "Become a teacher",
+     ".teach.s": "About 20% less pay.",
+     ".teach.h": "Happiness +4, and a steadier job.",
+     ".stay": "Stay in your field",
+     ".stay.s": "Same pay.",
+     "trk.m_teach": "Teaching as a second career"
+    },
+    "zh": {
+     ".t": "第二人生",
+     ".x": "本地一所学院缺有你这种实务经验的老师。",
+     ".teach": "去当老师",
+     ".teach.s": "工资少大约20%。",
+     ".teach.h": "幸福感 +4，工作也更稳定。",
+     ".stay": "留在原来的行业",
+     ".stay.s": "工资不变。",
+     "trk.m_teach": "转行当老师"
+    },
+    "zht": {
+     ".t": "第二人生",
+     ".x": "本地一所學院缺有你這種實務經驗的老師。",
+     ".teach": "去當老師",
+     ".teach.s": "薪水少大約20%。",
+     ".teach.h": "幸福感 +4，工作也更穩定。",
+     ".stay": "留在原來的產業",
+     ".stay.s": "薪水不變。",
+     "trk.m_teach": "轉行當老師"
+    }
+   }
+  },
+  {
+   "id": "m_shares",
+   "age": [45, 55],
+   "weight": 0.35,
+   "when": {"working": true, "careerType": ["office"], "stats": {"liquid": "> .1 * base"}},
+   "def": "no",
+   "tarot": "bonus",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": "Math.min(.1 * base, liquid())"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); const u = roll('m_shares'); mkLot('m_shares', {rate: u < .3 ? .08 : u < .7 ? .03 : -.04}, 'trk.m_shares'); addLot('m_shares', 1.15 * a)", "next": {"event": "m_shares2", "in": [3, 5], "p": 0.3}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Shares in your employer",
+     ".x": "Your employer lets staff buy its shares at a 15% discount.",
+     ".buy": "Buy shares",
+     ".buy.s": "{a} of your savings, for shares worth 15% more.",
+     ".buy.h": "A good deal, but your job and your savings now ride on the same company.",
+     ".no": "Keep your savings spread out",
+     ".no.s": "No company shares.",
+     "trk.m_shares": "Shares in your employer"
+    },
+    "zh": {
+     ".t": "员工持股",
+     ".x": "公司让员工以八五折买公司股票。",
+     ".buy": "买",
+     ".buy.s": "用{a}存款，买到价值多15%的股票。",
+     ".buy.h": "很划算，但你的工作和存款都押在同一家公司上了。",
+     ".no": "存款分散放",
+     ".no.s": "不买公司股票。",
+     "trk.m_shares": "公司股票"
+    },
+    "zht": {
+     ".t": "員工持股",
+     ".x": "公司讓員工以八五折買公司股票。",
+     ".buy": "買",
+     ".buy.s": "用{a}存款，買到價值多15%的股票。",
+     ".buy.h": "很划算，但你的工作和存款都押在同一家公司上了。",
+     ".no": "存款分散放",
+     ".no.s": "不買公司股票。",
+     "trk.m_shares": "公司股票"
+    }
+   }
+  },
+  {
+   "id": "m_shares2",
+   "chain": true,
+   "when": {"test": "!!lots.m_shares && lots.m_shares.v > 0"},
+   "def": "hold",
+   "tarot": "bonus",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"v": "lots.m_shares.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(v)"}, "do": "lots.m_shares.v = 0; lots.m_shares.tout += v; cash += v"},
+    {"id": "hold", "hint": true, "do": "lots.m_shares.rate = roll('m_shares2') < .5 ? .08 : -.05"},
+    {"id": "more", "sub": {"b": "MN(Math.min(.05 * base, liquid()))"}, "hint": true, "do": "const m = Math.min(.05 * base, liquid()); pay(m); addLot('m_shares', m); lots.m_shares.rate = roll('m_shares2') < .5 ? .08 : -.05"}
+   ],
+   "pre": "lots.m_shares.v *= .6",
+   "i18n": {
+    "en": {
+     ".t": "Your employer’s shares fall",
+     ".x": "Your employer has missed its targets and its shares have fallen by 40%. Yours are now worth {a}.",
+     ".sell": "Sell",
+     ".sell.s": "{a} in your bank account.",
+     ".hold": "Hold on",
+     ".hold.s": "It might bounce back.",
+     ".hold.h": "Half the time it recovers; half the time it keeps sliding.",
+     ".more": "Buy more while it is cheap",
+     ".more.s": "{b} more of your savings.",
+     ".more.h": "Half the time it recovers; half the time it keeps sliding."
+    },
+    "zh": {
+     ".t": "公司股价大跌",
+     ".x": "公司业绩不达标，股价跌了四成。你的股票现在值{a}。",
+     ".sell": "卖掉",
+     ".sell.s": "{a}进你的银行账户。",
+     ".hold": "继续持有",
+     ".hold.s": "也许会反弹。",
+     ".hold.h": "一半机会会回升，一半会继续跌。",
+     ".more": "趁便宜加码",
+     ".more.s": "再投入{b}存款。",
+     ".more.h": "一半机会会回升，一半会继续跌。"
+    },
+    "zht": {
+     ".t": "公司股價大跌",
+     ".x": "公司業績不達標，股價跌了四成。你的股票現在值{a}。",
+     ".sell": "賣掉",
+     ".sell.s": "{a}進你的銀行帳戶。",
+     ".hold": "繼續持有",
+     ".hold.s": "也許會反彈。",
+     ".hold.h": "一半機會會回升，一半會繼續跌。",
+     ".more": "趁便宜加碼",
+     ".more.s": "再投入{b}存款。",
+     ".more.h": "一半機會會回升，一半會繼續跌。"
+    }
+   }
+  },
+  {
+   "id": "m_sabbatical",
+   "age": [50, 58],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "idle",
+   "art": {"draw": "passport", "bg": "mi"},
+   "opts": [
+    {"id": "go", "hint": true, "do": "tmpPay('m_sabb', .5, 1, 'trk.m_sabb'); happy += 5; health += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Six months off",
+     ".x": "Your employer offers long-serving staff six months’ unpaid leave.",
+     ".go": "Take it and travel",
+     ".go.s": "Half a year’s pay less.",
+     ".go.h": "Happiness +5, Health +2.",
+     ".no": "Keep working",
+     ".no.s": "Maybe in retirement.",
+     "trk.m_sabb": "A six-month sabbatical"
+    },
+    "zh": {
+     ".t": "休假半年",
+     ".x": "公司给资深员工半年无薪假。",
+     ".go": "请假去旅行",
+     ".go.s": "少半年工资。",
+     ".go.h": "幸福感 +5，健康 +2。",
+     ".no": "继续工作",
+     ".no.s": "退休再说。",
+     "trk.m_sabb": "半年长假"
+    },
+    "zht": {
+     ".t": "休假半年",
+     ".x": "公司給資深員工半年無薪假。",
+     ".go": "請假去旅行",
+     ".go.s": "少半年薪水。",
+     ".go.h": "幸福感 +5，健康 +2。",
+     ".no": "繼續工作",
+     ".no.s": "退休再說。",
+     "trk.m_sabb": "半年長假"
+    }
+   }
+  },
+  {
+   "id": "m_study50",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "cert",
+   "art": {"draw": "gradloan", "bg": "ya"},
+   "opts": [
+    {"id": "degree", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "spend('m_study', .15 * base, 'trk.m_study'); addSkill('learn', 3, M('trk.learn')); bump('m_study', 1.03, M('trk.m_studyP')); happy += 2"},
+    {"id": "free", "hint": true, "do": "addSkill('learn', 1.5, M('trk.learn'))"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back to the classroom",
+     ".x": "You always wanted a degree in something you love. A university offers part-time study for older students.",
+     ".degree": "Enrol part-time",
+     ".degree.s": "About {a} over four years.",
+     ".degree.h": "Skill +3, Happiness +2, pay about 3% higher.",
+     ".free": "Take free online courses",
+     ".free.s": "Free.",
+     ".free.h": "Skill +1.5.",
+     ".none": "Too late for that",
+     ".none.s": "Maybe one day.",
+     "trk.m_study": "A degree in midlife",
+     "trk.m_studyP": "A degree in midlife"
+    },
+    "zh": {
+     ".t": "重回课堂",
+     ".x": "你一直想读一个自己喜欢的学位。有所大学给成年人开在职课程。",
+     ".degree": "报读在职学位",
+     ".degree.s": "四年大约{a}。",
+     ".degree.h": "技能 +3，幸福感 +2，工资大约高3%。",
+     ".free": "上免费网课",
+     ".free.s": "不花钱。",
+     ".free.h": "技能 +1.5。",
+     ".none": "都这把年纪了",
+     ".none.s": "也许以后吧。",
+     "trk.m_study": "中年读学位",
+     "trk.m_studyP": "中年读学位"
+    },
+    "zht": {
+     ".t": "重回課堂",
+     ".x": "你一直想讀一個自己喜歡的學位。有所大學給成年人開在職課程。",
+     ".degree": "報讀在職學位",
+     ".degree.s": "四年大約{a}。",
+     ".degree.h": "技能 +3，幸福感 +2，薪水大約高3%。",
+     ".free": "上免費線上課程",
+     ".free.s": "不花錢。",
+     ".free.h": "技能 +1.5。",
+     ".none": "都這把年紀了",
+     ".none.s": "也許以後吧。",
+     "trk.m_study": "中年讀學位",
+     "trk.m_studyP": "中年讀學位"
+    }
+   }
   }
  ]
 }

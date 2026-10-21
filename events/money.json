@@ -2777,6 +2777,580 @@
      ".no.s": "他們另想辦法。"
     }
    }
+  },
+  {
+   "id": "m_catchup",
+   "src": "Many countries let people over 50 pay more into pensions with tax relief (e.g. US IRS catch-up contributions, UK annual allowance 2024); the 25% top-up used here is an ESTIMATE",
+   "age": [45, 55],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "save2",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "opts": [
+    {"id": "big", "hint": true, "do": "yearly('m_catch', {p: .08, until: 60, bonus: .25}, {lock: 60}, 'trk.m_catch'); happy -= 1"},
+    {"id": "some", "hint": true, "do": "yearly('m_catch', {p: .04, until: 60, bonus: .25}, {lock: 60}, 'trk.m_catch')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Catching up on your pension",
+     ".x": "Retirement is coming into view. You can pay extra into your pension, with tax relief.",
+     ".big": "Add 8% of your pay",
+     ".big.s": "Locked until 60.",
+     ".big.h": "Tax relief adds about a quarter; Happiness −1 from a tighter budget.",
+     ".some": "Add 4% of your pay",
+     ".some.s": "Locked until 60.",
+     ".some.h": "Tax relief adds about a quarter on top.",
+     ".none": "Keep things as they are",
+     ".none.s": "More to spend now.",
+     "trk.m_catch": "Pension catch-up"
+    },
+    "zh": {
+     ".t": "补缴养老金",
+     ".x": "退休越来越近了。你可以多缴养老金，还有税务优惠。",
+     ".big": "多存工资的8%",
+     ".big.s": "锁到60岁。",
+     ".big.h": "税务优惠大约再加四分之一；手头变紧，幸福感 −1。",
+     ".some": "多存工资的4%",
+     ".some.s": "锁到60岁。",
+     ".some.h": "税务优惠大约再加四分之一。",
+     ".none": "维持现状",
+     ".none.s": "现在能花的多一点。",
+     "trk.m_catch": "补缴的养老金"
+    },
+    "zht": {
+     ".t": "補繳退休金",
+     ".x": "退休越來越近了。你可以多繳退休金，還有稅務優惠。",
+     ".big": "多存薪水的8%",
+     ".big.s": "鎖到60歲。",
+     ".big.h": "稅務優惠大約再加四分之一；手頭變緊，幸福感 −1。",
+     ".some": "多存薪水的4%",
+     ".some.s": "鎖到60歲。",
+     ".some.h": "稅務優惠大約再加四分之一。",
+     ".none": "維持現狀",
+     ".none.s": "現在能花的多一點。",
+     "trk.m_catch": "補繳的退休金"
+    }
+   }
+  },
+  {
+   "id": "m_romance",
+   "src": "Romance scams cost victims more than any other online fraud in many countries (US Federal Trade Commission, Consumer Sentinel 2024)",
+   "age": [50, 59],
+   "weight": 0.25,
+   "when": {"partner": ["single"], "stats": {"liquid": "> .05 * base"}},
+   "def": "refuse",
+   "tarot": "scam",
+   "art": {"draw": "wallet", "bg": "co"},
+   "let": {"a": "Math.min(.15 * base, liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "send", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); const t = T('m_rom', {kind: 'ghost', label: M('trk.m_rom')}); t.spent += a; t.g += a", "next": {"event": "m_romance2", "in": 1, "p": 0.6}},
+    {"id": "refuse", "do": "happy -= 2"},
+    {"id": "report", "hint": true, "rel": 1, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Someone online",
+     ".x": "For months you have been talking every day with someone you met online. Now they need {a} to fly out to see you.",
+     ".send": "Send the money",
+     ".send.s": "{a} of your savings.",
+     ".send.h": "People who ask for money before ever meeting are almost always scammers.",
+     ".refuse": "Say you will meet them halfway, at your expense",
+     ".refuse.s": "They go quiet.",
+     ".report": "Report the profile",
+     ".report.s": "The site removes it a week later.",
+     ".report.h": "Happiness −1; you feel foolish, but safe.",
+     "trk.m_rom": "Money sent to an online contact"
+    },
+    "zh": {
+     ".t": "网上认识的人",
+     ".x": "你和一个网上认识的人每天聊了好几个月。现在对方说需要{a}机票钱来见你。",
+     ".send": "把钱寄过去",
+     ".send.s": "你存款里的{a}。",
+     ".send.h": "还没见面就要钱的，几乎都是骗子。",
+     ".refuse": "说你自己付钱，约在中间见",
+     ".refuse.s": "对方就不出声了。",
+     ".report": "检举这个账号",
+     ".report.s": "一个星期后网站删了它。",
+     ".report.h": "幸福感 −1；觉得自己傻，但安全了。",
+     "trk.m_rom": "寄给网友的钱"
+    },
+    "zht": {
+     ".t": "網路上認識的人",
+     ".x": "你和一個網路上認識的人每天聊了好幾個月。現在對方說需要{a}機票錢來見你。",
+     ".send": "把錢寄過去",
+     ".send.s": "你存款裡的{a}。",
+     ".send.h": "還沒見面就要錢的，幾乎都是騙子。",
+     ".refuse": "說你自己付錢，約在中間見",
+     ".refuse.s": "對方就不出聲了。",
+     ".report": "檢舉這個帳號",
+     ".report.s": "一個星期後網站刪了它。",
+     ".report.h": "幸福感 −1；覺得自己傻，但安全了。",
+     "trk.m_rom": "寄給網友的錢"
+    }
+   }
+  },
+  {
+   "id": "m_romance2",
+   "chain": true,
+   "when": {"stats": {"liquid": "> .05 * base"}},
+   "def": "stop",
+   "tarot": "scam",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "let": {"a": "Math.min(.2 * base, liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "send", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); const t = T('m_rom', {kind: 'ghost', label: M('trk.m_rom')}); t.spent += a; t.g += a"},
+    {"id": "stop", "hint": true, "do": "happy -= 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Another emergency",
+     ".x": "They never arrived. Now there is a hospital bill abroad, and they need {a} urgently.",
+     ".send": "Send it",
+     ".send.s": "{a} of your savings.",
+     ".send.h": "This is how these scams work: the emergencies never stop.",
+     ".stop": "Stop replying",
+     ".stop.s": "It hurts, but it is over.",
+     ".stop.h": "Happiness −3."
+    },
+    "zh": {
+     ".t": "又出了紧急状况",
+     ".x": "对方一直没来。现在说在国外住院，急需{a}。",
+     ".send": "寄过去",
+     ".send.s": "你存款里的{a}。",
+     ".send.h": "这类骗局都是这样：紧急状况永远没完。",
+     ".stop": "不再回复",
+     ".stop.s": "很难受，但结束了。",
+     ".stop.h": "幸福感 −3。"
+    },
+    "zht": {
+     ".t": "又出了緊急狀況",
+     ".x": "對方一直沒來。現在說在國外住院，急需{a}。",
+     ".send": "寄過去",
+     ".send.s": "你存款裡的{a}。",
+     ".send.h": "這類騙局都是這樣：緊急狀況永遠沒完。",
+     ".stop": "不再回覆",
+     ".stop.s": "很難受，但結束了。",
+     ".stop.h": "幸福感 −3。"
+    }
+   }
+  },
+  {
+   "id": "m_aunt",
+   "age": [45, 59],
+   "weight": 0.25,
+   "def": "bank",
+   "tarot": "inh",
+   "art": {"draw": "gift", "bg": "mi"},
+   "let": {"a": ".3 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "mort", "show": "!!house && house.mort > 1", "sub": {"b": "MN(Math.min(a, house.mort))"}, "do": "const p = Math.min(a, house.mort); house.mort -= p; house.out += p; cash += a - p; setRate(house, house.rate || .03, age); happy += 2"},
+    {"id": "inv", "do": "cash += a; putIn('m_auntI', a, {}, 'trk.m_auntI')"},
+    {"id": "spend", "hint": true, "do": "cash += a; spend('m_auntS', a, 'trk.m_auntS'); happy += 4"},
+    {"id": "bank", "do": "cash += a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An aunt’s will",
+     ".x": "An aunt with no children has left you {a}.",
+     ".mort": "Pay down the mortgage",
+     ".mort.s": "{b} off your mortgage.",
+     ".inv": "Invest it",
+     ".inv.s": "Into an index fund.",
+     ".spend": "Do something she would have loved",
+     ".spend.s": "A long trip in her memory.",
+     ".spend.h": "Happiness +4.",
+     ".bank": "Put it in the bank",
+     ".bank.s": "Decide later.",
+     "trk.m_auntI": "Your aunt’s gift, invested",
+     "trk.m_auntS": "Your aunt’s gift, spent"
+    },
+    "zh": {
+     ".t": "姑姑的遗嘱",
+     ".x": "一位没有孩子的姑姑留给你{a}。",
+     ".mort": "提前还房贷",
+     ".mort.s": "房贷少{b}。",
+     ".inv": "拿去投资",
+     ".inv.s": "投进指数基金。",
+     ".spend": "做一件她会喜欢的事",
+     ".spend.s": "为了纪念她，去趟远行。",
+     ".spend.h": "幸福感 +4。",
+     ".bank": "存银行",
+     ".bank.s": "以后再说。",
+     "trk.m_auntI": "姑姑的遗产（投资）",
+     "trk.m_auntS": "姑姑的遗产（花掉）"
+    },
+    "zht": {
+     ".t": "姑姑的遺囑",
+     ".x": "一位沒有孩子的姑姑留給你{a}。",
+     ".mort": "提前還房貸",
+     ".mort.s": "房貸少{b}。",
+     ".inv": "拿去投資",
+     ".inv.s": "投進指數基金。",
+     ".spend": "做一件她會喜歡的事",
+     ".spend.s": "為了紀念她，去趟遠行。",
+     ".spend.h": "幸福感 +4。",
+     ".bank": "存銀行",
+     ".bank.s": "以後再說。",
+     "trk.m_auntI": "姑姑的遺產（投資）",
+     "trk.m_auntS": "姑姑的遺產（花掉）"
+    }
+   }
+  },
+  {
+   "id": "m_fees",
+   "src": "Fees of 1–2% a year can take a quarter or more of a fund’s growth over 30 years, while index funds charge around 0.1% (Morningstar, US Fund Fee Study 2024)",
+   "age": [45, 59],
+   "weight": 0.35,
+   "when": {"stats": {"netWorth": "> 1 * base"}},
+   "def": "skip",
+   "tarot": "agent",
+   "art": {"draw": "tax", "bg": "wa"},
+   "opts": [
+    {"id": "review", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "spend('m_fees', .015 * base, 'trk.m_fees'); for (const k in lots) { if (lots[k].fee > .005) lots[k].fee = .002 }"},
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "What are you paying?",
+     ".x": "An article says many people lose a big slice of their savings to fund fees without noticing.",
+     ".review": "Pay for an independent review",
+     ".review.s": "About {a} for an hour with an adviser who charges a flat fee.",
+     ".review.h": "Any of your investments charging over 0.5% a year are moved to cheap funds.",
+     ".skip": "Leave things as they are",
+     ".skip.s": "Out of sight, out of mind.",
+     "trk.m_fees": "A fee review"
+    },
+    "zh": {
+     ".t": "你付了多少费用？",
+     ".x": "一篇文章说很多人不知不觉被基金费用吃掉一大块存款。",
+     ".review": "花钱请独立顾问检查",
+     ".review.s": "大约{a}，请一位按小时收费的顾问。",
+     ".review.h": "你的投资里年费超过0.5%的，都会换成便宜的基金。",
+     ".skip": "维持现状",
+     ".skip.s": "眼不见为净。",
+     "trk.m_fees": "费用检查"
+    },
+    "zht": {
+     ".t": "你付了多少費用？",
+     ".x": "一篇文章說很多人不知不覺被基金費用吃掉一大塊存款。",
+     ".review": "花錢請獨立顧問檢查",
+     ".review.s": "大約{a}，請一位按小時收費的顧問。",
+     ".review.h": "你的投資裡年費超過0.5%的，都會換成便宜的基金。",
+     ".skip": "維持現狀",
+     ".skip.s": "眼不見為淨。",
+     "trk.m_fees": "費用檢查"
+    }
+   }
+  },
+  {
+   "id": "m_cashout",
+   "age": [45, 55],
+   "weight": 0.3,
+   "when": {"house": true, "test": "house.mort < .5 * house.value"},
+   "def": "no",
+   "tarot": "rates",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"a": ".4 * base"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(a)"}, "hint": true, "do": "house.mort += a; cash += a; setRate(house, house.rate || .04, age); happy += 1"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Borrow against your home?",
+     ".x": "Your home has gone up in value. The bank offers to lend you more against it.",
+     ".yes": "Borrow more",
+     ".yes.s": "{a} in cash; a bigger mortgage.",
+     ".yes.h": "Happiness +1. You pay interest on it for years.",
+     ".no": "No thanks",
+     ".no.s": "Keep paying it down."
+    },
+    "zh": {
+     ".t": "用房子贷款？",
+     ".x": "你的房子升值了。银行说可以再借你一笔。",
+     ".yes": "再借一笔",
+     ".yes.s": "拿到{a}现金；房贷变多。",
+     ".yes.h": "幸福感 +1。这笔钱要付很多年利息。",
+     ".no": "不用了",
+     ".no.s": "继续还房贷。"
+    },
+    "zht": {
+     ".t": "用房子貸款？",
+     ".x": "你的房子增值了。銀行說可以再借你一筆。",
+     ".yes": "再借一筆",
+     ".yes.s": "拿到{a}現金；房貸變多。",
+     ".yes.h": "幸福感 +1。這筆錢要付很多年利息。",
+     ".no": "不用了",
+     ".no.s": "繼續還房貸。"
+    }
+   }
+  },
+  {
+   "id": "m_kiddeposit",
+   "age": [48, 58],
+   "weight": 0.35,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "who": {"role": "kid", "age": [22, 35]},
+   "def": "no",
+   "tarot": "grandkid",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"a": ".3 * base"},
+   "vars": {"p": "name(p)", "a": "MN(a)"},
+   "opts": [
+    {"id": "give", "sub": {"a": "MN(a)"}, "bond": 6, "do": "spend('m_kiddep', a, 'trk.m_kiddep')"},
+    {"id": "lend", "sub": {"a": "MN(a)"}, "hint": true, "bond": 3, "do": "pay(a); later(age + 5, 'm_kidrep', {a})"},
+    {"id": "no", "bond": -4}
+   ],
+   "later": {
+    "m_kidrep": "if (roll('m_kidrep') < .6) { cash += x.a; log(M('log.m_kidrepOk', {a: MN(x.a)}), 'good') } else log(M('log.m_kidrepNo', {a: MN(x.a)}), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Your child’s first home",
+     ".x": "{p} is trying to buy a first home and is {a} short of the deposit.",
+     ".give": "Give it to them",
+     ".give.s": "{a}, no strings.",
+     ".lend": "Lend it",
+     ".lend.s": "{a}, to pay back when they can.",
+     ".lend.h": "Most children pay back in time; some never manage it.",
+     ".no": "They will have to save",
+     ".no.s": "It will take them longer.",
+     "trk.m_kiddep": "A deposit for your child",
+     "log.m_kidrepOk": "Your child paid back the {a} you lent for their home.",
+     "log.m_kidrepNo": "Your child still can’t pay back the {a}. You stop asking."
+    },
+    "zh": {
+     ".t": "孩子的第一套房",
+     ".x": "{p}想买第一套房，首付还差{a}。",
+     ".give": "送给他们",
+     ".give.s": "{a}，不用还。",
+     ".lend": "借给他们",
+     ".lend.s": "{a}，等他们有能力再还。",
+     ".lend.h": "大部分孩子会按时还，有些一直还不了。",
+     ".no": "让他们自己存",
+     ".no.s": "他们会花更久。",
+     "trk.m_kiddep": "给孩子的首付",
+     "log.m_kidrepOk": "孩子还了你借给他们买房的{a}。",
+     "log.m_kidrepNo": "孩子还是还不了那{a}，你就不再提了。"
+    },
+    "zht": {
+     ".t": "孩子的第一間房",
+     ".x": "{p}想買第一間房，頭期款還差{a}。",
+     ".give": "送給他們",
+     ".give.s": "{a}，不用還。",
+     ".lend": "借給他們",
+     ".lend.s": "{a}，等他們有能力再還。",
+     ".lend.h": "大部分孩子會按時還，有些一直還不了。",
+     ".no": "讓他們自己存",
+     ".no.s": "他們會花更久。",
+     "trk.m_kiddep": "給孩子的頭期款",
+     "log.m_kidrepOk": "孩子還了你借給他們買房的{a}。",
+     "log.m_kidrepNo": "孩子還是還不了那{a}，你就不再提了。"
+    }
+   }
+  },
+  {
+   "id": "m_taxaudit",
+   "age": [45, 59],
+   "weight": 0.35,
+   "when": {"working": true, "selfEmployed": true},
+   "def": "self",
+   "tarot": "save2",
+   "art": {"draw": "tax", "bg": "co"},
+   "opts": [
+    {"id": "acct", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('m_tax', .03 * base, 'trk.m_tax'); if (roll('m_taxaudit') < .2) pay(.03 * base)"},
+    {"id": "self", "hint": true, "do": "happy -= 2; if (roll('m_taxaudit') < .5) { pay(.12 * base); const t = T('m_taxF', {kind: 'ghost', label: M('trk.m_taxF')}); t.spent += .12 * base; t.g += .12 * base }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A tax inspection",
+     ".x": "The tax office wants to inspect your last three years of accounts.",
+     ".acct": "Hire an accountant",
+     ".acct.s": "About {a}.",
+     ".acct.h": "Accountants usually find the problems first; small penalties at most.",
+     ".self": "Deal with it yourself",
+     ".self.s": "Evenings with shoeboxes of receipts.",
+     ".self.h": "Happiness −2. About half end up with a sizeable penalty.",
+     "trk.m_tax": "Accountant for a tax inspection",
+     "trk.m_taxF": "Tax penalty"
+    },
+    "zh": {
+     ".t": "税务稽查",
+     ".x": "税务局要查你过去三年的账。",
+     ".acct": "请会计师",
+     ".acct.s": "大约{a}。",
+     ".acct.h": "会计师通常能先找出问题，最多罚一点。",
+     ".self": "自己处理",
+     ".self.s": "晚上对着一箱箱收据。",
+     ".self.h": "幸福感 −2。大约一半会被重罚。",
+     "trk.m_tax": "稽查请会计师",
+     "trk.m_taxF": "税务罚款"
+    },
+    "zht": {
+     ".t": "稅務稽查",
+     ".x": "國稅局要查你過去三年的帳。",
+     ".acct": "請會計師",
+     ".acct.s": "大約{a}。",
+     ".acct.h": "會計師通常能先找出問題，最多罰一點。",
+     ".self": "自己處理",
+     ".self.s": "晚上對著一箱箱收據。",
+     ".self.h": "幸福感 −2。大約一半會被重罰。",
+     "trk.m_tax": "稽查請會計師",
+     "trk.m_taxF": "稅務罰款"
+    }
+   }
+  },
+  {
+   "id": "m_wine",
+   "src": "ESTIMATE: game rule (fine wine and art have long-run returns similar to bonds, with storage and selling costs)",
+   "age": [45, 59],
+   "weight": 0.25,
+   "when": {"stats": {"netWorth": "> 3 * base", "liquid": "> .2 * base"}},
+   "def": "no",
+   "tarot": "gold",
+   "art": {"draw": "feast", "bg": "wa"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "const u = roll('m_wine'); putIn('m_wine', .2 * base, {rate: u < .3 ? .07 : u < .7 ? .02 : -.03, fee: .01}, 'trk.m_wine'); happy += 1", "next": {"event": "m_wine2", "in": [6, 10], "p": 0.7}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Fine wine",
+     ".x": "A friend says fine wine is a better investment than shares, and offers to introduce you to a merchant.",
+     ".buy": "Buy a few cases",
+     ".buy.s": "{a}, stored in a bonded warehouse for a yearly fee.",
+     ".buy.h": "Happiness +1. Some vintages soar; many barely keep pace with inflation.",
+     ".no": "Stick to drinking it",
+     ".no.s": "A bottle on Sundays.",
+     "trk.m_wine": "Fine wine"
+    },
+    "zh": {
+     ".t": "投资名酒",
+     ".x": "朋友说投资名酒比股票好，要介绍酒商给你。",
+     ".buy": "买几箱",
+     ".buy.s": "{a}，存放在保税仓，每年要付保管费。",
+     ".buy.h": "幸福感 +1。有些年份大涨，很多只是勉强跟上通胀。",
+     ".no": "用喝的就好",
+     ".no.s": "周日开一瓶。",
+     "trk.m_wine": "名酒投资"
+    },
+    "zht": {
+     ".t": "投資名酒",
+     ".x": "朋友說投資名酒比股票好，要介紹酒商給你。",
+     ".buy": "買幾箱",
+     ".buy.s": "{a}，存放在保稅倉，每年要付保管費。",
+     ".buy.h": "幸福感 +1。有些年份大漲，很多只是勉強跟上通膨。",
+     ".no": "用喝的就好",
+     ".no.s": "週日開一瓶。",
+     "trk.m_wine": "名酒投資"
+    }
+   }
+  },
+  {
+   "id": "m_wine2",
+   "chain": true,
+   "when": {"test": "!!lots.m_wine && lots.m_wine.v > 0"},
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "feast", "bg": "ya"},
+   "let": {"v": "lots.m_wine.v"},
+   "vars": {"a": "MN(.85 * v)", "b": "MN(lots.m_wine.tin)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.85 * v)"}, "do": "lots.m_wine.v = 0; lots.m_wine.tout += v; cash += .85 * v"},
+    {"id": "keep", "hint": true, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The wine auction",
+     ".x": "You paid {b} for your wine. An auction house expects it to fetch {a} after its commission.",
+     ".sell": "Sell at auction",
+     ".sell.s": "{a} in your account.",
+     ".keep": "Keep it, and drink some one day",
+     ".keep.s": "Storage fees continue.",
+     ".keep.h": "Happiness +1."
+    },
+    "zh": {
+     ".t": "名酒拍卖",
+     ".x": "你的酒当初花了{b}。拍卖行估计扣掉佣金后能拍到{a}。",
+     ".sell": "拿去拍卖",
+     ".sell.s": "{a}进你的账户。",
+     ".keep": "留着，哪天开来喝",
+     ".keep.s": "保管费照付。",
+     ".keep.h": "幸福感 +1。"
+    },
+    "zht": {
+     ".t": "名酒拍賣",
+     ".x": "你的酒當初花了{b}。拍賣行估計扣掉佣金後能拍到{a}。",
+     ".sell": "拿去拍賣",
+     ".sell.s": "{a}進你的帳戶。",
+     ".keep": "留著，哪天開來喝",
+     ".keep.s": "保管費照付。",
+     ".keep.h": "幸福感 +1。"
+    }
+   }
+  },
+  {
+   "id": "m_offplan",
+   "src": "ESTIMATE: game rule (some overseas off-plan developments are never finished, and buyers recover little)",
+   "age": [48, 59],
+   "weight": 0.25,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "no",
+   "tarot": "crash",
+   "art": {"draw": "city", "bg": "co"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.4 * base)"}, "hint": true, "do": "spend('m_offplanP', .4 * base, 'trk.m_offplanP'); later(age + 3, 'm_offplan', {})"},
+    {"id": "no"}
+   ],
+   "later": {
+    "m_offplan": "if (roll('m_offplan') < .7) { mkLot('m_offplan', {rate: .01}, 'trk.m_offplan'); addLot('m_offplan', .45 * base); log(M('log.m_offplanOk'), 'good') } else { mkLot('m_offplan', {rate: .01}, 'trk.m_offplan'); addLot('m_offplan', .1 * base); log(M('log.m_offplanNo'), 'bad') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A flat abroad, off plan",
+     ".x": "A glossy brochure offers flats in a sunny resort abroad, to be built in three years, at a discount if you pay now.",
+     ".buy": "Buy one",
+     ".buy.s": "{a} paid up front.",
+     ".buy.h": "Most are built and rise a little; about three in ten developers go bust first.",
+     ".no": "Put the brochure in the recycling",
+     ".no.s": "Your savings stay at home.",
+     "trk.m_offplan": "A flat abroad",
+     "trk.m_offplanP": "Paid for a flat off plan",
+     "log.m_offplanOk": "Your flat abroad is finished, and worth a little more than you paid.",
+     "log.m_offplanNo": "The developer of your flat abroad went bust. You recover only a fraction."
+    },
+    "zh": {
+     ".t": "海外楼花",
+     ".x": "精美的宣传册在卖海外度假区的楼盘，三年后完工，现在付钱有折扣。",
+     ".buy": "买一套",
+     ".buy.s": "先付{a}。",
+     ".buy.h": "大部分会盖好，还会小涨；大约三成开发商会先倒闭。",
+     ".no": "把宣传册丢进回收",
+     ".no.s": "钱留在国内。",
+     "trk.m_offplan": "海外公寓",
+     "trk.m_offplanP": "付款买楼花",
+     "log.m_offplanOk": "你的海外公寓盖好了，比买价还高一点。",
+     "log.m_offplanNo": "你那间海外公寓的开发商倒了，只拿回一小部分。"
+    },
+    "zht": {
+     ".t": "海外預售屋",
+     ".x": "精美的文宣在賣海外度假區的建案，三年後完工，現在付錢有折扣。",
+     ".buy": "買一戶",
+     ".buy.s": "先付{a}。",
+     ".buy.h": "大部分會蓋好，還會小漲；大約三成建商會先倒閉。",
+     ".no": "把文宣丟進回收",
+     ".no.s": "錢留在國內。",
+     "trk.m_offplan": "海外公寓",
+     "trk.m_offplanP": "付款買預售屋",
+     "log.m_offplanOk": "你的海外公寓蓋好了，比買價還高一點。",
+     "log.m_offplanNo": "你那間海外公寓的建商倒了，只拿回一小部分。"
+    }
+   }
   }
  ]
 }

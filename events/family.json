@@ -2093,6 +2093,655 @@
      "trk.f_parmed": "父母的醫藥費"
     }
    }
+  },
+  {
+   "id": "m_boomerang",
+   "age": [48, 59],
+   "weight": 0.35,
+   "who": {"role": "kid", "age": [22, 30]},
+   "def": "free",
+   "tarot": "grandkid",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "rent", "sub": {"a": "MN(.02 * base)"}, "bond": -1, "do": "T('m_boomR', {kind: 'custom', label: M('trk.m_boomR')}); rec('m_boomR', -.02 * base, 3)"},
+    {"id": "free", "sub": {"a": "MN(.03 * base)"}, "bond": 4, "do": "T('m_boom', {kind: 'ghost', label: M('trk.m_boom')}); rec('m_boom', .03 * base, 3)", "next": {"event": "m_boomerang2", "in": 3, "p": 0.5}},
+    {"id": "no", "bond": -6}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back in the nest",
+     ".x": "{p} has lost their flat and asks to move back home for a while.",
+     ".rent": "Yes, but they pay some rent",
+     ".rent.s": "About {a} a year from them.",
+     ".free": "Yes, rent-free",
+     ".free.s": "About {a} a year in food and bills.",
+     ".no": "Help them find another flat",
+     ".no.s": "Your home stays quiet.",
+     "trk.m_boomR": "Rent from your grown-up child",
+     "trk.m_boom": "A grown-up child at home"
+    },
+    "zh": {
+     ".t": "孩子搬回家",
+     ".x": "{p}租的房子没了，想搬回家住一阵子。",
+     ".rent": "可以，但要付点房租",
+     ".rent.s": "他们每年给大约{a}。",
+     ".free": "可以，不用房租",
+     ".free.s": "伙食和水电每年大约{a}。",
+     ".no": "帮他们另外找房子",
+     ".no.s": "家里还是清静。",
+     "trk.m_boomR": "成年孩子付的房租",
+     "trk.m_boom": "成年孩子住家里"
+    },
+    "zht": {
+     ".t": "孩子搬回家",
+     ".x": "{p}租的房子沒了，想搬回家住一陣子。",
+     ".rent": "可以，但要付點房租",
+     ".rent.s": "他們每年給大約{a}。",
+     ".free": "可以，不用房租",
+     ".free.s": "伙食和水電每年大約{a}。",
+     ".no": "幫他們另外找房子",
+     ".no.s": "家裡還是清靜。",
+     "trk.m_boomR": "成年孩子付的房租",
+     "trk.m_boom": "成年孩子住家裡"
+    }
+   }
+  },
+  {
+   "id": "m_boomerang2",
+   "chain": true,
+   "who": {"role": "kid", "age": [24, 34]},
+   "def": "stay",
+   "tarot": "grandkid",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "rent", "sub": {"a": "MN(.02 * base)"}, "bond": -2, "do": "T('m_boomR', {kind: 'custom', label: M('trk.m_boomR')}); rec('m_boomR', -.02 * base, 3)"},
+    {"id": "help", "sub": {"a": "MN(.1 * base)"}, "bond": 3, "do": "spend('m_boomH', .1 * base, 'trk.m_boomH')"},
+    {"id": "stay", "sub": {"a": "MN(.03 * base)"}, "do": "T('m_boom', {kind: 'ghost', label: M('trk.m_boom')}); rec('m_boom', .03 * base, 3); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Still at home",
+     ".x": "Three years on, {p} is still in their old room and shows no sign of leaving.",
+     ".rent": "Start charging rent",
+     ".rent.s": "About {a} a year.",
+     ".help": "Help with a deposit on a flat",
+     ".help.s": "About {a}, and they move out.",
+     ".stay": "Let them stay",
+     ".stay.s": "About {a} a year in food and bills.",
+     "trk.m_boomH": "Helping your child move out"
+    },
+    "zh": {
+     ".t": "还住在家里",
+     ".x": "三年过去了，{p}还住在原来的房间，完全没有要搬的意思。",
+     ".rent": "开始收房租",
+     ".rent.s": "每年大约{a}。",
+     ".help": "帮他们付租房押金",
+     ".help.s": "大约{a}，他们就搬出去了。",
+     ".stay": "让他们继续住",
+     ".stay.s": "伙食和水电每年大约{a}。",
+     "trk.m_boomH": "帮孩子搬出去"
+    },
+    "zht": {
+     ".t": "還住在家裡",
+     ".x": "三年過去了，{p}還住在原來的房間，完全沒有要搬的意思。",
+     ".rent": "開始收房租",
+     ".rent.s": "每年大約{a}。",
+     ".help": "幫他們付租屋押金",
+     ".help.s": "大約{a}，他們就搬出去了。",
+     ".stay": "讓他們繼續住",
+     ".stay.s": "伙食和水電每年大約{a}。",
+     "trk.m_boomH": "幫孩子搬出去"
+    }
+   }
+  },
+  {
+   "id": "m_parenthouse",
+   "age": [48, 59],
+   "weight": 0.3,
+   "if": {"family": ["middle", "rich"]},
+   "who": {"role": "parent"},
+   "def": "take",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"a": ".5 * base"},
+   "vars": {"p": "Folks()", "a": "MN(a)"},
+   "opts": [
+    {"id": "take", "sub": {"a": "MN(a)"}, "hint": true, "bond": 2, "do": "famSpent += .5; cash += a; const tq = T('m_early', {kind: 'custom', label: M('trk.m_early')}); tq.v += a"},
+    {"id": "keep", "bond": 3, "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An early inheritance",
+     ".x": "{p} are selling the family home and want to give each child {a} now, rather than later.",
+     ".take": "Accept it",
+     ".take.s": "{a} in your account.",
+     ".take.h": "It comes out of what they would leave you later.",
+     ".keep": "Tell them to keep it for themselves",
+     ".keep.s": "They might need it.",
+     "trk.m_early": "An early inheritance"
+    },
+    "zh": {
+     ".t": "提早分财产",
+     ".x": "{p}要卖掉老家，想现在就给每个孩子{a}，不用等以后。",
+     ".take": "收下",
+     ".take.s": "{a}进你的账户。",
+     ".take.h": "这笔钱会从他们以后留给你的遗产里扣掉。",
+     ".keep": "叫他们留着自己用",
+     ".keep.s": "他们可能用得到。",
+     "trk.m_early": "提早拿到的遗产"
+    },
+    "zht": {
+     ".t": "提早分財產",
+     ".x": "{p}要賣掉老家，想現在就給每個孩子{a}，不用等以後。",
+     ".take": "收下",
+     ".take.s": "{a}進你的帳戶。",
+     ".take.h": "這筆錢會從他們以後留給你的遺產裡扣掉。",
+     ".keep": "叫他們留著自己用",
+     ".keep.s": "他們可能用得到。",
+     "trk.m_early": "提早拿到的遺產"
+    }
+   }
+  },
+  {
+   "id": "m_midlife",
+   "age": [45, 52],
+   "weight": 0.35,
+   "def": "none",
+   "tarot": "car2",
+   "art": {"draw": "moto", "bg": "co"},
+   "opts": [
+    {"id": "car", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "spend('m_mlcar', .3 * base, 'trk.m_mlcar'); happy += 4; habit += .01"},
+    {"id": "bike", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('m_mlbike', .1 * base, 'trk.m_mlbike'); happy += 3", "next": {"event": "m_bike2", "in": [1, 3], "p": 0.4}},
+    {"id": "trip", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "spend('m_mltrip', .08 * base, 'trk.m_mltrip'); happy += 3"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Is this it?",
+     ".x": "You wake up one morning wondering where the years went, and wanting something new.",
+     ".car": "A sports car",
+     ".car.s": "About {a}.",
+     ".car.h": "Happiness +4 for a while; you get used to spending more.",
+     ".bike": "A motorbike",
+     ".bike.s": "About {a}.",
+     ".bike.h": "Happiness +3. Motorbikes are far riskier than cars.",
+     ".trip": "A long trip on your own",
+     ".trip.s": "About {a}.",
+     ".trip.h": "Happiness +3.",
+     ".none": "Take up running instead",
+     ".none.s": "Free.",
+     "trk.m_mlcar": "A sports car",
+     "trk.m_mlbike": "A motorbike",
+     "trk.m_mltrip": "A trip on your own"
+    },
+    "zh": {
+     ".t": "人生就这样了吗？",
+     ".x": "某天早上醒来，你想着这些年都去哪了，想来点新鲜的。",
+     ".car": "买辆跑车",
+     ".car.s": "大约{a}。",
+     ".car.h": "幸福感 +4 一阵子；也会习惯花更多钱。",
+     ".bike": "买辆摩托车",
+     ".bike.s": "大约{a}。",
+     ".bike.h": "幸福感 +3。摩托车比汽车危险得多。",
+     ".trip": "自己去远行",
+     ".trip.s": "大约{a}。",
+     ".trip.h": "幸福感 +3。",
+     ".none": "改去跑步",
+     ".none.s": "不花钱。",
+     "trk.m_mlcar": "跑车",
+     "trk.m_mlbike": "摩托车",
+     "trk.m_mltrip": "独自远行"
+    },
+    "zht": {
+     ".t": "人生就這樣了嗎？",
+     ".x": "某天早上醒來，你想著這些年都去哪了，想來點新鮮的。",
+     ".car": "買台跑車",
+     ".car.s": "大約{a}。",
+     ".car.h": "幸福感 +4 一陣子；也會習慣花更多錢。",
+     ".bike": "買台重機",
+     ".bike.s": "大約{a}。",
+     ".bike.h": "幸福感 +3。重機比汽車危險得多。",
+     ".trip": "自己去遠行",
+     ".trip.s": "大約{a}。",
+     ".trip.h": "幸福感 +3。",
+     ".none": "改去跑步",
+     ".none.s": "不花錢。",
+     "trk.m_mlcar": "跑車",
+     "trk.m_mlbike": "重機",
+     "trk.m_mltrip": "獨自遠行"
+    }
+   }
+  },
+  {
+   "id": "m_bike2",
+   "chain": true,
+   "def": "sell",
+   "tarot": "car2",
+   "art": {"draw": "moto", "bg": "mi"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.06 * base)"}, "do": "cash += .06 * base; const tq = T('m_bikeS', {kind: 'custom', label: M('trk.m_bikeS')}); tq.v += .06 * base; happy -= 1"},
+    {"id": "ride", "hint": true, "do": "happy += 1; if (roll('m_bike2') < .15) { health -= 8; pay(.05 * base); log(M('log.m_bike2'), 'bad') }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A near miss",
+     ".x": "A car pulls out in front of you on your motorbike. You stop with centimetres to spare.",
+     ".sell": "Sell the bike",
+     ".sell.s": "About {a} back.",
+     ".ride": "Keep riding, more carefully",
+     ".ride.s": "You love it.",
+     ".ride.h": "Happiness +1. Riders your age have about one serious accident in seven.",
+     "trk.m_bikeS": "Sold the motorbike",
+     "log.m_bike2": "You came off your motorbike and spent weeks in hospital."
+    },
+    "zh": {
+     ".t": "差点出事",
+     ".x": "你骑摩托车时，一辆车突然切出来，你在几公分前停住了。",
+     ".sell": "把车卖了",
+     ".sell.s": "卖回大约{a}。",
+     ".ride": "继续骑，小心点",
+     ".ride.s": "你真的很爱骑车。",
+     ".ride.h": "幸福感 +1。你这个年纪的骑士大约七个就有一个会出严重车祸。",
+     "trk.m_bikeS": "卖掉摩托车",
+     "log.m_bike2": "你骑摩托车出了事，住院好几个星期。"
+    },
+    "zht": {
+     ".t": "差點出事",
+     ".x": "你騎重機時，一台車突然切出來，你在幾公分前停住了。",
+     ".sell": "把車賣了",
+     ".sell.s": "賣回大約{a}。",
+     ".ride": "繼續騎，小心點",
+     ".ride.s": "你真的很愛騎車。",
+     ".ride.h": "幸福感 +1。你這個年紀的騎士大約七個就有一個會出嚴重車禍。",
+     "trk.m_bikeS": "賣掉重機",
+     "log.m_bike2": "你騎重機出了事，住院好幾個星期。"
+    }
+   }
+  },
+  {
+   "id": "m_partnerill",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"partner": ["living", "married"]},
+   "who": {"role": "pt"},
+   "def": "they",
+   "tarot": "fsick",
+   "art": {"draw": "carer", "bg": "mi"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "hours", "hint": true, "bond": 6, "do": "if (working()) tmpPay('m_care', .6, 2, 'trk.m_care'); happy -= 2", "next": {"event": "m_partnerill2", "in": [2, 3]}},
+    {"id": "paid", "sub": {"a": "MN(.1 * base)"}, "bond": 2, "do": "T('m_carePaid', {kind: 'custom', label: M('trk.m_carePaid')}); rec('m_carePaid', .1 * base, 2)", "next": {"event": "m_partnerill2", "in": [2, 3]}},
+    {"id": "they", "bond": -5, "do": "pt.q = pt.q * .8"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your partner is ill",
+     ".x": "{p} has a long illness ahead, with treatment for months.",
+     ".hours": "Cut your hours to care for them",
+     ".hours.s": "60% of your pay for two years.",
+     ".hours.h": "Happiness −2. You grow closer.",
+     ".paid": "Pay for help at home",
+     ".paid.s": "About {a} a year for two years.",
+     ".they": "They manage with friends and family",
+     ".they.s": "You keep working as normal.",
+     "trk.m_care": "Caring for your partner",
+     "trk.m_carePaid": "Care at home for your partner"
+    },
+    "zh": {
+     ".t": "伴侣病了",
+     ".x": "{p}得了一场要治疗好几个月的病。",
+     ".hours": "减少工时照顾他们",
+     ".hours.s": "两年拿六成工资。",
+     ".hours.h": "幸福感 −2。感情更深。",
+     ".paid": "请人到家里照顾",
+     ".paid.s": "两年里每年大约{a}。",
+     ".they": "由他们的亲友帮忙",
+     ".they.s": "你照常上班。",
+     "trk.m_care": "照顾伴侣",
+     "trk.m_carePaid": "请人照顾伴侣"
+    },
+    "zht": {
+     ".t": "伴侶病了",
+     ".x": "{p}得了一場要治療好幾個月的病。",
+     ".hours": "減少工時照顧他們",
+     ".hours.s": "兩年領六成薪水。",
+     ".hours.h": "幸福感 −2。感情更深。",
+     ".paid": "請人到家裡照顧",
+     ".paid.s": "兩年裡每年大約{a}。",
+     ".they": "由他們的親友幫忙",
+     ".they.s": "你照常上班。",
+     "trk.m_care": "照顧伴侶",
+     "trk.m_carePaid": "請人照顧伴侶"
+    }
+   }
+  },
+  {
+   "id": "m_partnerill2",
+   "chain": true,
+   "when": {"partner": ["living", "married"]},
+   "who": {"role": "pt"},
+   "def": "full",
+   "tarot": "fsick",
+   "art": {"draw": "health", "bg": "ya"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "full", "do": "happy += 2"},
+    {"id": "part", "hint": true, "bond": 2, "do": "pt.q = pt.q * .6; happy += 1"},
+    {"id": "stop", "hint": true, "bond": 3, "do": "pt.ret = 1; happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After the treatment",
+     ".x": "{p}’s treatment is over and they are much better. What now for their work?",
+     ".full": "Back to work full-time",
+     ".full.s": "Life goes back to normal.",
+     ".part": "Part-time from now on",
+     ".part.s": "A gentler pace.",
+     ".part.h": "Their pay drops to about 60%.",
+     ".stop": "Stop working for good",
+     ".stop.s": "Time for what matters.",
+     ".stop.h": "Their pay is replaced by a small pension."
+    },
+    "zh": {
+     ".t": "治疗之后",
+     ".x": "{p}治疗结束，好多了。接下来工作怎么办？",
+     ".full": "回去全职工作",
+     ".full.s": "生活回到正轨。",
+     ".part": "以后做兼职",
+     ".part.s": "节奏慢一点。",
+     ".part.h": "他们的收入降到大约六成。",
+     ".stop": "从此不工作了",
+     ".stop.s": "把时间留给重要的事。",
+     ".stop.h": "他们的收入只剩一点退休金。"
+    },
+    "zht": {
+     ".t": "治療之後",
+     ".x": "{p}治療結束，好多了。接下來工作怎麼辦？",
+     ".full": "回去全職工作",
+     ".full.s": "生活回到正軌。",
+     ".part": "以後做兼職",
+     ".part.s": "節奏慢一點。",
+     ".part.h": "他們的收入降到大約六成。",
+     ".stop": "從此不工作了",
+     ".stop.s": "把時間留給重要的事。",
+     ".stop.h": "他們的收入只剩一點退休金。"
+    }
+   }
+  },
+  {
+   "id": "m_emptynest",
+   "age": [48, 59],
+   "weight": 0.35,
+   "when": {"kids": true, "test": "!hasKid(0, 17)"},
+   "def": "save",
+   "tarot": "travel",
+   "art": {"draw": "passport", "bg": "wa"},
+   "opts": [
+    {"id": "trip", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('m_nest', .1 * base, 'trk.m_nest'); happy += 4; if (pt) bond('pt', 4)"},
+    {"id": "hobby", "sub": {"a": "MN(.05 * base)", "b": "MN(.02 * base)"}, "hint": true, "do": "spend('m_hobby', .05 * base, 'trk.m_hobby'); T('m_hobbyR', {kind: 'ghost', label: M('trk.m_hobby')}); rec('m_hobbyR', .02 * base, 10, .2); happy += 3"},
+    {"id": "save", "sub": {"a": "MN(Math.min(.1 * base, liquid()))"}, "do": "putIn('m_nestI', Math.min(.1 * base, liquid()), {}, 'trk.m_nestI')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The empty nest",
+     ".x": "The children have all left home. The house is quiet, and there is money that used to go on them.",
+     ".trip": "The trip you always promised yourselves",
+     ".trip.s": "About {a}.",
+     ".trip.h": "Happiness +4.",
+     ".hobby": "Take up sailing",
+     ".hobby.s": "About {a} to start and {b} a year.",
+     ".hobby.h": "Happiness +3; Health a little better each year.",
+     ".save": "Put the money towards retirement",
+     ".save.s": "{a} into an index fund.",
+     "trk.m_nest": "An empty-nest trip",
+     "trk.m_hobby": "Sailing",
+     "trk.m_nestI": "Saved when the children left"
+    },
+    "zh": {
+     ".t": "空巢",
+     ".x": "孩子都离家了。家里很安静，以前花在他们身上的钱也省下来了。",
+     ".trip": "去那趟一直想去的旅行",
+     ".trip.s": "大约{a}。",
+     ".trip.h": "幸福感 +4。",
+     ".hobby": "开始学帆船",
+     ".hobby.s": "起步大约{a}，每年{b}。",
+     ".hobby.h": "幸福感 +3；健康每年好一点。",
+     ".save": "把钱存给退休",
+     ".save.s": "{a}投进指数基金。",
+     "trk.m_nest": "空巢旅行",
+     "trk.m_hobby": "帆船",
+     "trk.m_nestI": "孩子离家后存的钱"
+    },
+    "zht": {
+     ".t": "空巢",
+     ".x": "孩子都離家了。家裡很安靜，以前花在他們身上的錢也省下來了。",
+     ".trip": "去那趟一直想去的旅行",
+     ".trip.s": "大約{a}。",
+     ".trip.h": "幸福感 +4。",
+     ".hobby": "開始學帆船",
+     ".hobby.s": "起步大約{a}，每年{b}。",
+     ".hobby.h": "幸福感 +3；健康每年好一點。",
+     ".save": "把錢存給退休",
+     ".save.s": "{a}投進指數基金。",
+     "trk.m_nest": "空巢旅行",
+     "trk.m_hobby": "帆船",
+     "trk.m_nestI": "孩子離家後存的錢"
+    }
+   }
+  },
+  {
+   "id": "m_sibloan",
+   "age": [45, 59],
+   "weight": 0.3,
+   "when": {"stats": {"liquid": "> .1 * base"}},
+   "who": {"role": "sib", "age": [35, 75]},
+   "def": "no",
+   "tarot": "lend",
+   "art": "lend",
+   "let": {"a": ".1 * base"},
+   "vars": {"p": "Who(p)", "a": "MN(a)"},
+   "opts": [
+    {"id": "give", "sub": {"a": "MN(a)"}, "bond": 5, "do": "spend('m_sibg', a, 'trk.m_sibg')"},
+    {"id": "lend", "sub": {"a": "MN(a)"}, "hint": true, "bond": 2, "do": "pay(a); later(age + 3, 'm_sibloan', {a})"},
+    {"id": "no", "bond": -4}
+   ],
+   "later": {
+    "m_sibloan": "if (roll('m_sibloan') < .5) { cash += x.a; log(M('log.m_sibloanOk', {a: MN(x.a)}), 'good') } else log(M('log.m_sibloanNo', {a: MN(x.a)}), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A sibling in debt",
+     ".x": "{p} has run up debts and asks you for {a} to clear the worst of them.",
+     ".give": "Give it",
+     ".give.s": "{a}, no strings.",
+     ".lend": "Lend it",
+     ".lend.s": "{a}, to be paid back.",
+     ".lend.h": "About half of family loans like this are paid back.",
+     ".no": "Say no",
+     ".no.s": "A cold few months.",
+     "trk.m_sibg": "Helping a sibling with debts",
+     "log.m_sibloanOk": "Your sibling paid back the {a} you lent them.",
+     "log.m_sibloanNo": "Your sibling never paid back the {a}."
+    },
+    "zh": {
+     ".t": "兄弟姐妹欠债",
+     ".x": "{p}欠了债，想跟你拿{a}先还掉最急的部分。",
+     ".give": "直接给",
+     ".give.s": "{a}，不用还。",
+     ".lend": "借给他们",
+     ".lend.s": "借{a}，以后要还。",
+     ".lend.h": "这种借给家人的钱，大约一半会还。",
+     ".no": "拒绝",
+     ".no.s": "接下来几个月关系很冷。",
+     "trk.m_sibg": "帮兄弟姐妹还债",
+     "log.m_sibloanOk": "兄弟姐妹还了你借的{a}。",
+     "log.m_sibloanNo": "兄弟姐妹一直没还那{a}。"
+    },
+    "zht": {
+     ".t": "兄弟姊妹欠債",
+     ".x": "{p}欠了債，想跟你拿{a}先還掉最急的部分。",
+     ".give": "直接給",
+     ".give.s": "{a}，不用還。",
+     ".lend": "借給他們",
+     ".lend.s": "借{a}，以後要還。",
+     ".lend.h": "這種借給家人的錢，大約一半會還。",
+     ".no": "拒絕",
+     ".no.s": "接下來幾個月關係很冷。",
+     "trk.m_sibg": "幫兄弟姊妹還債",
+     "log.m_sibloanOk": "兄弟姊妹還了你借的{a}。",
+     "log.m_sibloanNo": "兄弟姊妹一直沒還那{a}。"
+    }
+   }
+  },
+  {
+   "id": "m_parents80",
+   "age": [45, 59],
+   "weight": 0.3,
+   "who": {"role": "parent", "age": [78, 92]},
+   "def": "share",
+   "tarot": "reunion",
+   "art": {"draw": "feast", "bg": "ya"},
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(.1 * base)"}, "bond": 6, "rel": 2, "do": "spend('m_80', .1 * base, 'trk.m_80'); happy += 2"},
+    {"id": "share", "sub": {"a": "MN(.03 * base)"}, "bond": 3, "rel": 1, "do": "spend('m_80', .03 * base, 'trk.m_80'); happy += 1"},
+    {"id": "no", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A big birthday",
+     ".x": "{p} turns 80 soon. The family talks about a holiday together to celebrate.",
+     ".all": "Pay for everyone",
+     ".all.s": "About {a}.",
+     ".share": "Split the cost with your siblings",
+     ".share.s": "About {a}.",
+     ".no": "Just a dinner at home",
+     ".no.s": "Cheaper and quieter.",
+     "trk.m_80": "A family trip for an 80th birthday"
+    },
+    "zh": {
+     ".t": "大寿",
+     ".x": "{p}快八十岁了。家里在讨论一起去旅行庆祝。",
+     ".all": "你全包",
+     ".all.s": "大约{a}。",
+     ".share": "跟兄弟姐妹分摊",
+     ".share.s": "大约{a}。",
+     ".no": "在家吃顿饭就好",
+     ".no.s": "便宜又清静。",
+     "trk.m_80": "八十大寿家庭旅行"
+    },
+    "zht": {
+     ".t": "大壽",
+     ".x": "{p}快八十歲了。家裡在討論一起去旅行慶祝。",
+     ".all": "你全包",
+     ".all.s": "大約{a}。",
+     ".share": "跟兄弟姊妹分攤",
+     ".share.s": "大約{a}。",
+     ".no": "在家吃頓飯就好",
+     ".no.s": "便宜又清靜。",
+     "trk.m_80": "八十大壽家庭旅行"
+    }
+   }
+  },
+  {
+   "id": "m_kidcar",
+   "age": [45, 55],
+   "weight": 0.3,
+   "when": {"kidAge": [17, 22]},
+   "def": "no",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {"id": "car", "sub": {"a": "MN(.15 * base)"}, "do": "spend('m_kidcar', .15 * base, 'trk.m_kidcar'); bond('kid', 4)"},
+    {"id": "help", "sub": {"a": "MN(.05 * base)"}, "do": "spend('m_kidcar', .05 * base, 'trk.m_kidcar'); bond('kid', 2)"},
+    {"id": "no", "do": "bond('kid', -1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A car for your child",
+     ".x": "Your child has passed their driving test and needs a car for work.",
+     ".car": "Buy them a decent car",
+     ".car.s": "About {a}.",
+     ".help": "Help with an old one",
+     ".help.s": "About {a}.",
+     ".no": "They save up for it",
+     ".no.s": "Buses for a while.",
+     "trk.m_kidcar": "A car for your child"
+    },
+    "zh": {
+     ".t": "给孩子买车",
+     ".x": "孩子考到驾照了，上班需要一辆车。",
+     ".car": "买辆像样的车",
+     ".car.s": "大约{a}。",
+     ".help": "帮忙出一部分买旧车",
+     ".help.s": "大约{a}。",
+     ".no": "让他们自己存钱买",
+     ".no.s": "先坐一阵子公交。",
+     "trk.m_kidcar": "给孩子买的车"
+    },
+    "zht": {
+     ".t": "幫孩子買車",
+     ".x": "孩子考到駕照了，上班需要一台車。",
+     ".car": "買台像樣的車",
+     ".car.s": "大約{a}。",
+     ".help": "幫忙出一部分買舊車",
+     ".help.s": "大約{a}。",
+     ".no": "讓他們自己存錢買",
+     ".no.s": "先搭一陣子公車。",
+     "trk.m_kidcar": "幫孩子買的車"
+    }
+   }
+  },
+  {
+   "id": "m_kidgap",
+   "age": [48, 55],
+   "weight": 0.3,
+   "when": {"kidAge": [18, 20]},
+   "def": "half",
+   "tarot": "trip",
+   "art": {"draw": "passport", "bg": "ya"},
+   "opts": [
+    {"id": "fund", "sub": {"a": "MN(.08 * base)"}, "do": "spend('m_gap', .08 * base, 'trk.m_gap'); bond('kid', 3)"},
+    {"id": "half", "sub": {"a": "MN(.04 * base)"}, "do": "spend('m_gap', .04 * base, 'trk.m_gap'); bond('kid', 1)"},
+    {"id": "no", "do": "bond('kid', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A gap year",
+     ".x": "Your child wants to spend a year travelling before starting work or university.",
+     ".fund": "Pay for it",
+     ".fund.s": "About {a}.",
+     ".half": "Pay half; they work for the rest",
+     ".half.s": "About {a}.",
+     ".no": "Tell them to get started instead",
+     ".no.s": "Free.",
+     "trk.m_gap": "Your child’s gap year"
+    },
+    "zh": {
+     ".t": "间隔年",
+     ".x": "孩子想在上班或上大学前先去旅行一年。",
+     ".fund": "你出钱",
+     ".fund.s": "大约{a}。",
+     ".half": "出一半，其余他们自己打工",
+     ".half.s": "大约{a}。",
+     ".no": "叫他们先开始工作或读书",
+     ".no.s": "不花钱。",
+     "trk.m_gap": "孩子的间隔年"
+    },
+    "zht": {
+     ".t": "空檔年",
+     ".x": "孩子想在上班或上大學前先去旅行一年。",
+     ".fund": "你出錢",
+     ".fund.s": "大約{a}。",
+     ".half": "出一半，其餘他們自己打工",
+     ".half.s": "大約{a}。",
+     ".no": "叫他們先開始工作或讀書",
+     ".no.s": "不花錢。",
+     "trk.m_gap": "孩子的空檔年"
+    }
+   }
   }
  ]
 }
