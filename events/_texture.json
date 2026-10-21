@@ -403,6 +403,63 @@
    {"id": "j_extra", "cat": "win", "fx": {"cash": 0.02}, "en": "A small payment for some extra work landed in your account.", "zh": "一笔额外工作的小酬劳打进了你的账户。", "zht": "一筆額外工作的小酬勞匯進了你的帳戶。"},
    {"id": "j_rumourpromo", "when": {"careerType": "office"}, "en": "Office gossip said you were up for promotion. You weren’t. Not yet.", "zh": "办公室传言说你要升职了，并没有，至少暂时没有。", "zht": "辦公室傳言說你要升職了，並沒有，至少暫時沒有。"},
    {"id": "j_uniform", "when": {"careerType": "hands"}, "en": "You were given a new uniform that actually fitted.", "zh": "你领到了一套真正合身的新制服。", "zht": "你領到了一套真正合身的新制服。"}
+  ]},
+  {"id": "people", "about": "news from the people in your life, by name", "when": {"age": [6,110]}, "moments": [
+   {"id": "p_sibprize", "cat": "family", "who": {"role": "sib", "age": [12,70]}, "fx": {"bond": 3}, "en": "{P} won an award and called you first to tell you.", "zh": "{P}得了个奖，第一个打电话告诉了你。", "zht": "{P}得了個獎，第一個打電話告訴你。"},
+   {"id": "p_sibmove", "cat": "family", "when": {"age": [14,80]}, "who": {"role": "sib", "age": [20,60]}, "en": "{P} moved to a new city. You helped carry the boxes.", "zh": "{P}搬到了新城市，你帮忙搬了箱子。", "zht": "{P}搬到新的城市，你幫忙搬了箱子。"},
+   {"id": "p_sibargue", "cat": "family", "who": {"role": "sib"}, "en": "You and {p} argued about something that happened when you were children.", "zh": "你和{p}为小时候的一件事吵了起来。", "zht": "你和{p}為了小時候的一件事吵了起來。"},
+   {"id": "p_sibcook", "cat": "family", "who": {"role": "sib", "age": [18,90]}, "en": "{P} has taken up cooking. You bravely volunteered as taste-tester.", "zh": "{P}迷上了做饭，你勇敢地当了试吃员。", "zht": "{P}迷上了做菜，你勇敢地當了試吃員。"},
+   {"id": "p_choir", "cat": "family", "who": {"role": "mother", "age": [45,95]}, "en": "{P} joined a choir and sent you a recording of every rehearsal.", "zh": "{P}参加了合唱团，每次排练都给你发录音。", "zht": "{P}參加了合唱團，每次練唱都傳錄音給你。"},
+   {"id": "p_washer", "cat": "family", "who": {"role": "father", "age": [40,95]}, "en": "{P} insisted on fixing the washing machine alone. It now makes a brand-new noise.", "zh": "{P}坚持自己修洗衣机，现在它会发出一种新的声音。", "zht": "{P}堅持自己修洗衣機，現在它會發出一種新的聲音。"},
+   {"id": "p_emoji", "cat": "family", "when": {"age": [14,80]}, "who": {"role": "parent", "age": [50,100]}, "en": "{P} learned to use emojis, and now uses all of them in every message.", "zh": "{P}学会了用表情符号，现在每条消息都用上一大堆。", "zht": "{P}學會用表情符號，現在每則訊息都用一大堆。"},
+   {"id": "p_retiretrip", "cat": "family", "who": {"role": "parent", "test": "p.ret"}, "en": "{P} went travelling with old friends and sent you a photo of every meal.", "zh": "{P}和老朋友去旅行，每顿饭都拍照发给你。", "zht": "{P}和老朋友去旅行，每一餐都拍照傳給你。"},
+   {"id": "p_sundaycall", "cat": "family", "when": {"age": [18,110]}, "who": {"role": "parent", "pick": "closest"}, "fx": {"happy": 1, "bond": 2}, "en": "A long Sunday call with {p}. In the end you both forgot why you’d called.", "zh": "你和{p}在星期天打了很久的电话，最后都忘了当初为什么打来。", "zht": "你和{p}星期天講了很久的電話，最後都忘了當初為什麼打來。"},
+   {"id": "p_veg", "cat": "family", "when": {"age": [18,110]}, "who": {"role": "parent", "age": [55,100]}, "en": "{P} grew more vegetables than anyone could eat, and sent you a bag.", "zh": "{P}种的菜多得吃不完，给你送来了一大袋。", "zht": "{P}種的菜多到吃不完，送了一大袋給你。"},
+   {"id": "p_friendbaby", "cat": "friends", "who": {"role": "friend", "age": [22,45], "test": "p.wed"}, "en": "{P} had a baby, and you were one of the first to visit.", "zh": "{P}生了孩子，你是最早去探望的人之一。", "zht": "{P}生了孩子，你是最早去探望的人之一。"},
+   {"id": "p_dreamjob", "cat": "friends", "who": {"role": "friend", "age": [20,65]}, "en": "{P} landed a job they’d wanted for years, and you celebrated together.", "zh": "{P}得到了想了好多年的工作，你们一起庆祝。", "zht": "{P}得到了想了好多年的工作，你們一起慶祝。"},
+   {"id": "p_postcard", "cat": "friends", "who": {"role": "friend", "test": "p.away"}, "en": "{P} sent a postcard from abroad. It took two months to arrive.", "zh": "{P}从国外寄来一张明信片，走了两个月才到。", "zht": "{P}從國外寄來一張明信片，走了兩個月才到。"},
+   {"id": "p_book", "cat": "friends", "when": {"age": [20,110]}, "who": {"role": "friend"}, "en": "{P} returned a book they had borrowed ten years ago.", "zh": "{P}把十年前借走的书还给了你。", "zht": "{P}把十年前借走的書還給了你。"},
+   {"id": "p_visit", "cat": "friends", "who": {"role": "friend", "age": [30,100]}, "fx": {"bond": 3}, "en": "{P} was in hospital for a few days. You visited with fruit and bad jokes.", "zh": "{P}住院了几天，你带着水果和冷笑话去探望。", "zht": "{P}住院了幾天，你帶著水果和冷笑話去探望。"},
+   {"id": "p_onemessage", "cat": "friends", "when": {"age": [14,110]}, "who": {"role": "friend"}, "en": "You and {n} hadn’t spoken for months. One message fixed it.", "zh": "你和{n}几个月没说话了，一条消息就解开了。", "zht": "你和{n}好幾個月沒說話了，一則訊息就化解了。"},
+   {"id": "p_borrowcar", "cat": "family", "when": {"car": true}, "who": {"role": "kid", "age": [17,21]}, "en": "{P} passed the driving test and borrowed your car the same evening.", "zh": "{P}考到了驾照，当晚就借走了你的车。", "zht": "{P}考到了駕照，當晚就借走了你的車。"},
+   {"id": "p_kiddinner", "cat": "family", "who": {"role": "kid", "age": [12,17]}, "fx": {"happy": 1}, "en": "{P} cooked dinner for the family, and the kitchen survived.", "zh": "{P}给全家做了晚饭，厨房居然完好无损。", "zht": "{P}幫全家煮了晚餐，廚房居然完好無損。"},
+   {"id": "p_lift", "cat": "family", "who": {"role": "kid", "age": [13,17]}, "en": "{P} barely spoke to you for a month, then asked for a lift.", "zh": "{P}一个月都不怎么理你，然后开口让你送一趟。", "zht": "{P}一個月都不太理你，然後開口要你載一趟。"},
+   {"id": "p_egg", "cat": "family", "who": {"role": "kid", "age": [18,30]}, "en": "{P} called from their new place to ask how to boil an egg.", "zh": "{P}从新住处打电话来问怎么煮鸡蛋。", "zht": "{P}從新住處打電話來問怎麼煮蛋。"},
+   {"id": "p_medal", "cat": "family", "who": {"role": "kid", "age": [6,17]}, "en": "{P} won a medal at the school sports day. It went on the shelf.", "zh": "{P}在学校运动会上得了奖牌，摆在了架子上。", "zht": "{P}在學校運動會上得了獎牌，擺在了架子上。"},
+   {"id": "p_samestory", "cat": "family", "who": {"role": "kid", "age": [3,8]}, "fx": {"bond": 3}, "en": "Every night {n} wanted the same bedtime story. You could tell it in your sleep.", "zh": "{n}每晚都要听同一个睡前故事，你闭着眼都能讲。", "zht": "{n}每晚都要聽同一個睡前故事，你閉著眼睛都能講。"},
+   {"id": "p_ptgift", "cat": "family", "who": {"role": "pt"}, "fx": {"happy": 1, "bond": 2}, "en": "{P} surprised you with a small gift, for no reason at all.", "zh": "{P}没来由地送了你一份小礼物。", "zht": "{P}沒來由地送了你一份小禮物。"},
+   {"id": "p_recipe", "cat": "family", "when": {"partner": ["living", "married"]}, "who": {"role": "pt"}, "en": "{P} tried a new recipe. You both agreed never to speak of it again.", "zh": "{P}试了一道新菜，你们一致同意以后再也不提。", "zht": "{P}試了一道新菜，你們一致同意以後再也不提。"},
+   {"id": "p_snore", "cat": "family", "when": {"partner": ["living", "married"]}, "who": {"role": "pt"}, "en": "{P} started snoring. You bought earplugs and said nothing.", "zh": "{P}开始打呼噜了，你买了耳塞，什么都没说。", "zht": "{P}開始打呼了，你買了耳塞，什麼都沒說。"},
+   {"id": "p_kitchendance", "cat": "family", "who": {"role": "pt"}, "en": "You and {p} danced in the kitchen to a song on the radio.", "zh": "你和{p}跟着收音机里的歌在厨房里跳了支舞。", "zht": "你和{p}跟著收音機裡的歌在廚房跳了支舞。"},
+   {"id": "p_injokes", "cat": "family", "who": {"role": "pt"}, "en": "Dinner with {p}’s family: you finally understood all the in-jokes.", "zh": "和{p}的家人吃饭，你终于听懂了他们所有的家庭笑话。", "zht": "和{p}的家人吃飯，你終於聽懂了他們所有的家庭笑話。"},
+   {"id": "p_thoughtofyou", "cat": "work", "who": {"role": "mentor"}, "en": "{P} sent you an article with a note: “thought of you”.", "zh": "{P}给你发了一篇文章，附言：“想到了你。”", "zht": "{P}傳了一篇文章給你，附註：「想到了你。」"},
+   {"id": "p_goodmood", "cat": "work", "who": {"role": "boss"}, "en": "{P} was in a good mood all week. Nobody knew why, and nobody dared ask.", "zh": "{P}整整一周心情都很好，没人知道为什么，也没人敢问。", "zht": "{P}整整一週心情都很好，沒人知道為什麼，也沒人敢問。"},
+   {"id": "p_bossdog", "cat": "work", "who": {"role": "boss"}, "en": "{P} brought a dog to the office for a day. Nobody got any work done.", "zh": "{P}带狗来办公室待了一天，谁都没干成活。", "zht": "{P}帶狗來辦公室待了一天，誰都沒做成事。"}
+  ]},
+  {"id": "means", "about": "how much money you have", "when": {"age": [18,110]}, "moments": [
+   {"id": "w_coins", "cat": "money", "when": {"stats": {"liquid": "< .1 * base"}}, "fx": {"happy": -1}, "en": "Money was tight at the end of the month. You counted out coins for the bus.", "zh": "月底手头很紧，你数着硬币坐公交。", "zht": "月底手頭很緊，你數著硬幣搭公車。"},
+   {"id": "w_sofa", "cat": "win", "when": {"stats": {"netWorth": "< 2 * base"}}, "en": "You found a perfectly good sofa that someone had left on the street.", "zh": "你在路边捡到一张完好的沙发。", "zht": "你在路邊撿到一張完好的沙發。"},
+   {"id": "w_farmarket", "cat": "home", "when": {"stats": {"liquid": "< .2 * base"}}, "en": "You walked to the far market because everything there was a little cheaper.", "zh": "你走到远一点的市场，因为那里的东西都便宜一点。", "zht": "你走到遠一點的市場，因為那裡的東西都便宜一點。"},
+   {"id": "w_mended", "cat": "home", "when": {"stats": {"liquid": "< .3 * base"}}, "en": "Instead of new shoes, you had the old ones mended. They lasted two more years.", "zh": "你没买新鞋，把旧鞋拿去修了，又穿了两年。", "zht": "你沒買新鞋，把舊鞋拿去修了，又穿了兩年。"},
+   {"id": "w_noprices", "cat": "hobby", "when": {"stats": {"netWorth": "> 20 * base"}}, "fx": {"cash": -0.02, "happy": 1}, "en": "Dinner at a restaurant whose menu had no prices on it.", "zh": "你去了一家菜单上不标价格的餐厅吃饭。", "zht": "你去了一家菜單上沒有標價的餐廳吃飯。"},
+   {"id": "w_quietgift", "cat": "friends", "when": {"stats": {"netWorth": "> 15 * base"}}, "fx": {"cash": -0.03, "happy": 2, "rel": 1}, "en": "You gave quietly to a local school and asked for no plaque.", "zh": "你悄悄给当地一所学校捐了款，没有要求挂名。", "zht": "你悄悄捐錢給當地一所學校，沒有要求掛名。"},
+   {"id": "w_relative", "cat": "family", "when": {"stats": {"netWorth": "> 10 * base"}}, "en": "A distant relative you hadn’t heard from in years suddenly got in touch.", "zh": "一个多年没联系的远房亲戚突然找上门来。", "zht": "一個多年沒聯絡的遠房親戚突然找上門來。"},
+   {"id": "w_firstname", "cat": "money", "when": {"stats": {"netWorth": "> 10 * base"}}, "en": "The people at your bank started calling you by your first name.", "zh": "银行的人开始直接叫你的名字了。", "zht": "銀行的人開始直接叫你的名字了。"},
+   {"id": "w_statement", "cat": "money", "when": {"stats": {"netWorth": "> 3 * base"}}, "fx": {"happy": 1}, "en": "You checked your savings statement and smiled for the rest of the day.", "zh": "你看了看储蓄账单，一整天都在笑。", "zht": "你看了看存款明細，開心了一整天。"},
+   {"id": "w_unopened", "cat": "money", "when": {"stats": {"debt": "> .5 * base"}}, "fx": {"happy": -1}, "en": "A letter from the bank. You left it unopened on the table for a week.", "zh": "银行寄来一封信，你把它放在桌上一周都没拆。", "zht": "銀行寄來一封信，你把它放在桌上一週都沒拆。"}
+  ]},
+  {"id": "means_kid", "about": "growing up, by family", "when": {"age": [5,17]}, "moments": [
+   {"id": "w_newshoes", "cat": "family", "when": {"family": ["poor", "working"]}, "en": "Your parents went without so you could have new school shoes. You noticed.", "zh": "爸妈省吃俭用给你买了新的上学鞋，你都看在眼里。", "zht": "爸媽省吃儉用幫你買了新的上學鞋，你都看在眼裡。"},
+   {"id": "w_abroad", "cat": "family", "when": {"family": "rich"}, "en": "A holiday abroad. You came back with a suitcase full of souvenirs.", "zh": "你出国度假，带回了一箱纪念品。", "zht": "你出國度假，帶回了一箱紀念品。"},
+   {"id": "w_nothing", "cat": "home", "when": {"family": "poor"}, "en": "Watching the grown-ups, you learned to make a meal out of almost nothing.", "zh": "你看着大人们，学会了用几乎什么都没有的东西做出一顿饭。", "zht": "你看著大人們，學會了用幾乎什麼都沒有的東西煮出一頓飯。"},
+   {"id": "w_piano", "cat": "hobby", "when": {"family": ["middle", "rich"]}, "en": "Piano lessons on Saturdays. You practised the same piece for a whole year.", "zh": "每周六上钢琴课，你练同一首曲子练了一年。", "zht": "每週六上鋼琴課，你練同一首曲子練了一年。"}
+  ]},
+  {"id": "everyday", "about": "small things at any age", "when": {"age": [8,110]}, "moments": [
+   {"id": "g_straycat", "cat": "hobby", "fx": {"happy": 1}, "en": "A stray cat started visiting every evening. You gave it a name.", "zh": "一只流浪猫开始每晚来访，你给它起了名字。", "zht": "一隻流浪貓開始每晚來訪，你幫牠取了名字。"},
+   {"id": "g_festfood", "cat": "friends", "when": {"age": [18,110]}, "en": "A neighbour brought over food from a festival you had never heard of. It was delicious.", "zh": "邻居送来一道你从没听说过的节日美食，非常好吃。", "zht": "鄰居送來一道你從沒聽說過的節日美食，非常好吃。"},
+   {"id": "g_stars", "cat": "home", "en": "A blackout in the evening. The whole street came out to look at the stars.", "zh": "傍晚停电了，整条街的人都出来看星星。", "zht": "傍晚停電了，整條街的人都出來看星星。"},
+   {"id": "g_wrongnumber", "cat": "friends", "when": {"age": [16,110]}, "en": "A wrong number turned into a friendly chat about the weather.", "zh": "一个打错的电话变成了一场关于天气的愉快闲聊。", "zht": "一通打錯的電話變成了一場聊天氣的愉快閒聊。"},
+   {"id": "g_streetwedding", "cat": "festival", "en": "A neighbour’s wedding filled the street with music until midnight.", "zh": "邻居的婚礼让整条街的音乐响到半夜。", "zht": "鄰居的婚禮讓整條街的音樂響到半夜。"}
   ]}
  ]
 }
