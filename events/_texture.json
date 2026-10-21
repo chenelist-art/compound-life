@@ -285,6 +285,72 @@
    {"id": "br_churrasco", "cat": "friends", "fx": {"rel": 1}, "en": "A Sunday churrasco with family and friends that lasted until dark.", "zh": "星期天和亲友吃巴西烤肉，一直吃到天黑。", "zht": "星期天和親友吃巴西烤肉，一直吃到天黑。"},
    {"id": "br_storm", "cat": "weather", "again": 4, "en": "A summer storm flooded the avenue in ten minutes, then the sun came out again.", "zh": "夏天的暴雨十分钟就淹了大道，然后太阳又出来了。", "zht": "夏天的暴雨十分鐘就淹了大道，然後太陽又出來了。"},
    {"id": "br_natal", "cat": "festival", "again": 3, "en": "Christmas in the heat: dinner at midnight, then a swim the next morning.", "zh": "炎热中过圣诞：午夜吃大餐，第二天早上去游泳。", "zht": "炎熱中過聖誕：午夜吃大餐，隔天早上去游泳。"}
+  ]},
+  {"id": "c_MX", "about": "Mexico", "when": {"age": [3,110], "country": "MX"}, "moments": [
+   {"id": "mx_muertos", "cat": "festival", "again": 3, "en": "Día de Muertos: you built an altar with marigolds, candles and photos of the family who came before.", "zh": "亡灵节：你用万寿菊、蜡烛和先人的照片搭了一个祭坛。", "zht": "亡靈節：你用萬壽菊、蠟燭和先人的照片布置了一個祭壇。"},
+   {"id": "mx_pinata", "cat": "festival", "again": 3, "when": {"age": [3,12]}, "en": "Your birthday piñata finally broke on the tenth swing, and everyone dived for the sweets.", "zh": "生日派对上，皮纳塔在第十棍时终于破了，大家都扑去抢糖。", "zht": "生日派對上，皮納塔在第十棍時終於破了，大家都撲去搶糖果。"},
+   {"id": "mx_grito", "cat": "festival", "again": 3, "en": "Independence night: the Grito at eleven, fireworks, and pozole until two in the morning.", "zh": "独立日之夜：十一点的“呐喊”、烟花，还有吃到凌晨两点的玉米肉汤。", "zht": "獨立紀念日之夜：十一點的「吶喊」、煙火，還有吃到凌晨兩點的玉米燉肉湯。"},
+   {"id": "mx_sismo", "cat": "weather", "again": 4, "en": "The earthquake alarm went off. Everyone filed outside in their slippers, then went back in.", "zh": "地震警报响了，大家穿着拖鞋走到外面，然后又回去了。", "zht": "地震警報響了，大家穿著拖鞋走到外面，然後又回去了。"},
+   {"id": "mx_tamales", "cat": "family", "again": 4, "when": {"age": [12,110]}, "fx": {"rel": 1}, "en": "A whole day making tamales with the family for Christmas. You were in charge of folding.", "zh": "为过圣诞和家人包了一整天玉米粽（tamales），你负责折叶子。", "zht": "為了過聖誕和家人包了一整天玉米粽（tamales），你負責摺葉子。"},
+   {"id": "mx_fouroclock", "cat": "weather", "again": 4, "en": "Every afternoon at four the rain came down in sheets, then stopped as if nothing had happened.", "zh": "每天下午四点大雨倾盆，然后突然停了，好像什么都没发生过。", "zht": "每天下午四點大雨傾盆，然後突然停了，好像什麼都沒發生過。"}
+  ]},
+  {"id": "c_PH", "about": "Philippines", "when": {"age": [3,110], "country": "PH"}, "moments": [
+   {"id": "ph_ber", "cat": "festival", "again": 3, "en": "The “ber” months began, and Christmas songs played from September onwards.", "zh": "九月一到就进入“ber月”，圣诞歌一直放到年底。", "zht": "九月一到就進入「ber月」，聖誕歌一直放到年底。"},
+   {"id": "ph_signal", "cat": "weather", "again": 3, "when": {"age": [5,17]}, "fx": {"happy": 1}, "en": "A typhoon signal: classes were suspended. You cheered, then watched the rain all day.", "zh": "台风警报：学校停课。你先是欢呼，然后看了一整天的雨。", "zht": "颱風警報：學校停課。你先是歡呼，然後看了一整天的雨。"},
+   {"id": "ph_fiesta", "cat": "festival", "again": 3, "en": "The town fiesta: a procession, a basketball tournament, and every house open for food.", "zh": "镇上的节庆：有游行、篮球赛，每家每户都敞开门请人吃饭。", "zht": "鎮上的節慶：有遊行、籃球賽，每家每戶都敞開門請人吃飯。"},
+   {"id": "ph_videoke", "cat": "hobby", "en": "Videoke with the neighbours until midnight. Someone always sings “My Way”.", "zh": "和邻居唱卡拉OK唱到半夜，总有人要唱《My Way》。", "zht": "和鄰居唱卡拉OK唱到半夜，總有人要唱〈My Way〉。"},
+   {"id": "ph_balikbayan", "cat": "family", "en": "A balikbayan box arrived from a relative abroad: chocolates, soap, and a jacket that fitted nobody.", "zh": "国外亲戚寄来了一箱“返乡箱”：巧克力、肥皂，还有一件谁都穿不了的外套。", "zht": "國外親戚寄來了一箱「返鄉箱」：巧克力、肥皂，還有一件誰都穿不下的外套。"},
+   {"id": "ph_simbang", "cat": "festival", "again": 4, "en": "Simbang Gabi: dawn mass nine days in a row, mostly for the bibingka afterwards.", "zh": "黎明弥撒：你连续九天去参加凌晨弥撒，主要是为了散场后的米糕。", "zht": "黎明彌撒：你連續九天去參加凌晨彌撒，主要是為了散場後的米糕。"}
+  ]},
+  {"id": "c_VN", "about": "Vietnam", "when": {"age": [3,110], "country": "VN"}, "moments": [
+   {"id": "vn_tet", "cat": "festival", "again": 3, "en": "Tết: bánh chưng, lucky money in red envelopes, and visits to every relative in three days.", "zh": "过春节（Tết）：吃方形粽，收压岁钱红包，三天里拜访了所有亲戚。", "zht": "過春節（Tết）：吃方形粽，收壓歲錢紅包，三天裡拜訪了所有親戚。"},
+   {"id": "vn_lantern", "cat": "festival", "again": 3, "when": {"age": [3,12]}, "en": "Mid-Autumn: you paraded down the street with a star-shaped lantern.", "zh": "中秋节你提着星星灯笼在街上游行。", "zht": "中秋節你提著星星燈籠在街上遊行。"},
+   {"id": "vn_poncho", "cat": "weather", "again": 4, "en": "Rush hour in a downpour: a thousand motorbikes, a thousand ponchos.", "zh": "大雨中的高峰时段：一千辆摩托车，一千件雨衣。", "zht": "大雨中的尖峰時段：一千輛機車，一千件雨衣。"},
+   {"id": "vn_coffee", "cat": "hobby", "when": {"age": [16,110]}, "en": "Every morning, iced coffee with condensed milk on a tiny plastic stool by the road.", "zh": "每天早上，坐在路边的小塑料凳上喝一杯炼乳冰咖啡。", "zht": "每天早上，坐在路邊的小塑膠凳上喝一杯煉乳冰咖啡。"},
+   {"id": "vn_typhoon", "cat": "weather", "again": 5, "en": "A typhoon came ashore. You taped the windows and waited.", "zh": "台风登陆了，你用胶带贴好窗户，等它过去。", "zht": "颱風登陸了，你用膠帶貼好窗戶，等它過去。"},
+   {"id": "vn_luckygive", "cat": "money", "again": 4, "when": {"age": [25,110]}, "fx": {"cash": -0.015}, "en": "Tết: this year you gave the lucky money, and the children wished you a long life.", "zh": "过年时轮到你发压岁钱了，孩子们都祝你长命百岁。", "zht": "過年時輪到你發壓歲錢了，孩子們都祝你長命百歲。"}
+  ]},
+  {"id": "c_JP", "about": "Japan", "when": {"age": [3,110], "country": "JP"}, "moments": [
+   {"id": "jp_hanami", "cat": "festival", "again": 3, "fx": {"happy": 1}, "en": "Cherry blossom season: a picnic under the trees, and petals in your rice.", "zh": "樱花季：在树下野餐，花瓣落进了饭里。", "zht": "櫻花季：在樹下野餐，花瓣落進了飯裡。"},
+   {"id": "jp_tsuyu", "cat": "weather", "again": 4, "en": "Tsuyu: a month of rain. The laundry never quite dried.", "zh": "梅雨季：下了一个月的雨，衣服总是晾不干。", "zht": "梅雨季：下了一個月的雨，衣服總是晾不乾。"},
+   {"id": "jp_matsuri", "cat": "festival", "again": 3, "when": {"age": [3,40]}, "en": "A summer festival: a yukata, shaved ice, and fireworks over the river.", "zh": "夏日祭：穿浴衣、吃刨冰，河上放烟花。", "zht": "夏日祭典：穿浴衣、吃刨冰，河上放煙火。"},
+   {"id": "jp_hatsumode", "cat": "festival", "again": 3, "en": "New Year: the first shrine visit of the year, and a fortune slip that said “small luck”.", "zh": "新年：一年中第一次去神社参拜，抽到的签写着“小吉”。", "zht": "新年：一年中第一次去神社參拜，抽到的籤寫著「小吉」。"},
+   {"id": "jp_quake", "cat": "weather", "again": 4, "en": "A small earthquake rattled the cups one night. You checked the news, then went back to sleep.", "zh": "夜里一场小地震把杯子震得哐哐响，你看了看新闻，又睡了。", "zht": "夜裡一場小地震把杯子震得匡匡響，你看了一下新聞，又睡了。"},
+   {"id": "jp_nomikai", "cat": "work", "when": {"working": true, "careerType": "office"}, "en": "A work drinking party: you poured for your seniors and caught the last train home.", "zh": "公司聚餐（飲み会）：你给前辈们倒酒，赶上了末班车。", "zht": "公司聚餐（飲み会）：你幫前輩們倒酒，趕上了末班車。"},
+   {"id": "jp_obon", "cat": "family", "again": 4, "when": {"age": [18,110]}, "fx": {"rel": 1}, "en": "Obon: you went back to the family’s hometown to tend the graves, and ate too much.", "zh": "盂兰盆节：你回老家扫墓，吃得太多了。", "zht": "盂蘭盆節：你回老家掃墓，吃得太多了。"}
+  ]},
+  {"id": "c_DE", "about": "Germany", "when": {"age": [3,110], "country": "DE"}, "moments": [
+   {"id": "de_markt", "cat": "festival", "again": 3, "when": {"age": [18,110]}, "en": "The Christmas market: mulled wine, roasted almonds and frozen fingers.", "zh": "圣诞市集：热红酒、烤杏仁，手指冻得冰凉。", "zht": "聖誕市集：熱紅酒、烤杏仁，手指凍得冰涼。"},
+   {"id": "de_schultuete", "cat": "school", "w": 3, "once": true, "when": {"age": [6,6]}, "en": "Your first school day: a Schultüte almost as big as you, full of sweets and pencils.", "zh": "第一天上学：你抱着一个几乎和你一样大的上学礼袋（Schultüte），里面装满了糖果和铅笔。", "zht": "第一天上學：你抱著一個幾乎和你一樣大的上學禮筒（Schultüte），裡面裝滿了糖果和鉛筆。"},
+   {"id": "de_sunday", "cat": "home", "when": {"age": [18,110]}, "en": "You forgot that the shops close on Sundays. Dinner was crackers and one egg.", "zh": "你忘了周日商店不开门，晚饭只有饼干和一个鸡蛋。", "zht": "你忘了星期天商店不開門，晚餐只有餅乾和一顆蛋。"},
+   {"id": "de_pfand", "cat": "money", "when": {"age": [18,110]}, "fx": {"cash": 0.005}, "en": "You returned a year’s worth of bottles for the deposit. It added up.", "zh": "你把攒了一年的瓶子拿去退押金，加起来还真不少。", "zht": "你把攢了一年的瓶子拿去退押金，加起來還真不少。"},
+   {"id": "de_snow", "cat": "weather", "again": 4, "en": "The first snow of winter. Everyone was suddenly a little nicer to each other.", "zh": "冬天的第一场雪，大家突然都变得友善了一点。", "zht": "冬天的第一場雪，大家突然都變得友善了一點。"},
+   {"id": "de_kuchen", "cat": "family", "when": {"age": [3,30]}, "en": "Coffee and cake every Sunday afternoon at your grandparents’.", "zh": "每个星期天下午都去祖父母家喝咖啡吃蛋糕。", "zht": "每個星期天下午都去祖父母家喝咖啡吃蛋糕。"}
+  ]},
+  {"id": "c_GB", "about": "United Kingdom", "when": {"age": [3,110], "country": "GB"}, "moments": [
+   {"id": "gb_bonfire", "cat": "festival", "again": 3, "en": "Bonfire Night: sparklers, a damp field, and fireworks you could barely see through the drizzle.", "zh": "篝火之夜：仙女棒、湿漉漉的草地，烟花在毛毛雨里几乎看不清。", "zht": "營火之夜：仙女棒、濕答答的草地，煙火在毛毛雨裡幾乎看不清楚。"},
+   {"id": "gb_drizzle", "cat": "weather", "again": 4, "en": "It rained on every single day of the summer holidays.", "zh": "暑假的每一天都在下雨。", "zht": "暑假的每一天都在下雨。"},
+   {"id": "gb_quiz", "cat": "hobby", "when": {"age": [18,110]}, "en": "Your pub quiz team came second again, beaten by a team of retired teachers.", "zh": "你们的酒吧问答队又拿了第二，输给了一队退休老师。", "zht": "你們的酒吧猜謎隊又拿了第二，輸給了一隊退休老師。"},
+   {"id": "gb_crackers", "cat": "festival", "again": 3, "en": "Christmas dinner: paper crowns, terrible cracker jokes and too many sprouts.", "zh": "圣诞晚餐：纸皇冠、拉炮里的冷笑话，还有太多的球芽甘蓝。", "zht": "聖誕晚餐：紙皇冠、拉炮裡的冷笑話，還有太多的球芽甘藍。"},
+   {"id": "gb_bankhol", "cat": "weather", "again": 4, "en": "A heatwave on a bank holiday: the whole country went to the beach at once.", "zh": "公共假期遇上热浪：全国人民同时涌向海滩。", "zht": "國定假日遇上熱浪：全國人民同時湧向海灘。"},
+   {"id": "gb_roast", "cat": "family", "fx": {"rel": 1}, "en": "Sunday roast with the family. Everyone argued about the Yorkshire puddings.", "zh": "和家人吃星期天烤肉，大家为约克郡布丁争个不停。", "zht": "和家人吃星期天烤肉，大家為了約克夏布丁爭個不停。"}
+  ]},
+  {"id": "c_MY", "about": "Malaysia", "when": {"age": [3,110], "country": "MY"}, "moments": [
+   {"id": "my_openhouse", "cat": "festival", "again": 3, "en": "Hari Raya open house: you visited five homes in one day and ate at every one.", "zh": "开斋节开放门户：你一天去了五户人家，每家都吃了。", "zht": "開齋節開放門戶：你一天去了五戶人家，每家都吃了。"},
+   {"id": "my_deepavali", "cat": "festival", "again": 3, "en": "Deepavali: your neighbours invited you over for murukku, with a kolam drawn at the door.", "zh": "屠妖节：邻居请你去家里吃印度脆饼，门口画着彩色的米粉画。", "zht": "屠妖節：鄰居請你去家裡吃印度脆餅，門口畫著彩色的米粉畫。"},
+   {"id": "my_durian", "cat": "hobby", "again": 4, "when": {"age": [18,110]}, "fx": {"happy": 1, "cash": -0.01}, "en": "Durian season: you drove out to an orchard and ate far too much.", "zh": "榴莲季：你开车去果园，吃得太多了。", "zht": "榴槤季：你開車去果園，吃得太多了。"},
+   {"id": "my_haze", "cat": "weather", "again": 4, "fx": {"health": -1}, "en": "The haze came back. Schools closed, and the sun was an orange coin.", "zh": "烟霾又来了，学校停课，太阳像一枚橙色的硬币。", "zht": "煙霾又來了，學校停課，太陽像一枚橘色的硬幣。"},
+   {"id": "my_mamak", "cat": "friends", "when": {"age": [15,60]}, "en": "Late nights at the mamak stall with friends, talking over teh tarik until 2 a.m.", "zh": "和朋友在嘛嘛档喝拉茶，聊到凌晨两点。", "zht": "和朋友在嘛嘛檔喝拉茶，聊到凌晨兩點。"},
+   {"id": "my_cny", "cat": "festival", "again": 3, "en": "Chinese New Year: lion dancers at the shopping mall, and mandarin oranges everywhere.", "zh": "华人新年：商场里有舞狮，到处都是柑橘。", "zht": "華人新年：商場裡有舞獅，到處都是橘子。"},
+   {"id": "my_balik", "cat": "festival", "again": 3, "when": {"age": [18,64]}, "en": "Balik kampung: the highway home took ten hours, and the family had cooked for twenty.", "zh": "回乡（balik kampung）：回家的高速公路走了十个小时，家里做了二十人份的饭菜。", "zht": "回鄉（balik kampung）：回家的高速公路開了十個小時，家裡煮了二十人份的飯菜。"}
+  ]},
+  {"id": "c_SG", "about": "Singapore", "when": {"age": [3,110], "country": "SG"}, "moments": [
+   {"id": "sg_ndp", "cat": "festival", "again": 3, "en": "National Day: you watched the fireworks over Marina Bay and sang along to every song.", "zh": "国庆日：你在滨海湾看烟花，每首歌都跟着唱。", "zht": "國慶日：你在濱海灣看煙火，每首歌都跟著唱。"},
+   {"id": "sg_chope", "cat": "hobby", "when": {"age": [12,110]}, "en": "You reserved a hawker centre table with a packet of tissues, like everyone else.", "zh": "你像大家一样，用一包纸巾在小贩中心占了座。", "zht": "你跟大家一樣，用一包面紙在小販中心佔了位子。"},
+   {"id": "sg_4pm", "cat": "weather", "again": 4, "en": "A thunderstorm at 4 p.m., just as you left the MRT station without an umbrella.", "zh": "下午四点雷雨倾盆，正好是你没带伞走出地铁站的时候。", "zht": "下午四點雷雨傾盆，剛好是你沒帶傘走出捷運站的時候。"},
+   {"id": "sg_reservist", "cat": "work", "again": 3, "when": {"sex": "m", "age": [21,40]}, "en": "Reservist training again: two weeks of army food and old jokes with your section.", "zh": "又要回营受训：两周的部队伙食，和班里的老战友讲着老笑话。", "zht": "又要回營受訓：兩週的部隊伙食，和班上的老戰友講著老笑話。"},
+   {"id": "sg_sale", "cat": "money", "when": {"age": [18,110]}, "fx": {"cash": -0.01}, "en": "You went to the Great Singapore Sale for one thing and came back with five.", "zh": "你去新加坡热卖会只想买一样东西，结果带回了五样。", "zht": "你去新加坡熱賣會只想買一樣東西，結果帶回了五樣。"},
+   {"id": "sg_lohei", "cat": "festival", "again": 3, "en": "Chinese New Year reunion dinner: everyone tossed the yusheng as high as they could.", "zh": "华人新年团圆饭上捞鱼生，大家都把它捞得高高的。", "zht": "華人新年團圓飯上撈魚生，大家都把它撈得高高的。"}
   ]}
  ]
 }
