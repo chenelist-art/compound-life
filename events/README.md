@@ -147,6 +147,7 @@ They look like JavaScript but can only touch the life being played:
 | `log(M('log.x'), 'good')` | a diary line (in consequences) |
 | `M('.key', {…})`, `MN(a)`, `MS(a)` | text to show (`.key` is this event's own), money, signed money |
 | `salary()`, `skill()`, `liquid()`, `netWorth()`, `price()`, `rent()`, `working()` | read the life |
+| `disP(years, kind)`, `uniRate()` | real-world chances (js/data.js): a flood or storm (or one `kind`: `'quake'`, `'drought'`…) reaching you within `years`; the chance of a university place |
 
 The full list, with careers, illness, contracts abroad, pensions and health schemes, is the table at the end of
 `js/verbs.js`.
@@ -214,7 +215,7 @@ the event (or `_shared.json`, if several events use it) says what happens then; 
 
 ## Templates
 
-When many events offer the same choices (floods, savings groups, contracts abroad, civil-service exams, bonus months,
+When many events offer the same choices (floods, where the card now only sets your cover for ten years (`prot`) and the floods themselves come at the real rate, savings groups, contracts abroad, civil-service exams, bonus months,
 inflation), the options live once in `_shared.json` under `templates`, with their text under the template's `key`
 (`e.flood.cover`…). An event uses one with `"use": "flood"` and gives the numbers in `"with"`; the template's scripts know
 the event's id as `id`. Its card title and text are still the event's own.

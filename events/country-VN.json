@@ -59,14 +59,14 @@
   },
   {
    "id": "vn_typhoon",
-   "src": "Typhoon Yagi (Sep 2024): about $3.3bn of economic losses, 136,705 homes damaged and over 202,000 ha of rice flooded (Vietnamese officials, via ARY and RFA).",
+   "src": "Typhoon Yagi (Sep 2024): about $3.3bn of economic losses, 136,705 homes damaged and over 202,000 ha of rice flooded (Vietnamese officials, via ARY and RFA). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.55,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "storm", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0, "prem": 0.006, "prep": 0.012, "p": 0.55},
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012},
    "i18n": {
     "en": {
      ".t": "Typhoon season",

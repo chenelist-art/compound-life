@@ -224,6 +224,7 @@
    "src": "The Grade 12 exam: 8.4% of the 585,882 students who sat it in 2024/25 passed (50% or more), up from 5.4% (The Reporter). Effects of tutoring are game rules.",
    "age": [16, 17],
    "weight": 0.85,
+   "when": {"test": "!leftAt || leftAt > age"},
    "def": "self",
    "tarot": "edu",
    "art": {"draw": "exam", "bg": "mi"},

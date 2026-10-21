@@ -377,6 +377,7 @@
    "id": "teen",
    "age": [13, 15],
    "weight": 0.8,
+   "when": {"test": "!leftAt || leftAt > age"},
    "def": "school",
    "tarot": {"en": "Three of Coins", "zh": "钱币三", "zht": "錢幣三"},
    "art": "teen",
@@ -435,6 +436,7 @@
   {
    "id": "summer",
    "age": [16, 16],
+   "when": {"test": "!leftAt || leftAt > age"},
    "def": "chill",
    "tarot": {"en": "The Sun", "zh": "太阳", "zht": "太陽"},
    "art": "summer",

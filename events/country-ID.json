@@ -145,7 +145,7 @@
   },
   {
    "id": "id_flood",
-   "src": "Floods: Jakarta and other cities flood in many rainy seasons (BNPB). Odds and costs are ESTIMATES.",
+   "src": "Floods: Jakarta and other cities flood in many rainy seasons (BNPB). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.5,
    "def": "none",

@@ -185,14 +185,14 @@
   },
   {
    "id": "mx_storm",
-   "src": "Hurricanes: Otis struck Acapulco as a category 5 storm in October 2023 (SMN/CONAGUA). Odds and costs are ESTIMATES.",
+   "src": "Hurricanes: Otis struck Acapulco as a category 5 storm in October 2023 (SMN/CONAGUA). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.45,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "storm", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0, "prem": 0.006, "prep": 0.012, "p": 0.45},
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012},
    "i18n": {
     "en": {
      ".t": "Hurricane season",

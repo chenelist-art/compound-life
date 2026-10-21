@@ -3,65 +3,62 @@
  "templates": {
   "flood": {
    "key": "flood",
-   "about": "Floods and storms: insure, prepare or do nothing; a flood may reach you in the next few years. aid: government aid when hit (× typical wage); prem: yearly premium; prep: cost of preparing; p: chance a flood reaches you.",
-   "defaults": {"aid": 0, "p": 0.55},
+   "about": "Floods and storms: insure, prepare or do nothing, for the next ten years. Whether one reaches you comes from the real yearly rate where you live (hazards in js/engine.js, EM-DAT); this card sets how much of the damage you pay (prot). aid: government aid when hit (× typical wage); prem: yearly premium; prep: cost of preparing.",
+   "defaults": {"aid": 0},
    "fn": {
     "ready": {
      "args": ["k"],
-     "do": "later(age + 1 + Math.floor(roll(id + 'At') * 7), 'flood', {id: id, lv: k, aid: aid || 0, p: p || .55}); if (k === 2) { T(id, {kind: 'custom', label: M('trk.floodIns'), paid: 0, saved: 0, nk: 'note.floodIns'}); rec(id, prem * base, 10) } if (k === 1) spend(id + 'P', prep * base, 'trk.floodPrep')"
+     "do": "prot = {lv: k, until: age + 10, aid: aid || 0, id: id}; if (k === 2) { T(id, {kind: 'custom', label: M('trk.floodIns'), paid: 0, saved: 0, nk: 'note.floodIns'}); rec(id, prem * base, 10) } if (k === 1) spend(id + 'P', prep * base, 'trk.floodPrep')"
     }
    },
    "opts": [
     {
      "id": "cover",
      "sub": {"a": "MN(prem * base)"},
-     "hint": {"p": "Math.round((p || .55) * 100)"},
+     "hint": {"p": "Math.round(disP(10) * 100)"},
      "do": "ready(2)"
     },
     {
      "id": "prep",
      "sub": {"a": "MN(prep * base)"},
-     "hint": {"p": "Math.round((p || .55) * 100)"},
+     "hint": {"p": "Math.round(disP(10) * 100)"},
      "do": "ready(1)"
     },
-    {"id": "none", "hint": {"p": "Math.round((p || .55) * 100)"}, "do": "ready(0)"}
+    {"id": "none", "hint": {"p": "Math.round(disP(10) * 100)"}, "do": "ready(0)"}
    ],
-   "later": {
-    "flood": "if (roll(x.id) >= x.p) { log(M('log.floodNo'), 'good'); return; } const B = base, full = (house ? .45 : .15) * B, f = [1, .5, .12][x.lv], loss = full * f, aid = x.aid * B, t = T(x.id, { kind: 'custom', label: M('trk.flood'), paid: 0, saved: 0 }); pay(loss); cash += aid; happy = clamp(happy - 5, 0, 100); health = clamp(health - 2, 3, 100); t.v += aid - loss; t.saved = (t.saved || 0) + full - loss; t.note = M(x.lv === 2 ? 'note.floodIns' : 'note.flood', { a: MN(x.lv === 2 ? t.paid : loss), b: MN(x.lv === 2 ? t.saved : aid) }); log(M(aid > 0 ? 'log.floodAid' : 'log.flood', { a: MN(loss), b: MN(aid) }), 'bad')"
-   },
    "i18n": {
     "en": {
      ".cover": "Buy flood cover",
      ".cover.s": "About {a} a year for 10 years.",
-     ".cover.h": "About a {p}% chance a flood reaches you in the next few years; the insurer pays most of the damage.",
+     ".cover.h": "About a {p}% chance a flood or storm reaches you in the next ten years; the insurer pays most of the damage.",
      ".prep": "Get ready yourself",
      ".prep.s": "Raise furniture and sockets, keep sandbags: about {a} once.",
-     ".prep.h": "About a {p}% chance of a flood soon; being ready halves the damage.",
+     ".prep.h": "About a {p}% chance of a flood or storm in the next ten years; being ready halves the damage.",
      ".none": "Hope it stays dry",
      ".none.s": "No cost now.",
-     ".none.h": "About a {p}% chance of a flood soon."
+     ".none.h": "About a {p}% chance of a flood or storm in the next ten years."
     },
     "zh": {
      ".cover": "买水灾保险",
      ".cover.s": "每年约{a}，保10年。",
-     ".cover.h": "未来几年大约有{p}%的机会淹到你家；保险会赔大部分损失。",
+     ".cover.h": "未来十年大约有{p}%的机会遇上水灾或风灾；保险会赔大部分损失。",
      ".prep": "自己做好准备",
      ".prep.s": "把家具和插座垫高，备好沙包：一次约{a}。",
-     ".prep.h": "近期大约有{p}%的机会淹水；有准备的话损失减半。",
+     ".prep.h": "未来十年大约有{p}%的机会遇上水灾或风灾；有准备的话损失减半。",
      ".none": "希望别淹",
      ".none.s": "现在不花钱。",
-     ".none.h": "近期大约有{p}%的机会淹水。"
+     ".none.h": "未来十年大约有{p}%的机会遇上水灾或风灾。"
     },
     "zht": {
      ".cover": "買水災保險",
      ".cover.s": "每年約{a}，保10年。",
-     ".cover.h": "未來幾年大約有{p}%的機會淹到你家；保險會賠大部分損失。",
+     ".cover.h": "未來十年大約有{p}%的機會遇上水災或風災；保險會賠大部分損失。",
      ".prep": "自己做好準備",
      ".prep.s": "把家具和插座墊高，備好沙包：一次約{a}。",
-     ".prep.h": "近期大約有{p}%的機會淹水；有準備的話損失減半。",
+     ".prep.h": "未來十年大約有{p}%的機會遇上水災或風災；有準備的話損失減半。",
      ".none": "希望別淹",
      ".none.s": "現在不花錢。",
-     ".none.h": "近期大約有{p}%的機會淹水。"
+     ".none.h": "未來十年大約有{p}%的機會遇上水災或風災。"
     }
    }
   },
@@ -160,7 +157,7 @@
     }
    ],
    "later": {
-    "infl": "const t = T(x.id, { kind: 'custom', label: M('trk.infl') }), d = -x.f * Math.max(0, cash); cash += d; t.v += d; t.note = M(d < 0 ? 'note.inflLoss' : 'note.inflOk', { a: MN(Math.abs(d)) }); log(M(d < 0 ? 'log.inflLoss' : 'log.inflOk', { a: MN(Math.abs(d)) }), d < 0 ? 'bad' : 'good')"
+    "infl": "inflYr = age; const t = T(x.id, { kind: 'custom', label: M('trk.infl') }), d = -x.f * Math.max(0, cash); cash += d; t.v += d; t.note = M(d < 0 ? 'note.inflLoss' : 'note.inflOk', { a: MN(Math.abs(d)) }); log(M(d < 0 ? 'log.inflLoss' : 'log.inflOk', { a: MN(Math.abs(d)) }), d < 0 ? 'bad' : 'good')"
    },
    "i18n": {
     "en": {

@@ -56,8 +56,9 @@ function pplYear(s,a,L){if(!s.ppl)return;const lg=(m,k)=>{L&&L(m,k)};const bm=pp
    if(pplR(s,'die'+p.id)<mu){p.dead=a;const par=p.r==='mother'||p.r==='father';s.happy=clamp(s.happy-(par?6:p.r==='sib'?5:p.r==='friend'?4:2),0,100);
     lg(M(par?'log.ppl.dieP':'log.ppl.die',{p:pplWho(s,p,1)}),'bad');continue}}
   if(p.r==='mother'||p.r==='father'){if(!p.ret&&x>=60+(+p.id.slice(1))%6){p.ret=true;lg(M('log.ppl.ret',{p:pplWho(s,p,1)}),'')}}
-  /* weddings: the first sibling's and the first child's come as cards (sib_wed, kid_wed), the rest in the diary */
-  if((p.r==='sib'||p.r==='kid')&&!p.wed&&!p.eng&&x>=23&&x<=40&&pplR(s,'wed'+p.id)<.1){const card=p.r==='sib'?'sib_wed':'kid_wed';
+  /* weddings: the first sibling's and the first child's come as cards (sib_wed, kid_wed), the rest in the diary; from three
+     years before the country's average age at first marriage for their sex (js/data.js) */
+  if((p.r==='sib'||p.r==='kid')&&!p.wed&&!p.eng&&x>=Math.round(smam(C[s.ci][1],p.sex))-3&&x<=40&&pplR(s,'wed'+p.id)<.1){const card=p.r==='sib'?'sib_wed':'kid_wed';
    if(!s.done[card]&&a>=16&&a<90)p.eng=true;else{p.wed=true;lg(M('log.ppl.wed',{p:pplWho(s,p,1)}),'good')}}
   if(p.r==='friend'&&!p.wed&&x>=24&&x<=45&&(s.done.fwed||a>34)&&pplR(s,'wed'+p.id)<.08){p.wed=true;lg(M('log.ppl.wed',{p:pplWho(s,p,1)}),'good')}
   if((p.r==='sib'||p.r==='kid')&&p.wed&&x>=24&&x<=42&&(p.kids||0)<3&&pplR(s,'baby'+p.id)<.15){p.kids=(p.kids||0)+1;lg(M(p.r==='kid'?'log.ppl.grand':'log.ppl.baby',{p:pplWho(s,p,1),x:M('sex.kid.'+(pplR(s,'babySex'+p.id)<.5?'f':'m'))}),'good')}

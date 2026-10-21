@@ -80,6 +80,7 @@ Object.assign(LATER,{
  /* places and schemes */ contract,cityMove,medPlan,penClaim,penScheme,abroadTo,
  /* health */ treat,illYou,survP,depFee,depStart,
  /* markets */ crashSell,crashTrack,crashPct,
+ /* real-world chances (js/data.js): disP(years, kind) a disaster reaching you, uniRate() a university place */ disP,uniRate,
  /* reading the life */ salary,skill,liquid,eqTot,mktTot,netWorth,netOf,price,rent,eduCost,inhAmt,bizP,negoP,efTarget,slPay,fgtsBal,
   CC,kidAge,hasKid,selfEmp,byFam,mentorFit,LNY,relP,ctrWhen,
  /* consequences and people */ later,rl,heal,next,

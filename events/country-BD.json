@@ -99,14 +99,14 @@
   },
   {
    "id": "bd_flood",
-   "src": "Floods and cyclones: low-lying areas flood in most monsoon seasons and cyclones strike the coast (Bangladesh Meteorological Department). Odds and costs are ESTIMATES.",
+   "src": "Floods and cyclones: low-lying areas flood in most monsoon seasons and cyclones strike the coast (Bangladesh Meteorological Department). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.55,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "flood", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0, "prem": 0.008, "prep": 0.015, "p": 0.6},
+   "with": {"aid": 0, "prem": 0.008, "prep": 0.015},
    "i18n": {
     "en": {
      ".t": "Flood season",

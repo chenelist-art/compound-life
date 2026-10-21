@@ -59,14 +59,14 @@
   },
   {
    "id": "pk_flood",
-   "src": "Floods: in 2022 a third of the country was under water and about 33 million people were affected; damage $14.9bn and losses $15.2bn (Post-Disaster Needs Assessment, Planning Commission).",
+   "src": "Floods: in 2022 a third of the country was under water and about 33 million people were affected; damage $14.9bn and losses $15.2bn (Post-Disaster Needs Assessment, Planning Commission). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.5,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "flood", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0, "prem": 0.008, "prep": 0.015, "p": 0.5},
+   "with": {"aid": 0, "prem": 0.008, "prep": 0.015},
    "i18n": {
     "en": {
      ".t": "Flood season",

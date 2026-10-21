@@ -171,7 +171,8 @@ const MO_BAD=new Set(['loss','fired','package','auto','bizfail','crypto','crash'
 /* moments that bring a partner or a child: hearts instead of sparkles, and the partner walks in */
 const LOVE=new Set(['married','child','dating','together']),PT_IN=new Set(['dating']),PT_OUT=new Set(['breakup','left','divorce']);
 /* smaller events stay as a toast, so the game isn't stopped every year */
-const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj','log.rel.look','log.rel.preg','log.rel.noBaby']);
+const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj','log.rel.look','log.rel.preg','log.rel.noBaby',
+  'log.leftSchool','log.road','log.dis.flood','log.dis.storm','log.dis.drought','log.dis.droughtFarm']);
 let moOn=store.get('cl-moments')!==false;
 function setMo(on){moOn=on;document.querySelectorAll('#mo0 button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.mo==='1')===on)));store.set('cl-moments',on)}
 document.querySelectorAll('#mo0 button').forEach(b=>b.addEventListener('click',()=>setMo(b.dataset.mo==='1')));

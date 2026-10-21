@@ -7,6 +7,7 @@
    "src": "===================== India (IN) ===================== Coaching: in Kota, coaching and living cost about ₹1.5–3 lakh a year (Careers360; Lok Sabha answer: about ₹1.5 lakh plus ₹50,000 for a hostel). Two years ≈ ₹4 lakh ÷ the game's typical wage (₹92,000) ≈ 4: paid by the family (famCost).",
    "age": [15, 16],
    "weight": 0.75,
+   "when": {"test": "!leftAt || leftAt > age"},
    "def": "self",
    "tarot": "edu",
    "art": {"draw": "exam", "bg": "ya"},
@@ -315,7 +316,7 @@
   },
   {
    "id": "in_flood",
-   "src": "Monsoon floods: the southwest monsoon (June–September) brings most of India's rain (India Meteorological Department); the 2018 Kerala floods needed about ₹31,000 crore to rebuild (UN/World Bank Post Disaster Needs Assessment). Odds and costs are ESTIMATES.",
+   "src": "Monsoon floods: the southwest monsoon (June–September) brings most of India's rain (India Meteorological Department); the 2018 Kerala floods needed about ₹31,000 crore to rebuild (UN/World Bank Post Disaster Needs Assessment). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.5,
    "def": "none",

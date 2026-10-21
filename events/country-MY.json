@@ -239,7 +239,7 @@
   },
   {
    "id": "my_flood",
-   "src": "Monsoon floods: the northeast monsoon (November to March) brings floods in many years (MetMalaysia). After the December 2021 floods, NADMA paid RM1,000 per flood-hit household as Bantuan Wang Ihsan (Malay Mail, 22 Dec 2021): RM1,000 ÷ the game's typical wage (RM21,000 a year) = 0.048. Premiums for a \"special perils\" flood add-on are an ESTIMATE.",
+   "src": "Monsoon floods: the northeast monsoon (November to March) brings floods in many years (MetMalaysia). After the December 2021 floods, NADMA paid RM1,000 per flood-hit household as Bantuan Wang Ihsan (Malay Mail, 22 Dec 2021): RM1,000 ÷ the game's typical wage (RM21,000 a year) = 0.048. Premiums for a \"special perils\" flood add-on are an ESTIMATE. The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [24, 75],
    "weight": 0.7,
    "def": "none",

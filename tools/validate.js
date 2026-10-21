@@ -30,7 +30,7 @@ const TX_FX={cash:.05,happy:4,health:4,rel:4,bond:8};
 function sandbox(gen,langs){const ctx={console};vm.createContext(ctx);
  const run=(f,src)=>vm.runInContext(src!=null?src:fs.readFileSync(path.join(ROOT,f),'utf8'),ctx,{filename:f});
  run('js/i18n.js');for(const L of langs||['en'])run('gen/'+L+'.js',gen['gen/'+L+'.js']);
- for(const f of['js/engine.js','js/people.js','js/script.js','js/verbs.js'])run(f);
+ for(const f of['js/data.js','js/engine.js','js/people.js','js/script.js','js/verbs.js'])run(f);
  return{ctx,run}}
 function artNames(){const src=fs.readFileSync(path.join(ROOT,'js/art.js'),'utf8');
  const cards=new Set([...src.matchAll(/^(\w+):\{n:'/gm)].map(m=>m[1]));const a=src.indexOf('const CA={'),b=src.indexOf('\n};',a);

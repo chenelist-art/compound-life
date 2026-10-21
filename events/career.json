@@ -16,19 +16,22 @@
    },
    "vars": {
     "sk": "Math.round(sk)",
-    "sch": "sk >= 26 ? M('.sch') : ''",
+    "st": "leftAt ? M('.xl', {a: leftAt, sk: Math.round(sk)}) : M('.xf', {sk: Math.round(sk)})",
+    "sch": "!leftAt && sk >= 26 ? M('.sch') : ''",
     "fam": "M(fam === 'rich' ? '.rich' : fam === 'middle' ? '.middle' : '.none')"
    },
    "opts": [
     {
      "id": "uni",
      "sub": {"c": "MN(cu)", "loan": "cu > Math.max(0, cash) + 1 ? M('.loan') : ''"},
+     "ok": "leftAt ? M('.left', {a: leftAt}) : (uniPlace || sk >= 26 || M('.noPlace', {p: Math.round(100 * uniRate())}))",
      "hint": {"e": "eu", "p": "Math.round(eu * SK * 100)"},
      "do": "startStudy('uni')"
     },
     {
      "id": "dip",
      "sub": {"c": "MN(cd)"},
+     "ok": "leftAt !== 11 || M('.leftDip', {a: leftAt})",
      "hint": {"e": "ed", "p": "Math.round(ed * SK * 100)"},
      "do": "startStudy('dip')"
     },
@@ -37,7 +40,12 @@
    "i18n": {
     "en": {
      ".t": "After school",
-     ".x": "You finish school with skill {sk}.{sch} {fam}",
+     ".x": "{st}{sch} {fam}",
+     ".xf": "You finish school with skill {sk}.",
+     ".xl": "You left school at {a}. Your skill is {sk}.",
+     ".left": "You left school at {a}: university needs a secondary school certificate.",
+     ".leftDip": "You left school at {a}: a diploma course needs lower secondary school.",
+     ".noPlace": "No university place for you: here about {p} in 100 who finish school get one.",
      ".sch": " Your grades win a scholarship that covers 60% of university fees.",
      ".rich": "Your family will pay all your fees.",
      ".middle": "Your family can pay half your fees.",
@@ -54,7 +62,12 @@
     },
     "zh": {
      ".t": "毕业之后",
-     ".x": "你以技能{sk}毕业。{sch}{fam}",
+     ".x": "{st}{sch}{fam}",
+     ".xf": "你以技能{sk}毕业。",
+     ".xl": "你{a}岁就离开了学校，技能是{sk}。",
+     ".left": "你{a}岁就离开了学校：上大学需要中学毕业证书。",
+     ".leftDip": "你{a}岁就离开了学校：读文凭课程需要读完初中。",
+     ".noPlace": "你没有拿到大学名额：在这里，读完中学的人大约每100人中有{p}人能上大学。",
      ".sch": "你的成绩赢得了奖学金，可以抵掉60%的大学学费。",
      ".rich": "家里会帮你付全部学费。",
      ".middle": "家里可以帮你付一半学费。",
@@ -71,7 +84,12 @@
     },
     "zht": {
      ".t": "畢業之後",
-     ".x": "你以技能{sk}畢業。{sch}{fam}",
+     ".x": "{st}{sch}{fam}",
+     ".xf": "你以技能{sk}畢業。",
+     ".xl": "你{a}歲就離開了學校，技能是{sk}。",
+     ".left": "你{a}歲就離開了學校：上大學需要中學畢業證書。",
+     ".leftDip": "你{a}歲就離開了學校：讀文憑課程需要讀完國中。",
+     ".noPlace": "你沒有拿到大學名額：在這裡，讀完中學的人大約每100人中有{p}人能上大學。",
      ".sch": "你的成績贏得了獎學金，可以抵掉60%的大學學費。",
      ".rich": "家裡會幫你付全部學費。",
      ".middle": "家裡可以幫你付一半學費。",

@@ -6,6 +6,7 @@
    "id": "cn_gaokao",
    "src": "===================== China (CN) ===================== Gaokao: 13.35 million registered in 2025 (Ministry of Education via Xinhua and The Paper). Extra-class costs are an ESTIMATE; a poorer family borrows and you help repay it (famCost).",
    "age": [17, 17],
+   "when": {"test": "!leftAt || leftAt > age"},
    "def": "steady",
    "tarot": "edu",
    "art": {"draw": "exam", "bg": "mi"},

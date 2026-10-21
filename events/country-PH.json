@@ -59,14 +59,14 @@
   },
   {
    "id": "ph_typhoon",
-   "src": "Typhoons: about 20 tropical cyclones enter the Philippine Area of Responsibility each year, 8 or 9 crossing the country (PAGASA).",
+   "src": "Typhoons: about 20 tropical cyclones enter the Philippine Area of Responsibility each year, 8 or 9 crossing the country (PAGASA). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.6,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "storm", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0, "prem": 0.006, "prep": 0.012, "p": 0.6},
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012},
    "i18n": {
     "en": {
      ".t": "Typhoon season",

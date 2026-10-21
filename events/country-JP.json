@@ -474,7 +474,7 @@
   },
   {
    "id": "jp_quake",
-   "src": "Earthquake insurance: government-backed, up to 50% of the fire-insurance amount; 69.4% of fire policies included it in FY2022 (General Insurance Rating Organization of Japan, via financial-field.com). Premiums and quake odds are ESTIMATES.",
+   "src": "Earthquake insurance: government-backed, up to 50% of the fire-insurance amount; 69.4% of fire policies included it in FY2022 (General Insurance Rating Organization of Japan, via financial-field.com). The chance of a damaging quake is Japan’s rate of people affected by earthquakes a year, 2000–2024, from EM-DAT (js/data.js); premiums and the damage are ESTIMATES.",
    "age": [32, 70],
    "weight": 0.6,
    "when": {"house": true},
@@ -494,7 +494,7 @@
     {"id": "skip", "hint": true, "do": "q(0)"}
    ],
    "later": {
-    "quake": "if (!house || roll('quake') >= .25) return; const d = .25 * house.value, cov = x.ins ? .5 * d : 0; pay(d - cov); happy -= 5; const t = T('jp_quake', { kind: 'custom', label: M('trk.jp_quake') }); t.v -= d - cov; t.note = M('note.quake', { a: MN(d), b: MN(cov) }); log(M('log.quake', { a: MN(d), b: MN(cov) }), 'bad')"
+    "quake": "if (!house || roll('quake') >= disP(20, 'quake')) return; const d = .25 * house.value, cov = x.ins ? .5 * d : 0; pay(d - cov); happy -= 5; const t = T('jp_quake', { kind: 'custom', label: M('trk.jp_quake') }); t.v -= d - cov; t.note = M('note.quake', { a: MN(d), b: MN(cov) }); log(M('log.quake', { a: MN(d), b: MN(cov) }), 'bad')"
    },
    "i18n": {
     "en": {

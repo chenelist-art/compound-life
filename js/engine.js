@@ -85,6 +85,57 @@ const LE_SEX={IN:[73.60,70.52,72.00],CN:[80.93,75.20,77.95],NG:[54.74,54.18,54.4
 const SRB={IN:1.07,CN:1.11,NG:1.04,PK:1.05,ID:1.06,ET:1.05,US:1.05,BD:1.05,BR:1.04,MX:1.04,PH:1.08,VN:1.11,JP:1.05,DE:1.06,GB:1.05,MY:1.06,SG:1.06};
 const PAYGAP={JP:22.0,US:16.4,GB:13.3,DE:14.4,MX:15.0,BR:10.0,SG:14.3,MY:2.9,IN:19.5,BD:14.5,ID:13.5,VN:8.7,ET:21.1,NG:27.4,PK:-3.1,PH:-15.3,CN:18};
 const CHILDPEN={BD:62,BR:37,CN:4,ET:15,DE:41,IN:25,ID:20,JP:44,MY:45,MX:44,NG:1,PK:16,PH:25,GB:34,US:25,VN:1,SG:26};
+/* ---------- real-world chances (RD, js/data.js, written by tools/fetch-data.js) ----------
+   RD holds published figures for every country, each with its source and year in js/data.js: World Bank (with the UN Population
+   Division, ILO, UNESCO, WHO and IMF figures it republishes), WHO Global Health Estimates and EM-DAT. Where a figure only sets how
+   countries differ, it is divided by the average of the 17 countries weighted by births (rdAvg: lives come up in proportion to
+   births), so the game's overall level over all lives (tuned with tools/balance.js) stays where it was. How each one is used:
+   - serious illness: the yearly chance (illP) × the country's chance of dying between 30 and 70 from heart disease, stroke, cancer,
+     diabetes or chronic lung disease (RD.ncd) ÷ the 17-country average (rdAvg). Whether it is cancer, a heart attack or a stroke follows the
+     country's death rates from each at your age (RD.deaths, ages 15–49, 50–69 and 70+)
+   - meeting someone and marrying, from the country's average age at first marriage for your sex (RD.smamF, RD.smamM): before that
+     age the yearly chance of meeting someone (meetP) is 1 ÷ (that age − 23) (at least 14% a year, as before, and at most 60%); after
+     it, the game's older bands (14%, 9%, 5%) move with the difference from the 17-country average. Lives nobody steers (autoRel)
+     marry from four years before that age, after at least a year together, and move in together after two years if they haven't
+     married yet. The 23 and the four years were set with a simulation (300 such lives a country) so that their first marriages
+     come at about the published average age, for women and for men
+   - children: lives nobody steers aim for the country's children per woman (RD.tfr), rounded up or down at random so the average
+     matches (kidGoal), trying most years once married; in a simulation they end up with 76–95% of the country's figure (some lives
+     end early, some couples part or don't have children). Women who marry younger than 20 in the data (Bangladesh, India, Nigeria)
+     marry a few years later in the game, which has no dating before 18
+   - layoffs: each career's yearly layoff chance × the unemployment rate where you work (RD.unemp) ÷ the 17-country average (rdAvg)
+   - money left in cash: it loses 1% a year (a game rule, as before), plus inflation above what the country is used to: each year
+     one year of its record since 2000 (RD.infl) is drawn at random, and whatever that year's inflation was above the record's
+     median is lost. Savings accounts roughly keep up with the inflation a country is used to; surprises eat into cash
+   - natural disasters (hazards): the yearly chance that a flood, a storm or a drought reaches you is the share of people EM-DAT
+     records as affected by it a year where you live (RD.disasters, average 2000–2024). Floods and storms damage your home (less
+     with the cover or preparation from the flood cards: s.prot); droughts raise food and water costs and hit farm work.
+     Earthquakes come with Japan's earthquake card, at Japan's recorded rate (disP)
+   - road accidents (hazards): the yearly chance of a serious road injury is the road death rate where you live (RD.road) × ROADK,
+     from WHO's "Road traffic injuries" fact sheet (who.int, fetched 2026-10-21): about 1.16 million people killed a year and
+     "between 20 and 50 million more" injured; ROADK uses the low end, 20 ÷ 1.16
+   - school (newLife): the chance of leaving school before finishing primary school (at 11) or lower secondary school (at 15) is
+     1 − the completion rate (RD.prim, RD.lsec; rates above 100 count as 100). After school, the chance of a university place is
+     university enrolment ÷ lower secondary completion (RD.tert ÷ RD.lsec, at most 100%); a top student (Skill 26+, the
+     scholarship on the education card) always gets one. The published rates have no split by family, so every family gets the
+     national rate.
+   How much a disaster or an accident costs and hurts are game rules (ESTIMATES), not data. */
+/* the 17-country average, weighted by births (C[i][2]: how often each country comes up), so the level over all lives stays the same */
+const rdAvg=t=>{let a=0,w=0;for(const c of C){a+=c[2]*t[c[1]];w+=c[2]}return a/w};
+const RDA={ncd:rdAvg(RD.ncd),unemp:rdAvg(RD.unemp),smamF:rdAvg(RD.smamF),smamM:rdAvg(RD.smamM)};
+const ROADK=20/1.16;
+const INFL_MED={};for(const k in RD.infl){const l=[...RD.infl[k]].sort((a,b)=>a-b),n=l.length;INFL_MED[k]=n%2?l[(n-1)/2]:(l[n/2-1]+l[n/2])/2}
+/* average age at first marriage for a sex in a country, and how far it is from the 17-country average */
+const smam=(k,sex)=>(sex==='f'?RD.smamF:RD.smamM)[k];
+const smamD=s=>smam(C[s.ci][1],s.sex)-RDA[s.sex==='f'?'smamF':'smamM'];
+/* layoffs where you work, relative to the 17-country average */
+const layC=s=>RD.unemp[C[s.abroad!=null?s.abroad:s.ci][1]]/RDA.unemp;
+/* how many children a life nobody steers aims for: the country's children per woman, rounded up or down at random */
+function kidGoal(s){if(s.kidGoal==null){const T=RD.tfr[C[s.ci][1]];s.kidGoal=Math.floor(T)+(mb(hsh(s.seed,'kidGoal'))()<T%1?1:0)}return s.kidGoal}
+/* the chance of a university place after school (see above) */
+const uniRate=s=>{const k=C[s.ci][1];return Math.min(1,RD.tert[k]/Math.min(100,RD.lsec[k]))};
+/* the chance a disaster reaches you within yrs years where you live: floods and storms ('fs'), or one kind of RD.disasters */
+function disP(s,yrs,kind){const z=RD.disasters[C[s.abroad!=null?s.abroad:s.ci][1]],a=(kind?z[kind]:z.flood+z.storm)/1e5;return 1-Math.pow(1-a,yrs)}
 function logInterp(tab,x){if(x>=tab[tab.length-1][0])return tab[tab.length-1][1];for(let i=1;i<tab.length;i++)if(x<tab[i][0]){const[a,p]=tab[i-1],[b,q]=tab[i];return p+(q-p)*Math.log(x/a)/Math.log(b/a)}}
 /* PPP dollars in the game → US dollars at market exchange rates, using your home country's price level */
 function toUSD(ci,v){const p=PPP[C[ci][1]];return v*p[0]/p[1]}
@@ -163,6 +214,9 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
  s.hz=0;s.dieAt=-Math.log(1-mb(hsh(seed,'death'))());
  const k=c[1];s.sex=sex||(r()<SRB[k]/(1+SRB[k])?'m':'f');s.le=Math.round(c[4]+LE_SEX[k][s.sex==='f'?0:1]-LE_SEX[k][2]);
  s.dk=DF[dk]?dk:'easy';const rd=mb(hsh(seed,'diff')),d=D(s);s.crashM=inR(rd(),d.crash);s.lostAt=rd()<d.lost?(rd()<.6?s.crashAge+1:25+Math.floor(rd()*36)):-99;
+ /* school, at the country's real rates (see "real-world chances"): leftAt is the age you leave school early (0: you finish it) */
+ {const rs=mb(hsh(seed,'school')),pr=Math.min(100,RD.prim[k])/100,ls=Math.min(pr,Math.min(100,RD.lsec[k])/100),u=rs();
+  s.leftAt=u<1-pr?11:u<1-ls?15:0;s.uniPlace=rs()<uniRate(s)}
  s.plan=planLife(s);
  /* parents and brothers and sisters (js/people.js) */
  if(typeof pplBorn==='function')pplBorn(s);return s}
@@ -388,7 +442,9 @@ function careerEnd(s,L){const j=s.job,c=CAR[j.id],a=s.age,r=evR(s,'carEnd'),nm=M
    makes promotions rarer, slowly lowers Health and halves what your focus does. */
 const ILLT={best:{c:2.5,m:3,h:10,y:2,p:.9},std:{c:.6,m:5,h:15,y:3,p:.8},skip:{c:0,m:7,h:22,y:4,p:.35}};
 function illP(s){const h=s.health,hp=h>=50?.002+(100-h)*.00004:h>=30?.004+(50-h)*.001:.024+(30-h)*.004;
- return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))}
+ return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))*RD.ncd[C[s.ci][1]]/RDA.ncd}
+/* which serious illness: cancer, a heart attack or a stroke, in proportion to the country's death rates from each at your age */
+function illKind(s,u){const d=RD.deaths[C[s.ci][1]][s.age<50?'15-49':s.age<70?'50-69':'70+'],x=u*(d.cancer+d.heart+d.stroke);return x<d.cancer?'cancer':x<d.cancer+d.heart?'heart':'stroke'}
 function survP(s,k){const ci=s.abroad!=null?s.abroad:s.ci;return clamp(ILLT[k].p+(s.health-50)*.005+(C[ci][4]-75)*.008-Math.max(0,s.age-60)*.006+(s.screen?.05:0),.05,.97)}
 const illYou=(s,k)=>ILLT[k].c*s.base*(s.insured?.15:1)*(s.medCut||1);
 const illNote=t=>M('note.ill',{a:MN(t.paid),b:MN(t.lost)});
@@ -420,8 +476,8 @@ const PTJ={acct:[1,4],mkt:[1,4],swe:[.3,3],bank:[.3,2],civ:[3,4],teach:[3,4],nur
 function ptCar(s,r){const k=clamp(Math.log(s.base/3000)/Math.log(35000/3000),0,1),w={};let tot=0;
  for(const id in PTJ){w[id]=PTJ[id][0]*(1-k)+PTJ[id][1]*k;tot+=w[id]}let u=r()*tot;for(const id in w){u-=w[id];if(u<=0)return id}return 'civ'}
 /* the yearly chance of meeting someone while single: lower with age, higher with good Relationships, the People focus,
-   or in a year you went looking */
-function meetP(s,a){const b=a<36?.14:a<51?.09:.05;return clamp(b+(s.rel-50)*.003+(s.focus==='people'&&!s.retired?.12:0)+(s.look===a?.4:0),.02,.8)}
+   or in a year you went looking; the ages move with the country's average age at first marriage (see "real-world chances") */
+function meetP(s,a){const m=smam(C[s.ci][1],s.sex),d=smamD(s),b=a<m?clamp(1/Math.max(1,m-23),.14,.6):a<36+d?.14:a<51+d?.09:.05;return clamp(b+(s.rel-50)*.003+(s.focus==='people'&&!s.retired?.12:0)+(s.look===a?.4:0),.02,.8)}
 /* the chance a year of trying brings a baby, by your age (the partner is taken to be about your age) */
 const babyP=a=>a<30?.85:a<35?.75:a<40?.55:a<45?.3:.1;
 /* divorce by country: [legal fees, child support a year for each child under 18], in years of a typical wage. Rough
@@ -438,7 +494,7 @@ function ptLine(s){const p=s.pt;if(p.tk)return;p.tk='pt'+p.n;p.from=s.age;T(s,p.
 function ptYear(s,a){const p=s.pt,B=s.base,cm=s.costMul||1;if(!p)return{net:0,cost:0};
  if(p.st==='date'){const c=.04*B*cm,t=T(s,'date'+p.n,{kind:'ghost',label:M('trk.dating',{a:p.at})});t.spent+=c;t.g+=c;return{net:0,cost:c}}
  if(!p.ret&&a>=65)p.ret=1;
- let net;if(p.ret)net=.18*B;else{if(evR(s,'ptLay')()<CAR[p.car].lay[a===s.crashAge?1:0])p.lay=a;net=netOf(s,ptPay(s));p.exp++}
+ let net;if(p.ret)net=.18*B;else{if(evR(s,'ptLay')()<CAR[p.car].lay[a===s.crashAge?1:0]*layC(s))p.lay=a;net=netOf(s,ptPay(s));p.exp++}
  const cost=.5*B*cm,t=s.trk[p.tk];if(t){t.v+=net-cost;t.paid+=net;t.cost+=cost;t.note=M('note.pt',{a:MN(t.paid),b:MN(t.cost)})}
  return{net,cost}}
 /* the partner leaves your life: close their passbook line */
@@ -477,10 +533,12 @@ function relAct(s,id,L){const p=s.pt,a=s.age,x=relActs(s).find(o=>o.id===id);if(
  else if(id==='div')divorce(s,'me',L);
  if(typeof pplSync==='function')pplSync(s);return true}
 /* lives nobody steers (the autopilot twin, the simulated futures, the babies born with you, the balance bots) follow a
-   typical path: marry after a couple of years together, and have a child or two before 40 */
-function autoRel(s,a){const p=s.pt;if(!p)return;const r=evR(s,'auto');
- if(!s.married&&a-p.at>=2&&r()<.35){s.ask='wed';return}
- if(s.married&&a<40&&s.kids.length<2&&!s.kids.some(b=>b>a)&&r()<.4)s.tryAt=a+1}
+   typical path (see "real-world chances"): marry from about four years before the country's average age at first marriage, after
+   at least a year together, moving in together first if it takes longer; and have the country's number of children per woman
+   (kidGoal), before 40 (44 for a big family) */
+function autoRel(s,a){const p=s.pt;if(!p)return;const r=evR(s,'auto'),g=kidGoal(s);
+ if(!s.married){if(a-p.at>=1&&a>=smam(C[s.ci][1],s.sex)-4&&r()<.45){s.ask='wed';return}if(p.st==='date'&&a-p.at>=2)relAct(s,'move',null)}
+ if(s.married&&a<(g>2?44:40)&&s.kids.length<g&&!s.kids.some(b=>b>a)&&r()<.7)s.tryAt=a+1}
 /* children under 6 at this age (sleepless nights) */
 const smallKids=(s,a)=>s.kids.filter(b=>a>=b&&a<b+6).length;
 /* ---------- events ----------
@@ -582,6 +640,24 @@ function kidFees(s,a,L){if(!s.kidEdu)return;for(const b of s.kids){if(a!==b+18||
  L&&L(M('log.kidUni',{a:MN(s.kidFee)}),'good')}}
 
 /* ---------- one year of life ---------- */
+/* natural disasters and road accidents, at the real rates where you live (see "real-world chances"). One draw a year: a flood,
+   a storm or a drought, then a road accident. The damage is a game rule (ESTIMATE): floods and storms cost 45% of a typical wage
+   for a home you own, 15% for a rented one (as the flood cards always did), less with cover (12%) or preparation (50%) from a
+   flood card and with that card's government aid; a drought costs 4% of a typical wage in food and water, and farmers lose a
+   quarter of a year's pay; a serious road injury costs Health and a hospital bill of 10% of a typical wage (insurance pays 85%) */
+function hazards(s,a,L){const k=C[s.abroad!=null?s.abroad:s.ci][1],B=s.base,z=RD.disasters[k],r=evR(s,'haz'),u=r()*1e5;
+ const pay2=x=>{if(s.retired)payRet(s,x);else pay(s,x)};
+ if(u<z.flood+z.storm){const kind=u<z.flood?'flood':'storm',full=(s.house?.45:.15)*B,pr=s.prot&&a<s.prot.until?s.prot:null,loss=full*(pr?[1,.5,.12][pr.lv]:1),aid=(s.prot?s.prot.aid:0)*B;
+  pay2(loss);s.cash+=aid;s.happy=clamp(s.happy-5,0,100);s.health=clamp(s.health-2,3,100);
+  const ti=pr&&pr.lv===2&&s.trk[pr.id];if(ti){ti.saved=(ti.saved||0)+full-loss;ti.v+=full-loss;ti.note=M('note.floodIns',{a:MN(ti.paid||0),b:MN(ti.saved)})}
+  const t=T(s,'disaster',{kind:'custom',label:M('trk.disaster'),n:0,paid:0,cov:0});t.n++;t.paid+=loss-aid;t.cov+=full-loss+aid;t.v-=loss-aid;t.note=M('note.disaster',{n:t.n,a:MN(t.paid),b:MN(t.cov)});
+  L&&L(M('log.dis.'+kind,{a:MN(loss),x:full-loss+aid>0?M('log.dis.cov',{b:MN(full-loss+aid)}):''}),'bad')}
+ else if(u<z.flood+z.storm+z.drought){const farm=s.job&&s.job.id==='farm'&&job(s),c=.04*B+(farm?.25*salary(s):0);pay2(c);s.happy=clamp(s.happy-2,0,100);
+  const t=T(s,'disaster',{kind:'custom',label:M('trk.disaster'),n:0,paid:0,cov:0});t.n++;t.paid+=c;t.v-=c;t.note=M('note.disaster',{n:t.n,a:MN(t.paid),b:MN(t.cov)});
+  L&&L(M(farm?'log.dis.droughtFarm':'log.dis.drought',{a:MN(c)}),'bad')}
+ if(r()<RD.road[k]*ROADK/1e5){const bill=.1*B*(s.medCut||1),you=s.insured?.15*bill:bill;pay2(you);s.health=clamp(s.health-6,3,100);s.happy=clamp(s.happy-3,0,100);
+  const t=T(s,'road',{kind:'custom',label:M('trk.road'),n:0,paid:0});t.n++;t.paid+=you;t.v-=you;t.note=M('note.road',{n:t.n,a:MN(t.paid)});
+  L&&L(M('log.road',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):''}),'bad')}}
 function tick(s,yr,L){
  const a=s.age,B=s.base,fo=s.focus,out={gross:0,saved:0},cm=s.costMul||1;
  if(!s.retired&&s.retireAge&&a>=s.retireAge)retire(s,L);
@@ -597,7 +673,10 @@ function tick(s,yr,L){
  if(s.annu){s.cash+=s.annu;s.earned+=s.annu;const t=s.trk.annuity;if(t){t.v+=s.annu;t.got=(t.got||0)+s.annu;t.note=M('note.annuity',{a:MN(t.cost),b:MN(t.got)})}}
  let r=Math.max(-.45,yr.mkt-(a>=s.lostAt&&a<s.lostAt+10?.05:0));if(a===s.crashAge)r=.18;else if(a===s.crashAge+1&&s.lostAt!==a)r=.15;
  for(const k in s.lots){const l=s.lots[k];l.v*=1+lotR(l,r,yr)}
- if(s.cash>0){if(s.efund&&s.trk.efund)s.trk.efund.v+=.015*s.cash;s.cash*=s.efund?1:.99}
+ /* cash loses 1% a year, plus inflation above the country's usual level (see "real-world chances"); not in a year an inflation
+    card already took its loss (inflYr) */
+ if(s.cash>0){const k=C[s.abroad!=null?s.abroad:s.ci][1],h=RD.infl[k],y=h[Math.floor(evR(s,'infl')()*h.length)],sur=s.inflYr===a?0:Math.max(0,y-INFL_MED[k])/100;
+  if(s.efund&&s.trk.efund)s.trk.efund.v+=.015*s.cash;s.cash*=(s.efund?1:.99)*(1-sur)}
  for(const id in s.trk){const t=s.trk[id];if(t.kind==='ghost')t.g*=1+r;else if(t.kind==='crash'){t.hold*=1+r;t.sell*=(a<s.crashAge+3?.99:1+r)}}
  if(s.house)s.house.value*=1+.012+yr.hs*.05+D(s).rise;
  if(D(s).rise)s.hm*=1+D(s).rise;
@@ -634,7 +713,7 @@ function tick(s,yr,L){
     if(s.ill&&s.ill.at===a){const c=s.ill.off*work,t=s.trk.ill;work-=c;if(t){t.lost+=c;t.v-=c;t.note=illNote(t)}}
     if(dp){const c=(s.dep.how==='off'&&s.dep.at===a?.33:.3)*work,t=s.trk.dep;work-=c;if(t){t.lost+=c;t.v-=c;t.note=depNote(t)}}
     /* layoffs: each career has its own risk, much higher in a crash year (none while training); a switch card follows */
-    const cr=CAR[s.job.id],trn=s.job.train>a,lp=trn?0:cr.lay[a===s.crashAge?1:0]*D(s).lay*(s.layM||1);
+    const cr=CAR[s.job.id],trn=s.job.train>a,lp=trn?0:cr.lay[a===s.crashAge?1:0]*D(s).lay*(s.layM||1)*layC(s);
     if(yr.jl<lp||s.layAt===a){work*=.5;onLaid(s,L);L&&L(M(s.layAt===a&&s.layVol?'log.layVol':'log.laidOff'),'bad');offerSwitch(s,'lay')}
     const den=1+SK*sk;
     for(const k in s.skillSrc){if(k==='base')continue;const t=s.trk['sk_'+k];if(!t)continue;const ex=sal*SK*s.skillSrc[k]/den;t.gain+=ex;t.per=ex}
@@ -704,11 +783,12 @@ function tick(s,yr,L){
   /* a career's toll on health; on Normal and Hard demanding jobs take more (D(s).toll) */
   if(job(s)){const c=CAR[s.job.id],hd=c.hd||0;s.health+=hd>0?hd*hk:hd*(c.hp<0?D(s).toll:1)}
   s.health=clamp(s.health,3,100);
-  if(a>=25&&s.illAge<0&&evR(s,'illRoll')()<illP(s)){s.illAge=a+1;const u=evR(s,'illType')();s.illType=u<.45?'cancer':u<.8?'heart':'stroke'}
+  if(a>=25&&s.illAge<0&&evR(s,'illRoll')()<illP(s)){s.illAge=a+1;s.illType=illKind(s,evR(s,'illType')())}
   const mp=(.02+Math.max(0,70-s.health)/900+a/3500)*D(s).med;
   if(yr.md<mp){const b0=B*.6*(.5+yr.ma*1.5)*(s.screen?.7:1),bill=b0*(s.medCut||1);medSaved(s,b0-bill);let you=bill;if(s.insured){you=.15*bill;const t=s.trk.ins;if(t){t.saved+=bill-you;t.v+=bill-you;t.note=insNote(t)}}
    if(s.retired)payRet(s,you);else pay(s,you);s.health=clamp(s.health-4,3,100);L&&L(M('log.med',{a:MN(bill),x:s.insured?M('log.medIns',{c:MN(bill-you)}):M('log.medSelf')}),'bad');
    chipIn(s,you,'helpMed',L)}
+  hazards(s,a,L);
   /* on Normal and Hard, an unexpected bill now and then: the car, the flat, a family emergency, a fine, a theft */
   if(D(s).shock&&evR(s,'shock')()<D(s).shock){const r=evR(s,'shockK'),ks=['fam','fine','theft',s.car?'car':'fam',s.house?'home':'flat'],k=ks[Math.floor(r()*ks.length)],c=(.12+.4*r())*B;
    if(s.retired)payRet(s,c);else pay(s,c);const t=T(s,'shock',{kind:'custom',label:M('trk.shock'),n:0,paid:0});t.n++;t.paid+=c;t.v-=c;t.note=M('note.shock',{n:t.n,a:MN(t.paid)});L&&L(M('log.shock.'+k,{a:MN(c)}),'bad')}
@@ -763,6 +843,7 @@ function tick(s,yr,L){
   if(!s.noDeath){const Mx=s.le+8,bg=.09;let mu=bg*Math.exp(bg*(a-Mx))*Math.exp((60-s.health)/40)+.0006;if(a>=104)mu=99;s.hz+=mu;if(s.hz>=s.dieAt){s.dead=true;s.deathAge=a;return out}}
  }else{/* children's moods and friendships settle back as well */
   s.happy=clamp(s.happy+(62-s.happy)*.25,0,100);s.rel=clamp(s.rel+(50-s.rel)*.15,0,100);s.health=clamp(s.health,3,100)}
+ if(s.leftAt&&a===s.leftAt)L&&L(M('log.leftSchool',{a}),'bad');
  /* the people in your life live their year too (js/people.js) */
  if(typeof pplYear==='function')pplYear(s,a,L);
  /* the end grade adds up every year lived (see lifeScore) */

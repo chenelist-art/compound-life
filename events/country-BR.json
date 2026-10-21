@@ -300,14 +300,14 @@
   },
   {
    "id": "br_flood",
-   "src": "Floods: in May 2024 floods in Rio Grande do Sul displaced 538,245 people and killed at least 149 (state Civil Defence, via Poder360 and Diário do Nordeste).",
+   "src": "Floods: in May 2024 floods in Rio Grande do Sul displaced 538,245 people and killed at least 149 (state Civil Defence, via Poder360 and Diário do Nordeste). The chance that a flood or storm reaches you comes from EM-DAT (people affected a year, 2000–2024: js/data.js); premiums, damage and preparation costs are ESTIMATES.",
    "age": [25, 70],
    "weight": 0.45,
    "def": "none",
    "tarot": "crash",
    "art": {"draw": "flood", "bg": "wh"},
    "use": "flood",
-   "with": {"aid": 0.1, "prem": 0.006, "prep": 0.012, "p": 0.45},
+   "with": {"aid": 0.1, "prem": 0.006, "prep": 0.012},
    "i18n": {
     "en": {
      ".t": "Flood season",
