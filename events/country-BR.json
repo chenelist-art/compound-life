@@ -1,0 +1,353 @@
+{
+ "about": "Country cards for lives born in Brazil. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "BR",
+ "events": [
+  {
+   "id": "br_fgts",
+   "src": "===================== Brazil (BR) ===================== FGTS: employers deposit 8% of pay; with saque-aniversário you withdraw part each year in your birthday month but, if fired without cause, only receive the 40% fine (Projuris; Banco Mercantil; O POVO, 2025). Yearly withdrawal size is an ESTIMATE.",
+   "age": [22, 40],
+   "weight": 0.7,
+   "when": {"working": true, "test": "!selfEmp() && !fgts"},
+   "def": "resc",
+   "tarot": "efund",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "fn": {
+    "set": {
+     "args": ["m"],
+     "do": "fgts = { mode: m, since: age }; T('br_fgts', { kind: 'custom', label: M('trk.br_fgts') }); if (m === 'aniv') rec('br_fgts', -.04 * Math.max(salary(), base), 25); else later(60, 'fgts60', {})"
+    }
+   },
+   "opts": [
+    {"id": "resc", "hint": true, "do": "set('resc')"},
+    {
+     "id": "aniv",
+     "sub": {"a": "MN(.04 * Math.max(salary(), base))"},
+     "hint": true,
+     "do": "set('aniv')"
+    }
+   ],
+   "later": {
+    "fgts60": "const f = fgts; if (!f || f.mode !== 'resc') return; const v = fgtsBal(); f.since = age; cash += v; const t = trk.br_fgts; if (t) { t.v += v; t.note = M('note.fgts', { a: MN(v) }); } log(M('log.fgts', { a: MN(v) }), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Your FGTS",
+     ".x": "Your employer deposits 8% of your pay into an FGTS account. You can switch to saque-aniversário and take part of it out each year in your birthday month, but then, if you are fired without cause, you only get the 40% fine, not the whole balance.",
+     ".resc": "Keep the usual rules",
+     ".resc.s": "You get the whole balance and the fine if you’re fired, or at 60.",
+     ".resc.h": "A layoff comes with a bigger payout.",
+     ".aniv": "Switch to saque-aniversário",
+     ".aniv.s": "About {a} a year in your birthday month.",
+     ".aniv.h": "If you’re laid off, you get much less.",
+     "trk.br_fgts": "FGTS"
+    },
+    "zh": {
+     ".t": "你的FGTS",
+     ".x": "雇主每月把你工资的8%存进FGTS账户。你可以改成“生日提款”（saque-aniversário），每年生日那个月提出一部分；但如果被无故解雇，就只能拿40%的罚金，拿不到全部余额。",
+     ".resc": "维持原来的规定",
+     ".resc.s": "被解雇时或60岁时，拿到全部余额和罚金。",
+     ".resc.h": "被裁员时能拿到较多钱。",
+     ".aniv": "改成生日提款",
+     ".aniv.s": "每年生日那个月约{a}。",
+     ".aniv.h": "被裁员时拿到的少得多。",
+     "trk.br_fgts": "FGTS"
+    },
+    "zht": {
+     ".t": "你的FGTS",
+     ".x": "僱主每月把你薪水的8%存進FGTS帳戶。你可以改成「生日提款」（saque-aniversário），每年生日那個月提出一部分；但如果被無故解僱，就只能拿40%的罰金，拿不到全部餘額。",
+     ".resc": "維持原來的規定",
+     ".resc.s": "被解僱時或60歲時，拿到全部餘額和罰金。",
+     ".resc.h": "被裁員時能拿到較多錢。",
+     ".aniv": "改成生日提款",
+     ".aniv.s": "每年生日那個月約{a}。",
+     ".aniv.h": "被裁員時拿到的少得多。",
+     "trk.br_fgts": "FGTS"
+    }
+   }
+  },
+  {
+   "id": "br_13",
+   "src": "13º salário: a 13th month's pay by law each December (Lei 4.090/1962).",
+   "age": [22, 55],
+   "weight": 0.65,
+   "when": {"working": true, "test": "!selfEmp()"},
+   "def": "bank",
+   "tarot": "bonus",
+   "art": {"draw": "bonus", "bg": "ya"},
+   "use": "m13",
+   "with": {"m": 0.08333333333333333},
+   "i18n": {
+    "en": {
+     ".t": "Your 13th salary",
+     ".x": "By law you get a 13th month’s pay every December."
+    },
+    "zh": {
+     ".t": "你的第十三个月薪水",
+     ".x": "依法每年十二月你会多领一个月的薪水。"
+    },
+    "zht": {
+     ".t": "你的第十三個月薪水",
+     ".x": "依法每年十二月你會多領一個月的薪水。"
+    }
+   }
+  },
+  {
+   "id": "br_mei",
+   "src": "MEI: R$75.90 a month in 2025 (5% of the R$1,518 minimum wage) gives INSS cover and a minimum-wage pension at 65 (62 for women) with 15–20 years of contributions (Metrópoles; Previdenciarista). R$910 a year ≈ 0.045 of the game's typical wage; the pension above what everyone gets (≈ 0.5) is an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.7,
+   "when": {"selfEmployed": true},
+   "def": "no",
+   "tarot": "scheme",
+   "art": {"draw": "stall", "bg": "wa"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "mei",
+     "sub": {"a": "MN(.045 * B)", "b": "MN(.5 * B)", "n": "sex === 'f' ? 62 : 65"},
+     "do": "penScheme('br_mei', .045 * B, 40, .5 * B, sex === 'f' ? 62 : 65)"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Register as an MEI",
+     ".x": "Registering as an MEI (individual micro-entrepreneur) costs R$75.90 a month in 2025, 5% of the minimum wage, and gives you INSS cover: sick pay, and a minimum-wage pension at 65 (62 for women) after 15–20 years.",
+     ".mei": "Register",
+     ".mei.s": "About {a} a year; a pension of about {b} a year from {n}.",
+     ".no": "Stay informal",
+     ".no.s": "No monthly fee.",
+     "trk.br_mei": "MEI contributions"
+    },
+    "zh": {
+     ".t": "登记成微型企业主",
+     ".x": "登记成微型企业主（MEI）2025年每月R$75.90，是最低工资的5%，可以获得INSS保障：病假津贴，以及缴满15–20年后65岁（女性62岁）起领最低工资的养老金。",
+     ".mei": "登记",
+     ".mei.s": "每年约{a}；{n}岁起每年领约{b}的养老金。",
+     ".no": "继续非正式经营",
+     ".no.s": "不用交月费。",
+     "trk.br_mei": "MEI缴费"
+    },
+    "zht": {
+     ".t": "登記成微型企業主",
+     ".x": "登記成微型企業主（MEI）2025年每月R$75.90，是最低薪水的5%，可以獲得INSS保障：病假津貼，以及繳滿15–20年後65歲（女性62歲）起領最低薪水的退休金。",
+     ".mei": "登記",
+     ".mei.s": "每年約{a}；{n}歲起每年領約{b}的退休金。",
+     ".no": "繼續非正式經營",
+     ".no.s": "不用交月費。",
+     "trk.br_mei": "MEI繳費"
+    }
+   }
+  },
+  {
+   "id": "br_plano",
+   "src": "Health plans: 52.2 million beneficiaries in January 2025, about 25% of the population; SUS is free for all (ANS, via CQCS; IESS). Premiums and cover are ESTIMATES.",
+   "age": [24, 55],
+   "weight": 0.6,
+   "when": {"test": "!medCut"},
+   "def": "sus",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {
+     "id": "plano",
+     "sub": {"a": "MN(.12 * base)"},
+     "hint": true,
+     "do": "medPlan('br_plano', .4, .12 * base); happy += 1"
+    },
+    {"id": "sus"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A health plan",
+     ".x": "About 52 million Brazilians, a quarter of the population, have a private health plan. SUS, the public health system, is free for everyone, but waits can be long.",
+     ".plano": "Buy a health plan",
+     ".plano.s": "About {a} a year, rising as you age. Happiness +1.",
+     ".plano.h": "It pays about 60% of your medical bills.",
+     ".sus": "Use SUS",
+     ".sus.s": "Free, with waits.",
+     "trk.br_plano": "Health plan"
+    },
+    "zh": {
+     ".t": "私人健康保险",
+     ".x": "约有5,200万巴西人，也就是四分之一的人口，有私人健康保险。公立医疗体系SUS对所有人免费，但可能要等很久。",
+     ".plano": "买健康保险",
+     ".plano.s": "每年约{a}，年纪越大越贵。幸福感 +1。",
+     ".plano.h": "能付约60%的医药费。",
+     ".sus": "用SUS",
+     ".sus.s": "免费，但要排队。",
+     "trk.br_plano": "健康保险"
+    },
+    "zht": {
+     ".t": "私人健康保險",
+     ".x": "約有5,200萬巴西人，也就是四分之一的人口，有私人健康保險。公立醫療體系SUS對所有人免費，但可能要等很久。",
+     ".plano": "買健康保險",
+     ".plano.s": "每年約{a}，年紀越大越貴。幸福感 +1。",
+     ".plano.h": "能付約60%的醫藥費。",
+     ".sus": "用SUS",
+     ".sus.s": "免費，但要排隊。",
+     "trk.br_plano": "健康保險"
+    }
+   }
+  },
+  {
+   "id": "br_tesouro",
+   "src": "Tesouro Direto: Tesouro IPCA+ 2035 paid about inflation + 6.2% in 2024 (InfoMoney; Money Times); 15% income tax after two years. About 4.5% real after tax and custody fees: an ESTIMATE. Poupança pays roughly inflation: an ESTIMATE.",
+   "age": [23, 60],
+   "weight": 0.65,
+   "when": {"stats": {"liquid": "> .25 * base"}},
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".3 * liquid()"},
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "ipca", "sub": {"a": "MN(a)"}, "do": "putIn('ipca', a, {rate: .045}, 'trk.ipca')"},
+    {"id": "poup", "sub": {"a": "MN(a)"}, "do": "putIn('poup', a, {rate: .005}, 'trk.poup')"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Tesouro Direto",
+     ".x": "With Tesouro Direto you can buy government bonds from about R$30. Tesouro IPCA+ paid inflation plus about 6% a year in 2024, with 15% income tax on the gain after two years; poupança pays much less. You have {a} to put somewhere.",
+     ".ipca": "Tesouro IPCA+",
+     ".ipca.s": "Move {a} in. About 4.5% a year after inflation and tax if you hold it to the end.",
+     ".poup": "Poupança",
+     ".poup.s": "Move {a} in. About as much as prices rise.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "It stays in your account.",
+     "trk.ipca": "Tesouro IPCA+",
+     "trk.poup": "Poupança"
+    },
+    "zh": {
+     ".t": "直接买国债",
+     ".x": "通过Tesouro Direto约R$30就能买国债。2024年通胀挂钩国债（Tesouro IPCA+）的收益是通胀再加约6%，持有两年以上收益缴15%所得税；储蓄存款（poupança）的收益低得多。你有{a}要找地方放。",
+     ".ipca": "通胀挂钩国债",
+     ".ipca.s": "放入{a}。持有到期的话，扣除通胀和税后每年约4.5%。",
+     ".poup": "储蓄存款",
+     ".poup.s": "放入{a}。大约和物价涨幅相同。",
+     ".keep": "放在银行",
+     ".keep.s": "钱留在账户里。",
+     "trk.ipca": "通胀挂钩国债",
+     "trk.poup": "储蓄存款"
+    },
+    "zht": {
+     ".t": "直接買國債",
+     ".x": "透過Tesouro Direto約R$30就能買國債。2024年通膨掛鉤國債（Tesouro IPCA+）的收益是通膨再加約6%，持有兩年以上收益繳15%所得稅；儲蓄存款（poupança）的收益低得多。你有{a}要找地方放。",
+     ".ipca": "通膨掛鉤國債",
+     ".ipca.s": "放入{a}。持有到期的話，扣除通膨和稅後每年約4.5%。",
+     ".poup": "儲蓄存款",
+     ".poup.s": "放入{a}。大約和物價漲幅相同。",
+     ".keep": "放在銀行",
+     ".keep.s": "錢留在帳戶裡。",
+     "trk.ipca": "通膨掛鉤國債",
+     "trk.poup": "儲蓄存款"
+    }
+   }
+  },
+  {
+   "id": "br_mcmv",
+   "src": "Minha Casa, Minha Vida: Faixa 1 for family incomes up to R$2,850 a month (2024–25; raised in 2026), subsidies up to 95% of the price and interest of about 4–5% (InvestNews; Tenda). Price and subsidy in the game are ESTIMATES.",
+   "age": [24, 45],
+   "weight": 0.6,
+   "when": {"house": false, "job": true, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": ".55 * price()", "ok": "salary() < 1.8 * base || M('.no')"},
+   "vars": {"p": "MN(.55 * price())"},
+   "opts": [
+    {
+     "id": "mcmv",
+     "sub": {"d": "upFront(P, .05, .01)", "m": "yrPay(P, .05, .005)"},
+     "ok": "ok",
+     "do": "buyAt(P, { dp: .05, fee: .01, r: .005, n: 30, lk: 'trk.br_mcmv', fixed: true })"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Minha Casa, Minha Vida",
+     ".x": "Minha Casa, Minha Vida helps lower-income families buy a home: for incomes up to R$2,850 a month (2025), subsidies can cover most of the price and interest is about 4–5% a year. A home in the programme costs {p}.",
+     ".mcmv": "Buy through the programme",
+     ".mcmv.s": "{d} up front, then {m} a year.",
+     ".no": "Your income is above the programme’s limit.",
+     ".wait": "Keep renting",
+     ".wait.s": "Your rent stays the same.",
+     "trk.br_mcmv": "Minha Casa, Minha Vida home"
+    },
+    "zh": {
+     ".t": "我的家，我的生活",
+     ".x": "“我的家，我的生活”计划帮助低收入家庭买房：月收入R$2,850以下的家庭（2025年），补贴可以付掉大部分房价，利率约每年4–5%。计划里的一间房子要{p}。",
+     ".mcmv": "通过计划买房",
+     ".mcmv.s": "首付{d}，之后每年{m}。",
+     ".no": "你的收入超过计划的上限。",
+     ".wait": "继续租房",
+     ".wait.s": "房租不变。",
+     "trk.br_mcmv": "计划住房"
+    },
+    "zht": {
+     ".t": "我的家，我的生活",
+     ".x": "「我的家，我的生活」計畫幫助低收入家庭買房：月收入R$2,850以下的家庭（2025年），補貼可以付掉大部分房價，利率約每年4–5%。計畫裡的一間房子要{p}。",
+     ".mcmv": "透過計畫買房",
+     ".mcmv.s": "頭期款{d}，之後每年{m}。",
+     ".no": "你的收入超過計畫的上限。",
+     ".wait": "繼續租房",
+     ".wait.s": "房租不變。",
+     "trk.br_mcmv": "計畫住房"
+    }
+   }
+  },
+  {
+   "id": "br_flood",
+   "src": "Floods: in May 2024 floods in Rio Grande do Sul displaced 538,245 people and killed at least 149 (state Civil Defence, via Poder360 and Diário do Nordeste).",
+   "age": [25, 70],
+   "weight": 0.45,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0.1, "prem": 0.006, "prep": 0.012, "p": 0.45},
+   "i18n": {
+    "en": {
+     ".t": "Flood season",
+     ".x": "In May 2024 floods in Rio Grande do Sul forced 538,245 people from their homes. Your neighbourhood lies by a river that has flooded before."
+    },
+    "zh": {
+     ".t": "水灾季节",
+     ".x": "2024年5月，南里奥格兰德州的水灾让538,245人被迫离家。你住的社区在一条曾经泛滥的河边。"
+    },
+    "zht": {
+     ".t": "水災季節",
+     ".x": "2024年5月，南里奧格蘭德州的水災讓538,245人被迫離家。你住的社區在一條曾經氾濫的河邊。"
+    }
+   }
+  },
+  {
+   "id": "br_concurso",
+   "src": "Concursos: the 2024 Concurso Nacional Unificado had about 2.1 million registrations for 6,640 posts, 317 per post (MGI, via O Povo and Gran Cursos). Chances are game rules.",
+   "age": [22, 40],
+   "weight": 0.6,
+   "when": {"working": true, "test": "job.id !== 'civ'"},
+   "def": "no",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "ya"},
+   "use": "exam",
+   "with": {"chance": 0.04},
+   "i18n": {
+    "en": {
+     ".t": "A concurso",
+     ".x": "The 2024 Concurso Nacional Unificado drew about 2.1 million registrations for 6,640 federal posts, about 317 per post. A public job is steady and comes with a pension."
+    },
+    "zh": {
+     ".t": "公职考试",
+     ".x": "2024年全国统一公职考试约有210万人报名，竞争6,640个联邦职位，约317人争一个。公职工作稳定，还有养老金。"
+    },
+    "zht": {
+     ".t": "公職考試",
+     ".x": "2024年全國統一公職考試約有210萬人報名，競爭6,640個聯邦職位，約317人爭一個。公職工作穩定，還有退休金。"
+    }
+   }
+  }
+ ]
+}

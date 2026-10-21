@@ -1,0 +1,427 @@
+{
+ "about": "Country cards for lives born in United States. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "US",
+ "events": [
+  {
+   "id": "us_rap",
+   "src": "===================== United States (US) ===================== Student loans: from 1 July 2026 the Repayment Assistance Plan charges a share of income (from a $10 minimum up to 10% of AGI), waives unpaid interest and forgives the rest after 30 years; Public Service Loan Forgiveness clears the balance after 10 years of payments in public or non-profit work (One Big Beautiful Bill Act 2025; NerdWallet; NYC DCWP). A share of about 5% of pay above a small allowance is an ESTIMATE for a typical borrower.",
+   "age": [21, 27],
+   "weight": 1,
+   "when": {"stats": {"sloan": "> .3 * base"}, "studying": false, "test": "!sloanInc"},
+   "def": "std",
+   "tarot": "debt",
+   "art": {"draw": "gradloan", "bg": "wa"},
+   "vars": {"a": "MN(sloan)"},
+   "opts": [
+    {"id": "std", "sub": {"a": "MN(sloanPay || slPay())"}},
+    {
+     "id": "rap",
+     "sub": {"a": "MN(.05 * Math.max(0, salary() - .2 * base))"},
+     "do": "sloanInc = { r: .05, th: .2, end: age + 30, pslf: age + 10, waive: 1 }"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Repaying your student loans",
+     ".x": "Your federal student loans ({a}) are due. The standard plan clears them in 10 years. The Repayment Assistance Plan (from July 2026) takes 1–10% of your income, drops unpaid interest and forgives the rest after 30 years; with Public Service Loan Forgiveness, the balance is cancelled after 10 years of payments in government or non-profit work.",
+     ".std": "Standard plan",
+     ".std.s": "About {a} a year for 10 years.",
+     ".rap": "Repayment Assistance Plan",
+     ".rap.s": "Payments rise with your pay: about {a} a year at your pay now."
+    },
+    "zh": {
+     ".t": "偿还学生贷款",
+     ".x": "你的联邦学生贷款（{a}）开始要还了。标准方案10年还清。还款援助计划（RAP，2026年7月起）按收入的1–10%还款，免掉未付的利息，30年后剩下的全部免除；若在政府或非营利机构工作，“公共服务贷款减免”在还款10年后免除余额。",
+     ".std": "标准方案",
+     ".std.s": "每年约{a}，还10年。",
+     ".rap": "还款援助计划",
+     ".rap.s": "还款随收入增加：以现在的收入，每年约{a}。"
+    },
+    "zht": {
+     ".t": "償還學生貸款",
+     ".x": "你的聯邦學生貸款（{a}）開始要還了。標準方案10年還清。還款援助計畫（RAP，2026年7月起）按收入的1–10%還款，免掉未付的利息，30年後剩下的全部免除；若在政府或非營利機構工作，「公共服務貸款減免」在還款10年後免除餘額。",
+     ".std": "標準方案",
+     ".std.s": "每年約{a}，還10年。",
+     ".rap": "還款援助計畫",
+     ".rap.s": "還款隨收入增加：以現在的收入，每年約{a}。"
+    }
+   }
+  },
+  {
+   "id": "us_401k",
+   "src": "Cashing out a 401(k): before 59½ a 10% additional tax on top of income tax (IRS); 41.4% of workers leaving a job withdraw money (UBC Sauder study of 162,000 US job changers, via Financial Planning). A 22% income-tax bracket is an ESTIMATE.",
+   "age": [25, 52],
+   "weight": 0.65,
+   "when": {"test": "!!lots.k401 && lots.k401.v > .3 * base && (carN || 0) >= 2"},
+   "def": "roll",
+   "tarot": "idle",
+   "art": {"draw": "cashout", "bg": "mi"},
+   "let": {"v": "lots.k401.v"},
+   "fn": {
+    "out": {
+     "args": ["f"],
+     "do": "const l = lots.k401, x = l.v * f; l.v -= x; l.tout += x; cash += .68 * x; happy += f > .6 ? 3 : 1; const t = T('us_401k', { kind: 'custom', label: M('trk.us_401k') }); t.v -= .32 * x; t.note = M('note.us_401k', { a: MN(.32 * x) })"
+    }
+   },
+   "vars": {"a": "MN(lots.k401.v)"},
+   "opts": [
+    {"id": "roll"},
+    {"id": "cash", "sub": {"a": "MN(.68 * v)"}, "do": "out(1)"},
+    {"id": "half", "sub": {"a": "MN(.34 * v)"}, "do": "out(.5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your old 401(k)",
+     ".x": "You’ve changed jobs, and your old 401(k) holds {a}. You can roll it into an IRA or cash it out; before 59½ the IRS adds a 10% penalty on top of income tax. About 4 in 10 Americans who leave a job take money out.",
+     ".roll": "Roll it over",
+     ".roll.s": "It keeps growing, untouched.",
+     ".cash": "Cash it all out",
+     ".cash.s": "You get about {a} after tax and the penalty. Happiness +3.",
+     ".half": "Cash out half",
+     ".half.s": "You get about {a} after tax and the penalty. Happiness +1.",
+     "trk.us_401k": "401(k) cash-out",
+     "note.us_401k": "Lost {a} to tax and the penalty"
+    },
+    "zh": {
+     ".t": "旧的401(k)",
+     ".x": "你换了工作，旧的401(k)里有{a}。你可以转进IRA，也可以提现；59岁半之前提取，国税局除了所得税还要罚10%。离职的美国人约有四成会把钱提出来。",
+     ".roll": "转存",
+     ".roll.s": "不动它，继续增长。",
+     ".cash": "全部提现",
+     ".cash.s": "扣税和罚款后约拿到{a}。幸福感 +3。",
+     ".half": "提一半",
+     ".half.s": "扣税和罚款后约拿到{a}。幸福感 +1。",
+     "trk.us_401k": "401(k)提现",
+     "note.us_401k": "税和罚款损失{a}"
+    },
+    "zht": {
+     ".t": "舊的401(k)",
+     ".x": "你換了工作，舊的401(k)裡有{a}。你可以轉進IRA，也可以提現；59歲半之前提取，國稅局除了所得稅還要罰10%。離職的美國人約有四成會把錢提出來。",
+     ".roll": "轉存",
+     ".roll.s": "不動它，繼續增長。",
+     ".cash": "全部提現",
+     ".cash.s": "扣稅和罰款後約拿到{a}。幸福感 +3。",
+     ".half": "提一半",
+     ".half.s": "扣稅和罰款後約拿到{a}。幸福感 +1。",
+     "trk.us_401k": "401(k)提現",
+     "note.us_401k": "稅和罰款損失{a}"
+    }
+   }
+  },
+  {
+   "id": "us_medbill",
+   "src": "Medical bills: non-profit hospitals must have a written financial assistance policy and limit charges to eligible patients (IRS, section 501(r)); about 6% of adults owe over $1,000 in medical debt (KFF, Feb 2024). Bill size and the chance of a cut are ESTIMATES.",
+   "age": [24, 70],
+   "weight": 0.6,
+   "def": "pay",
+   "tarot": "health2",
+   "art": {"draw": "bill", "bg": "mi"},
+   "let": {"a": "(insured ? .07 : .3) * base * (medCut || 1)"},
+   "fn": {
+    "line": {"args": [], "do": "return T('us_medbill', {kind: 'custom', label: M('trk.us_medbill')})"}
+   },
+   "vars": {"a": "MN((insured ? .07 : .3) * base * (medCut || 1))"},
+   "opts": [
+    {
+     "id": "fight",
+     "hint": true,
+     "do": "const r = evR('medFight'), cut = r() < .55 ? inR(r(), [.3, .8]) : 0, y = a * (1 - cut); pay(y); happy -= 1; const t = line(); t.v -= y; t.note = M('note.us_medbill', { a: MN(a), b: MN(y) })"
+    },
+    {"id": "plan", "sub": {"a": "MN(a / 3)"}, "do": "const t = line(); rec('us_medbill', a / 3, 3)"},
+    {
+     "id": "pay",
+     "sub": {"a": "MN(a)"},
+     "do": "pay(a); const t = line(); t.v -= a; t.note = M('note.paid', { a: MN(a) })"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hospital bill",
+     ".x": "A short hospital stay leaves you with a bill of {a}. Non-profit hospitals must offer financial assistance to patients who qualify, and itemised bills sometimes contain errors. About 1 in 16 American adults owe more than $1,000 in medical debt.",
+     ".fight": "Ask for an itemised bill and assistance",
+     ".fight.s": "Hours of calls and forms. Happiness −1.",
+     ".fight.h": "About half the time the bill is cut by a third or more.",
+     ".plan": "Ask for a payment plan",
+     ".plan.s": "{a} a year for 3 years, no interest.",
+     ".pay": "Just pay it",
+     ".pay.s": "Pay {a} now.",
+     "trk.us_medbill": "Hospital bill",
+     "note.us_medbill": "Billed {a} · paid {b}"
+    },
+    "zh": {
+     ".t": "医院账单",
+     ".x": "住院几天后，你收到{a}的账单。非营利医院必须为符合条件的病人提供经济援助，明细账单有时也会出错。大约每16个美国成年人就有一人背着超过1,000美元的医疗债务。",
+     ".fight": "要求明细账单并申请援助",
+     ".fight.s": "打好几个小时电话、填一堆表。幸福感 −1。",
+     ".fight.h": "大约一半的情况账单能减少三分之一以上。",
+     ".plan": "申请分期付款",
+     ".plan.s": "每年{a}，分3年，不收利息。",
+     ".pay": "直接付清",
+     ".pay.s": "现在付{a}。",
+     "trk.us_medbill": "医院账单",
+     "note.us_medbill": "账单{a} · 实付{b}"
+    },
+    "zht": {
+     ".t": "醫院帳單",
+     ".x": "住院幾天後，你收到{a}的帳單。非營利醫院必須為符合條件的病人提供經濟援助，明細帳單有時也會出錯。大約每16個美國成年人就有一人背著超過1,000美元的醫療債務。",
+     ".fight": "要求明細帳單並申請援助",
+     ".fight.s": "打好幾個小時電話、填一堆表。幸福感 −1。",
+     ".fight.h": "大約一半的情況帳單能減少三分之一以上。",
+     ".plan": "申請分期付款",
+     ".plan.s": "每年{a}，分3年，不收利息。",
+     ".pay": "直接付清",
+     ".pay.s": "現在付{a}。",
+     "trk.us_medbill": "醫院帳單",
+     "note.us_medbill": "帳單{a} · 實付{b}"
+    }
+   }
+  },
+  {
+   "id": "us_credit",
+   "src": "Credit scores and mortgages: in Nov 2025 a $300,000 30-year loan was offered at about 6.57% APR for scores of 760+ and 7.34% for 620–639 (myFICO data via ConsumerAffairs). The rate changes in the game (−0.3 / +0.4 points) are ESTIMATES.",
+   "age": [19, 26],
+   "weight": 0.75,
+   "def": "none",
+   "tarot": "cc",
+   "art": {"draw": "gauge", "bg": "ya"},
+   "opts": [
+    {"id": "build", "hint": true, "do": "rateAdj = -.003"},
+    {"id": "none", "hint": true, "do": "rateAdj = .004"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your credit score",
+     ".x": "Lenders price loans by credit score. On a 30-year mortgage in late 2025, borrowers with 760 or more were offered about 6.6% a year, against 7.3% at 620–639.",
+     ".build": "Build credit carefully",
+     ".build.s": "A starter card for small buys, paid in full every month.",
+     ".build.h": "Your mortgage rate later is about 0.3 points lower.",
+     ".none": "Don’t bother with credit",
+     ".none.s": "No cards, no history.",
+     ".none.h": "Your mortgage rate later is about 0.4 points higher."
+    },
+    "zh": {
+     ".t": "你的信用分数",
+     ".x": "贷款利率要看信用分数。2025年底的30年房贷，信用分760以上的人利率约6.6%，620–639分的人约7.3%。",
+     ".build": "小心建立信用",
+     ".build.s": "办一张入门信用卡买小东西，每月全额还清。",
+     ".build.h": "以后的房贷利率约低0.3个百分点。",
+     ".none": "不碰信用卡",
+     ".none.s": "没有卡，也没有信用记录。",
+     ".none.h": "以后的房贷利率约高0.4个百分点。"
+    },
+    "zht": {
+     ".t": "你的信用分數",
+     ".x": "貸款利率要看信用分數。2025年底的30年房貸，信用分760以上的人利率約6.6%，620–639分的人約7.3%。",
+     ".build": "小心建立信用",
+     ".build.s": "辦一張入門信用卡買小東西，每月全額還清。",
+     ".build.h": "以後的房貸利率約低0.3個百分點。",
+     ".none": "不碰信用卡",
+     ".none.s": "沒有卡，也沒有信用記錄。",
+     ".none.h": "以後的房貸利率約高0.4個百分點。"
+    }
+   }
+  },
+  {
+   "id": "us_ss",
+   "src": "Social Security: claiming at 62 pays about 70% of the full benefit for those with a full retirement age of 67 (born 1960 or later); each year of delay past 67 adds 8%, to 124% at 70 (SSA, as summarised by Fox and The Motley Fool).",
+   "age": [61, 62],
+   "weight": 1,
+   "def": "67",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "co"},
+   "opts": [
+    {
+     "each": "[[62,0.7],[67,1],[70,1.24]]",
+     "as": "q",
+     "id": "String(q[0])",
+     "sub": {"a": "MN(.18 * base * q[1])", "n": "q[0]"},
+     "do": "penClaim(q[0], q[1], 'us_ss')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "When to claim Social Security",
+     ".x": "You can claim Social Security from 62 (about 30% less, for life), at 67 (the full amount, for anyone born in 1960 or later), or as late as 70 (24% more).",
+     ".62": "Claim at 62",
+     ".67": "Claim at 67",
+     ".70": "Claim at 70",
+     ".62.s": "About {a} a year from age {n}, for life.",
+     ".67.s": "About {a} a year from age {n}, for life.",
+     ".70.s": "About {a} a year from age {n}, for life."
+    },
+    "zh": {
+     ".t": "什么时候领社会保障金",
+     ".x": "社会保障金最早62岁可以领（终身少约30%），67岁领全额（1960年及以后出生者），最晚70岁领（多24%）。",
+     ".62": "62岁领",
+     ".67": "67岁领",
+     ".70": "70岁领",
+     ".62.s": "从{n}岁起每年约{a}，终身领取。",
+     ".67.s": "从{n}岁起每年约{a}，终身领取。",
+     ".70.s": "从{n}岁起每年约{a}，终身领取。"
+    },
+    "zht": {
+     ".t": "什麼時候領社會保障金",
+     ".x": "社會保障金最早62歲可以領（終身少約30%），67歲領全額（1960年及以後出生者），最晚70歲領（多24%）。",
+     ".62": "62歲領",
+     ".67": "67歲領",
+     ".70": "70歲領",
+     ".62.s": "從{n}歲起每年約{a}，終身領取。",
+     ".67.s": "從{n}歲起每年約{a}，終身領取。",
+     ".70.s": "從{n}歲起每年約{a}，終身領取。"
+    }
+   }
+  },
+  {
+   "id": "us_daycare",
+   "src": "Childcare: the national average price was $13,128 a year in 2024, up from $11,582 in 2023 (Child Care Aware of America, May 2025). The game already counts a child's basic costs, so the card adds the part above them (about 0.25 of a typical wage): an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.8,
+   "when": {"kidAge": [0, 1], "working": true},
+   "def": "daycare",
+   "tarot": "kids",
+   "art": {"draw": "blocks", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "daycare",
+     "sub": {"a": "MN(.25 * B)"},
+     "do": "T('us_daycare', { kind: 'custom', label: M('trk.daycare') }); rec('us_daycare', .25 * B, 4)"
+    },
+    {"id": "part", "rel": 2, "do": "tmpPay('us_part', .55, 4, 'trk.parttime'); happy += 2"},
+    {
+     "id": "family",
+     "sub": {"a": "MN(.04 * B)"},
+     "rel": 3,
+     "do": "T('us_daycare', { kind: 'custom', label: M('trk.daycareF') }); rec('us_daycare', .04 * B, 4); happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Childcare",
+     ".x": "Full-time childcare cost $13,128 a year on average in 2024. One of you could cut back to part-time until school starts, or family could help.",
+     ".daycare": "Daycare",
+     ".daycare.s": "About {a} a year for 4 years, on top of the usual costs of a child.",
+     ".part": "Go part-time",
+     ".part.s": "About 45% less pay for 4 years. More time at home: Happiness +2.",
+     ".family": "Grandparents help",
+     ".family.s": "You help with their costs: about {a} a year. Less freedom: Happiness −1."
+    },
+    "zh": {
+     ".t": "托儿",
+     ".x": "2024年全日制托儿平均每年要13,128美元。你们其中一人可以改做兼职到孩子上学，或者请家人帮忙。",
+     ".daycare": "送托儿所",
+     ".daycare.s": "每年约{a}，共4年，养孩子的一般开销另计。",
+     ".part": "改做兼职",
+     ".part.s": "4年内工资少约45%。更多时间在家：幸福感 +2。",
+     ".family": "请祖父母帮忙",
+     ".family.s": "你帮忙负担他们的开销：每年约{a}。自由少了：幸福感 −1。"
+    },
+    "zht": {
+     ".t": "托育",
+     ".x": "2024年全日制托育平均每年要13,128美元。你們其中一人可以改做兼職到孩子上學，或者請家人幫忙。",
+     ".daycare": "送托育所",
+     ".daycare.s": "每年約{a}，共4年，養孩子的一般開銷另計。",
+     ".part": "改做兼職",
+     ".part.s": "4年內薪水少約45%。更多時間在家：幸福感 +2。",
+     ".family": "請祖父母幫忙",
+     ".family.s": "你幫忙負擔他們的開銷：每年約{a}。自由少了：幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "us_fha",
+   "src": "FHA loans: 3.5% down with a credit score of 580+, an upfront mortgage insurance premium of 1.75% of the loan and an annual premium of 0.55% for the loan's life with under 10% down (HUD Mortgagee Letter 2023-05; Quicken Loans).",
+   "age": [25, 36],
+   "weight": 0.6,
+   "when": {"house": false, "working": true, "stats": {"liquid": "< .23 * price()"}, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"P": ".8 * price()", "r": ".0355 + (rateAdj || 0)", "liq": "liquid()"},
+   "vars": {"p": "MN(.8 * price())"},
+   "opts": [
+    {
+     "id": "fha",
+     "sub": {"d": "upFront(P, .035, .0475)", "m": "yrPay(P, .035, r)"},
+     "ok": "liq >= .083 * P || M('e.home.need', { n: MN(.083 * P), h: MN(liq) })",
+     "do": "buyAt(P, { dp: .035, fee: .0475, r: .0355, n: 30, lk: 'trk.flat' })"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An FHA loan",
+     ".x": "An FHA loan lets you buy with 3.5% down if your credit score is 580 or more, but you pay 1.75% of the loan up front and 0.55% a year in mortgage insurance for the life of the loan. A starter home near you costs {p}.",
+     ".fha": "Buy with an FHA loan",
+     ".fha.s": "{d} up front, then {m} a year for 30 years.",
+     ".wait": "Save for a bigger down payment",
+     ".wait.s": "Keep renting for now."
+    },
+    "zh": {
+     ".t": "FHA贷款",
+     ".x": "FHA贷款让信用分580以上的人只付3.5%首付就能买房，但要先付贷款额1.75%的房贷保险费，之后整个贷款期间每年再付0.55%。你附近一间入门房子要{p}。",
+     ".fha": "用FHA贷款买房",
+     ".fha.s": "首付{d}，之后每年{m}，供30年。",
+     ".wait": "存更多首付",
+     ".wait.s": "先继续租房。"
+    },
+    "zht": {
+     ".t": "FHA貸款",
+     ".x": "FHA貸款讓信用分580以上的人只付3.5%頭期款就能買房，但要先付貸款額1.75%的房貸保險費，之後整個貸款期間每年再付0.55%。你附近一間入門房子要{p}。",
+     ".fha": "用FHA貸款買房",
+     ".fha.s": "頭期款{d}，之後每年{m}，繳30年。",
+     ".wait": "存更多頭期款",
+     ".wait.s": "先繼續租房。"
+    }
+   }
+  },
+  {
+   "id": "us_hsa",
+   "src": "Health Savings Account: with a high-deductible plan, contributions are deductible and growth and medical withdrawals are tax-free (IRS Publication 969). The tax saving (about 25%) and the higher share of each bill you pay are ESTIMATES.",
+   "age": [25, 45],
+   "weight": 0.5,
+   "when": {"working": true, "test": "!medCut"},
+   "def": "ppo",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "let": {"a": ".08 * base"},
+   "opts": [
+    {
+     "id": "hsa",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('hsa', { amt: a, until: 65, bonus: .25 }, {}, 'trk.hsa'); medCut = 1.15"
+    },
+    {"id": "ppo"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Picking a health plan",
+     ".x": "At open enrollment you can pick a high-deductible plan with a Health Savings Account: you pay more of each bill before cover starts, but money you put in the HSA is never taxed if it’s spent on health care, and it can be invested.",
+     ".hsa": "High-deductible plan and an HSA",
+     ".hsa.s": "Put about {a} a year in the HSA. You pay more of each medical bill yourself.",
+     ".ppo": "Keep the usual plan",
+     ".ppo.s": "Higher premiums, smaller bills.",
+     "trk.hsa": "HSA"
+    },
+    "zh": {
+     ".t": "选健康保险",
+     ".x": "开放投保期间，你可以选高自付额保险加健康储蓄账户（HSA）：保险生效前你要多付一些，但存进HSA的钱只要用在医疗上就永远不用缴税，而且可以拿去投资。",
+     ".hsa": "高自付额保险加HSA",
+     ".hsa.s": "每年存约{a}进HSA。每张医疗账单你要自己多付一些。",
+     ".ppo": "保留一般的保险",
+     ".ppo.s": "保费较高，账单较少。",
+     "trk.hsa": "健康储蓄账户"
+    },
+    "zht": {
+     ".t": "選健康保險",
+     ".x": "開放投保期間，你可以選高自付額保險加健康儲蓄帳戶（HSA）：保險生效前你要多付一些，但存進HSA的錢只要用在醫療上就永遠不用繳稅，而且可以拿去投資。",
+     ".hsa": "高自付額保險加HSA",
+     ".hsa.s": "每年存約{a}進HSA。每張醫療帳單你要自己多付一些。",
+     ".ppo": "保留一般的保險",
+     ".ppo.s": "保費較高，帳單較少。",
+     "trk.hsa": "健康儲蓄帳戶"
+    }
+   }
+  }
+ ]
+}

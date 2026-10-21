@@ -1,0 +1,505 @@
+{
+ "about": "Country cards for lives born in Singapore. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "SG",
+ "events": [
+  {
+   "id": "sg_ns",
+   "src": "===================== Singapore (SG) ===================== National Service: two years full-time for male citizens from 18. A recruit's allowance is $790 a month from 1 July 2025, up from $755, rising with rank (MINDEF fact sheet, 3 Mar 2025). About $900 a month on average × 12 ÷ the game's typical wage ($26,100) ≈ 0.4. NS years work as in engine.js (s.nsUntil): an allowance, no career progress, a degree waits.",
+   "age": [18, 18],
+   "when": {"sex": "m", "test": "!nsUntil"},
+   "def": "spend",
+   "tarot": "car",
+   "art": {"draw": "service", "bg": "mi"},
+   "let": {"B": "base"},
+   "fn": {
+    "ns": {
+     "args": ["c", "h"],
+     "do": "nsUntil = age + 2; nsPay = .4; nsCost = c; happy += h; T('ns', { kind: 'custom', label: M('trk.ns'), paid: 0, note: M('note.ns', { a: MN(0) }) })"
+    }
+   },
+   "opts": [
+    {"id": "save", "sub": {"a": "MN(.25 * B)"}, "do": "ns(.15, -1)"},
+    {"id": "spend", "do": "ns(.32, 2)"},
+    {
+     "id": "course",
+     "sub": {"a": "MN(.1 * B)"},
+     "hint": true,
+     "do": "ns(.25, -2); spend('nsCourse', .1 * B, 'trk.nsCourse'); addSkill('ns', 3 * learnLuck('ns'), M('trk.nsCourse'))"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "National Service",
+     ".x": "Like every Singaporean son, you are called up for two years of full-time National Service. A recruit’s allowance is S$790 a month (from July 2025) and rises with rank. Your studies or first job wait until you finish.",
+     ".save": "Live at home and save the allowance",
+     ".save.s": "Bank about {a} a year. Happiness −1.",
+     ".spend": "Enjoy it with your friends",
+     ".spend.s": "Spend most of it on weekends out. Happiness +2.",
+     ".course": "Take an evening course as well",
+     ".course.s": "A part-time course costs about {a}. Tiring: Happiness −2.",
+     ".course.h": "Skill +3.",
+     "trk.ns": "National Service",
+     "trk.nsCourse": "Evening course"
+    },
+    "zh": {
+     ".t": "国民服役",
+     ".x": "和每个新加坡男孩一样，你被征召全职服役两年。新兵津贴每月S$790（2025年7月起），随军衔提高。学业或第一份工作要等服完役再开始。",
+     ".save": "住家里，把津贴存起来",
+     ".save.s": "每年存下约{a}。幸福感 −1。",
+     ".spend": "和朋友一起花",
+     ".spend.s": "大部分花在周末出去玩。幸福感 +2。",
+     ".course": "晚上再去上课",
+     ".course.s": "兼读课程约{a}。很累：幸福感 −2。",
+     ".course.h": "技能 +3。",
+     "trk.ns": "国民服役",
+     "trk.nsCourse": "夜间课程"
+    },
+    "zht": {
+     ".t": "國民服役",
+     ".x": "和每個新加坡男孩一樣，你被徵召全職服役兩年。新兵津貼每月S$790（2025年7月起），隨軍銜提高。學業或第一份工作要等服完役再開始。",
+     ".save": "住家裡，把津貼存起來",
+     ".save.s": "每年存下約{a}。幸福感 −1。",
+     ".spend": "和朋友一起花",
+     ".spend.s": "大部分花在週末出去玩。幸福感 +2。",
+     ".course": "晚上再去上課",
+     ".course.s": "在職進修課程約{a}。很累：幸福感 −2。",
+     ".course.h": "技能 +3。",
+     "trk.ns": "國民服役",
+     "trk.nsCourse": "夜間課程"
+    }
+   }
+  },
+  {
+   "id": "sg_bto",
+   "src": "BTO flats: a 4-room BTO flat in Hougang launched in Feb 2024 from $371,000, against a median $563,500 for 4-room resale flats there (Stacked Homes, 2024): BTO ≈ 0.66 of resale. An HDB loan charges 2.6% (0.1 point above the CPF Ordinary Account rate, HDB): about 1% after inflation. Ballot chances (6 in 10 a try, up to 3 tries) are a game rule.",
+   "age": [25, 38],
+   "weight": 0.9,
+   "when": {
+    "house": false,
+    "working": true,
+    "test": "!(hWait > age) && (!!pt && pt.st !== 'date' || age >= 35)"
+   },
+   "def": "rent",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "vars": {"p": "MN(.66 * price())", "q": "MN(price())"},
+   "opts": [
+    {"id": "bto", "hint": true, "do": "hWait = age + 9; later(age + 1, 'bto', {n: 1, p: .6})"},
+    {
+     "id": "resale",
+     "sub": {"d": "upFront(P, .2, .03)", "m": "yrPay(P, .2, .01, 25)"},
+     "ok": "liq >= .23 * P || M('e.home.need', { n: MN(.23 * P), h: MN(liq) })",
+     "do": "buyAt(P, { dp: .2, fee: .03, r: .01, n: 25, lk: 'trk.resale', fixed: true })"
+    },
+    {"id": "rent"}
+   ],
+   "later": {
+    "bto": "if (house) { hWait = 0; return; } if (roll('bto' + x.n) < x.p) { hWait = age + 5; later(age + 4, 'btoKeys', {}); log(M('log.btoWin'), 'good'); } else if (x.n < 3) { later(age + 1, 'bto', { p: x.p, n: x.n + 1 }); log(M('log.btoLose'), ''); } else { hWait = 0; log(M('log.btoGive'), 'bad'); }",
+    "btoKeys": "hWait = 0; if (house) return; const P = price(); buyAt(.66 * P, { val: P, dp: .2, fee: .02, r: .01, n: 25, lk: 'trk.bto', fixed: true, flex: true }); log(M('log.btoKeys'), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Applying for a flat",
+     ".x": "New HDB flats (BTO, Build-To-Order) cost far less than resale flats: in February 2024, 4-room BTO flats in Hougang started at S$371,000, while 4-room resale flats there sold for a median S$563,500. You ballot for a flat, then wait about four years while it’s built. For you: about {p}, against {q} for a resale flat.",
+     ".bto": "Ballot for a BTO flat",
+     ".bto.s": "If you win, you get the keys about four years later and rent until then. You can try up to three times.",
+     ".bto.h": "About a 6 in 10 chance at each ballot.",
+     ".resale": "Buy a resale flat now",
+     ".resale.s": "{d} up front, then {m} a year on an HDB loan at 2.6%.",
+     ".rent": "Keep renting for now",
+     ".rent.s": "Your rent stays the same.",
+     "trk.resale": "Resale flat"
+    },
+    "zh": {
+     ".t": "申请组屋",
+     ".x": "新的预购组屋（BTO）比转售组屋便宜得多：2024年2月，后港的四房式预购组屋起价S$371,000，而当地四房式转售组屋的中位价是S$563,500。你先抽签，再等大约四年建好。对你来说约{p}，转售组屋则要{q}。",
+     ".bto": "抽预购组屋",
+     ".bto.s": "抽中的话大约四年后拿钥匙，期间继续租房。最多可以试三次。",
+     ".bto.h": "每次抽签大约有六成机会。",
+     ".resale": "现在买转售组屋",
+     ".resale.s": "头期{d}，之后每年{m}，用2.6%的建屋局贷款。",
+     ".rent": "先继续租房",
+     ".rent.s": "房租不变。",
+     "trk.resale": "转售组屋"
+    },
+    "zht": {
+     ".t": "申請組屋",
+     ".x": "新的預購組屋（BTO）比轉售組屋便宜得多：2024年2月，後港的四房式預購組屋起價S$371,000，而當地四房式轉售組屋的中位價是S$563,500。你先抽籤，再等大約四年建好。對你來說約{p}，轉售組屋則要{q}。",
+     ".bto": "抽預購組屋",
+     ".bto.s": "抽中的話大約四年後拿鑰匙，期間繼續租房。最多可以試三次。",
+     ".bto.h": "每次抽籤大約有六成機會。",
+     ".resale": "現在買轉售組屋",
+     ".resale.s": "頭期{d}，之後每年{m}，用2.6%的建屋局貸款。",
+     ".rent": "先繼續租房",
+     ".rent.s": "房租不變。",
+     "trk.resale": "轉售組屋"
+    }
+   }
+  },
+  {
+   "id": "sg_coe",
+   "src": "COE: small-car (Category A) COEs closed between $85,000 and $128,105 at 2025 first-round biddings (LTA results via motorist.sg); a COE lasts ten years. Car loans are capped at 60–70% of the price and 7 years (MAS). A small car with COE at about $170,000 ≈ 6.5 years of the game's typical wage; running costs (parking, road tax, insurance, petrol) are ESTIMATES.",
+   "age": [25, 32],
+   "weight": 0.9,
+   "when": {"car": false, "retired": false},
+   "def": "none",
+   "tarot": "car2",
+   "art": {"draw": "coe", "bg": "mi"},
+   "let": {"B": "base", "P": "6.5 * B", "d": ".35 * P", "l": "P - d"},
+   "opts": [
+    {
+     "id": "buy",
+     "sub": {"c": "MN(P)", "d": "MN(d)", "p": "MN(amort(l, .03, 7))", "r": "MN(.3 * B)"},
+     "ok": "liquid() >= d || M('e.home.need', { n: MN(d), h: MN(liquid()) })",
+     "do": "car = { type: 'new', bal: l, pay: amort(l, .03, 7), trk: 'sg_coe' }; const t = T('sg_coe', { kind: 'ghost', label: M('trk.sg_coe') }); pay(d); t.spent += d; t.g += d; rec('sg_coe', .3 * B, 10); later(age + 10, 'coeEnd', {}); happy += 4"
+    },
+    {
+     "id": "share",
+     "sub": {"a": "MN(.04 * B)"},
+     "do": "T('sg_share', { kind: 'ghost', label: M('trk.sg_share') }); rec('sg_share', .04 * B, 10); happy += 1"
+    },
+    {"id": "none"}
+   ],
+   "later": {
+    "coeEnd": "if (car && car.trk === 'sg_coe') { car = null; log(M('log.coeEnd'), ''); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A car in Singapore",
+     ".x": "To own a car you need a Certificate of Entitlement (COE), which lasts ten years. Small-car COEs went for S$85,000–128,000 at the 2025 biddings, on top of the car, and car loans are capped at 60–70% of the price over at most seven years.",
+     ".buy": "Buy a small car",
+     ".buy.s": "About {c} with the COE: {d} down, then {p} a year for 7 years, plus about {r} a year for parking, road tax, insurance and petrol. Happiness +4.",
+     ".share": "Trains, buses and car-sharing",
+     ".share.s": "Rent a car by the hour now and then: about {a} a year. Happiness +1.",
+     ".none": "No car",
+     ".none.s": "The MRT and buses get you around.",
+     "trk.sg_coe": "Car with COE",
+     "trk.sg_share": "Car-sharing"
+    },
+    "zh": {
+     ".t": "在新加坡买车",
+     ".x": "在新加坡拥车要有拥车证（COE），有效十年。2025年小型车拥车证的投标价是S$85,000到128,000，车价另算；车贷最多只能贷车价的六到七成，最长七年。",
+     ".buy": "买一辆小车",
+     ".buy.s": "连拥车证约{c}：首付{d}，之后每年{p}，供7年；停车费、路税、保险和汽油每年还要约{r}。幸福感 +4。",
+     ".share": "地铁、巴士加共享汽车",
+     ".share.s": "偶尔按小时租车：每年约{a}。幸福感 +1。",
+     ".none": "不买车",
+     ".none.s": "地铁和巴士就够了。",
+     "trk.sg_coe": "连拥车证的车",
+     "trk.sg_share": "共享汽车"
+    },
+    "zht": {
+     ".t": "在新加坡買車",
+     ".x": "在新加坡擁車要有擁車證（COE），有效十年。2025年小型車擁車證的投標價是S$85,000到128,000，車價另算；車貸最多只能貸車價的六到七成，最長七年。",
+     ".buy": "買一輛小車",
+     ".buy.s": "連擁車證約{c}：頭期款{d}，之後每年{p}，繳7年；停車費、路稅、保險和汽油每年還要約{r}。幸福感 +4。",
+     ".share": "捷運、公車加共享汽車",
+     ".share.s": "偶爾按小時租車：每年約{a}。幸福感 +1。",
+     ".none": "不買車",
+     ".none.s": "捷運和公車就夠了。",
+     "trk.sg_coe": "連擁車證的車",
+     "trk.sg_share": "共享汽車"
+    }
+   }
+  },
+  {
+   "id": "sg_rstu",
+   "src": "CPF top-ups for loved ones: up to $8,000 a year of tax relief on cash top-ups to parents' retirement savings (CPF Board FAQ, Retirement Sum Topping-Up Scheme); $8,000 ÷ $26,100 ≈ 0.3. The tax saved (about 7% at a middle income) is an ESTIMATE.",
+   "age": [30, 55],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "parents",
+   "art": {"draw": "penjar", "bg": "co"},
+   "let": {"B": "base"},
+   "fn": {
+    "go": {
+     "args": ["a"],
+     "do": "pay(a); const t = T('sg_rstu', { kind: 'custom', label: M('trk.sg_rstu') }); t.v -= a; t.note = M('note.paid', { a: MN(a) }); later(age + 1, 'refund', { id: 'sg_rstu', a: .07 * a }); happy += 2"
+    }
+   },
+   "opts": [
+    {"id": "full", "sub": {"a": "MN(.3 * B)", "b": "MN(.021 * B)"}, "rel": 5, "do": "go(.3 * B)"},
+    {"id": "half", "sub": {"a": "MN(.15 * B)", "b": "MN(.0105 * B)"}, "rel": 3, "do": "go(.15 * B)"},
+    {"id": "no", "rel": 0}
+   ],
+   "later": {
+    "refund": "cash += x.a; const t = trk[x.id]; if (t) { t.v += x.a; t.note = M('note.refund', { a: MN(x.a) }); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Topping up your parents’ CPF",
+     ".x": "You can top up your parents’ CPF retirement savings in cash. Top-ups for loved ones get up to S$8,000 a year of tax relief, and the money earns at least 4% a year in their CPF.",
+     ".full": "Top up the full S$8,000",
+     ".full.s": "Costs {a}; about {b} comes back as lower tax. Happiness +2.",
+     ".half": "Top up half",
+     ".half.s": "Costs {a}; about {b} comes back as lower tax. Happiness +2.",
+     ".no": "Not this year",
+     ".no.s": "Keep the money for your own plans.",
+     "trk.sg_rstu": "Parents’ CPF top-up"
+    },
+    "zh": {
+     ".t": "给父母填补公积金",
+     ".x": "你可以用现金为父母填补公积金退休存款。为亲人填补每年最多可获S$8,000的税务减免，钱在他们的公积金里每年至少赚4%。",
+     ".full": "填满S$8,000",
+     ".full.s": "花{a}，约{b}会以少缴税的方式回来。幸福感 +2。",
+     ".half": "填一半",
+     ".half.s": "花{a}，约{b}会以少缴税的方式回来。幸福感 +2。",
+     ".no": "今年先不填",
+     ".no.s": "钱留给自己的计划。",
+     "trk.sg_rstu": "父母公积金填补"
+    },
+    "zht": {
+     ".t": "給父母填補公積金",
+     ".x": "你可以用現金為父母填補公積金退休存款。為親人填補每年最多可獲S$8,000的稅務減免，錢在他們的公積金裡每年至少賺4%。",
+     ".full": "填滿S$8,000",
+     ".full.s": "花{a}，約{b}會以少繳稅的方式回來。幸福感 +2。",
+     ".half": "填一半",
+     ".half.s": "花{a}，約{b}會以少繳稅的方式回來。幸福感 +2。",
+     ".no": "今年先不填",
+     ".no.s": "錢留給自己的計畫。",
+     "trk.sg_rstu": "父母公積金填補"
+    }
+   }
+  },
+  {
+   "id": "sg_cpf55",
+   "src": "CPF at 55: the Retirement Account is formed; the Full Retirement Sum for those turning 55 in 2025 is $213,000 (CPF via Beansprout and StashAway); savings above it can be withdrawn, or topped up towards the Enhanced Retirement Sum for higher CPF LIFE payouts from 65. Retirement Account savings earn at least 4% (CPF Board): about 2% after inflation.",
+   "age": [55, 56],
+   "weight": 0.9,
+   "when": {"test": "!!lots.cpf && lots.cpf.v > .5 * base"},
+   "def": "leave",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "mi"},
+   "let": {"x": ".4 * lots.cpf.v", "a": ".3 * liquid()"},
+   "vars": {"a": "MN(lots.cpf.v)"},
+   "opts": [
+    {
+     "id": "out",
+     "sub": {"a": "MN(x)"},
+     "do": "const l = lots.cpf, y = Math.min(x, l.v); l.v -= y; l.tout += y; cash += y; happy += 2"
+    },
+    {"id": "leave"},
+    {
+     "id": "ers",
+     "sub": {"a": "MN(a)"},
+     "ok": "a > .05 * base || M('.no')",
+     "do": "putIn('cpfers', a, { rate: .02, lock: 65 }, 'trk.cpfers')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "CPF at 55",
+     ".x": "At 55 your CPF Retirement Account is set up with the Full Retirement Sum (S$213,000 for those turning 55 in 2025), and savings above it can be withdrawn. You can also top up towards the Enhanced Retirement Sum for bigger CPF LIFE payouts from 65. Your CPF savings: {a}.",
+     ".out": "Withdraw what you can",
+     ".out.s": "About {a} into your bank account. Happiness +2.",
+     ".leave": "Leave it in CPF",
+     ".leave.s": "It keeps earning CPF interest.",
+     ".ers": "Top up from your other savings",
+     ".ers.s": "Move {a} into CPF until 65. It earns at least 4% (about 2% after inflation).",
+     ".no": "You have no other savings to move.",
+     "trk.cpfers": "CPF top-up"
+    },
+    "zh": {
+     ".t": "55岁的公积金",
+     ".x": "55岁时，你的公积金退休户头会存入全额退休存款（2025年满55岁者为S$213,000），超出的部分可以提取。你也可以填补到更高的退休存款，65岁起领更多的终身入息。你的公积金存款：{a}。",
+     ".out": "能提多少就提多少",
+     ".out.s": "约{a}转进你的银行户头。幸福感 +2。",
+     ".leave": "留在公积金里",
+     ".leave.s": "继续赚公积金利息。",
+     ".ers": "用其他存款再填补",
+     ".ers.s": "把{a}转进公积金，锁到65岁。利息至少4%（扣除通胀约2%）。",
+     ".no": "你没有其他存款可以转。",
+     "trk.cpfers": "公积金填补"
+    },
+    "zht": {
+     ".t": "55歲的公積金",
+     ".x": "55歲時，你的公積金退休戶頭會存入全額退休存款（2025年滿55歲者為S$213,000），超出的部分可以提取。你也可以填補到更高的退休存款，65歲起領更多的終身入息。你的公積金存款：{a}。",
+     ".out": "能提多少就提多少",
+     ".out.s": "約{a}轉進你的銀行戶頭。幸福感 +2。",
+     ".leave": "留在公積金裡",
+     ".leave.s": "繼續賺公積金利息。",
+     ".ers": "用其他存款再填補",
+     ".ers.s": "把{a}轉進公積金，鎖到65歲。利息至少4%（扣除通膨約2%）。",
+     ".no": "你沒有其他存款可以轉。",
+     "trk.cpfers": "公積金填補"
+    }
+   }
+  },
+  {
+   "id": "sg_ssb",
+   "src": "Singapore Savings Bonds: government-backed, step-up interest, redeemable any month without penalty; 10-year average returns of 1.83–2.69% across 2025 issues (MAS via Beansprout). After about 2% inflation, near 0.3%.",
+   "age": [22, 60],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "bond", "bg": "wa"},
+   "let": {"a": ".3 * liquid()"},
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "ssb", "sub": {"a": "MN(a)"}, "do": "putIn('ssb', a, {rate: .003}, 'trk.ssb')"},
+    {"id": "sti", "sub": {"a": "MN(a)"}, "do": "putIn('pick', a, {}, 'trk.pick')"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Singapore Savings Bonds",
+     ".x": "Singapore Savings Bonds are backed by the government, pay more the longer you hold them, and can be cashed in any month without penalty. 2025 issues averaged 1.8–2.7% a year over ten years. You have {a} to put somewhere.",
+     ".ssb": "Savings Bonds",
+     ".ssb.s": "Move {a} in. About 0.3% a year after inflation, with no risk.",
+     ".sti": "An STI index fund",
+     ".sti.s": "Move {a} in. About 5% a year after inflation on average, with crashes along the way.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "It stays in your account.",
+     "trk.ssb": "Savings Bonds"
+    },
+    "zh": {
+     ".t": "新加坡储蓄债券",
+     ".x": "新加坡储蓄债券由政府担保，持有越久利息越高，每个月都可以免罚赎回。2025年发行的债券，十年平均年利率在1.8%到2.7%之间。你有{a}要找地方放。",
+     ".ssb": "储蓄债券",
+     ".ssb.s": "放入{a}。扣除通胀后每年约0.3%，没有风险。",
+     ".sti": "海峡时报指数基金",
+     ".sti.s": "放入{a}。扣除通胀后平均每年约5%，中途会遇到股灾。",
+     ".keep": "放在银行",
+     ".keep.s": "钱留在户头里。",
+     "trk.ssb": "储蓄债券"
+    },
+    "zht": {
+     ".t": "新加坡儲蓄債券",
+     ".x": "新加坡儲蓄債券由政府擔保，持有越久利息越高，每個月都可以免罰贖回。2025年發行的債券，十年平均年利率在1.8%到2.7%之間。你有{a}要找地方放。",
+     ".ssb": "儲蓄債券",
+     ".ssb.s": "放入{a}。扣除通膨後每年約0.3%，沒有風險。",
+     ".sti": "海峽時報指數基金",
+     ".sti.s": "放入{a}。扣除通膨後平均每年約5%，中途會遇到股災。",
+     ".keep": "放在銀行",
+     ".keep.s": "錢留在戶頭裡。",
+     "trk.ssb": "儲蓄債券"
+    }
+   }
+  },
+  {
+   "id": "sg_cda",
+   "src": "Baby Bonus and CDA: for children born from 18 Feb 2025, a $5,000 CDA First Step Grant and dollar-for-dollar government matching up to $4,000 for a first child; a Baby Bonus Cash Gift of $11,000 for a first or second child, paid over 6.5 years (MSF Baby Bonus page; UOB). $5,000 ≈ 0.19, $4,000 ≈ 0.15, $11,000 ≈ 0.42 of the game's typical wage.",
+   "age": [20, 55],
+   "weight": 0.95,
+   "when": {"kidAge": [0, 1]},
+   "def": "some",
+   "tarot": "kids",
+   "art": {"draw": "baby", "bg": "mi"},
+   "let": {"B": "base", "g": ".61 * B"},
+   "fn": {
+    "go": {
+     "args": ["d"],
+     "do": "const t = T('sg_cda', { kind: 'custom', label: M('trk.sg_cda') }); pay(d); cash += g + 2 * d; t.v += g + d; t.note = M('note.sg_cda', { a: MN(g + d) })"
+    }
+   },
+   "opts": [
+    {"id": "max", "sub": {"a": "MN(.15 * B)"}, "do": "go(.15 * B)"},
+    {"id": "some", "sub": {"a": "MN(.04 * B)"}, "do": "go(.04 * B)"},
+    {"id": "none", "sub": {"b": "MN(g)"}, "do": "go(0)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Baby Bonus",
+     ".x": "Your baby gets a S$5,000 First Step Grant in a Child Development Account, and the government matches what you save there dollar for dollar, up to S$4,000 for a first or second child. It pays for childcare, preschool and medical bills. A separate Baby Bonus cash gift of S$11,000 comes in instalments over six and a half years.",
+     ".max": "Save the full amount in the CDA",
+     ".max.s": "Put in {a}; the government adds the same.",
+     ".some": "Save a little in the CDA",
+     ".some.s": "Put in {a}; the government adds the same.",
+     ".none": "Just take the grants",
+     ".none.s": "You still get the grant and the cash gift: {b}.",
+     "trk.sg_cda": "Baby Bonus",
+     "note.sg_cda": "Grants and matching: {a}"
+    },
+    "zh": {
+     ".t": "婴儿花红",
+     ".x": "你的宝宝在儿童培育户头（CDA）里获得S$5,000的首步津贴，你存进去的钱政府一对一配对，第一或第二个孩子最多S$4,000。这笔钱可付托儿、学前教育和医药费。另外还有S$11,000的婴儿花红现金，分六年半发放。",
+     ".max": "在CDA存满额度",
+     ".max.s": "存入{a}；政府再加同样的数目。",
+     ".some": "在CDA存一点",
+     ".some.s": "存入{a}；政府再加同样的数目。",
+     ".none": "只领津贴",
+     ".none.s": "你仍然领到津贴和现金花红：{b}。",
+     "trk.sg_cda": "婴儿花红",
+     "note.sg_cda": "津贴和配对：{a}"
+    },
+    "zht": {
+     ".t": "嬰兒花紅",
+     ".x": "你的寶寶在兒童培育戶頭（CDA）裡獲得S$5,000的首步津貼，你存進去的錢政府一對一配對，第一或第二個孩子最多S$4,000。這筆錢可付托育、學前教育和醫藥費。另外還有S$11,000的嬰兒花紅現金，分六年半發放。",
+     ".max": "在CDA存滿額度",
+     ".max.s": "存入{a}；政府再加同樣的數目。",
+     ".some": "在CDA存一點",
+     ".some.s": "存入{a}；政府再加同樣的數目。",
+     ".none": "只領津貼",
+     ".none.s": "你仍然領到津貼和現金花紅：{b}。",
+     "trk.sg_cda": "嬰兒花紅",
+     "note.sg_cda": "津貼和配對：{a}"
+    }
+   }
+  },
+  {
+   "id": "sg_psle",
+   "src": "PSLE: taken in Primary 6; its score sets the secondary school choices (MOE). Tuition fees are an ESTIMATE; whether tuition wins a bursary later is a game rule.",
+   "age": [30, 62],
+   "weight": 0.7,
+   "when": {"kidAge": [9, 11]},
+   "def": "class",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "mi"},
+   "let": {"a": ".08 * base"},
+   "opts": [
+    {
+     "id": "class",
+     "sub": {"a": "MN(a)"},
+     "hint": true,
+     "do": "T('sg_psle', { kind: 'ghost', label: M('trk.tuition') }); rec('sg_psle', a, 3); happy -= 1; kidWin(.3, .6)"
+    },
+    {"id": "home", "hint": true, "rel": 2, "do": "happy -= 2; kidWin(.2, .7)"},
+    {"id": "none", "hint": true, "do": "happy += 1; kidWin(.12, .8)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The PSLE",
+     ".x": "Your child sits the PSLE (Primary School Leaving Examination) in Primary 6, and the score shapes which secondary schools they can choose. Many families pay for tuition; group classes cost a few hundred dollars a month per subject.",
+     ".class": "Tuition classes",
+     ".class.s": "About {a} a year for 3 years. Busy weeks: Happiness −1.",
+     ".class.h": "A better chance of a bursary when your child goes to university.",
+     ".home": "Coach them yourself",
+     ".home.s": "Evenings of homework together. Happiness −2.",
+     ".home.h": "A slightly better chance of a bursary later.",
+     ".none": "Let them learn at their own pace",
+     ".none.s": "Free afternoons. Happiness +1.",
+     ".none.h": "A small chance of a bursary later."
+    },
+    "zh": {
+     ".t": "小六会考",
+     ".x": "你的孩子在小六参加小六会考（PSLE），分数决定能选哪些中学。很多家庭会请补习，小组补习每科每月要几百元。",
+     ".class": "补习班",
+     ".class.s": "每年约{a}，共3年。每周都很忙：幸福感 −1。",
+     ".class.h": "孩子上大学时拿助学金的机会较大。",
+     ".home": "自己教",
+     ".home.s": "每晚陪孩子做功课。幸福感 −2。",
+     ".home.h": "以后拿助学金的机会稍大。",
+     ".none": "让孩子按自己的步调学",
+     ".none.s": "下午自由自在。幸福感 +1。",
+     ".none.h": "以后拿助学金的机会较小。"
+    },
+    "zht": {
+     ".t": "小六會考",
+     ".x": "你的孩子在小六參加小六會考（PSLE），分數決定能選哪些中學。很多家庭會請補習，小組補習每科每月要幾百元。",
+     ".class": "補習班",
+     ".class.s": "每年約{a}，共3年。每週都很忙：幸福感 −1。",
+     ".class.h": "孩子上大學時拿助學金的機會較大。",
+     ".home": "自己教",
+     ".home.s": "每晚陪孩子做功課。幸福感 −2。",
+     ".home.h": "以後拿助學金的機會稍大。",
+     ".none": "讓孩子按自己的步調學",
+     ".none.s": "下午自由自在。幸福感 +1。",
+     ".none.h": "以後拿助學金的機會較小。"
+    }
+   }
+  }
+ ]
+}

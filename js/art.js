@@ -125,9 +125,9 @@ switch:{n:'VIII',c:'wa',bg:'mi',d:()=>ground(80)+cloud(8,30,.6)+spark(102,16,5,'
 ill:{n:'VIII',c:'co',bg:'mi',d:()=>ground(80)+spark(60,14,5,'wh')+heart(98,28,.4,'co')+`<rect class="wh th" x="91" y="22" width="14" height="6" rx="2" transform="rotate(-30 98 25)"/><rect class="mi" x="12" y="36" width="10" height="44" rx="3"/><rect class="wh" x="18" y="54" width="62" height="14" rx="4"/><path d="M76 68 v12"/><circle class="wh" cx="33" cy="48" r="10"/>`+face(33,49,.5,'sleep',false)+`<path class="ya" d="M44 52 h36 v10 h-36z"/><path class="th" d="M96 66 v-13 M96 60 l6 -6"/><circle class="co th" cx="96" cy="50" r="3.5"/><circle class="wh th" cx="103" cy="51" r="3"/><path class="ya" d="M89 80 l-3 -14 h20 l-3 14z"/>`},
 dep:{n:'XVII',c:'wa',bg:'mi',d:()=>ground(80)+star(16,16,5,'wh')+`<circle class="ya" cx="88" cy="26" r="13"/>`+face(88,27,.55)+cloud(42,40,1.1,'wh')+drop(52,46)+drop(64,51)+drop(76,46)+`<path class="co" d="M12 80 q0 -17 18 -17 q18 0 18 17z"/><circle class="wh" cx="30" cy="54" r="11"/>`+face(30,55,.55,'sleep',false)+`<path class="th" d="M98 80 v-12"/><ellipse class="wa th" cx="93" cy="70" rx="5" ry="2.5" transform="rotate(-30 93 70)"/><ellipse class="wa th" cx="103" cy="68" rx="5" ry="2.5" transform="rotate(30 103 68)"/>`}
 };
-/* ---------- country cards (js/country.js): one drawing per theme, shared by similar cards in different countries and
-   recoloured by window colour. Each card takes the numeral and frame colour of the general card it borrows its tarot name
-   from (CTN in js/i18n.js) ---------- */
+/* ---------- shared drawings: events whose "art" is {"draw": theme, "bg": window colour} (most country cards) use one drawing
+   per theme, recoloured by the window colour, and take the numeral and frame colour of the card they borrow their tarot
+   name from ("tarot": "lend"). An "art" naming another card's drawing reuses it ---------- */
 const person=(x,y,c,s)=>{s=s||1;return `<path class="${c}" d="M${x-9*s} ${y+16*s} q0 -12 ${9*s} -12 q${9*s} 0 ${9*s} 12z"/><circle class="wh" cx="${x}" cy="${y-2*s}" r="${7*s}"/>`+face(x,y-1.5*s,.4*s,0,false)};
 const house=(x,y,c,r)=>`<rect class="${c||'ya'}" x="${x}" y="${y}" width="36" height="26"/><path class="${r||'co'}" d="M${x-5} ${y+2} L${x+18} ${y-17} L${x+41} ${y+2}z"/><rect class="mi th" x="${x+13}" y="${y+10}" width="10" height="16" rx="3"/>`;
 const waves=(y,c)=>`<path class="${c||'mi'}" d="M-4 ${y} q8 -6 16 0 q8 6 16 0 q8 -6 16 0 q8 6 16 0 q8 -6 16 0 q8 6 16 0 q8 -6 16 0 q8 6 16 0 V96 H-4z"/>`;
@@ -175,26 +175,11 @@ stall:()=>ground(80)+spark(104,16,5,'wh')+`<rect class="wh" x="20" y="44" width=
 wallet:()=>spark(18,18,5,'wh')+ground(80)+`<rect class="co" x="22" y="34" width="64" height="44" rx="6"/><rect class="ya" x="62" y="46" width="30" height="20" rx="6"/><circle class="wh th" cx="74" cy="56" r="3"/><rect class="mi th" x="30" y="24" width="40" height="14" rx="2"/>`+coin(100,32,7)+coin(104,48,5),
 lantern:()=>ground(80)+`<path class="th" d="M60 4 v10"/><ellipse class="co" cx="60" cy="34" rx="20" ry="18"/><path class="th" d="M50 18 q-6 16 0 32 M70 18 q6 16 0 32"/><rect class="ya" x="52" y="12" width="16" height="6" rx="2"/><rect class="ya" x="52" y="50" width="16" height="6" rx="2"/>`+person(26,62,'mi',.8)+person(94,62,'wa',.8)+spark(100,16,4,'wh')
 };
-/* each country card: its theme and its window colour */
-const CW={
- my_ptptn:['gradloan','mi'],my_epf3:['penjar','ya'],my_asm:['bond','mi'],my_open:['feast','ya'],my_flood:['flood','wh'],my_jb:['bridge','wh'],my_first:['keyhome','mi'],my_sspn:['baby','wa'],
- sg_ns:['service','mi'],sg_bto:['keyhome','wa'],sg_coe:['coe','mi'],sg_rstu:['penjar','co'],sg_cpf55:['penclock','mi'],sg_ssb:['bond','wa'],sg_cda:['baby','mi'],sg_psle:['schoolbag','mi'],
- cn_gaokao:['exam','mi'],cn_city:['city','wa'],cn_996:['late','mi'],cn_house:['keyhome','ya'],cn_kaogong:['exam','wa'],cn_pension:['penjar','mi'],cn_yibao:['health','mi'],cn_tuixiu:['penclock','wa'],
- jp_shukatsu:['suit','mi'],jp_overtime:['late','wa'],jp_nisa:['shares','mi'],jp_furusato:['gift','mi'],jp_kaigo:['carer','ya'],jp_akiya:['akiya','mi'],jp_nenkin:['penclock','ya'],jp_quake:['quake','mi'],
- us_rap:['gradloan','wa'],us_401k:['cashout','mi'],us_medbill:['bill','mi'],us_credit:['gauge','ya'],us_ss:['penclock','co'],us_daycare:['blocks','mi'],us_fha:['keyhome','co'],us_hsa:['health','wa'],
- gb_sloan:['gradloan','ya'],gb_lisa:['keyhome','wh'],gb_pension:['penjar','wa'],gb_nhs:['bill','wa'],gb_shared:['keyhome','mi'],gb_childcare:['blocks','ya'],gb_ni:['penclock','mi'],gb_bonds:['bond','ya'],
- de_ausb:['tools','mi'],de_bafog:['gradloan','mi'],de_buy:['keyhome','wa'],de_riester:['penjar','ya'],de_eltern:['baby','ya'],de_tax:['tax','mi'],de_minijob:['sidejob','mi'],de_rente:['penclock','wa'],
- in_coach:['exam','ya'],in_ppf:['bond','mi'],in_gold:['gold','co'],in_gulf:['ctr','mi'],in_chit:['rosca','mi'],in_health:['health','ya'],in_flood:['flood','wh'],in_rte:['schoolbag','wa'],
- ng_nysc:['service','wa'],ng_japa:['passport','mi'],ng_infl:['infl','mi'],ng_gen:['solar','mi'],ng_flood:['flood','wh'],ng_ajo:['rosca','ya'],ng_nhia:['health','mi'],ng_pension:['penjar','wa'],
- pk_committee:['rosca','wa'],pk_gulf:['ctr','wa'],pk_flood:['flood','wh'],pk_infl:['infl','wa'],pk_behbood:['bond','ya'],pk_solar:['solar','wa'],pk_eobi:['penjar','mi'],pk_school:['schoolbag','ya'],
- id_arisan:['rosca','mi'],id_thr:['bonus','mi'],id_bpjs:['health','wa'],id_flood:['flood','wh'],id_pmi:['ctr','ya'],id_flpp:['keyhome','ya'],id_ojol:['moto','mi'],id_ori:['bond','mi'],
- et_iqub:['rosca','ya'],et_idir:['tent','mi'],et_infl:['infl','ya'],et_cbhi:['health','ya'],et_condo:['city','mi'],et_exam:['exam','mi'],et_esx:['shares','wa'],
- bd_micro:['stall','mi'],bd_gulf:['ctr','mi'],bd_flood:['flood','wh'],bd_sanchay:['bond','wa'],bd_upension:['penjar','ya'],bd_city:['city','mi'],bd_tuition:['schoolbag','mi'],bd_samity:['rosca','wa'],
- br_fgts:['wallet','mi'],br_13:['bonus','ya'],br_mei:['stall','wa'],br_plano:['health','mi'],br_tesouro:['bond','mi'],br_mcmv:['keyhome','mi'],br_flood:['flood','wh'],br_concurso:['exam','ya'],
- mx_tanda:['rosca','mi'],mx_afore:['penjar','mi'],mx_infonavit:['keyhome','wa'],mx_aguinaldo:['bonus','wa'],mx_h2:['ctr','ya'],mx_storm:['storm','wh'],mx_imss:['health','ya'],mx_cetes:['bond','ya'],
- ph_ofw:['ctr','mi'],ph_paluwagan:['rosca','ya'],ph_typhoon:['storm','wh'],ph_mp2:['bond','mi'],ph_philhealth:['health','mi'],ph_sss:['penjar','wa'],ph_13th:['bonus','mi'],ph_house:['keyhome','ya'],
- vn_hui:['rosca','mi'],vn_xkld:['ctr','wa'],vn_typhoon:['storm','wh'],vn_bhxh:['penclock','mi'],vn_gold:['gold','mi'],vn_bhyt:['health','wa'],vn_city:['city','ya'],vn_hocthem:['schoolbag','ya']};
-{const tn=(typeof window!=='undefined'&&window.CTN)||{};for(const id in CW){const src=ART[tn[id]]||ART.job,[th,bg]=CW[id];ART[id]={n:src.n,c:src.c,bg,d:CA[th]}}}
+{for(const e of typeof EV!=='undefined'?EV:[]){const x=e.art;
+ if(x&&typeof x==='object'){const src=ART[typeof e.tarot==='string'?e.tarot:'']||ART.job;ART[e.id]={n:src.n,c:src.c,bg:x.bg,d:CA[x.draw]}}
+ else if(typeof x==='string'&&x!==e.id&&ART[x])ART[e.id]=ART[x]}}
+/* the drawing names an event can use, for tools/validate.js */
+const DRAWINGS={cards:Object.keys(ART),themes:Object.keys(CA)};
 /* overlays drawn on top of a canvas: clouds under the hero sun, the laurel wreath on the end card */
 const EXTRA={
   sky:{fit:'xMidYMax',d:()=>cloud(-4,92,1.5)+cloud(86,95,1.3)+spark(14,14,5,'wh')+spark(106,12,4,'wh')},
@@ -267,5 +252,5 @@ balance:{bg:'wa',d:()=>`<path class="th" d="M15 13 q2.5 -3 0 -6 M21 13 q2.5 -3 0
 people:{bg:'wh',d:()=>heart(20,10,.2,'co')+`<path class="co" d="M4 38 q0 -9 9 -9 q9 0 9 9z"/><path class="mi" d="M18 38 q0 -9 9 -9 q9 0 9 9z"/><circle class="wh" cx="13" cy="24" r="6.5"/><circle class="wh" cx="27" cy="24" r="6.5"/>`+face(13,25,.32,0,false)+face(27,25,.32,0,false)}
 };
 function focusWin(id){const a=FOC[id];return `<span class="t-win fc-win" style="--wb:var(${BG[a.bg]})"><svg class="art" viewBox="0 0 40 40" aria-hidden="true" focusable="false">${a.d()}</svg></span>`}
-window.Art={svg,win,card,corners,banner,decorate,roman,stageWin,stageArt,stageBg,focusWin,momentWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
+window.Art={DRAWINGS,svg,win,card,corners,banner,decorate,roman,stageWin,stageArt,stageBg,focusWin,momentWin,num:id=>ART[id]?ART[id].n:'',frame:id=>ART[id]?ART[id].c:'co'};
 })();

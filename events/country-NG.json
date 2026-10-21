@@ -1,0 +1,358 @@
+{
+ "about": "Country cards for lives born in Nigeria. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "NG",
+ "events": [
+  {
+   "id": "ng_nysc",
+   "src": "===================== Nigeria (NG) ===================== NYSC: a year of service after university; the allowance rose from ₦33,000 to ₦77,000 a month, approved in Sep 2024 (ThisDay, 26 Sep 2024; ICIR). ₦924,000 a year ÷ a full year at the 2024 minimum wage (₦840,000) ≈ 1.1.",
+   "age": [21, 27],
+   "weight": 1,
+   "when": {"studying": false, "test": "done.edu === 'uni' && !nsUntil && age < 30"},
+   "def": "serve",
+   "tarot": "car",
+   "art": {"draw": "service", "bg": "wa"},
+   "fn": {
+    "ns": {
+     "args": ["c"],
+     "do": "nsUntil = age + 1; nsPay = 1.1; nsCost = c; T('ns', { kind: 'custom', label: M('trk.nysc'), paid: 0, note: M('note.ns', { a: MN(0) }) })"
+    }
+   },
+   "opts": [
+    {"id": "serve", "rel": 2, "do": "ns(.6)"},
+    {
+     "id": "saed",
+     "hint": true,
+     "do": "ns(.65); addSkill('saed', 2, M('trk.saed')); later(age + 1, 'sideBiz', { id: 'ng_saed', p: .35, a: .12 * base, n: 5 })"
+    },
+    {"id": "home", "rel": 2, "do": "ns(.35); happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "National Youth Service",
+     ".x": "After university comes a year of National Youth Service Corps (NYSC). Corps members are posted to another state and paid ₦77,000 a month (since 2024).",
+     ".serve": "Serve where you’re posted",
+     ".serve.s": "A year far from home, and new friends.",
+     ".saed": "Serve, and learn a trade too",
+     ".saed.s": "Weekend skills training (SAED) as well.",
+     ".saed.h": "Skill +2, and maybe a small business on the side later.",
+     ".home": "Ask to be posted near your family",
+     ".home.s": "Cheaper living at home. Happiness +1.",
+     "trk.nysc": "NYSC",
+     "trk.saed": "Trade skills"
+    },
+    "zh": {
+     ".t": "全国青年服务",
+     ".x": "大学毕业后要参加一年全国青年服务队（NYSC）。队员会被派到别的州，每月津贴77,000奈拉（2024年起）。",
+     ".serve": "在派驻地服务",
+     ".serve.s": "离家一年，认识新朋友。",
+     ".saed": "服务之余学一门手艺",
+     ".saed.s": "周末再参加技能培训（SAED）。",
+     ".saed.h": "技能 +2，以后也许能做点小生意。",
+     ".home": "申请派到家附近",
+     ".home.s": "住家里比较省。幸福感 +1。",
+     "trk.nysc": "全国青年服务",
+     "trk.saed": "手艺"
+    },
+    "zht": {
+     ".t": "全國青年服務",
+     ".x": "大學畢業後要參加一年全國青年服務隊（NYSC）。隊員會被派到別的州，每月津貼77,000奈拉（2024年起）。",
+     ".serve": "在派駐地服務",
+     ".serve.s": "離家一年，認識新朋友。",
+     ".saed": "服務之餘學一門手藝",
+     ".saed.s": "週末再參加技能培訓（SAED）。",
+     ".saed.h": "技能 +2，以後也許能做點小生意。",
+     ".home": "申請派到家附近",
+     ".home.s": "住家裡比較省。幸福感 +1。",
+     "trk.nysc": "全國青年服務",
+     "trk.saed": "手藝"
+    }
+   }
+  },
+  {
+   "id": "ng_japa",
+   "src": "Japa: UK Skilled Worker visa £719 (up to 3 years, from Oct 2023) and the Immigration Health Surcharge £1,035 a year (Mayer Brown; Edwin Coe). With flights and a deposit, about £6,000, at market exchange rates ≈ 6 years of a Nigerian typical wage (ESTIMATE). Pay and costs in the UK are ESTIMATES from the two countries' typical wages.",
+   "age": [24, 38],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true, "test": "edLv() >= 1"},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "mi"},
+   "let": {"gi": "countryIndex('GB')", "f": "6 * base", "sal": "salary()"},
+   "opts": [
+    {
+     "id": "go",
+     "sub": {"a": "MN(6 * sal)", "f": "MN(f)"},
+     "ok": "liquid() >= f || M('e.home.need', { n: MN(f), h: MN(liquid()) })",
+     "do": "pay(f); abroad = gi; costMul = 5; happy -= 4; rl(-5); bump('abroad', 6, M('trk.abroad', { c: { k: '_c', ci: gi } })); trk.abroad.v -= f"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Japa",
+     ".x": "Many young Nigerians are moving abroad (“japa”). A UK employer offers to sponsor you for a Skilled Worker visa. The visa fee was £719 for up to three years and the Immigration Health Surcharge is £1,035 a year; then come flights and a deposit on a flat.",
+     ".go": "Move to the UK",
+     ".go.s": "Pay of about {a} a year, but living costs about five times higher. Visa, health surcharge, flights and a deposit: about {f}. Far from family: Happiness −4.",
+     ".stay": "Stay in Nigeria",
+     ".stay.s": "Your life stays as it is."
+    },
+    "zh": {
+     ".t": "出走（Japa）",
+     ".x": "很多尼日利亚年轻人移居海外（“japa”）。一位英国雇主愿意担保你申请技术工作签证。三年内的签证费是£719，移民健康附加费每年£1,035，还有机票和租房押金。",
+     ".go": "搬去英国",
+     ".go.s": "年薪约{a}，但生活费约高五倍。签证、健康附加费、机票和押金约{f}。远离家人：幸福感 −4。",
+     ".stay": "留在尼日利亚",
+     ".stay.s": "生活照旧。"
+    },
+    "zht": {
+     ".t": "出走（Japa）",
+     ".x": "很多奈及利亞年輕人移居海外（「japa」）。一位英國僱主願意擔保你申請技術工作簽證。三年內的簽證費是£719，移民健康附加費每年£1,035，還有機票和租房押金。",
+     ".go": "搬去英國",
+     ".go.s": "年薪約{a}，但生活費約高五倍。簽證、健康附加費、機票和押金約{f}。遠離家人：幸福感 −4。",
+     ".stay": "留在奈及利亞",
+     ".stay.s": "生活照舊。"
+    }
+   }
+  },
+  {
+   "id": "ng_infl",
+   "src": "Inflation: 34.80% in December 2024, after the May 2023 subsidy removal and naira devaluation (NBS, via TechCabal and Intelpoint); rebased CPI showed 24.48% in January 2025. Savings rates far below that: a 12–25% real loss in a year is an ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.7,
+   "when": {"stats": {"cash": "> .2 * base"}},
+   "def": "keep",
+   "tarot": "medcover",
+   "art": {"draw": "infl", "bg": "mi"},
+   "use": "infl",
+   "with": {"f": [0.12, 0.25], "usd": ".ng"},
+   "i18n": {
+    "en": {
+     ".t": "Prices are rising fast",
+     ".x": "Inflation reached 34.8% in December 2024, after the naira was devalued and the fuel subsidy ended in 2023. Savings accounts pay far less, so money left in naira loses value."
+    },
+    "zh": {
+     ".t": "物价飞涨",
+     ".x": "奈拉在2023年贬值、燃油补贴取消后，通胀率在2024年12月达到34.8%。储蓄账户的利息低得多，存在奈拉里的钱会缩水。"
+    },
+    "zht": {
+     ".t": "物價飛漲",
+     ".x": "奈拉在2023年貶值、燃油補貼取消後，通膨率在2024年12月達到34.8%。儲蓄帳戶的利息低得多，存在奈拉里的錢會縮水。"
+    }
+   }
+  },
+  {
+   "id": "ng_gen",
+   "src": "Generators and solar: Nigerians spend over $14bn a year on generator fuel (Stears/Sterling, via ThisDay, 2023); home solar installations cost about ₦1.5–3.5 million (BusinessDay); 1.25% of households had solar in 2022 (BCG/All On, via AP). A small system ≈ 1.8 years of the minimum wage; fuel and upkeep are ESTIMATES.",
+   "age": [24, 55],
+   "weight": 0.65,
+   "def": "gen",
+   "tarot": "summer",
+   "art": {"draw": "solar", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "gen",
+     "sub": {"a": "MN(.25 * B)"},
+     "hint": true,
+     "do": "T('ng_gen', { kind: 'custom', label: M('trk.ng_gen') }); rec('ng_gen', .25 * B, 12, -.2)"
+    },
+    {
+     "id": "solar",
+     "sub": {"a": "MN(1.8 * B)", "b": "MN(.03 * B)"},
+     "do": "const t = T('ng_gen', { kind: 'custom', label: M('trk.ng_solar') }); pay(1.8 * B); t.v -= 1.8 * B; rec('ng_gen', .03 * B, 12); happy += 2"
+    },
+    {"id": "none", "do": "happy -= 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Power at home",
+     ".x": "Mains power comes only part of the day, so many homes run petrol generators, and petrol prices multiplied after the fuel subsidy ended in May 2023. A home solar system with batteries costs about ₦1.5–3.5 million up front but needs no fuel.",
+     ".gen": "Keep the generator",
+     ".gen.s": "About {a} a year in fuel and repairs.",
+     ".gen.h": "The fumes cost a little Health each year.",
+     ".solar": "Install solar",
+     ".solar.s": "About {a} now, then about {b} a year for upkeep. Happiness +2.",
+     ".none": "Manage without",
+     ".none.s": "Rechargeable fans and lamps when the power is off. Happiness −3.",
+     "trk.ng_gen": "Generator",
+     "trk.ng_solar": "Solar power"
+    },
+    "zh": {
+     ".t": "家里的电",
+     ".x": "公共电网一天只供电一段时间，所以很多家庭用汽油发电机；2023年5月燃油补贴取消后，汽油价格翻了好几倍。一套带电池的家用太阳能系统前期约150万到350万奈拉，但不用燃料。",
+     ".gen": "继续用发电机",
+     ".gen.s": "每年燃料和维修约{a}。",
+     ".gen.h": "废气每年会消耗一点健康。",
+     ".solar": "装太阳能",
+     ".solar.s": "现在约{a}，之后每年维护约{b}。幸福感 +2。",
+     ".none": "将就着过",
+     ".none.s": "停电时用充电风扇和灯。幸福感 −3。",
+     "trk.ng_gen": "发电机",
+     "trk.ng_solar": "太阳能"
+    },
+    "zht": {
+     ".t": "家裡的電",
+     ".x": "公共電網一天只供電一段時間，所以很多家庭用汽油發電機；2023年5月燃油補貼取消後，汽油價格翻了好幾倍。一套帶電池的家用太陽能系統前期約150萬到350萬奈拉，但不用燃料。",
+     ".gen": "繼續用發電機",
+     ".gen.s": "每年燃料和維修約{a}。",
+     ".gen.h": "廢氣每年會消耗一點健康。",
+     ".solar": "裝太陽能",
+     ".solar.s": "現在約{a}，之後每年維護約{b}。幸福感 +2。",
+     ".none": "將就著過",
+     ".none.s": "停電時用充電風扇和燈。幸福感 −3。",
+     "trk.ng_gen": "發電機",
+     "trk.ng_solar": "太陽能"
+    }
+   }
+  },
+  {
+   "id": "ng_flood",
+   "src": "Floods: the 2022 floods killed 662 people and displaced 2.4 million (NEMA, via Channels TV and Daily Trust, Jan 2023).",
+   "age": [25, 70],
+   "weight": 0.5,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.008, "prep": 0.015, "p": 0.5},
+   "i18n": {
+    "en": {
+     ".t": "Flood season",
+     ".x": "In 2022 Nigeria had its worst floods in a decade: 662 people died and about 2.4 million were displaced. Your area is low-lying and floods in heavy rainy seasons."
+    },
+    "zh": {
+     ".t": "水灾季节",
+     ".x": "2022年尼日利亚遭遇十年来最严重的水灾：662人死亡，约240万人流离失所。你住的地方地势低，雨季大雨时会淹水。"
+    },
+    "zht": {
+     ".t": "水災季節",
+     ".x": "2022年奈及利亞遭遇十年來最嚴重的水災：662人死亡，約240萬人流離失所。你住的地方地勢低，雨季大雨時會淹水。"
+    }
+   }
+  },
+  {
+   "id": "ng_ajo",
+   "src": "Ajo / esusu: a rotating savings group run by a collector; a widespread Nigerian practice. Fees and risk are ESTIMATES.",
+   "age": [22, 55],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "ya"},
+   "use": "rosca",
+   "with": {"a": 0.2, "n": 1, "early": 0.97, "late": 0.97, "risk": 0.07},
+   "i18n": {
+    "en": {
+     ".t": "Ajo",
+     ".x": "Traders on your street run an ajo (esusu): everyone pays a fixed amount to a collector, and members take the whole pot in turn. The collector keeps a small fee."
+    },
+    "zh": {
+     ".t": "互助会（Ajo）",
+     ".x": "你那条街的商贩办了一个互助会（ajo，也叫esusu）：大家定期交固定金额给收款人，会员轮流拿走全部会钱。收款人会收一点手续费。"
+    },
+    "zht": {
+     ".t": "互助會（Ajo）",
+     ".x": "你那條街的商販辦了一個互助會（ajo，也叫esusu）：大家定期交固定金額給收款人，會員輪流拿走全部會錢。收款人會收一點手續費。"
+    }
+   }
+  },
+  {
+   "id": "ng_nhia",
+   "src": "Health insurance: the National Health Insurance Authority Act 2022 made health insurance compulsory and set up state schemes for informal workers (NHIA). Premiums and cover share are ESTIMATES.",
+   "age": [22, 60],
+   "weight": 0.6,
+   "when": {"test": "!medCut"},
+   "def": "none",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.02 * base)"},
+     "hint": true,
+     "do": "medPlan('ng_nhia', .5, .02 * base)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Health insurance",
+     ".x": "The National Health Insurance Authority Act of 2022 made health insurance compulsory for everyone, and states run schemes that informal workers can join for a yearly premium.",
+     ".join": "Join your state’s scheme",
+     ".join.s": "About {a} a year.",
+     ".join.h": "It pays about half of your medical bills.",
+     ".none": "Not now",
+     ".none.s": "You pay every bill yourself.",
+     "trk.ng_nhia": "Health insurance"
+    },
+    "zh": {
+     ".t": "医疗保险",
+     ".x": "2022年《国家健康保险局法》规定人人都要有医疗保险，各州为非正规就业者办了缴年费就能参加的保险计划。",
+     ".join": "参加州的保险计划",
+     ".join.s": "每年约{a}。",
+     ".join.h": "能付约一半的医药费。",
+     ".none": "暂时不参加",
+     ".none.s": "医药费全部自付。",
+     "trk.ng_nhia": "医疗保险"
+    },
+    "zht": {
+     ".t": "醫療保險",
+     ".x": "2022年《國家健康保險局法》規定人人都要有醫療保險，各州為非正規就業者辦了繳年費就能參加的保險計畫。",
+     ".join": "參加州的保險計畫",
+     ".join.s": "每年約{a}。",
+     ".join.h": "能付約一半的醫藥費。",
+     ".none": "暫時不參加",
+     ".none.s": "醫藥費全部自付。",
+     "trk.ng_nhia": "醫療保險"
+    }
+   }
+  },
+  {
+   "id": "ng_pension",
+   "src": "Micro Pension Plan: PenCom's plan for the self-employed and informal workers (launched 2019), with contingent withdrawals (TheCable 2024; ThisDay 2019). Pension funds' real returns near 0% in high-inflation years: an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.5,
+   "when": {"selfEmployed": true},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "let": {"a": ".06 * base"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('mpp', { amt: a, until: 60 }, { rate: 0, lock: 60 }, 'trk.mpp')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A micro pension",
+     ".x": "Self-employed people can join PenCom’s Micro Pension Plan (since 2019): you choose how much to pay in, and part of it can be taken out in an emergency.",
+     ".join": "Join",
+     ".join.s": "About {a} a year until 60.",
+     ".none": "Not now",
+     ".none.s": "Keep the money free.",
+     "trk.mpp": "Micro pension"
+    },
+    "zh": {
+     ".t": "微型养老金",
+     ".x": "自雇人士可以参加养老金委员会（PenCom）的微型养老金计划（2019年起）：自己决定存多少，紧急时可以提出一部分。",
+     ".join": "参加",
+     ".join.s": "每年约{a}，存到60岁。",
+     ".none": "暂时不参加",
+     ".none.s": "钱随时可用。",
+     "trk.mpp": "微型养老金"
+    },
+    "zht": {
+     ".t": "微型退休金",
+     ".x": "自僱人士可以參加退休金委員會（PenCom）的微型退休金計畫（2019年起）：自己決定存多少，緊急時可以提出一部分。",
+     ".join": "參加",
+     ".join.s": "每年約{a}，存到60歲。",
+     ".none": "暫時不參加",
+     ".none.s": "錢隨時可用。",
+     "trk.mpp": "微型退休金"
+    }
+   }
+  }
+ ]
+}

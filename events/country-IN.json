@@ -1,0 +1,415 @@
+{
+ "about": "Country cards for lives born in India. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "IN",
+ "events": [
+  {
+   "id": "in_coach",
+   "src": "===================== India (IN) ===================== Coaching: in Kota, coaching and living cost about ₹1.5–3 lakh a year (Careers360; Lok Sabha answer: about ₹1.5 lakh plus ₹50,000 for a hostel). Two years ≈ ₹4 lakh ÷ the game's typical wage (₹92,000) ≈ 4: paid by the family (famCost).",
+   "age": [15, 16],
+   "weight": 0.75,
+   "def": "self",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {
+     "id": "kota",
+     "hint": true,
+     "ok": "fam === 'middle' || fam === 'rich' || M('.no')",
+     "do": "addSkill('school', 6 * learnLuck('kota'), M('trk.school')); happy -= 6; health -= 2"
+    },
+    {
+     "id": "local",
+     "sub": {"a": "MN(.5 * base)"},
+     "hint": true,
+     "do": "addSkill('school', 4 * learnLuck('kota'), M('trk.school')); happy -= 2; famCost('in_coach', .5)"
+    },
+    {"id": "self", "hint": true, "do": "addSkill('school', 2.5, M('trk.school'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Entrance-exam coaching",
+     ".x": "The JEE and NEET entrance exams decide who gets into the top engineering and medical colleges. Many students spend two years at coaching institutes; in Kota, classes and a hostel cost about ₹1.5–3 lakh a year.",
+     ".kota": "Two years at a Kota institute",
+     ".kota.s": "Your family pays for classes and a hostel. Far from home and hard: Happiness −6.",
+     ".kota.h": "Skill +6 (more or less). Health −2.",
+     ".no": "Your family can’t pay for Kota.",
+     ".local": "Coaching classes near home",
+     ".local.s": "Your family pays about {a}. Happiness −2.",
+     ".local.h": "Skill +4 (more or less).",
+     ".self": "Prepare on your own",
+     ".self.s": "Free online lessons and old papers.",
+     ".self.h": "Skill +2.5."
+    },
+    "zh": {
+     ".t": "入学考试补习",
+     ".x": "JEE和NEET入学考试决定谁能进顶尖的工程和医学院。很多学生花两年在补习机构；在科塔（Kota），补习加宿舍每年约15万到30万卢比。",
+     ".kota": "去科塔补习两年",
+     ".kota.s": "家里付补习费和宿舍费。离家远又辛苦：幸福感 −6。",
+     ".kota.h": "技能 +6（或多或少）。健康 −2。",
+     ".no": "家里负担不起去科塔。",
+     ".local": "在家附近上补习班",
+     ".local.s": "家里付约{a}。幸福感 −2。",
+     ".local.h": "技能 +4（或多或少）。",
+     ".self": "自己准备",
+     ".self.s": "免费网课加历年考题。",
+     ".self.h": "技能 +2.5。"
+    },
+    "zht": {
+     ".t": "入學考試補習",
+     ".x": "JEE和NEET入學考試決定誰能進頂尖的工程和醫學院。很多學生花兩年在補習機構；在科塔（Kota），補習加宿舍每年約15萬到30萬盧比。",
+     ".kota": "去科塔補習兩年",
+     ".kota.s": "家裡付補習費和宿舍費。離家遠又辛苦：幸福感 −6。",
+     ".kota.h": "技能 +6（或多或少）。健康 −2。",
+     ".no": "家裡負擔不起去科塔。",
+     ".local": "在家附近上補習班",
+     ".local.s": "家裡付約{a}。幸福感 −2。",
+     ".local.h": "技能 +4（或多或少）。",
+     ".self": "自己準備",
+     ".self.s": "免費線上課程加歷年考題。",
+     ".self.h": "技能 +2.5。"
+    }
+   }
+  },
+  {
+   "id": "in_ppf",
+   "src": "PPF: 7.1% a year, tax-free, unchanged for Jul–Sep 2025; 15-year lock-in; up to ₹1.5 lakh a year (Ministry of Finance, via Business Standard and Motilal Oswal). With CPI near 4.5%, about 2.5% after inflation.",
+   "age": [22, 45],
+   "weight": 0.7,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "edufund",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".12 * base"},
+   "opts": [
+    {
+     "id": "ppf",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('ppf', { amt: a, until: age + 15 }, { rate: .025, lock: age + 15 }, 'trk.ppf')"
+    },
+    {
+     "id": "sip",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('sip', { amt: a, until: age + 15 }, {}, 'trk.sip')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Public Provident Fund",
+     ".x": "The Public Provident Fund pays 7.1% a year, tax-free (the rate is set every quarter and was unchanged through 2025), but your money is locked for 15 years. An index-fund SIP rises and falls with the market.",
+     ".ppf": "Open a PPF account",
+     ".ppf.s": "About {a} a year for 15 years. About 2.5% a year after inflation, guaranteed.",
+     ".sip": "A monthly index-fund SIP",
+     ".sip.s": "About {a} a year for 15 years. About 5% a year after inflation on average, with crashes along the way.",
+     ".none": "Not now",
+     ".none.s": "Keep the money free.",
+     "trk.ppf": "PPF",
+     "trk.sip": "Index-fund SIP"
+    },
+    "zh": {
+     ".t": "公积金PPF",
+     ".x": "公共公积金（PPF）年利率7.1%，免税（利率每季调整，2025年都没变），但钱要锁15年。指数基金定投（SIP）则随市场涨跌。",
+     ".ppf": "开PPF账户",
+     ".ppf.s": "每年约{a}，存15年。扣除通胀后每年约2.5%，有保障。",
+     ".sip": "每月定投指数基金",
+     ".sip.s": "每年约{a}，投15年。扣除通胀后平均每年约5%，中途会遇到股灾。",
+     ".none": "暂时不存",
+     ".none.s": "钱随时可用。",
+     "trk.ppf": "PPF",
+     "trk.sip": "指数基金定投"
+    },
+    "zht": {
+     ".t": "公積金PPF",
+     ".x": "公共公積金（PPF）年利率7.1%，免稅（利率每季調整，2025年都沒變），但錢要鎖15年。指數基金定期定額（SIP）則隨市場漲跌。",
+     ".ppf": "開PPF帳戶",
+     ".ppf.s": "每年約{a}，存15年。扣除通膨後每年約2.5%，有保障。",
+     ".sip": "每月定期定額指數基金",
+     ".sip.s": "每年約{a}，投15年。扣除通膨後平均每年約5%，中途會遇到股災。",
+     ".none": "暫時不存",
+     ".none.s": "錢隨時可用。",
+     "trk.ppf": "PPF",
+     "trk.sip": "指數基金定期定額"
+    }
+   }
+  },
+  {
+   "id": "in_gold",
+   "src": "Gold: jewellery's making charges are not paid back on sale (about 10% or more: an ESTIMATE from jewellers' price lists); no new Sovereign Gold Bond tranche since February 2024 (Bajaj Broking, 2026).",
+   "age": [24, 55],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .25 * base"}},
+   "def": "none",
+   "tarot": "gold",
+   "art": {"draw": "gold", "bg": "co"},
+   "let": {"a": "Math.min(.2 * base, .5 * liquid())"},
+   "opts": [
+    {
+     "id": "jewel",
+     "sub": {"a": "MN(a)"},
+     "rel": 1,
+     "do": "pay(a); mkLot('gold', { t: 'gold' }, 'trk.gold'); addLot('gold', .88 * a); lots.gold.tin += .12 * a; happy += 3"
+    },
+    {
+     "id": "etf",
+     "sub": {"a": "MN(a)"},
+     "do": "pay(a); mkLot('gold', { t: 'gold' }, 'trk.gold'); addLot('gold', .995 * a); lots.gold.tin += .005 * a"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Buying gold",
+     ".x": "At Dhanteras and Akshaya Tritiya many families buy gold. Jewellery carries making charges, often 10% or more of the gold’s value, that you don’t get back when you sell; gold ETFs and coins avoid most of them. No new Sovereign Gold Bonds have been sold since February 2024.",
+     ".jewel": "Gold jewellery",
+     ".jewel.s": "Spend {a}. Happiness +3.",
+     ".etf": "A gold ETF",
+     ".etf.s": "Put {a} in, almost without charges.",
+     ".none": "No gold this year",
+     ".none.s": "Keep your savings as they are."
+    },
+    "zh": {
+     ".t": "买黄金",
+     ".x": "在财富节（Dhanteras）和阿卡夏三日节，很多家庭会买黄金。金饰要付工费，常常是金价的10%以上，卖的时候拿不回来；黄金ETF和金币几乎没有这笔费用。2024年2月以后就没有再发行新的主权黄金债券。",
+     ".jewel": "买金饰",
+     ".jewel.s": "花{a}。幸福感 +3。",
+     ".etf": "买黄金ETF",
+     ".etf.s": "放入{a}，几乎没有手续费。",
+     ".none": "今年不买黄金",
+     ".none.s": "积蓄照旧。"
+    },
+    "zht": {
+     ".t": "買黃金",
+     ".x": "在財富節（Dhanteras）和阿卡夏三日節，很多家庭會買黃金。金飾要付工費，常常是金價的10%以上，賣的時候拿不回來；黃金ETF和金幣幾乎沒有這筆費用。2024年2月以後就沒有再發行新的主權黃金債券。",
+     ".jewel": "買金飾",
+     ".jewel.s": "花{a}。幸福感 +3。",
+     ".etf": "買黃金ETF",
+     ".etf.s": "放入{a}，幾乎沒有手續費。",
+     ".none": "今年不買黃金",
+     ".none.s": "積蓄照舊。"
+    }
+   }
+  },
+  {
+   "id": "in_gulf",
+   "src": "The Gulf: GCC countries sent 38% of India's remittances in 2023–24, down from 47% in 2016–17 (RBI survey, via Drishti IAS); registered recruiting agents may charge at most ₹30,000 (Emigration Rules, 1983): ≈ 0.33. Pay and housing multiples are ESTIMATES.",
+   "age": [21, 40],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true, "careerType": ["hands", "office"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "mi"},
+   "use": "ctr",
+   "with": {"m": 2.5, "cm": 0.8, "yrs": 3, "fee": 0.33, "remit": 0.25},
+   "vars": {"a": "MN(2.5 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "A contract in the Gulf",
+     ".x": "A recruiter offers a three-year contract in the UAE, Saudi Arabia or Qatar at about {a} a year, with housing provided. Gulf countries sent about 38% of the money Indians abroad sent home in 2023–24. A registered agent may charge you at most ₹30,000.",
+     "trk.in_gulf": "Gulf contract"
+    },
+    "zh": {
+     ".t": "去海湾国家工作",
+     ".x": "一家中介给你一份去阿联酋、沙特或卡塔尔的三年合约，年薪约{a}，包住宿。2023–24年度，印度海外侨民汇回国的钱约有38%来自海湾国家。合法中介最多只能收你30,000卢比。",
+     "trk.in_gulf": "海湾合约"
+    },
+    "zht": {
+     ".t": "去海灣國家工作",
+     ".x": "一家中介給你一份去阿聯、沙烏地阿拉伯或卡達的三年合約，年薪約{a}，包住宿。2023–24年度，印度海外僑民匯回國的錢約有38%來自海灣國家。合法中介最多只能收你30,000盧比。",
+     "trk.in_gulf": "海灣合約"
+    }
+   }
+  },
+  {
+   "id": "in_chit",
+   "src": "Chit funds: the foreman's commission is capped at 5% of the chit amount (Chit Funds Act, 1982, s. 21); members bid down the pot at monthly auctions. The discount for an early turn, the late-turn bonus and the default risk are ESTIMATES.",
+   "age": [24, 50],
+   "weight": 0.55,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "mi"},
+   "use": "rosca",
+   "with": {"a": 0.2, "n": 2, "early": 0.85, "late": 1.06, "risk": 0.05},
+   "i18n": {
+    "en": {
+     ".t": "A chit fund",
+     ".x": "Colleagues run a chit fund: 20 members each pay in every month for 20 months, and each month one member takes the pot at an auction, bidding it down; the discount is shared among the rest. Registered chits follow the Chit Funds Act 1982, which caps the organiser’s commission at 5%."
+    },
+    "zh": {
+     ".t": "标会（Chit fund）",
+     ".x": "同事办了一个标会：20个会员每月交钱，共20个月；每月由一名会员竞标拿走会钱，折让的部分分给其他人。合法登记的标会受1982年《标会法》管理，会首佣金最多5%。"
+    },
+    "zht": {
+     ".t": "標會（Chit fund）",
+     ".x": "同事辦了一個標會：20個會員每月交錢，共20個月；每月由一名會員競標拿走會錢，折讓的部分分給其他人。合法登記的標會受1982年《標會法》管理，會首佣金最多5%。"
+    }
+   }
+  },
+  {
+   "id": "in_health",
+   "src": "Health cover: Ayushman Bharat PM-JAY gives ₹5 lakh a year of free hospital cover per family to about 55 crore people, and from Sep 2024 to everyone aged 70+ (PIB, Sep 2024). Private family-floater premiums (about ₹20,000 a year ≈ 0.22) and the shares of bills covered are ESTIMATES.",
+   "age": [25, 45],
+   "weight": 0.6,
+   "when": {"test": "!medCut"},
+   "def": "none",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {
+     "id": "buy",
+     "sub": {"a": "MN(.22 * base)"},
+     "hint": true,
+     "do": "medPlan('in_health', .3, .22 * base)"
+    },
+    {
+     "id": "pmjay",
+     "hint": true,
+     "ok": "fam === 'poor' || fam === 'working' || M('.no')",
+     "do": "medPlan('in_health', .55, 0)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Health cover",
+     ".x": "Private family health insurance costs roughly ₹15,000–25,000 a year. Under Ayushman Bharat PM-JAY, poorer families get free hospital cover of ₹5 lakh a year, and since 2024 so does everyone aged 70 or more.",
+     ".buy": "Buy a family floater policy",
+     ".buy.s": "About {a} a year.",
+     ".buy.h": "It pays about 70% of your medical bills.",
+     ".pmjay": "Get an Ayushman card",
+     ".pmjay.s": "Free for families like yours.",
+     ".pmjay.h": "It pays about 45% of your medical bills.",
+     ".no": "Your family isn’t eligible for PM-JAY.",
+     ".none": "No cover",
+     ".none.s": "You pay every bill yourself.",
+     "trk.in_health": "Health cover"
+    },
+    "zh": {
+     ".t": "医疗保障",
+     ".x": "私人家庭医疗保险每年约15,000到25,000卢比。在国家健康保障计划（Ayushman Bharat PM-JAY）下，较贫困的家庭每年有50万卢比的免费住院保障，从2024年起，70岁以上的人也都享有。",
+     ".buy": "买家庭医疗险",
+     ".buy.s": "每年约{a}。",
+     ".buy.h": "能付约70%的医药费。",
+     ".pmjay": "办阿尤什曼卡",
+     ".pmjay.s": "像你这样的家庭免费。",
+     ".pmjay.h": "能付约45%的医药费。",
+     ".no": "你家不符合PM-JAY的资格。",
+     ".none": "不买保险",
+     ".none.s": "医药费全部自付。",
+     "trk.in_health": "医疗保障"
+    },
+    "zht": {
+     ".t": "醫療保障",
+     ".x": "私人家庭醫療保險每年約15,000到25,000盧比。在國家健康保障計畫（Ayushman Bharat PM-JAY）下，較貧困的家庭每年有50萬盧比的免費住院保障，從2024年起，70歲以上的人也都享有。",
+     ".buy": "買家庭醫療險",
+     ".buy.s": "每年約{a}。",
+     ".buy.h": "能付約70%的醫藥費。",
+     ".pmjay": "辦阿尤什曼卡",
+     ".pmjay.s": "像你這樣的家庭免費。",
+     ".pmjay.h": "能付約45%的醫藥費。",
+     ".no": "你家不符合PM-JAY的資格。",
+     ".none": "不買保險",
+     ".none.s": "醫藥費全部自付。",
+     "trk.in_health": "醫療保障"
+    }
+   }
+  },
+  {
+   "id": "in_flood",
+   "src": "Monsoon floods: the southwest monsoon (June–September) brings most of India's rain (India Meteorological Department); the 2018 Kerala floods needed about ₹31,000 crore to rebuild (UN/World Bank Post Disaster Needs Assessment). Odds and costs are ESTIMATES.",
+   "age": [25, 70],
+   "weight": 0.5,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.005, "prep": 0.012},
+   "i18n": {
+    "en": {
+     ".t": "Monsoon floods",
+     ".x": "The southwest monsoon brings most of India’s rain between June and September, and heavy downpours flood parts of your city in many years. Home insurance that covers floods is cheap, but few households buy it."
+    },
+    "zh": {
+     ".t": "季风水灾",
+     ".x": "西南季风在6月到9月带来印度大部分的雨量，很多年的大雨都会淹没你城市的部分地区。有水灾保障的房屋保险很便宜，但很少家庭买。"
+    },
+    "zht": {
+     ".t": "季風水災",
+     ".x": "西南季風在6月到9月帶來印度大部分的雨量，很多年的大雨都會淹沒你城市的部分地區。有水災保障的房屋保險很便宜，但很少家庭買。"
+    }
+   }
+  },
+  {
+   "id": "in_rte",
+   "src": "School: private unaided schools must keep 25% of entry-level seats for children from weaker sections, free, by lottery (Right to Education Act 2009, s. 12(1)(c)). Fees and the lottery odds are ESTIMATES.",
+   "age": [27, 45],
+   "weight": 0.6,
+   "when": {"kidAge": [3, 5]},
+   "def": "govt",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "wa"},
+   "let": {"a": ".12 * base"},
+   "opts": [
+    {
+     "id": "private",
+     "sub": {"a": "MN(a)"},
+     "hint": true,
+     "do": "T('in_rte', { kind: 'ghost', label: M('trk.schoolFees') }); rec('in_rte', a, 12); happy += 1; kidWin(.3, .7)"
+    },
+    {
+     "id": "rte",
+     "hint": true,
+     "ok": "fam === 'poor' || fam === 'working' || M('.no')",
+     "do": "later(age, 'rte', {})"
+    },
+    {"id": "govt", "hint": true, "do": "kidWin(.15, .8)"}
+   ],
+   "later": {
+    "rte": "if (roll('rte') < .35) { log(M('log.rteWin'), 'good'); kidWin(.3, .7); } else { log(M('log.rteNo'), ''); kidWin(.15, .8); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Choosing a school",
+     ".x": "Under the Right to Education Act (2009), private schools must keep 25% of their entry seats free for children from poorer families, filled by lottery. Private school fees vary widely; government schools are free.",
+     ".private": "A private school",
+     ".private.s": "About {a} a year for 12 years. Happiness +1.",
+     ".private.h": "A better chance of a scholarship later.",
+     ".rte": "Apply for a free seat",
+     ".rte.s": "If you don’t win the lottery, your child goes to a government school.",
+     ".rte.h": "About a 1 in 3 chance of a seat.",
+     ".no": "Your family earns too much for these seats.",
+     ".govt": "A government school",
+     ".govt.s": "Free.",
+     ".govt.h": "A smaller chance of a scholarship later."
+    },
+    "zh": {
+     ".t": "选学校",
+     ".x": "根据《受教育权利法》（2009年），私立学校必须把25%的入学名额免费留给较贫困家庭的孩子，以抽签分配。私立学校学费差别很大；公立学校免费。",
+     ".private": "私立学校",
+     ".private.s": "每年约{a}，共12年。幸福感 +1。",
+     ".private.h": "以后拿奖学金的机会较大。",
+     ".rte": "申请免费名额",
+     ".rte.s": "没抽中的话，孩子就读公立学校。",
+     ".rte.h": "大约三分之一的机会抽中。",
+     ".no": "你家收入太高，不能申请这些名额。",
+     ".govt": "公立学校",
+     ".govt.s": "免费。",
+     ".govt.h": "以后拿奖学金的机会较小。"
+    },
+    "zht": {
+     ".t": "選學校",
+     ".x": "根據《受教育權利法》（2009年），私立學校必須把25%的入學名額免費留給較貧困家庭的孩子，以抽籤分配。私立學校學費差別很大；公立學校免費。",
+     ".private": "私立學校",
+     ".private.s": "每年約{a}，共12年。幸福感 +1。",
+     ".private.h": "以後拿獎學金的機會較大。",
+     ".rte": "申請免費名額",
+     ".rte.s": "沒抽中的話，孩子就讀公立學校。",
+     ".rte.h": "大約三分之一的機會抽中。",
+     ".no": "你家收入太高，不能申請這些名額。",
+     ".govt": "公立學校",
+     ".govt.s": "免費。",
+     ".govt.h": "以後拿獎學金的機會較小。"
+    }
+   }
+  }
+ ]
+}

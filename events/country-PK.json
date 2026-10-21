@@ -1,0 +1,323 @@
+{
+ "about": "Country cards for lives born in Pakistan. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "PK",
+ "events": [
+  {
+   "id": "pk_committee",
+   "src": "===================== Pakistan (PK) ===================== Committees (ROSCAs): common among salaried and self-employed people; no legal contracts (HRMARS study; finclusion.org 2017). Risk is an ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "wa"},
+   "use": "rosca",
+   "with": {"a": 0.25, "n": 1, "early": 1, "late": 1, "risk": 0.06, "draw": true},
+   "i18n": {
+    "en": {
+     ".t": "A committee",
+     ".x": "Friends at work run a “committee” (also called a BC): everyone pays in every month, and each month one member, picked by draw, takes the whole pot. There is no written contract; it runs on trust."
+    },
+    "zh": {
+     ".t": "会（Committee）",
+     ".x": "公司的朋友办了一个“会”（也叫BC）：每人每月交钱，每月抽签由一人拿走全部会钱。没有书面合同，全靠信任。"
+    },
+    "zht": {
+     ".t": "會（Committee）",
+     ".x": "公司的朋友辦了一個「會」（也叫BC）：每人每月交錢，每月抽籤由一人拿走全部會錢。沒有書面合同，全靠信任。"
+    }
+   }
+  },
+  {
+   "id": "pk_gulf",
+   "src": "The Gulf: a record $38.3bn of remittances in FY2025, $9.3bn from Saudi Arabia and $7.9bn from the UAE (State Bank of Pakistan, via Profit). Fees, pay and housing multiples are ESTIMATES.",
+   "age": [21, 40],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true, "careerType": ["hands", "office"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "wa"},
+   "use": "ctr",
+   "with": {"m": 2.5, "cm": 0.8, "yrs": 3, "fee": 0.5, "remit": 0.25},
+   "vars": {"a": "MN(2.5 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "A contract in the Gulf",
+     ".x": "A recruiter offers a three-year contract in Saudi Arabia or the UAE at about {a} a year, with housing provided. Those two countries sent about $17 billion of the record $38.3 billion that Pakistanis abroad sent home in 2024–25.",
+     "trk.pk_gulf": "Gulf contract"
+    },
+    "zh": {
+     ".t": "去海湾国家工作",
+     ".x": "一家中介给你一份去沙特或阿联酋的三年合约，年薪约{a}，包住宿。2024–25年度巴基斯坦侨汇创下383亿美元的纪录，其中约170亿来自这两个国家。",
+     "trk.pk_gulf": "海湾合约"
+    },
+    "zht": {
+     ".t": "去海灣國家工作",
+     ".x": "一家中介給你一份去沙烏地阿拉伯或阿聯的三年合約，年薪約{a}，包住宿。2024–25年度巴基斯坦僑匯創下383億美元的紀錄，其中約170億來自這兩個國家。",
+     "trk.pk_gulf": "海灣合約"
+    }
+   }
+  },
+  {
+   "id": "pk_flood",
+   "src": "Floods: in 2022 a third of the country was under water and about 33 million people were affected; damage $14.9bn and losses $15.2bn (Post-Disaster Needs Assessment, Planning Commission).",
+   "age": [25, 70],
+   "weight": 0.5,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.008, "prep": 0.015, "p": 0.5},
+   "i18n": {
+    "en": {
+     ".t": "Flood season",
+     ".x": "The 2022 monsoon floods put a third of Pakistan under water and affected about 33 million people; damage and losses came to about $30 billion. Your district lies in a flood plain."
+    },
+    "zh": {
+     ".t": "水灾季节",
+     ".x": "2022年的季风水灾让巴基斯坦三分之一的土地泡在水里，约3,300万人受灾，损害和损失约300亿美元。你住的地区在洪泛平原上。"
+    },
+    "zht": {
+     ".t": "水災季節",
+     ".x": "2022年的季風水災讓巴基斯坦三分之一的土地泡在水裡，約3,300萬人受災，損害和損失約300億美元。你住的地區在洪泛平原上。"
+    }
+   }
+  },
+  {
+   "id": "pk_infl",
+   "src": "Inflation: 38% in May 2023, a record (Pakistan Bureau of Statistics, via Business Recorder). The yearly loss is an ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.6,
+   "when": {"stats": {"cash": "> .2 * base"}},
+   "def": "keep",
+   "tarot": "medcover",
+   "art": {"draw": "infl", "bg": "wa"},
+   "use": "infl",
+   "with": {"f": [0.1, 0.22], "usd": ".pk"},
+   "i18n": {
+    "en": {
+     ".t": "Prices are rising fast",
+     ".x": "Inflation hit 38% in May 2023, the highest on record. Savings accounts pay less than that, so money left in rupees loses value."
+    },
+    "zh": {
+     ".t": "物价飞涨",
+     ".x": "2023年5月通胀率达到38%，创历史新高。储蓄账户的利息比这低，存在卢比里的钱会缩水。"
+    },
+    "zht": {
+     ".t": "物價飛漲",
+     ".x": "2023年5月通膨率達到38%，創歷史新高。儲蓄帳戶的利息比這低，存在盧比裡的錢會縮水。"
+    }
+   }
+  },
+  {
+   "id": "pk_behbood",
+   "src": "Behbood Savings Certificates: for people 60+, widows and disabled people; 12.72% a year from 4 Nov 2025, monthly profit, 10 years (National Savings, via ARY News). With inflation near 5–7% and withholding tax, about 5% real: an ESTIMATE.",
+   "age": [60, 70],
+   "weight": 0.8,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "bank",
+   "tarot": "annuity",
+   "art": {"draw": "bond", "bg": "ya"},
+   "let": {"a": ".4 * liquid()"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "do": "putIn('behbood', a, {rate: .05}, 'trk.behbood')"},
+    {"id": "bank"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Behbood Savings Certificates",
+     ".x": "Behbood Savings Certificates, for people aged 60 or more and for widows, pay a monthly profit: 12.72% a year for money put in from November 2025, for ten years.",
+     ".buy": "Buy certificates",
+     ".buy.s": "Put {a} in. About 5% a year after inflation and tax, paid monthly.",
+     ".bank": "Keep it in the bank",
+     ".bank.s": "It stays in your account.",
+     "trk.behbood": "Behbood certificates"
+    },
+    "zh": {
+     ".t": "福利储蓄凭证",
+     ".x": "福利储蓄凭证（Behbood）专为60岁以上的人和寡妇设计，按月付利：2025年11月起存入的钱年利率12.72%，为期十年。",
+     ".buy": "买凭证",
+     ".buy.s": "放入{a}。扣除通胀和税后每年约5%，按月付利。",
+     ".bank": "放在银行",
+     ".bank.s": "钱留在账户里。",
+     "trk.behbood": "福利储蓄凭证"
+    },
+    "zht": {
+     ".t": "福利儲蓄憑證",
+     ".x": "福利儲蓄憑證（Behbood）專為60歲以上的人和寡婦設計，按月付利：2025年11月起存入的錢年利率12.72%，為期十年。",
+     ".buy": "買憑證",
+     ".buy.s": "放入{a}。扣除通膨和稅後每年約5%，按月付利。",
+     ".bank": "放在銀行",
+     ".bank.s": "錢留在帳戶裡。",
+     "trk.behbood": "福利儲蓄憑證"
+    }
+   }
+  },
+  {
+   "id": "pk_solar",
+   "src": "Solar: grid power rose from about Rs 9 a unit in 2015 to Rs 44 in 2024; about 17 GW of panels imported in 2024; net-metering buy-back being cut from Rs 27 to Rs 10 a unit (Wikipedia \"Solar power in Pakistan\"; Payne Institute; PIDE). System costs and savings are ESTIMATES.",
+   "age": [26, 60],
+   "weight": 0.6,
+   "def": "grid",
+   "tarot": "summer",
+   "art": {"draw": "solar", "bg": "wa"},
+   "let": {"B": "base"},
+   "fn": {
+    "go": {
+     "args": ["c", "v"],
+     "do": "const t = T('pk_solar', { kind: 'custom', label: M('trk.pk_solar') }); pay(c); t.v -= c; rec('pk_solar', -v, 15)"
+    }
+   },
+   "opts": [
+    {"id": "solar", "sub": {"a": "MN(1.2 * B)", "b": "MN(.12 * B)"}, "do": "go(1.2 * B, .12 * B)"},
+    {"id": "small", "sub": {"a": "MN(.5 * B)", "b": "MN(.06 * B)"}, "do": "go(.5 * B, .06 * B)"},
+    {"id": "grid"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Going solar",
+     ".x": "Grid power cost about Rs 44 a unit in 2024, and Pakistan imported about 17 GW of solar panels that year. Net metering lets you sell spare power back, but the buy-back rate is being cut from Rs 27 to about Rs 10 a unit.",
+     ".solar": "Rooftop solar with net metering",
+     ".solar.s": "About {a} now; your bills fall by about {b} a year.",
+     ".small": "A few panels and an inverter",
+     ".small.s": "About {a} now; your bills fall by about {b} a year.",
+     ".grid": "Stay on the grid",
+     ".grid.s": "No cost now.",
+     "trk.pk_solar": "Solar panels"
+    },
+    "zh": {
+     ".t": "装太阳能",
+     ".x": "2024年电网电价约每度44卢比，那一年巴基斯坦进口了约17吉瓦的太阳能板。净计量制度让你把多余的电卖回电网，但收购价正从每度27卢比降到约10卢比。",
+     ".solar": "屋顶太阳能加净计量",
+     ".solar.s": "现在约{a}；电费每年少约{b}。",
+     ".small": "几块板子加一台逆变器",
+     ".small.s": "现在约{a}；电费每年少约{b}。",
+     ".grid": "继续用电网",
+     ".grid.s": "现在不花钱。",
+     "trk.pk_solar": "太阳能板"
+    },
+    "zht": {
+     ".t": "裝太陽能",
+     ".x": "2024年電網電價約每度44盧比，那一年巴基斯坦進口了約17吉瓦的太陽能板。淨計量制度讓你把多餘的電賣回電網，但收購價正從每度27盧比降到約10盧比。",
+     ".solar": "屋頂太陽能加淨計量",
+     ".solar.s": "現在約{a}；電費每年少約{b}。",
+     ".small": "幾塊板子加一台逆變器",
+     ".small.s": "現在約{a}；電費每年少約{b}。",
+     ".grid": "繼續用電網",
+     ".grid.s": "現在不花錢。",
+     "trk.pk_solar": "太陽能板"
+    }
+   }
+  },
+  {
+   "id": "pk_eobi",
+   "src": "EOBI: employers pay 5% and workers 1% of the minimum wage; a pension of at least Rs 10,000 a month from July 2023, at 60 (55 for women) after 15 years (OECD Pensions at a Glance Asia/Pacific 2024; Dawn). Rs 120,000 a year ÷ a full year at the minimum wage (Rs 444,000) ≈ 0.27.",
+   "age": [20, 40],
+   "weight": 0.6,
+   "when": {"working": true, "test": "!selfEmp()"},
+   "def": "skip",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "reg",
+     "sub": {"a": "MN(.01 * B)", "b": "MN(.27 * B)"},
+     "do": "penScheme('pk_eobi', .01 * B, 35, .27 * B, sex === 'f' ? 55 : 60)"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "EOBI",
+     ".x": "You can ask your employer to register you with EOBI, the old-age pension fund: the employer pays 5% and you 1% of the minimum wage. After 15 years of contributions you get at least Rs 10,000 a month from 60 (55 for women).",
+     ".reg": "Register",
+     ".reg.s": "About {a} a year from your pay; a pension of at least {b} a year later.",
+     ".skip": "Don’t bother",
+     ".skip.s": "Nothing taken from your pay.",
+     "trk.pk_eobi": "EOBI"
+    },
+    "zh": {
+     ".t": "员工养老金EOBI",
+     ".x": "你可以请雇主帮你登记员工养老福利机构（EOBI）：雇主付最低工资的5%，你付1%。缴满15年后，60岁（女性55岁）起每月至少领10,000卢比。",
+     ".reg": "登记",
+     ".reg.s": "每年从薪水扣约{a}；以后每年至少领{b}的养老金。",
+     ".skip": "不登记",
+     ".skip.s": "薪水不扣钱。",
+     "trk.pk_eobi": "EOBI"
+    },
+    "zht": {
+     ".t": "員工退休金EOBI",
+     ".x": "你可以請僱主幫你登記員工養老福利機構（EOBI）：僱主付最低薪水的5%，你付1%。繳滿15年後，60歲（女性55歲）起每月至少領10,000盧比。",
+     ".reg": "登記",
+     ".reg.s": "每年從薪水扣約{a}；以後每年至少領{b}的退休金。",
+     ".skip": "不登記",
+     ".skip.s": "薪水不扣錢。",
+     "trk.pk_eobi": "EOBI"
+    }
+   }
+  },
+  {
+   "id": "pk_school",
+   "src": "School: free and compulsory education for children 5–16 (Constitution, Article 25-A, 2010); low-fee private schools are common. Fees and outcomes are ESTIMATES.",
+   "age": [27, 48],
+   "weight": 0.6,
+   "when": {"kidAge": [4, 6]},
+   "def": "govt",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "ya"},
+   "let": {"B": "base"},
+   "fn": {
+    "go": {
+     "args": ["a", "p"],
+     "do": "if (a) { T('pk_school', { kind: 'ghost', label: M('trk.schoolFees') }); rec('pk_school', a, 12); } kidWin(p, .75)"
+    }
+   },
+   "opts": [
+    {"id": "top", "sub": {"a": "MN(.4 * B)"}, "hint": true, "do": "go(.4 * B, .4)"},
+    {"id": "low", "sub": {"a": "MN(.08 * B)"}, "hint": true, "do": "go(.08 * B, .25)"},
+    {"id": "govt", "hint": true, "do": "go(0, .15)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Choosing a school",
+     ".x": "The Constitution guarantees free schooling for children aged 5 to 16, and many families also choose low-fee private schools.",
+     ".top": "A top private school",
+     ".top.s": "About {a} a year for 12 years.",
+     ".top.h": "A good chance of a university scholarship later.",
+     ".low": "A low-fee private school",
+     ".low.s": "About {a} a year for 12 years.",
+     ".low.h": "Some chance of a scholarship later.",
+     ".govt": "A government school",
+     ".govt.s": "Free.",
+     ".govt.h": "A smaller chance of a scholarship later."
+    },
+    "zh": {
+     ".t": "选学校",
+     ".x": "宪法保障5到16岁的孩子免费上学，很多家庭也会选择收费低的私立学校。",
+     ".top": "顶尖私立学校",
+     ".top.s": "每年约{a}，共12年。",
+     ".top.h": "以后拿大学奖学金的机会大。",
+     ".low": "低收费私立学校",
+     ".low.s": "每年约{a}，共12年。",
+     ".low.h": "以后有一些机会拿奖学金。",
+     ".govt": "公立学校",
+     ".govt.s": "免费。",
+     ".govt.h": "以后拿奖学金的机会较小。"
+    },
+    "zht": {
+     ".t": "選學校",
+     ".x": "憲法保障5到16歲的孩子免費上學，很多家庭也會選擇收費低的私立學校。",
+     ".top": "頂尖私立學校",
+     ".top.s": "每年約{a}，共12年。",
+     ".top.h": "以後拿大學獎學金的機會大。",
+     ".low": "低收費私立學校",
+     ".low.s": "每年約{a}，共12年。",
+     ".low.h": "以後有一些機會拿獎學金。",
+     ".govt": "公立學校",
+     ".govt.s": "免費。",
+     ".govt.h": "以後拿獎學金的機會較小。"
+    }
+   }
+  }
+ ]
+}

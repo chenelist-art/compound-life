@@ -1,0 +1,445 @@
+{
+ "about": "Country cards for lives born in United Kingdom. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "GB",
+ "events": [
+  {
+   "id": "gb_sloan",
+   "src": "===================== United Kingdom (GB) ===================== Plan 5 student loans (England, from Aug 2023): 9% of income above £25,000, interest at RPI, written off after 40 years (GOV.UK, as summarised by Whitings LLP and uktax.tools). £25,000 in game money (÷ 0.633, PPP) ≈ 1.41 typical wages.",
+   "age": [21, 25],
+   "weight": 1,
+   "when": {"stats": {"sloan": "> .2 * base"}, "studying": false, "test": "!sloanInc"},
+   "def": "pay",
+   "tarot": "debt",
+   "art": {"draw": "gradloan", "bg": "ya"},
+   "vars": {"a": "MN(sloan)"},
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {"a": "MN(.09 * Math.max(0, salary() - 1.41 * base))"},
+     "do": "sloanR = 0; sloanInc = { r: .09, th: 1.41, end: age + 40 }"
+    },
+    {
+     "id": "over",
+     "sub": {"a": "MN(amort(sloan, 1e-6, 10))"},
+     "do": "sloanR = 0; sloanN = 10; sloanPay = slPay()"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your student loan",
+     ".x": "Your student loan ({a}, Plan 5) is repaid through your payslip: 9% of everything you earn above £25,000 a year. Interest follows inflation (RPI), and whatever is left 40 years later is written off.",
+     ".pay": "Let payroll take care of it",
+     ".pay.s": "About {a} a year at your pay now; more as your pay rises.",
+     ".over": "Pay it off within 10 years",
+     ".over.s": "About {a} a year."
+    },
+    "zh": {
+     ".t": "你的学生贷款",
+     ".x": "你的学生贷款（{a}，第5类方案）从薪水里扣还：年收入超过£25,000的部分扣9%。利息跟着通胀（RPI）走，40年后剩下的全部免除。",
+     ".pay": "交给薪资系统扣",
+     ".pay.s": "以现在的收入每年约{a}；收入越高扣越多。",
+     ".over": "10年内还清",
+     ".over.s": "每年约{a}。"
+    },
+    "zht": {
+     ".t": "你的學生貸款",
+     ".x": "你的學生貸款（{a}，第5類方案）從薪水裡扣還：年收入超過£25,000的部分扣9%。利息跟著通膨（RPI）走，40年後剩下的全部免除。",
+     ".pay": "交給薪資系統扣",
+     ".pay.s": "以現在的收入每年約{a}；收入越高扣越多。",
+     ".over": "10年內還清",
+     ".over.s": "每年約{a}。"
+    }
+   }
+  },
+  {
+   "id": "gb_lisa",
+   "src": "Lifetime ISA: open from 18 to 39, save up to £4,000 a year with a 25% government bonus (max £1,000); for a first home up to £450,000 or after 60, otherwise a 25% withdrawal charge (GOV.UK; MoneyHelper).",
+   "age": [18, 39],
+   "weight": 0.7,
+   "when": {"house": false},
+   "def": "none",
+   "tarot": "save",
+   "art": {"draw": "keyhome", "bg": "wh"},
+   "let": {"a": ".1 * base"},
+   "opts": [
+    {
+     "id": "lisa",
+     "sub": {"a": "MN(a)", "b": "MN(.25 * a)"},
+     "do": "yearly('lisa', { amt: a, until: 50, bonus: .25 }, { lock: 60 }, 'trk.lisa')"
+    },
+    {
+     "id": "isa",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('isa', { amt: a, until: age + 30 }, {}, 'trk.isa')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A Lifetime ISA",
+     ".x": "Open a Lifetime ISA before 40: save up to £4,000 a year and the government adds 25%. It can buy a first home costing £450,000 or less, or be spent after 60; take it out for anything else and 25% is charged.",
+     ".lisa": "Open a Lifetime ISA",
+     ".lisa.s": "About {a} a year; the government adds {b}.",
+     ".isa": "A stocks and shares ISA",
+     ".isa.s": "About {a} a year, tax-free, with no bonus and no lock.",
+     ".none": "Not now",
+     ".none.s": "Keep the money free.",
+     "trk.isa": "Stocks and shares ISA",
+     "trk.lisa": "Lifetime ISA"
+    },
+    "zh": {
+     ".t": "终身个人储蓄账户",
+     ".x": "40岁前可以开终身个人储蓄账户（Lifetime ISA）：每年最多存£4,000，政府再加25%。可以用来买£450,000以下的首套房，或在60岁后使用；其他用途提取要扣25%。",
+     ".lisa": "开Lifetime ISA",
+     ".lisa.s": "每年约{a}；政府加{b}。",
+     ".isa": "股票和基金ISA",
+     ".isa.s": "每年约{a}，免税，没有奖励金也不锁定。",
+     ".none": "暂时不开",
+     ".none.s": "钱随时可用。",
+     "trk.isa": "股票和基金ISA",
+     "trk.lisa": "终身ISA"
+    },
+    "zht": {
+     ".t": "終身個人儲蓄帳戶",
+     ".x": "40歲前可以開終身個人儲蓄帳戶（Lifetime ISA）：每年最多存£4,000，政府再加25%。可以用來買£450,000以下的首套房，或在60歲後使用；其他用途提取要扣25%。",
+     ".lisa": "開Lifetime ISA",
+     ".lisa.s": "每年約{a}；政府加{b}。",
+     ".isa": "股票和基金ISA",
+     ".isa.s": "每年約{a}，免稅，沒有獎勵金也不鎖定。",
+     ".none": "暫時不開",
+     ".none.s": "錢隨時可用。",
+     "trk.isa": "股票和基金ISA",
+     "trk.lisa": "終身ISA"
+    }
+   }
+  },
+  {
+   "id": "gb_pension",
+   "src": "Workplace pension: automatic enrolment with a minimum of 8% of qualifying earnings, at least 3% from the employer (The Pensions Regulator); normal minimum pension age 57 from 2028 (HMRC).",
+   "age": [22, 30],
+   "weight": 0.9,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "let": {"w": "salary()"},
+   "opts": [
+    {
+     "id": "stay",
+     "sub": {"a": "MN(.05 * w)", "b": "MN(.03 * w)"},
+     "do": "yearly('wpen', { p: .05, until: 67, bonus: .6 }, { lock: 57 }, 'trk.wpen')"
+    },
+    {
+     "id": "more",
+     "sub": {"a": "MN(.1 * w)", "b": "MN(.03 * w)"},
+     "do": "yearly('wpen', { p: .1, until: 67, bonus: .3 }, { lock: 57 }, 'trk.wpen')"
+    },
+    {"id": "out", "sub": {"a": "MN(.05 * w)"}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your workplace pension",
+     ".x": "You’ve been automatically enrolled in a workplace pension: at least 5% of your qualifying pay goes in (tax relief included) and your employer adds at least 3%. You can opt out and keep the 5% as pay.",
+     ".stay": "Stay in",
+     ".stay.s": "{a} a year from your pay; your employer adds {b}. Locked until 57.",
+     ".more": "Pay in 10%",
+     ".more.s": "{a} a year from your pay; your employer still adds {b}.",
+     ".out": "Opt out",
+     ".out.s": "About {a} more take-home pay a year.",
+     "trk.wpen": "Workplace pension"
+    },
+    "zh": {
+     ".t": "你的职场养老金",
+     ".x": "你被自动加入职场养老金：至少5%的合格薪资存进去（含税务减免），雇主至少再加3%。你可以退出，把5%留作薪水。",
+     ".stay": "留在计划里",
+     ".stay.s": "每年从薪水扣{a}，雇主再加{b}。锁到57岁。",
+     ".more": "存10%",
+     ".more.s": "每年从薪水扣{a}，雇主仍加{b}。",
+     ".out": "退出",
+     ".out.s": "每年到手多约{a}。",
+     "trk.wpen": "职场养老金"
+    },
+    "zht": {
+     ".t": "你的職場退休金",
+     ".x": "你被自動加入職場退休金：至少5%的合格薪資存進去（含稅務減免），僱主至少再加3%。你可以退出，把5%留作薪水。",
+     ".stay": "留在計畫裡",
+     ".stay.s": "每年從薪水扣{a}，僱主再加{b}。鎖到57歲。",
+     ".more": "存10%",
+     ".more.s": "每年從薪水扣{a}，僱主仍加{b}。",
+     ".out": "退出",
+     ".out.s": "每年到手多約{a}。",
+     "trk.wpen": "職場退休金"
+    }
+   }
+  },
+  {
+   "id": "gb_nhs",
+   "src": "NHS waits: 7.41 million waiting pathways in August 2025, with 61% waiting under 18 weeks (NHS England RTT statistics, via Health Care and Protection). A private knee replacement at about £13,500 ≈ 0.76 of the game's typical wage: an ESTIMATE.",
+   "age": [45, 64],
+   "weight": 0.55,
+   "def": "wait",
+   "tarot": "health2",
+   "art": {"draw": "bill", "bg": "wa"},
+   "let": {"c": ".76 * base * (insured ? .15 : 1)"},
+   "opts": [
+    {
+     "id": "wait",
+     "hint": true,
+     "do": "rec('', 0, 2, -2); happy -= 4; if (working()) tmpPay('gb_nhsW', .95, 1, 'trk.gb_nhsW')"
+    },
+    {
+     "id": "private",
+     "sub": {"a": "MN(c)", "ins": "insured ? M('e.health2.ins') : ''"},
+     "do": "spend('gb_nhs', c, 'trk.gb_nhs'); health += 1; happy += 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A knee operation",
+     ".x": "You need a knee replacement. The NHS will do it for free, but about 7.4 million cases were waiting in England in 2025, and almost 4 in 10 had waited more than 18 weeks. A private hospital charges around £12,000–15,000.",
+     ".wait": "Wait for the NHS",
+     ".wait.s": "Free, but months of pain first, and time off work. Happiness −4.",
+     ".wait.h": "Health −4.",
+     ".private": "Go private",
+     ".private.s": "About {a}{ins}. Surgery within weeks. Happiness +1.",
+     "trk.gb_nhs": "Private knee operation",
+     "trk.gb_nhsW": "Time off while waiting"
+    },
+    "zh": {
+     ".t": "膝盖手术",
+     ".x": "你需要换膝关节。NHS免费帮你做，但2025年英格兰约有740万个案例在排队，近四成等了18周以上。私立医院收费约£12,000–15,000。",
+     ".wait": "排NHS的队",
+     ".wait.s": "免费，但要先痛好几个月，还要请假。幸福感 −4。",
+     ".wait.h": "健康 −4。",
+     ".private": "去私立医院",
+     ".private.s": "约{a}{ins}。几周内就动手术。幸福感 +1。",
+     "trk.gb_nhs": "私立医院膝盖手术",
+     "trk.gb_nhsW": "等待期间请假"
+    },
+    "zht": {
+     ".t": "膝蓋手術",
+     ".x": "你需要換膝關節。NHS免費幫你做，但2025年英格蘭約有740萬個案例在排隊，近四成等了18周以上。私立醫院收費約£12,000–15,000。",
+     ".wait": "排NHS的隊",
+     ".wait.s": "免費，但要先痛好幾個月，還要請假。幸福感 −4。",
+     ".wait.h": "健康 −4。",
+     ".private": "去私立醫院",
+     ".private.s": "約{a}{ins}。幾周內就動手術。幸福感 +1。",
+     "trk.gb_nhs": "私立醫院膝蓋手術",
+     "trk.gb_nhsW": "等待期間請假"
+    }
+   }
+  },
+  {
+   "id": "gb_shared",
+   "src": "Shared Ownership: buy a 10–75% share with a mortgage and pay rent (usually up to 2.75–3% of the unsold share's value a year) to a housing association (GOV.UK Shared Ownership).",
+   "age": [25, 40],
+   "weight": 0.6,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "room",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": "price()", "Sh": ".4 * P", "liq": "liquid()"},
+   "vars": {"p": "MN(price())"},
+   "opts": [
+    {
+     "id": "share",
+     "sub": {"d": "upFront(Sh, .1, .02)", "m": "yrPay(Sh, .1, .03)", "r": "MN(.0165 * P)"},
+     "ok": "liq >= .12 * Sh || M('e.home.need', { n: MN(.12 * Sh), h: MN(liq) })",
+     "do": "buyAt(Sh, { dp: .1, fee: .02, r: .03, n: 30, lk: 'trk.gb_shared', frac: 1 }); T('gb_soRent', { kind: 'custom', label: M('trk.gb_soRent') }); rec('gb_soRent', .0165 * P, 30)"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Shared Ownership",
+     ".x": "With Shared Ownership you buy part of a home (10% to 75%) with a mortgage and pay rent to a housing association on the rest, usually up to 3% of its value a year. You can buy more later. A home near you costs {p}.",
+     ".share": "Buy a 40% share",
+     ".share.s": "{d} up front and {m} a year on the mortgage, plus {r} a year in rent on the rest.",
+     ".wait": "Keep renting",
+     ".wait.s": "Your rent stays the same.",
+     "trk.gb_shared": "Shared Ownership share",
+     "trk.gb_soRent": "Rent on the rest"
+    },
+    "zh": {
+     ".t": "共有产权",
+     ".x": "共有产权让你用房贷买下房子的一部分（10%到75%），其余部分付租金给住房协会，通常每年不超过那部分价值的3%。之后可以再买更多份额。你附近一间房子要{p}。",
+     ".share": "买40%的份额",
+     ".share.s": "首付{d}，房贷每年{m}，其余部分每年租金{r}。",
+     ".wait": "继续租房",
+     ".wait.s": "房租不变。",
+     "trk.gb_shared": "共有产权份额",
+     "trk.gb_soRent": "其余部分的租金"
+    },
+    "zht": {
+     ".t": "共有產權",
+     ".x": "共有產權讓你用房貸買下房子的一部分（10%到75%），其餘部分付租金給住房協會，通常每年不超過那部分價值的3%。之後可以再買更多份額。你附近一間房子要{p}。",
+     ".share": "買40%的份額",
+     ".share.s": "頭期款{d}，房貸每年{m}，其餘部分每年租金{r}。",
+     ".wait": "繼續租房",
+     ".wait.s": "房租不變。",
+     "trk.gb_shared": "共有產權份額",
+     "trk.gb_soRent": "其餘部分的租金"
+    }
+   }
+  },
+  {
+   "id": "gb_childcare",
+   "src": "Childcare in England: 30 hours a week of funded childcare in term time for working parents of children from 9 months, from September 2025 (Department for Education; Working Families). Costs of extra hours are ESTIMATES.",
+   "age": [22, 45],
+   "weight": 0.8,
+   "when": {"kidAge": [0, 1], "working": true},
+   "def": "both",
+   "tarot": "kids",
+   "art": {"draw": "blocks", "bg": "ya"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "both",
+     "sub": {"a": "MN(.1 * B)"},
+     "do": "T('gb_cc', { kind: 'custom', label: M('trk.daycare') }); rec('gb_cc', .1 * B, 4)"
+    },
+    {"id": "part", "rel": 2, "do": "tmpPay('gb_part', .6, 4, 'trk.parttime'); happy += 2"},
+    {
+     "id": "family",
+     "sub": {"a": "MN(.03 * B)"},
+     "rel": 3,
+     "do": "T('gb_cc', { kind: 'custom', label: M('trk.daycareF') }); rec('gb_cc', .03 * B, 4)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Childcare",
+     ".x": "Since September 2025, working parents in England can get 30 hours a week of free childcare in term time, from when a child is 9 months old. Extra hours, meals and holidays you pay for yourselves.",
+     ".both": "Both keep working",
+     ".both.s": "Extras cost about {a} a year for 4 years.",
+     ".part": "One of you goes part-time",
+     ".part.s": "About 40% less pay for 4 years (16 hours a week or more keeps the free hours). Happiness +2.",
+     ".family": "Grandparents help",
+     ".family.s": "You help with their costs: about {a} a year."
+    },
+    "zh": {
+     ".t": "托儿",
+     ".x": "从2025年9月起，英格兰的在职父母在孩子满9个月后，学期内每周可享30小时免费托儿。额外的时数、餐费和假期要自己付。",
+     ".both": "两人都继续工作",
+     ".both.s": "额外费用每年约{a}，共4年。",
+     ".part": "其中一人改做兼职",
+     ".part.s": "4年内工资少约40%（每周至少16小时才保得住免费时数）。幸福感 +2。",
+     ".family": "请祖父母帮忙",
+     ".family.s": "你帮忙负担他们的开销：每年约{a}。"
+    },
+    "zht": {
+     ".t": "托育",
+     ".x": "從2025年9月起，英格蘭的在職父母在孩子滿9個月後，學期內每週可享30小時免費托育。額外的時數、餐費和假期要自己付。",
+     ".both": "兩人都繼續工作",
+     ".both.s": "額外費用每年約{a}，共4年。",
+     ".part": "其中一人改做兼職",
+     ".part.s": "4年內薪水少約40%（每週至少16小時才保得住免費時數）。幸福感 +2。",
+     ".family": "請祖父母幫忙",
+     ".family.s": "你幫忙負擔他們的開銷：每年約{a}。"
+    }
+   }
+  },
+  {
+   "id": "gb_ni",
+   "src": "National Insurance gaps: the full new State Pension is £230.25 a week in 2025/26 and needs 35 qualifying years; a voluntary Class 3 year costs £923 and adds about £342 a year (1/35 of the full rate) (Which?, 2025). In game money a year costs ≈ 0.052 and adds ≈ 0.019 a year; three missing years.",
+   "age": [42, 60],
+   "weight": 0.6,
+   "def": "skip",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "fill",
+     "sub": {"a": "MN(.156 * B)", "b": "MN(.058 * B)"},
+     "do": "pay(.156 * B); penScheme('gb_ni', 0, 0, .058 * B, 67); const t = trk.gb_ni; t.v -= .156 * B; t.paid = .156 * B"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Gaps in your National Insurance",
+     ".x": "Your National Insurance record has three missing years from time abroad or out of work. The full new State Pension (£230.25 a week in 2025/26) needs 35 qualifying years. Each missing year costs £923 to fill and adds about £342 a year to your pension, for life.",
+     ".fill": "Fill the three years",
+     ".fill.s": "Pay {a} now for about {b} more pension a year from 67.",
+     ".skip": "Leave the gaps",
+     ".skip.s": "Keep the money.",
+     "trk.gb_ni": "National Insurance top-up"
+    },
+    "zh": {
+     ".t": "国民保险的空缺",
+     ".x": "因为出国或没工作，你的国民保险记录少了三年。全额新国家养老金（2025/26年度每周£230.25）需要35个合格年。每补一年要£923，之后每年多领约£342，终身领取。",
+     ".fill": "补上这三年",
+     ".fill.s": "现在付{a}，67岁起每年多领约{b}的养老金。",
+     ".skip": "不补",
+     ".skip.s": "钱留着。",
+     "trk.gb_ni": "补缴国民保险"
+    },
+    "zht": {
+     ".t": "國民保險的空缺",
+     ".x": "因為出國或沒工作，你的國民保險記錄少了三年。全額新國家退休金（2025/26年度每週£230.25）需要35個合格年。每補一年要£923，之後每年多領約£342，終身領取。",
+     ".fill": "補上這三年",
+     ".fill.s": "現在付{a}，67歲起每年多領約{b}的退休金。",
+     ".skip": "不補",
+     ".skip.s": "錢留著。",
+     "trk.gb_ni": "補繳國民保險"
+    }
+   }
+  },
+  {
+   "id": "gb_bonds",
+   "src": "Premium Bonds: a 3.60% prize fund rate until April 2026, then 3.30% with odds of 23,000 to 1 per £1 bond; prizes tax-free (NS&I press release, Feb 2026). With UK inflation near 3.5%, about 0% in today's money; a cash ISA about 0.5%: ESTIMATES.",
+   "age": [22, 70],
+   "weight": 0.5,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "keep",
+   "tarot": "tip",
+   "art": {"draw": "bond", "bg": "ya"},
+   "let": {"a": ".3 * liquid()"},
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "bonds", "sub": {"a": "MN(a)"}, "do": "putIn('pbond', a, {rate: 0}, 'trk.pbond')"},
+    {"id": "cash", "sub": {"a": "MN(a)"}, "do": "putIn('cisa', a, {rate: .005}, 'trk.cisa')"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Premium Bonds",
+     ".x": "With Premium Bonds your savings are safe with NS&I, and instead of interest each £1 bond enters a monthly prize draw. The prize fund rate was 3.6% in 2025 and 3.3% from April 2026; prizes are tax-free, but most bonds win nothing in most months. You have {a} to put somewhere.",
+     ".bonds": "Premium Bonds",
+     ".bonds.s": "Move {a} in. Over the years, about the same as inflation.",
+     ".cash": "A cash ISA",
+     ".cash.s": "Move {a} in. About 0.5% a year after inflation.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "It stays in your account.",
+     "trk.cisa": "Cash ISA",
+     "trk.pbond": "Premium Bonds"
+    },
+    "zh": {
+     ".t": "有奖债券",
+     ".x": "有奖债券（Premium Bonds）由国家储蓄投资局担保，不付利息，而是每1英镑债券参加每月抽奖。2025年奖金池利率为3.6%，2026年4月起为3.3%；奖金免税，但大多数债券大多数月份什么都没抽中。你有{a}要找地方放。",
+     ".bonds": "有奖债券",
+     ".bonds.s": "放入{a}。长期下来大约和通胀持平。",
+     ".cash": "现金ISA",
+     ".cash.s": "放入{a}。扣除通胀后每年约0.5%。",
+     ".keep": "放在银行",
+     ".keep.s": "钱留在账户里。",
+     "trk.cisa": "现金ISA",
+     "trk.pbond": "有奖债券"
+    },
+    "zht": {
+     ".t": "有獎債券",
+     ".x": "有獎債券（Premium Bonds）由國家儲蓄投資局擔保，不付利息，而是每1英鎊債券參加每月抽獎。2025年獎金池利率為3.6%，2026年4月起為3.3%；獎金免稅，但大多數債券大多數月份什麼都沒抽中。你有{a}要找地方放。",
+     ".bonds": "有獎債券",
+     ".bonds.s": "放入{a}。長期下來大約和通膨持平。",
+     ".cash": "現金ISA",
+     ".cash.s": "放入{a}。扣除通膨後每年約0.5%。",
+     ".keep": "放在銀行",
+     ".keep.s": "錢留在帳戶裡。",
+     "trk.cisa": "現金ISA",
+     "trk.pbond": "有獎債券"
+    }
+   }
+  }
+ ]
+}

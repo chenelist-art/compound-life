@@ -1,0 +1,536 @@
+{
+ "about": "Country cards for lives born in Japan. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "JP",
+ "events": [
+  {
+   "id": "jp_shukatsu",
+   "src": "===================== Japan (JP) ===================== Shūkatsu: firms hire new graduates together each April after job-hunting in the third and fourth years (Keidanren and government schedule guidelines). Large firms' layoff rarity, seniority pay and costs are game rules and ESTIMATES.",
+   "age": [20, 23],
+   "weight": 1,
+   "when": {"studying": true, "test": "study.k === 'uni' && study.end - age === 1"},
+   "def": "big",
+   "tarot": "job",
+   "art": {"draw": "suit", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "big",
+     "sub": {"a": "MN(.04 * B)"},
+     "hint": true,
+     "do": "spend('jp_shukatsu', .04 * B, 'trk.jp_shukatsu'); happy -= 3; layM = .35; ppM = (ppM || 1) * .8; bump('jp_big', 1.06, M('trk.jp_big'))"
+    },
+    {
+     "id": "small",
+     "sub": {"a": "MN(.015 * B)"},
+     "hint": true,
+     "do": "spend('jp_shukatsu', .015 * B, 'trk.jp_shukatsu')"
+    },
+    {
+     "id": "gap",
+     "sub": {"a": "MN(.3 * B)"},
+     "hint": true,
+     "do": "spend('jp_gap', .3 * B, 'trk.jp_gap'); happy += 5; addSkill('gap', 2, M('trk.jp_gap')); layM = 1.15; jobAt = study.end + 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Job-hunting season",
+     ".x": "Japanese firms hire new graduates together every April. Job-hunting fills your third and fourth years: company briefings, a black suit, written tests and many rounds of interviews. Large firms rarely lay people off and raise pay with seniority, but their doors are hardest to open once you miss this window.",
+     ".big": "Go all out for a large firm",
+     ".big.s": "About {a} on suits, travel and tests, and months of interviews. Happiness −3.",
+     ".big.h": "In a large firm, layoffs are much rarer and pay a little higher, but promotions come slowly.",
+     ".small": "Apply to smaller firms and start-ups too",
+     ".small.s": "About {a} on job-hunting.",
+     ".small.h": "Ordinary layoffs and promotions.",
+     ".gap": "A working-holiday year abroad first",
+     ".gap.s": "About {a}, and you start work a year later. Happiness +5.",
+     ".gap.h": "Skill +2; employers are a little less loyal to late starters.",
+     "trk.jp_big": "Large-firm pay",
+     "trk.jp_gap": "Working holiday",
+     "trk.jp_shukatsu": "Job-hunting"
+    },
+    "zh": {
+     ".t": "求职季",
+     ".x": "日本企业每年四月统一录用应届毕业生。大三大四都在求职：企业说明会、黑色西装、笔试和一轮又一轮的面试。大公司很少裁员，工资按年资上涨，但错过这个时机，大门就很难再打开。",
+     ".big": "全力冲大公司",
+     ".big.s": "西装、路费和考试约{a}，面试好几个月。幸福感 −3。",
+     ".big.h": "在大公司被裁员的机会小得多，工资略高，但升职慢。",
+     ".small": "中小企业和创业公司也投",
+     ".small.s": "求职花约{a}。",
+     ".small.h": "裁员和升职都和一般公司一样。",
+     ".gap": "先去海外打工度假一年",
+     ".gap.s": "约{a}，晚一年开始工作。幸福感 +5。",
+     ".gap.h": "技能 +2；公司对晚入职的人稍微没那么照顾。",
+     "trk.jp_big": "大公司薪水",
+     "trk.jp_gap": "打工度假",
+     "trk.jp_shukatsu": "求职"
+    },
+    "zht": {
+     ".t": "求職季",
+     ".x": "日本企業每年四月統一錄用應屆畢業生。大三大四都在求職：企業說明會、黑色西裝、筆試和一輪又一輪的面試。大公司很少裁員，薪水按年資上漲，但錯過這個時機，大門就很難再開啟。",
+     ".big": "全力衝大公司",
+     ".big.s": "西裝、路費和考試約{a}，面試好幾個月。幸福感 −3。",
+     ".big.h": "在大公司被裁員的機會小得多，薪水略高，但升職慢。",
+     ".small": "中小企業和創業公司也投",
+     ".small.s": "求職花約{a}。",
+     ".small.h": "裁員和升職都和一般公司一樣。",
+     ".gap": "先去海外打工度假一年",
+     ".gap.s": "約{a}，晚一年開始工作。幸福感 +5。",
+     ".gap.h": "技能 +2；公司對晚入職的人稍微沒那麼照顧。",
+     "trk.jp_big": "大公司薪水",
+     "trk.jp_gap": "打工度假",
+     "trk.jp_shukatsu": "求職"
+    }
+   }
+  },
+  {
+   "id": "jp_overtime",
+   "src": "Overtime: since 2019 capped at 45 hours a month and 360 a year (720 with special agreements); 80 hours a month is the government's overwork-illness line; overtime pays at least 25% extra (MHLW, Work Style Reform). Effects are game rules.",
+   "age": [24, 45],
+   "weight": 0.6,
+   "when": {"working": true, "careerType": ["office"]},
+   "def": "stay",
+   "tarot": "roof",
+   "art": {"draw": "late", "bg": "wa"},
+   "opts": [
+    {
+     "id": "stay",
+     "hint": true,
+     "rel": -3,
+     "do": "tmpPay('jp_overtime', 1.15, 5, 'trk.jp_overtime'); rec('', 0, 5, -1.5); grindY += 3; happy -= 3"
+    },
+    {"id": "cap", "hint": true, "do": "ppM = (ppM || 1) * .9; happy += 1"},
+    {"id": "move", "do": "bump('jp_calm', .97, M('trk.jp_calm')); happy += 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Long hours",
+     ".x": "Since 2019 overtime is capped at 45 hours a month and 360 a year (720 with special agreements), but your team often works close to 80 hours of overtime a month, the level the government links to overwork illness. Overtime is paid at least 25% extra.",
+     ".stay": "Work the overtime",
+     ".stay.s": "About 15% more pay for five years. Happiness −3.",
+     ".stay.h": "Health −1.5 a year for five years.",
+     ".cap": "Stop at the legal limit",
+     ".cap.s": "Happiness +1.",
+     ".cap.h": "Promotions a little slower.",
+     ".move": "Ask to move to a calmer team",
+     ".move.s": "About 3% less pay. Happiness +3.",
+     "trk.jp_calm": "A calmer team",
+     "trk.jp_overtime": "Overtime pay"
+    },
+    "zh": {
+     ".t": "长时间加班",
+     ".x": "从2019年起加班上限为每月45小时、每年360小时（特别协议下720小时），但你的团队常常每月加班近80小时，正是政府认定过劳致病的界线。加班费至少多付25%。",
+     ".stay": "照样加班",
+     ".stay.s": "五年内工资多约15%。幸福感 −3。",
+     ".stay.h": "五年内每年健康 −1.5。",
+     ".cap": "到法定上限就停",
+     ".cap.s": "幸福感 +1。",
+     ".cap.h": "升职稍慢。",
+     ".move": "申请调到轻松一点的部门",
+     ".move.s": "工资少约3%。幸福感 +3。",
+     "trk.jp_calm": "轻松一点的部门",
+     "trk.jp_overtime": "加班费"
+    },
+    "zht": {
+     ".t": "長時間加班",
+     ".x": "從2019年起加班上限為每月45小時、每年360小時（特別協議下720小時），但你的團隊常常每月加班近80小時，正是政府認定過勞致病的界線。加班費至少多付25%。",
+     ".stay": "照樣加班",
+     ".stay.s": "五年內薪水多約15%。幸福感 −3。",
+     ".stay.h": "五年內每年健康 −1.5。",
+     ".cap": "到法定上限就停",
+     ".cap.s": "幸福感 +1。",
+     ".cap.h": "升職稍慢。",
+     ".move": "申請調到輕鬆一點的部門",
+     ".move.s": "薪水少約3%。幸福感 +3。",
+     "trk.jp_calm": "輕鬆一點的部門",
+     "trk.jp_overtime": "加班費"
+    }
+   }
+  },
+  {
+   "id": "jp_nisa",
+   "src": "New NISA (from 2024): up to ¥3.6 million a year and ¥18 million in a lifetime, tax-free (FSA, via Daiwa and Rakuten Securities). iDeCo is locked until 60 and contributions are deductible; the tax saving (about 15% with resident tax) is an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.75,
+   "when": {"working": true},
+   "def": "bank",
+   "tarot": "edufund",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": ".1 * base"},
+   "opts": [
+    {
+     "id": "nisa",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('nisa', { amt: a, until: age + 25 }, {}, 'trk.nisa')"
+    },
+    {
+     "id": "ideco",
+     "sub": {"a": "MN(a)", "b": "MN(.15 * a)"},
+     "do": "yearly('ideco', { amt: a, until: 60, bonus: .15 }, { lock: 60 }, 'trk.ideco')"
+    },
+    {"id": "bank"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "NISA or iDeCo",
+     ".x": "The new NISA (since 2024) lets you invest up to ¥3.6 million a year, ¥18 million in a lifetime, with no tax on the gains. iDeCo, a private pension, is locked until 60, but what you put in comes off your taxable income. Many families keep their savings in deposits that pay almost nothing.",
+     ".nisa": "A monthly NISA index fund",
+     ".nisa.s": "About {a} a year for 25 years. About 5% a year after inflation on average, with crashes along the way.",
+     ".ideco": "iDeCo",
+     ".ideco.s": "The same amount, locked until 60. Your taxes fall by about {b} a year.",
+     ".bank": "Keep it in the bank",
+     ".bank.s": "Safe, but it barely grows.",
+     "trk.ideco": "iDeCo",
+     "trk.nisa": "NISA"
+    },
+    "zh": {
+     ".t": "NISA还是iDeCo",
+     ".x": "新NISA（2024年起）每年最多可投资360万日元，终身1,800万日元，收益免税。私人养老金iDeCo要锁到60岁，但存进去的钱可以抵税。很多家庭把积蓄放在几乎没有利息的存款里。",
+     ".nisa": "每月定投NISA指数基金",
+     ".nisa.s": "每年约{a}，投25年。扣除通胀后平均每年约5%，中途会遇到股灾。",
+     ".ideco": "iDeCo",
+     ".ideco.s": "同样的金额，锁到60岁。每年少缴约{b}的税。",
+     ".bank": "存在银行",
+     ".bank.s": "很安全，但几乎不增长。",
+     "trk.ideco": "iDeCo",
+     "trk.nisa": "NISA"
+    },
+    "zht": {
+     ".t": "NISA還是iDeCo",
+     ".x": "新NISA（2024年起）每年最多可投資360萬日元，終身1,800萬日元，收益免稅。私人退休金iDeCo要鎖到60歲，但存進去的錢可以抵稅。很多家庭把積蓄放在幾乎沒有利息的存款裡。",
+     ".nisa": "每月定期定額NISA指數基金",
+     ".nisa.s": "每年約{a}，投25年。扣除通膨後平均每年約5%，中途會遇到股災。",
+     ".ideco": "iDeCo",
+     ".ideco.s": "同樣的金額，鎖到60歲。每年少繳約{b}的稅。",
+     ".bank": "存在銀行",
+     ".bank.s": "很安全，但幾乎不增長。",
+     "trk.ideco": "iDeCo",
+     "trk.nisa": "NISA"
+    }
+   }
+  },
+  {
+   "id": "jp_furusato",
+   "src": "Furusato nōzei: donations to towns come off income and resident tax except ¥2,000, within a limit; return gifts are capped at 30% of the donation (Ministry of Internal Affairs rules since June 2019). A ¥120,000 donation ≈ 0.05 of the game's typical wage (¥2.47 million), so gifts ≈ 0.014 a year after the ¥2,000.",
+   "age": [26, 62],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "skip",
+   "tarot": "charity",
+   "art": {"draw": "gift", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "yearly",
+     "sub": {"a": "MN(.05 * B)", "b": "MN(.015 * B)"},
+     "do": "T('jp_furusato', { kind: 'custom', label: M('trk.jp_furusato') }); rec('jp_furusato', -.014 * B, 15); happy += 1"
+    },
+    {
+     "id": "once",
+     "sub": {"a": "MN(.05 * B)", "b": "MN(.015 * B)"},
+     "do": "cash += .014 * B; happy += 1"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Hometown tax",
+     ".x": "Furusato nōzei: donate to any town in Japan and, within your limit, all but ¥2,000 comes off your taxes. Towns send thank-you gifts worth up to 30% of the donation, like rice, fruit or beef.",
+     ".yearly": "Do it every year",
+     ".yearly.s": "Donate about {a} a year; almost all of it comes back as lower tax, plus gifts worth about {b}. Happiness +1.",
+     ".once": "Try it once",
+     ".once.s": "Donate about {a} this year for gifts worth about {b}. Happiness +1.",
+     ".skip": "Too much paperwork",
+     ".skip.s": "Your taxes stay as they are.",
+     "trk.jp_furusato": "Hometown tax gifts"
+    },
+    "zh": {
+     ".t": "故乡纳税",
+     ".x": "故乡纳税：在额度内捐款给日本任何一个市町村，除了2,000日元，其余都能抵税。地方还会寄回价值最多为捐款30%的回礼，比如大米、水果或牛肉。",
+     ".yearly": "每年都做",
+     ".yearly.s": "每年捐约{a}；几乎全部能抵税，还有价值约{b}的回礼。幸福感 +1。",
+     ".once": "试一次",
+     ".once.s": "今年捐约{a}，换价值约{b}的回礼。幸福感 +1。",
+     ".skip": "手续太麻烦",
+     ".skip.s": "税照旧。",
+     "trk.jp_furusato": "故乡纳税回礼"
+    },
+    "zht": {
+     ".t": "故鄉納稅",
+     ".x": "故鄉納稅：在額度內捐款給日本任何一個市町村，除了2,000日元，其餘都能抵稅。地方還會寄回價值最多為捐款30%的回禮，比如大米、水果或牛肉。",
+     ".yearly": "每年都做",
+     ".yearly.s": "每年捐約{a}；幾乎全部能抵稅，還有價值約{b}的回禮。幸福感 +1。",
+     ".once": "試一次",
+     ".once.s": "今年捐約{a}，換價值約{b}的回禮。幸福感 +1。",
+     ".skip": "手續太麻煩",
+     ".skip.s": "稅照舊。",
+     "trk.jp_furusato": "故鄉納稅回禮"
+    }
+   }
+  },
+  {
+   "id": "jp_kaigo",
+   "src": "Family care: care leave of up to 93 days per family member at 67% of pay from employment insurance (MHLW); long-term care insurance users pay 10–30%; about 104,000 people left work to give care in FY2023 (MHLW, reported via financial-field.com). Service and care-home costs are ESTIMATES.",
+   "age": [45, 62],
+   "weight": 0.55,
+   "def": "leave",
+   "tarot": "parents",
+   "art": {"draw": "carer", "bg": "ya"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "leave",
+     "sub": {"a": "MN(.04 * B)"},
+     "rel": 4,
+     "do": "if (working()) tmpPay('jp_kaigoL', .92, 1, 'trk.jp_kaigoL'); T('jp_kaigo', { kind: 'custom', label: M('trk.jp_kaigo') }); rec('jp_kaigo', .04 * B, 6)"
+    },
+    {
+     "id": "quit",
+     "ok": "working() || M('.nojob')",
+     "rel": 7,
+     "do": "endCareer('quit', age - 1); jobAt = age + 3; happy -= 3; T('jp_kaigo', { kind: 'custom', label: M('trk.jp_kaigo') }); rec('jp_kaigo', .01 * B, 3)"
+    },
+    {
+     "id": "home",
+     "sub": {"a": "MN(.15 * B)"},
+     "rel": 1,
+     "do": "T('jp_kaigo', { kind: 'custom', label: M('trk.jp_kaigoH') }); rec('jp_kaigo', .15 * B, 5)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A parent needs care",
+     ".x": "One of your parents now needs daily care. Long-term care insurance pays most of the cost of home help and day services (you pay 10–30%), and workers can take up to 93 days of care leave at 67% of their pay. About 100,000 people a year leave their jobs to care for family.",
+     ".leave": "Take care leave and arrange services",
+     ".leave.s": "Three months at 67% of pay, then about {a} a year for your share of the services.",
+     ".quit": "Leave your job to care for them",
+     ".quit.s": "You can look for work again in about three years. Happiness −3.",
+     ".nojob": "You don’t have a job to leave.",
+     ".home": "A private care home",
+     ".home.s": "About {a} a year (public homes have long waiting lists).",
+     "trk.jp_kaigo": "Care services",
+     "trk.jp_kaigoH": "Care home",
+     "trk.jp_kaigoL": "Care leave"
+    },
+    "zh": {
+     ".t": "父母需要照护",
+     ".x": "你的父亲或母亲现在每天都需要照护。护理保险负担大部分上门照护和日间照护的费用（自付10–30%），员工最多可请93天护理假，领67%的工资。每年约有10万人为照顾家人辞职。",
+     ".leave": "请护理假，安排照护服务",
+     ".leave.s": "三个月领67%的工资，之后服务自付部分每年约{a}。",
+     ".quit": "辞职亲自照顾",
+     ".quit.s": "大约三年后才能再找工作。幸福感 −3。",
+     ".nojob": "你没有工作可以辞。",
+     ".home": "送进私立养老院",
+     ".home.s": "每年约{a}（公立养老院要排很久）。",
+     "trk.jp_kaigo": "照护服务",
+     "trk.jp_kaigoH": "养老院",
+     "trk.jp_kaigoL": "护理假"
+    },
+    "zht": {
+     ".t": "父母需要照護",
+     ".x": "你的父親或母親現在每天都需要照護。護理保險負擔大部分上門照護和日間照護的費用（自付10–30%），員工最多可請93天護理假，領67%的薪水。每年約有10萬人為照顧家人辭職。",
+     ".leave": "請護理假，安排照護服務",
+     ".leave.s": "三個月領67%的薪水，之後服務自付部分每年約{a}。",
+     ".quit": "辭職親自照顧",
+     ".quit.s": "大約三年後才能再找工作。幸福感 −3。",
+     ".nojob": "你沒有工作可以辭。",
+     ".home": "送進私立安養機構",
+     ".home.s": "每年約{a}（公立安養機構要排很久）。",
+     "trk.jp_kaigo": "照護服務",
+     "trk.jp_kaigoH": "安養機構",
+     "trk.jp_kaigoL": "護理假"
+    }
+   }
+  },
+  {
+   "id": "jp_akiya",
+   "src": "Akiya: 9.0 million empty homes in Oct 2023, 13.8% of all homes (Housing and Land Survey 2023, via Jiji); since 27 Apr 2023 inherited land can be handed to the state for a fee of usually ¥200,000 (≈ 0.08), the building torn down first (Ministry of Justice). Upkeep, demolition and sale prices are ESTIMATES.",
+   "age": [50, 74],
+   "weight": 0.5,
+   "def": "keep",
+   "tarot": "downsize",
+   "art": {"draw": "akiya", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "keep",
+     "sub": {"a": "MN(.05 * B)"},
+     "do": "T('jp_akiya', { kind: 'custom', label: M('trk.jp_akiya') }); rec('jp_akiya', .05 * B, 15); happy += 1; later(age + 2 + Math.floor(roll('akiyaAt') * 8), 'akiya', {})"
+    },
+    {
+     "id": "sell",
+     "hint": true,
+     "do": "const v = inR(roll('akiyaSell'), [0, .6]) * B; cash += v; const t = T('jp_akiya', { kind: 'custom', label: M('trk.jp_akiyaS'), v }); t.note = M('note.got', { a: MN(v) })"
+    },
+    {
+     "id": "state",
+     "sub": {"a": "MN(.5 * B)", "b": "MN(.08 * B)"},
+     "do": "const c = .58 * B; pay(c); const t = T('jp_akiya', { kind: 'custom', label: M('trk.jp_akiyaG'), v: -c }); t.note = M('note.paid', { a: MN(c) })"
+    }
+   ],
+   "later": {
+    "akiya": "if (roll('akiyaBuy') < .3) { const v = .4 * base; cash += v; stopRec('jp_akiya'); const t = trk.jp_akiya; if (t) { t.v += v; t.note = M('note.akiyaSold', { a: MN(v) }); } log(M('log.akiyaSold', { a: MN(v) }), 'good'); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The empty house",
+     ".x": "You inherit your parents’ old house in the countryside. Japan had 9 million empty homes in 2023, 13.8% of all homes. Since April 2023 you can hand inherited land to the state for a fee of usually ¥200,000, once the building is torn down.",
+     ".keep": "Keep it",
+     ".keep.s": "About {a} a year in tax and upkeep. Happiness +1.",
+     ".sell": "Sell it for what you can get",
+     ".sell.s": "Whatever a buyer offers.",
+     ".sell.h": "Old rural houses often sell for very little.",
+     ".state": "Tear it down and hand the land to the state",
+     ".state.s": "Demolition about {a}, plus the fee ({b}). No more costs after that.",
+     "trk.jp_akiya": "Countryside house",
+     "trk.jp_akiyaG": "House handed over",
+     "trk.jp_akiyaS": "House sold"
+    },
+    "zh": {
+     ".t": "空屋",
+     ".x": "你继承了父母在乡下的老房子。2023年日本有900万间空屋，占所有住宅的13.8%。从2023年4月起，拆掉房屋后，你可以把继承的土地交给国家，一般缴20万日元的负担金。",
+     ".keep": "留着",
+     ".keep.s": "每年税金和维护约{a}。幸福感 +1。",
+     ".sell": "能卖多少算多少",
+     ".sell.s": "买家出多少就是多少。",
+     ".sell.h": "乡下的老房子常常卖不了几个钱。",
+     ".state": "拆掉，把土地交给国家",
+     ".state.s": "拆除约{a}，加上负担金{b}。之后不再有任何费用。",
+     "trk.jp_akiya": "乡下老房子",
+     "trk.jp_akiyaG": "土地交给国家",
+     "trk.jp_akiyaS": "房子卖掉了"
+    },
+    "zht": {
+     ".t": "空屋",
+     ".x": "你繼承了父母在鄉下的老房子。2023年日本有900萬間空屋，佔所有住宅的13.8%。從2023年4月起，拆掉房屋後，你可以把繼承的土地交給國家，一般繳20萬日元的負擔金。",
+     ".keep": "留著",
+     ".keep.s": "每年稅金和維護約{a}。幸福感 +1。",
+     ".sell": "能賣多少算多少",
+     ".sell.s": "買家出多少就是多少。",
+     ".sell.h": "鄉下的老房子常常賣不了幾個錢。",
+     ".state": "拆掉，把土地交給國家",
+     ".state.s": "拆除約{a}，加上負擔金{b}。之後不再有任何費用。",
+     "trk.jp_akiya": "鄉下老房子",
+     "trk.jp_akiyaG": "土地交給國家",
+     "trk.jp_akiyaS": "房子賣掉了"
+    }
+   }
+  },
+  {
+   "id": "jp_nenkin",
+   "src": "Pension timing: claim from 60 to 75; each month early cuts 0.4% (−24% at 60), each month late adds 0.7% (+42% at 70, +84% at 75), for those born from 2 Apr 1962 (Japan Pension Service rules since April 2022, via President Online and Daiwa Institute).",
+   "age": [59, 60],
+   "weight": 1,
+   "def": "65",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "ya"},
+   "opts": [
+    {
+     "each": "[[60,0.76],[65,1],[70,1.42],[75,1.84]]",
+     "as": "q",
+     "id": "String(q[0])",
+     "sub": {"a": "MN(.18 * base * q[1])", "n": "q[0]"},
+     "do": "penClaim(q[0], q[1], 'jp_nenkin')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "When to start your pension",
+     ".x": "You can start your public pension at any age from 60 to 75. Each month earlier cuts it by 0.4% for life (24% less at 60); each month later adds 0.7% (42% more at 70, 84% more at 75).",
+     ".60": "Start at 60",
+     ".65": "Start at 65",
+     ".70": "Start at 70",
+     ".75": "Start at 75",
+     ".60.s": "About {a} a year from age {n}, for life.",
+     ".65.s": "About {a} a year from age {n}, for life.",
+     ".70.s": "About {a} a year from age {n}, for life.",
+     ".75.s": "About {a} a year from age {n}, for life."
+    },
+    "zh": {
+     ".t": "什么时候开始领年金",
+     ".x": "公共年金可以在60到75岁之间任何时候开始领。每提前一个月，终身减少0.4%（60岁领少24%）；每推迟一个月，增加0.7%（70岁多42%，75岁多84%）。",
+     ".60": "60岁开始领",
+     ".65": "65岁开始领",
+     ".70": "70岁开始领",
+     ".75": "75岁开始领",
+     ".60.s": "从{n}岁起每年约{a}，终身领取。",
+     ".65.s": "从{n}岁起每年约{a}，终身领取。",
+     ".70.s": "从{n}岁起每年约{a}，终身领取。",
+     ".75.s": "从{n}岁起每年约{a}，终身领取。"
+    },
+    "zht": {
+     ".t": "什麼時候開始領年金",
+     ".x": "公共年金可以在60到75歲之間任何時候開始領。每提前一個月，終身減少0.4%（60歲領少24%）；每推遲一個月，增加0.7%（70歲多42%，75歲多84%）。",
+     ".60": "60歲開始領",
+     ".65": "65歲開始領",
+     ".70": "70歲開始領",
+     ".75": "75歲開始領",
+     ".60.s": "從{n}歲起每年約{a}，終身領取。",
+     ".65.s": "從{n}歲起每年約{a}，終身領取。",
+     ".70.s": "從{n}歲起每年約{a}，終身領取。",
+     ".75.s": "從{n}歲起每年約{a}，終身領取。"
+    }
+   }
+  },
+  {
+   "id": "jp_quake",
+   "src": "Earthquake insurance: government-backed, up to 50% of the fire-insurance amount; 69.4% of fire policies included it in FY2022 (General Insurance Rating Organization of Japan, via financial-field.com). Premiums and quake odds are ESTIMATES.",
+   "age": [32, 70],
+   "weight": 0.6,
+   "when": {"house": true},
+   "def": "skip",
+   "tarot": "insure",
+   "art": {"draw": "quake", "bg": "mi"},
+   "fn": {
+    "q": {"args": ["ins"], "do": "later(age + 1 + Math.floor(roll('quakeAt') * 20), 'quake', {ins})"}
+   },
+   "opts": [
+    {
+     "id": "add",
+     "sub": {"a": "MN(.007 * base)"},
+     "hint": true,
+     "do": "T('jp_quakeI', { kind: 'custom', label: M('trk.jp_quakeI') }); rec('jp_quakeI', .007 * base, 20); q(1)"
+    },
+    {"id": "skip", "hint": true, "do": "q(0)"}
+   ],
+   "later": {
+    "quake": "if (!house || roll('quake') >= .25) return; const d = .25 * house.value, cov = x.ins ? .5 * d : 0; pay(d - cov); happy -= 5; const t = T('jp_quake', { kind: 'custom', label: M('trk.jp_quake') }); t.v -= d - cov; t.note = M('note.quake', { a: MN(d), b: MN(cov) }); log(M('log.quake', { a: MN(d), b: MN(cov) }), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Earthquake insurance",
+     ".x": "Your home insurance offers earthquake cover, backed by the government, for up to 50% of the amount your home is insured for. In 2022, 69% of fire-insurance policies included it.",
+     ".add": "Add earthquake cover",
+     ".add.s": "About {a} a year for 20 years.",
+     ".add.h": "A strong quake is unlikely in any one year; the cover pays half the damage.",
+     ".skip": "Skip it",
+     ".skip.s": "No cost now.",
+     ".skip.h": "A strong quake is unlikely in any one year, but the damage can be large.",
+     "trk.jp_quakeI": "Earthquake cover"
+    },
+    "zh": {
+     ".t": "地震保险",
+     ".x": "你的房屋保险可以加保由政府支持的地震险，最多保到火灾保险金额的50%。2022年有69%的火灾保险加保了地震险。",
+     ".add": "加保地震险",
+     ".add.s": "每年约{a}，保20年。",
+     ".add.h": "某一年遇到大地震的机会不大；保险会赔一半损失。",
+     ".skip": "不加保",
+     ".skip.s": "现在不花钱。",
+     ".skip.h": "某一年遇到大地震的机会不大，但损失可能很大。",
+     "trk.jp_quakeI": "地震保险"
+    },
+    "zht": {
+     ".t": "地震保險",
+     ".x": "你的房屋保險可以加保由政府支援的地震險，最多保到火災保險金額的50%。2022年有69%的火災保險加保了地震險。",
+     ".add": "加保地震險",
+     ".add.s": "每年約{a}，保20年。",
+     ".add.h": "某一年遇到大地震的機會不大；保險會賠一半損失。",
+     ".skip": "不加保",
+     ".skip.s": "現在不花錢。",
+     ".skip.h": "某一年遇到大地震的機會不大，但損失可能很大。",
+     "trk.jp_quakeI": "地震保險"
+    }
+   }
+  }
+ ]
+}

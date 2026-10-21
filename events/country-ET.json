@@ -1,0 +1,335 @@
+{
+ "about": "Country cards for lives born in Ethiopia. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "ET",
+ "events": [
+  {
+   "id": "et_iqub",
+   "src": "===================== Ethiopia (ET) ===================== Equb (iqub): members pay in regularly and take the pot in turn, often by lottery (Wikipedia \"Equb\"; Addis Standard). Risk ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.65,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "ya"},
+   "use": "rosca",
+   "with": {"a": 0.2, "n": 2, "early": 1, "late": 1, "risk": 0.05, "draw": true},
+   "i18n": {
+    "en": {
+     ".t": "Equb",
+     ".x": "Your neighbours run an equb: members pay in every month, and each month the pot goes to one member, drawn by lot, until everyone has had a turn."
+    },
+    "zh": {
+     ".t": "互助会（Equb）",
+     ".x": "邻居们办了一个互助会（equb）：会员每月交钱，每月抽签由一人拿走会钱，直到每个人都拿过一次。"
+    },
+    "zht": {
+     ".t": "互助會（Equb）",
+     ".x": "鄰居們辦了一個互助會（equb）：會員每月交錢，每月抽籤由一人拿走會錢，直到每個人都拿過一次。"
+    }
+   }
+  },
+  {
+   "id": "et_idir",
+   "src": "Idir (edir): a community burial association; families pay small monthly dues and the idir pays for funerals and lends tents and cooking equipment (Wikipedia \"Eder (finance)\"; Addis Fortune). Dues, the funeral cost and the share covered are ESTIMATES.",
+   "age": [24, 55],
+   "weight": 0.7,
+   "def": "join",
+   "tarot": "funeral",
+   "art": {"draw": "tent", "bg": "mi"},
+   "let": {"a": ".01 * base"},
+   "fn": {
+    "go": {
+     "args": ["j"],
+     "do": "idir = j; if (j) { T('et_idir', { kind: 'custom', label: M('trk.et_idir'), paid: 0, saved: 0, nk: 'note.idir' }); rec('et_idir', a, 45); } later(age + 3 + Math.floor(roll('idirAt') * 20), 'idir', {})"
+    }
+   },
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(a)"}, "rel": 3, "do": "go(1)"},
+    {"id": "no", "rel": -1, "do": "go(0)"}
+   ],
+   "later": {
+    "idir": "const c = .3 * base, cov = idir ? .8 * c : 0; pay(c - cov); happy -= 4; const t = T('et_idir', { kind: 'custom', label: M('trk.et_idir'), paid: 0, saved: 0, nk: 'note.idir' }); t.v -= c - cov; t.saved = (t.saved || 0) + cov; t.note = M('note.idir', { a: MN(t.paid || 0), b: MN(t.saved) }); log(M(idir ? 'log.idirHelp' : 'log.idirNo', { a: MN(c), b: MN(cov) }), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Joining an idir",
+     ".x": "Your neighbourhood idir is a burial association: each household pays small monthly dues, and when a family member dies the idir pays towards the funeral, lends tents and cooking pots, and members come to help.",
+     ".join": "Join the idir",
+     ".join.s": "About {a} a year in dues.",
+     ".no": "Don’t join",
+     ".no.s": "No dues to pay."
+    },
+    "zh": {
+     ".t": "加入互助丧葬会",
+     ".x": "你们社区的互助丧葬会（idir）：每户每月交一点会费，家里有人过世时，会里出钱办丧事，借出帐篷和锅具，会员也会来帮忙。",
+     ".join": "加入",
+     ".join.s": "每年会费约{a}。",
+     ".no": "不加入",
+     ".no.s": "不用交会费。"
+    },
+    "zht": {
+     ".t": "加入互助喪葬會",
+     ".x": "你們社區的互助喪葬會（idir）：每戶每月交一點會費，家裡有人過世時，會裡出錢辦喪事，借出帳篷和鍋具，會員也會來幫忙。",
+     ".join": "加入",
+     ".join.s": "每年會費約{a}。",
+     ".no": "不加入",
+     ".no.s": "不用交會費。"
+    }
+   }
+  },
+  {
+   "id": "et_infl",
+   "src": "Inflation: above 30% in 2023; after the July 2024 float the birr fell from about 57 to 128 per dollar by December 2024 (Ethiopian Economics Association, via The Reporter; Dabafinance). The yearly loss is an ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.6,
+   "when": {"stats": {"cash": "> .2 * base"}},
+   "def": "keep",
+   "tarot": "medcover",
+   "art": {"draw": "infl", "bg": "ya"},
+   "use": "infl",
+   "with": {"f": [0.08, 0.2], "usd": ".et"},
+   "i18n": {
+    "en": {
+     ".t": "Prices are rising fast",
+     ".x": "Inflation was above 30% in 2023, and after the birr was floated in July 2024 it fell from about 57 to 128 per dollar within six months. Money left in birr loses value."
+    },
+    "zh": {
+     ".t": "物价飞涨",
+     ".x": "2023年通胀率超过30%；2024年7月比尔开放浮动后，半年内从约57比尔兑1美元跌到128比尔。存在比尔里的钱会缩水。"
+    },
+    "zht": {
+     ".t": "物價飛漲",
+     ".x": "2023年通膨率超過30%；2024年7月比爾開放浮動後，半年內從約57比爾兌1美元跌到128比爾。存在比爾裡的錢會縮水。"
+    }
+   }
+  },
+  {
+   "id": "et_cbhi",
+   "src": "Community-based health insurance: a household premium of 240 birr a year under the national guideline (some districts 400–530 birr), 827 of about 1,100 districts covered in 2020 (Dove Press review; Frontiers in Public Health, 2022). Share covered: ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.75,
+   "when": {"test": "!medCut"},
+   "def": "join",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.012 * base)"},
+     "hint": true,
+     "do": "medPlan('et_cbhi', .45, .012 * base)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Community health insurance",
+     ".x": "Community-based health insurance covers most districts: a household pays a small yearly premium (240 birr under the national guideline, more in some districts), and the poorest families are covered for free.",
+     ".join": "Join",
+     ".join.s": "About {a} a year.",
+     ".join.h": "It pays about 55% of your medical bills.",
+     ".none": "Don’t join",
+     ".none.s": "You pay every bill yourself.",
+     "trk.et_cbhi": "Community health insurance"
+    },
+    "zh": {
+     ".t": "社区医疗保险",
+     ".x": "社区医疗保险覆盖大多数地区：每户每年交一点保费（国家标准为240比尔，有些地区更高），最贫困的家庭免费。",
+     ".join": "参加",
+     ".join.s": "每年约{a}。",
+     ".join.h": "能付约55%的医药费。",
+     ".none": "不参加",
+     ".none.s": "医药费全部自付。",
+     "trk.et_cbhi": "社区医疗保险"
+    },
+    "zht": {
+     ".t": "社區醫療保險",
+     ".x": "社區醫療保險覆蓋大多數地區：每戶每年交一點保費（國家標準為240比爾，有些地區更高），最貧困的家庭免費。",
+     ".join": "參加",
+     ".join.s": "每年約{a}。",
+     ".join.h": "能付約55%的醫藥費。",
+     ".none": "不參加",
+     ".none.s": "醫藥費全部自付。",
+     "trk.et_cbhi": "社區醫療保險"
+    }
+   }
+  },
+  {
+   "id": "et_condo",
+   "src": "Condominiums: the 20/80 and 40/60 schemes need a 20% or 40% down payment saved at the Commercial Bank of Ethiopia, the rest over 20 years; homes are allocated by lottery and many savers have waited over a decade (Addis Fortune; The Reporter; Capital Ethiopia). Savings earn less than inflation; the subsidised price (about 0.6 of market) and yearly odds are ESTIMATES.",
+   "age": [24, 40],
+   "weight": 0.6,
+   "when": {"house": false, "test": "!condoOn"},
+   "def": "no",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "mi"},
+   "let": {"B": "base"},
+   "fn": {
+    "go": {
+     "args": ["a", "dp", "p"],
+     "do": "condoOn = 1; yearly('et_condo', { amt: a, until: age + 15 }, { rate: -.04 }, 'trk.et_condoS'); later(age + 3, 'condo', { dp, p, until: age + 15 })"
+    }
+   },
+   "opts": [
+    {"id": "s20", "sub": {"a": "MN(.08 * B)"}, "hint": true, "do": "go(.08 * B, .2, .08)"},
+    {"id": "s40", "sub": {"a": "MN(.16 * B)"}, "hint": true, "do": "go(.16 * B, .4, .14)"},
+    {"id": "no"}
+   ],
+   "later": {
+    "condo": "if (house) { condoOn = 0; return } if (roll('condo' + age) < x.p) { const P = .6 * price(), l = lots.et_condo, sv = l ? l.v : 0; if (l) { l.v = 0; l.tout += sv; cash += sv } stopYearly('et_condo'); condoOn = 0; buyAt(P, {val: price(), dp: x.dp, fee: .01, r: .0, n: 20, lk: 'trk.et_condo', fixed: true, flex: true}); log(M('log.condoWin'), 'good') } else if (age < x.until) later(age + 1, 'condo', x)"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A condominium",
+     ".x": "In Addis Ababa you can register for a government condominium: save towards a 20% (20/80) or 40% (40/60) down payment at the Commercial Bank of Ethiopia, and homes are given out by lottery. Many savers have waited more than ten years.",
+     ".s20": "Register for 20/80",
+     ".s20.s": "Save about {a} a year at the bank.",
+     ".s20.h": "A small chance each year of winning a home.",
+     ".s40": "Register for 40/60",
+     ".s40.s": "Save about {a} a year at the bank.",
+     ".s40.h": "A better chance each year, with a bigger down payment.",
+     ".no": "Don’t register",
+     ".no.s": "Keep your savings free.",
+     "trk.et_condoS": "Condominium savings"
+    },
+    "zh": {
+     ".t": "公寓抽签",
+     ".x": "在亚的斯亚贝巴，你可以登记政府公寓：在埃塞俄比亚商业银行存够20%（20/80方案）或40%（40/60方案）的首付，房子以抽签分配。很多人已经等了十年以上。",
+     ".s20": "登记20/80",
+     ".s20.s": "每年在银行存约{a}。",
+     ".s20.h": "每年抽中的机会很小。",
+     ".s40": "登记40/60",
+     ".s40.s": "每年在银行存约{a}。",
+     ".s40.h": "首付较多，每年抽中的机会较大。",
+     ".no": "不登记",
+     ".no.s": "积蓄随时可用。",
+     "trk.et_condoS": "公寓储蓄"
+    },
+    "zht": {
+     ".t": "公寓抽籤",
+     ".x": "在阿迪斯阿貝巴，你可以登記政府公寓：在衣索比亞商業銀行存夠20%（20/80方案）或40%（40/60方案）的頭期款，房子以抽籤分配。很多人已經等了十年以上。",
+     ".s20": "登記20/80",
+     ".s20.s": "每年在銀行存約{a}。",
+     ".s20.h": "每年抽中的機會很小。",
+     ".s40": "登記40/60",
+     ".s40.s": "每年在銀行存約{a}。",
+     ".s40.h": "頭期款較多，每年抽中的機會較大。",
+     ".no": "不登記",
+     ".no.s": "積蓄隨時可用。",
+     "trk.et_condoS": "公寓儲蓄"
+    }
+   }
+  },
+  {
+   "id": "et_exam",
+   "src": "The Grade 12 exam: 8.4% of the 585,882 students who sat it in 2024/25 passed (50% or more), up from 5.4% (The Reporter). Effects of tutoring are game rules.",
+   "age": [16, 17],
+   "weight": 0.85,
+   "def": "self",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "mi"},
+   "opts": [
+    {
+     "id": "tutor",
+     "hint": true,
+     "do": "addSkill('school', 5 * learnLuck('etx'), M('trk.school')); happy -= 3; famCost('et_exam', .3)"
+    },
+    {
+     "id": "self",
+     "hint": true,
+     "do": "addSkill('school', 3 * learnLuck('etx'), M('trk.school')); happy -= 1"
+    },
+    {
+     "id": "work",
+     "sub": {"a": "MN(.05 * base)"},
+     "hint": true,
+     "do": "addSkill('school', 1, M('trk.school')); cash += .05 * base; earned += .05 * base"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Grade 12 exam",
+     ".x": "Next year you sit the Grade 12 national exam, now taken at universities under strict supervision. Only 8.4% of the 585,882 students who sat it in 2024/25 scored the 50% needed to pass.",
+     ".tutor": "Private tutoring",
+     ".tutor.s": "Your family pays for a tutor. Hard months: Happiness −3.",
+     ".tutor.h": "Skill +5 (more or less).",
+     ".self": "Study on your own",
+     ".self.s": "Happiness −1.",
+     ".self.h": "Skill +3 (more or less).",
+     ".work": "Help with the family business too",
+     ".work.s": "You earn about {a}.",
+     ".work.h": "Skill +1."
+    },
+    "zh": {
+     ".t": "十二年级会考",
+     ".x": "明年你要参加十二年级全国会考，现在都在大学里严格监考。2024/25年度参加的585,882名学生中，只有8.4%考到及格所需的50分。",
+     ".tutor": "请家教",
+     ".tutor.s": "家里付家教费。辛苦的几个月：幸福感 −3。",
+     ".tutor.h": "技能 +5（或多或少）。",
+     ".self": "自己读",
+     ".self.s": "幸福感 −1。",
+     ".self.h": "技能 +3（或多或少）。",
+     ".work": "同时帮家里做生意",
+     ".work.s": "你赚了约{a}。",
+     ".work.h": "技能 +1。"
+    },
+    "zht": {
+     ".t": "十二年級會考",
+     ".x": "明年你要參加十二年級全國會考，現在都在大學裡嚴格監考。2024/25年度參加的585,882名學生中，只有8.4%考到及格所需的50分。",
+     ".tutor": "請家教",
+     ".tutor.s": "家裡付家教費。辛苦的幾個月：幸福感 −3。",
+     ".tutor.h": "技能 +5（或多或少）。",
+     ".self": "自己讀",
+     ".self.s": "幸福感 −1。",
+     ".self.h": "技能 +3（或多或少）。",
+     ".work": "同時幫家裡做生意",
+     ".work.s": "你賺了約{a}。",
+     ".work.h": "技能 +1。"
+    }
+   }
+  },
+  {
+   "id": "et_esx",
+   "src": "The Ethiopian Securities Exchange opened in January 2025; Ethio Telecom sold shares at 300 birr each (minimum 33 shares, 9,900 birr) to about 47,000 citizens and listed in May 2026 (Ethio Telecom; Capital Ethiopia; mystocks.africa).",
+   "age": [24, 60],
+   "weight": 0.55,
+   "when": {"stats": {"liquid": "> .4 * base"}},
+   "def": "bank",
+   "tarot": "gold",
+   "art": {"draw": "shares", "bg": "wa"},
+   "let": {"a": ".25 * liquid()"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "do": "putIn('esx', a, {}, 'trk.esx')"},
+    {"id": "bank"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The new stock exchange",
+     ".x": "The Ethiopian Securities Exchange opened in January 2025. Ethio Telecom sold shares to citizens at 300 birr each (at least 33 shares, 9,900 birr), and they began trading in May 2026.",
+     ".buy": "Buy shares",
+     ".buy.s": "Put {a} in. Shares rise and fall.",
+     ".bank": "Keep it in the bank",
+     ".bank.s": "It stays in your account.",
+     "trk.esx": "Ethio Telecom shares"
+    },
+    "zh": {
+     ".t": "新的证券交易所",
+     ".x": "埃塞俄比亚证券交易所在2025年1月开业。埃塞电信以每股300比尔卖股票给国民（最少33股，9,900比尔），2026年5月开始交易。",
+     ".buy": "买股票",
+     ".buy.s": "放入{a}。股票有涨有跌。",
+     ".bank": "放在银行",
+     ".bank.s": "钱留在账户里。",
+     "trk.esx": "埃塞电信股票"
+    },
+    "zht": {
+     ".t": "新的證券交易所",
+     ".x": "衣索比亞證券交易所在2025年1月開業。衣索比亞電信以每股300比爾賣股票給國民（最少33股，9,900比爾），2026年5月開始交易。",
+     ".buy": "買股票",
+     ".buy.s": "放入{a}。股票有漲有跌。",
+     ".bank": "放在銀行",
+     ".bank.s": "錢留在帳戶裡。",
+     "trk.esx": "衣索比亞電信股票"
+    }
+   }
+  }
+ ]
+}

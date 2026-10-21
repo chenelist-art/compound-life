@@ -1,0 +1,369 @@
+{
+ "about": "Country cards for lives born in Bangladesh. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "BD",
+ "events": [
+  {
+   "id": "bd_micro",
+   "src": "===================== Bangladesh (BD) ===================== Microcredit: the Microcredit Regulatory Authority caps interest at 24% a year on a declining balance, since 2019 (The Business Standard; Financial Express). Business outcomes are game rules.",
+   "age": [22, 50],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "loan",
+     "sub": {"a": "MN(.3 * B)", "b": "MN(.19 * B)"},
+     "hint": true,
+     "do": "cash += .3 * B; T('bd_micro', { kind: 'custom', label: M('trk.bd_micro'), v: .3 * B }); rec('bd_micro', .19 * B, 2); later(age + 1, 'sideBiz', { id: 'bd_shop', p: .55, a: .12 * B, n: 6 })"
+    },
+    {
+     "id": "save",
+     "sub": {"a": "MN(.03 * B)"},
+     "do": "yearly('bdsave', { amt: .03 * B, until: age + 10 }, { rate: 0 }, 'trk.bdsave')"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A microloan",
+     ".x": "A microfinance NGO offers you a small loan to start a business, repaid in weekly instalments. Interest is capped at 24% a year by the Microcredit Regulatory Authority.",
+     ".loan": "Take the loan and open a small shop",
+     ".loan.s": "Get {a} now; repay about {b} a year for 2 years.",
+     ".loan.h": "About half of these small businesses bring in a steady extra income.",
+     ".save": "Join their savings scheme instead",
+     ".save.s": "Save about {a} a year for 10 years.",
+     ".no": "No thanks",
+     ".no.s": "Nothing changes.",
+     "trk.bd_micro": "Microloan",
+     "trk.bdsave": "NGO savings"
+    },
+    "zh": {
+     ".t": "小额贷款",
+     ".x": "一家小额信贷机构愿意借你一笔小钱做生意，每周分期还款。小额信贷监管局规定年利率最高24%。",
+     ".loan": "借钱开一家小店",
+     ".loan.s": "现在拿到{a}；每年还约{b}，还2年。",
+     ".loan.h": "这类小生意大约一半能带来稳定的额外收入。",
+     ".save": "改参加他们的储蓄计划",
+     ".save.s": "每年存约{a}，存10年。",
+     ".no": "不用了",
+     ".no.s": "一切照旧。",
+     "trk.bd_micro": "小额贷款",
+     "trk.bdsave": "机构储蓄"
+    },
+    "zht": {
+     ".t": "小額貸款",
+     ".x": "一家小額信貸機構願意借你一筆小錢做生意，每週分期還款。小額信貸監管局規定年利率最高24%。",
+     ".loan": "借錢開一家小店",
+     ".loan.s": "現在拿到{a}；每年還約{b}，還2年。",
+     ".loan.h": "這類小生意大約一半能帶來穩定的額外收入。",
+     ".save": "改參加他們的儲蓄計畫",
+     ".save.s": "每年存約{a}，存10年。",
+     ".no": "不用了",
+     ".no.s": "一切照舊。",
+     "trk.bd_micro": "小額貸款",
+     "trk.bdsave": "機構儲蓄"
+    }
+   }
+  },
+  {
+   "id": "bd_gulf",
+   "src": "The Gulf: remittances passed $30bn (FY2024–25, $30.33bn); a record 750,000+ workers went to Saudi Arabia in 2025 (Daily Star; Arab News). Migration costs, pay and housing multiples are ESTIMATES.",
+   "age": [21, 40],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true, "careerType": ["hands", "office"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "mi"},
+   "use": "ctr",
+   "with": {"m": 2.5, "cm": 0.8, "yrs": 3, "fee": 1.5, "remit": 0.3},
+   "vars": {"a": "MN(2.5 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "Work in Saudi Arabia",
+     ".x": "A recruiting agency offers a three-year job in Saudi Arabia at about {a} a year, with housing provided. A record 750,000 Bangladeshis went to work there in 2025, and remittances passed $30 billion in 2024–25. Migration costs are high and often borrowed.",
+     "trk.bd_gulf": "Work in Saudi Arabia"
+    },
+    "zh": {
+     ".t": "去沙特工作",
+     ".x": "一家中介给你一份去沙特的三年工作，年薪约{a}，包住宿。2025年有创纪录的75万孟加拉人去那里工作，2024–25年度侨汇超过300亿美元。出国费用很高，常常要借钱。",
+     "trk.bd_gulf": "在沙特工作"
+    },
+    "zht": {
+     ".t": "去沙烏地阿拉伯工作",
+     ".x": "一家中介給你一份去沙烏地阿拉伯的三年工作，年薪約{a}，包住宿。2025年有創紀錄的75萬孟加拉人去那裡工作，2024–25年度僑匯超過300億美元。出國費用很高，常常要借錢。",
+     "trk.bd_gulf": "在沙烏地阿拉伯工作"
+    }
+   }
+  },
+  {
+   "id": "bd_flood",
+   "src": "Floods and cyclones: low-lying areas flood in most monsoon seasons and cyclones strike the coast (Bangladesh Meteorological Department). Odds and costs are ESTIMATES.",
+   "age": [25, 70],
+   "weight": 0.55,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.008, "prep": 0.015, "p": 0.6},
+   "i18n": {
+    "en": {
+     ".t": "Flood season",
+     ".x": "Low-lying areas flood in most monsoon seasons, and cyclones strike the coast. Your home is close to a river."
+    },
+    "zh": {
+     ".t": "水灾季节",
+     ".x": "低洼地区大多数季风季节都会淹水，沿海还会遭遇气旋。你家离河很近。"
+    },
+    "zht": {
+     ".t": "水災季節",
+     ".x": "低窪地區大多數季風季節都會淹水，沿海還會遭遇氣旋。你家離河很近。"
+    }
+   }
+  },
+  {
+   "id": "bd_sanchay",
+   "src": "Sanchayapatra: the 5-year Bangladesh Savings Certificate pays up to 12.40% a year from Jan 2025, taxed 5–10% (UNB). With inflation near 9%, about 2% real: an ESTIMATE.",
+   "age": [25, 65],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .25 * base"}},
+   "def": "bank",
+   "tarot": "gold",
+   "art": {"draw": "bond", "bg": "wa"},
+   "let": {"a": ".3 * liquid()"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "do": "putIn('sanchay', a, {rate: .02}, 'trk.sanchay')"},
+    {"id": "bank"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Savings certificates",
+     ".x": "The five-year Bangladesh Sanchayapatra pays up to 12.4% a year (from January 2025), with 5–10% tax on the profit.",
+     ".buy": "Buy certificates",
+     ".buy.s": "Put {a} in. About 2% a year after inflation and tax.",
+     ".bank": "Keep it in the bank",
+     ".bank.s": "It stays in your account.",
+     "trk.sanchay": "Sanchayapatra"
+    },
+    "zh": {
+     ".t": "储蓄凭证",
+     ".x": "五年期国民储蓄凭证（Sanchayapatra）年利率最高12.4%（2025年1月起），利息要缴5–10%的税。",
+     ".buy": "买凭证",
+     ".buy.s": "放入{a}。扣除通胀和税后每年约2%。",
+     ".bank": "放在银行",
+     ".bank.s": "钱留在账户里。",
+     "trk.sanchay": "储蓄凭证"
+    },
+    "zht": {
+     ".t": "儲蓄憑證",
+     ".x": "五年期國民儲蓄憑證（Sanchayapatra）年利率最高12.4%（2025年1月起），利息要繳5–10%的稅。",
+     ".buy": "買憑證",
+     ".buy.s": "放入{a}。扣除通膨和稅後每年約2%。",
+     ".bank": "放在銀行",
+     ".bank.s": "錢留在帳戶裡。",
+     "trk.sanchay": "儲蓄憑證"
+    }
+   }
+  },
+  {
+   "id": "bd_upension",
+   "src": "Universal Pension Scheme (from 17 Aug 2023): Surokkha for informal workers at Tk1,000–5,000 a month; Samata for low incomes at Tk1,000 with the government paying half (Daily Star; upension.gov.bd). Tk12,000 a year ≈ 0.11 of the game's typical wage. Real returns are an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.55,
+   "when": {"selfEmployed": true},
+   "def": "no",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "surokkha",
+     "sub": {"a": "MN(.11 * B)"},
+     "do": "yearly('upen', { amt: .11 * B, until: 60 }, { rate: .02, lock: 60 }, 'trk.upen')"
+    },
+    {
+     "id": "samata",
+     "sub": {"a": "MN(.055 * B)", "b": "MN(.055 * B)"},
+     "ok": "fam === 'poor' || M('.low')",
+     "do": "yearly('upen', { amt: .055 * B, until: 60, bonus: 1 }, { rate: .02, lock: 60 }, 'trk.upen')"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Universal Pension Scheme",
+     ".x": "Since August 2023, informal workers can join the Universal Pension Scheme: Surokkha takes Tk1,000–5,000 a month, and Samata, for low incomes, takes Tk1,000 a month with the government paying half.",
+     ".surokkha": "Join Surokkha",
+     ".surokkha.s": "About {a} a year until 60.",
+     ".samata": "Join Samata",
+     ".samata.s": "About {a} a year; the government adds {b}.",
+     ".low": "Samata is for low-income households.",
+     ".no": "Not now",
+     ".no.s": "Keep the money free.",
+     "trk.upen": "Universal pension"
+    },
+    "zh": {
+     ".t": "全民养老金计划",
+     ".x": "从2023年8月起，非正规就业者可以参加全民养老金计划：Surokkha每月交1,000到5,000塔卡；给低收入者的Samata每月交1,000塔卡，政府出一半。",
+     ".surokkha": "参加Surokkha",
+     ".surokkha.s": "每年约{a}，存到60岁。",
+     ".samata": "参加Samata",
+     ".samata.s": "每年约{a}；政府加{b}。",
+     ".low": "Samata只给低收入家庭。",
+     ".no": "暂时不参加",
+     ".no.s": "钱随时可用。",
+     "trk.upen": "全民养老金"
+    },
+    "zht": {
+     ".t": "全民退休金計畫",
+     ".x": "從2023年8月起，非正規就業者可以參加全民退休金計畫：Surokkha每月交1,000到5,000塔卡；給低收入者的Samata每月交1,000塔卡，政府出一半。",
+     ".surokkha": "參加Surokkha",
+     ".surokkha.s": "每年約{a}，存到60歲。",
+     ".samata": "參加Samata",
+     ".samata.s": "每年約{a}；政府加{b}。",
+     ".low": "Samata只給低收入家庭。",
+     ".no": "暫時不參加",
+     ".no.s": "錢隨時可用。",
+     "trk.upen": "全民退休金"
+    }
+   }
+  },
+  {
+   "id": "bd_city",
+   "src": "Moving to Dhaka: pay and cost multiples are ESTIMATES.",
+   "age": [19, 28],
+   "weight": 0.6,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "travel",
+   "art": {"draw": "city", "bg": "mi"},
+   "vars": {"a": "MN(1.3 * salary())"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(1.3 * salary())"}, "do": "cityMove('bd_city', 1.3, 1.25, 1.2, -3)"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Moving to Dhaka",
+     ".x": "A job in Dhaka pays about {a} a year, but rent is higher and you’d be far from your family.",
+     ".go": "Move to Dhaka",
+     ".go.s": "Pay {a} a year. Costs about 25% higher. Happiness −1.",
+     ".stay": "Stay home",
+     ".stay.s": "Close to family.",
+     "trk.bd_city": "Moved to Dhaka"
+    },
+    "zh": {
+     ".t": "搬去达卡",
+     ".x": "达卡的一份工作年薪约{a}，但房租较高，而且离家人很远。",
+     ".go": "搬去达卡",
+     ".go.s": "年薪{a}。开销约高25%。幸福感 −1。",
+     ".stay": "留在家乡",
+     ".stay.s": "离家人近。",
+     "trk.bd_city": "搬到达卡"
+    },
+    "zht": {
+     ".t": "搬去達卡",
+     ".x": "達卡的一份工作年薪約{a}，但房租較高，而且離家人很遠。",
+     ".go": "搬去達卡",
+     ".go.s": "年薪{a}。開銷約高25%。幸福感 −1。",
+     ".stay": "留在家鄉",
+     ".stay.s": "離家人近。",
+     "trk.bd_city": "搬到達卡"
+    }
+   }
+  },
+  {
+   "id": "bd_tuition",
+   "src": "Private tutoring for the SSC and HSC exams is widespread (education household surveys); fees and outcomes are ESTIMATES.",
+   "age": [34, 60],
+   "weight": 0.6,
+   "when": {"kidAge": [12, 15]},
+   "def": "some",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "much",
+     "sub": {"a": "MN(.12 * B)"},
+     "hint": true,
+     "do": "T('bd_tuition', { kind: 'ghost', label: M('trk.tuition') }); rec('bd_tuition', .12 * B, 4); happy -= 1; kidWin(.3, .65)"
+    },
+    {
+     "id": "some",
+     "sub": {"a": "MN(.04 * B)"},
+     "hint": true,
+     "do": "T('bd_tuition', { kind: 'ghost', label: M('trk.tuition') }); rec('bd_tuition', .04 * B, 4); kidWin(.2, .75)"
+    },
+    {"id": "none", "hint": true, "do": "kidWin(.12, .8)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Private tutoring",
+     ".x": "Your child’s SSC exams are coming. Private tutors and coaching centres are everywhere, and many families pay for several subjects.",
+     ".much": "Tutors for every subject",
+     ".much.s": "About {a} a year for 4 years. Busy evenings: Happiness −1.",
+     ".much.h": "A better chance of a scholarship later.",
+     ".some": "A tutor for the hardest subjects",
+     ".some.s": "About {a} a year for 4 years.",
+     ".some.h": "Some chance of a scholarship later.",
+     ".none": "School is enough",
+     ".none.s": "Free.",
+     ".none.h": "A small chance of a scholarship later."
+    },
+    "zh": {
+     ".t": "私人补习",
+     ".x": "孩子的中学毕业考试（SSC）快到了。私人家教和补习中心到处都是，很多家庭会请好几科。",
+     ".much": "每科都请家教",
+     ".much.s": "每年约{a}，共4年。晚上很忙：幸福感 −1。",
+     ".much.h": "以后拿奖学金的机会较大。",
+     ".some": "只补最难的科目",
+     ".some.s": "每年约{a}，共4年。",
+     ".some.h": "以后有一些机会拿奖学金。",
+     ".none": "学校教的就够了",
+     ".none.s": "免费。",
+     ".none.h": "以后拿奖学金的机会较小。"
+    },
+    "zht": {
+     ".t": "私人補習",
+     ".x": "孩子的中學畢業考試（SSC）快到了。私人家教和補習中心到處都是，很多家庭會請好幾科。",
+     ".much": "每科都請家教",
+     ".much.s": "每年約{a}，共4年。晚上很忙：幸福感 −1。",
+     ".much.h": "以後拿獎學金的機會較大。",
+     ".some": "只補最難的科目",
+     ".some.s": "每年約{a}，共4年。",
+     ".some.h": "以後有一些機會拿獎學金。",
+     ".none": "學校教的就夠了",
+     ".none.s": "免費。",
+     ".none.h": "以後拿獎學金的機會較小。"
+    }
+   }
+  },
+  {
+   "id": "bd_samity",
+   "src": "Samity: a neighbourhood savings group with a rotating pot. Risk ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.55,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "wa"},
+   "use": "rosca",
+   "with": {"a": 0.15, "n": 2, "early": 1, "late": 1, "risk": 0.05, "draw": true},
+   "i18n": {
+    "en": {
+     ".t": "A savings samity",
+     ".x": "Neighbours run a savings samity: members pay in every month, and each month the pot goes to one member, drawn by lot."
+    },
+    "zh": {
+     ".t": "储蓄互助会",
+     ".x": "邻居们办了一个储蓄互助会（samity）：会员每月交钱，每月抽签由一人拿走会钱。"
+    },
+    "zht": {
+     ".t": "儲蓄互助會",
+     ".x": "鄰居們辦了一個儲蓄互助會（samity）：會員每月交錢，每月抽籤由一人拿走會錢。"
+    }
+   }
+  }
+ ]
+}

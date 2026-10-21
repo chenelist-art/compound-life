@@ -1,0 +1,283 @@
+{
+ "about": "Later life: retiring, travel, clubs and the end of life.",
+ "events": [
+  {
+   "id": "ret",
+   "age": [55, 55],
+   "when": {"retired": false},
+   "def": "60",
+   "tarot": {"en": "The Star", "zh": "星星", "zht": "星星"},
+   "art": "ret",
+   "vars": {"a": "MN(netWorth())"},
+   "opts": [
+    {"each": "[55, 60, 65, 70]", "as": "r", "id": "String(r)", "do": "retireAge = r"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "When will you stop working?",
+     ".x": "Your net worth is {a}. A common rule of thumb: you can spend about 4% of your investments each year without running out.",
+     ".55": "Retire now",
+     ".55.s": "Stop today. Your savings have to last the rest of your life.",
+     ".60": "Retire at 60",
+     ".60.s": "Five more years of pay and growth.",
+     ".65": "Retire at 65",
+     ".65.s": "Ten more years of pay and growth.",
+     ".70": "Retire at 70",
+     ".70.s": "The most money, the least time to enjoy it."
+    },
+    "zh": {
+     ".t": "什么时候退休？",
+     ".x": "你的净资产是{a}。常见的经验法则：每年只花投资的4%左右，钱就不容易花完。",
+     ".55": "现在就退休",
+     ".55.s": "今天就停。你的积蓄要撑完余生。",
+     ".60": "60岁退休",
+     ".60.s": "多5年的薪水和增长。",
+     ".65": "65岁退休",
+     ".65.s": "多10年的薪水和增长。",
+     ".70": "70岁退休",
+     ".70.s": "钱最多，享受的时间最少。"
+    },
+    "zht": {
+     ".t": "什麼時候退休？",
+     ".x": "你的淨資產是{a}。常見的經驗法則：每年只花投資的4%左右，錢就不容易花完。",
+     ".55": "現在就退休",
+     ".55.s": "今天就停。你的積蓄要撐完餘生。",
+     ".60": "60歲退休",
+     ".60.s": "多5年的薪水和增長。",
+     ".65": "65歲退休",
+     ".65.s": "多10年的薪水和增長。",
+     ".70": "70歲退休",
+     ".70.s": "錢最多，享受的時間最少。"
+    }
+   }
+  },
+  {
+   "id": "travel",
+   "age": [58, 70],
+   "weight": 0.8,
+   "when": {"retired": true},
+   "def": "modest",
+   "tarot": {"en": "Two of Wands", "zh": "权杖二", "zht": "權杖二"},
+   "art": "travel",
+   "opts": [
+    {
+     "id": "world",
+     "sub": {"a": "MN(.3 * base)"},
+     "do": "spend('travel', .3 * base, 'trk.travelBig'); happy += 6"
+    },
+    {
+     "id": "modest",
+     "sub": {"a": "MN(.08 * base)"},
+     "do": "spend('travel', .08 * base, 'trk.travel'); happy += 3"
+    },
+    {"id": "home"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Travelling in retirement",
+     ".x": "You finally have time to see the world.",
+     ".world": "A trip around the world",
+     ".world.s": "About {a}. Happiness +6.",
+     ".modest": "A few trips closer to home",
+     ".modest.s": "About {a}. Happiness +3.",
+     ".home": "Stay home",
+     ".home.s": "Save the money.",
+     "trk.travelBig": "A trip around the world",
+     "trk.travel": "Retirement trips"
+    },
+    "zh": {
+     ".t": "退休去旅行",
+     ".x": "你终于有时间去看看世界了。",
+     ".world": "环游世界",
+     ".world.s": "大约{a}。幸福感 +6。",
+     ".modest": "在附近玩几趟",
+     ".modest.s": "大约{a}。幸福感 +3。",
+     ".home": "待在家",
+     ".home.s": "省下这笔钱。",
+     "trk.travelBig": "环游世界",
+     "trk.travel": "退休旅行"
+    },
+    "zht": {
+     ".t": "退休去旅行",
+     ".x": "你終於有時間去看看世界了。",
+     ".world": "環遊世界",
+     ".world.s": "大約{a}。幸福感 +6。",
+     ".modest": "在附近玩幾趟",
+     ".modest.s": "大約{a}。幸福感 +3。",
+     ".home": "待在家",
+     ".home.s": "省下這筆錢。",
+     "trk.travelBig": "環遊世界",
+     "trk.travel": "退休旅行"
+    }
+   }
+  },
+  {
+   "id": "ret2",
+   "age": [60, 67],
+   "weight": 0.55,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": {"en": "King of Wands", "zh": "权杖国王", "zht": "權杖國王"},
+   "art": "ret2",
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(.35 * base)"},
+     "do": "ret2 = { until: age + 4, inc: .35 * base }; T('ret2', { kind: 'custom', label: M('trk.ret2') }); happy += 1"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back to work?",
+     ".x": "Your old company asks if you would work for them part-time for a few years.",
+     ".yes": "Say yes",
+     ".yes.s": "About {a} a year for 4 years. Less free time.",
+     ".no": "Enjoy retirement",
+     ".no.s": "Your time is your own.",
+     "trk.ret2": "Part-time work in retirement"
+    },
+    "zh": {
+     ".t": "回去上班？",
+     ".x": "以前的公司问你愿不愿意回去做几年兼职。",
+     ".yes": "答应",
+     ".yes.s": "4年内每年约{a}。自由时间少了一些。",
+     ".no": "好好享受退休",
+     ".no.s": "时间是你自己的。",
+     "trk.ret2": "退休后兼职"
+    },
+    "zht": {
+     ".t": "回鍋上班？",
+     ".x": "以前的公司問你願不願意回去做幾年兼職。",
+     ".yes": "答應",
+     ".yes.s": "4年內每年約{a}。自由時間少了一些。",
+     ".no": "好好享受退休",
+     ".no.s": "時間是你自己的。",
+     "trk.ret2": "退休後兼職"
+    }
+   }
+  },
+  {
+   "id": "club",
+   "age": [60, 72],
+   "weight": 0.55,
+   "when": {"retired": true},
+   "def": "garden",
+   "tarot": {"en": "Queen of Wands", "zh": "权杖王后", "zht": "權杖皇后"},
+   "art": "club",
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.2 * base)"},
+     "rel": 3,
+     "do": "T('club', { kind: 'ghost', label: M('trk.club') }); rec('club', .2 * base, 10); happy += 4"
+    },
+    {
+     "id": "garden",
+     "sub": {"a": "MN(.05 * base)"},
+     "rel": 2,
+     "do": "T('club', { kind: 'ghost', label: M('trk.garden') }); rec('club', .05 * base, 10); happy += 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new hobby",
+     ".x": "Your friends play golf every week at a private club.",
+     ".join": "Join the club",
+     ".join.s": "About {a} a year. Happiness +4.",
+     ".garden": "Take up gardening instead",
+     ".garden.s": "About {a} a year. Happiness +2.",
+     ".no": "Not for you",
+     ".no.s": "Nothing changes.",
+     "trk.club": "Golf club",
+     "trk.garden": "Gardening"
+    },
+    "zh": {
+     ".t": "新爱好",
+     ".x": "你的朋友们每周都去一家私人俱乐部打高尔夫。",
+     ".join": "加入俱乐部",
+     ".join.s": "每年约{a}。幸福感 +4。",
+     ".garden": "改去种花种菜",
+     ".garden.s": "每年约{a}。幸福感 +2。",
+     ".no": "不适合你",
+     ".no.s": "什么都不变。",
+     "trk.club": "高尔夫俱乐部",
+     "trk.garden": "园艺"
+    },
+    "zht": {
+     ".t": "新嗜好",
+     ".x": "你的朋友們每週都去一家私人俱樂部打高爾夫。",
+     ".join": "加入俱樂部",
+     ".join.s": "每年約{a}。幸福感 +4。",
+     ".garden": "改去種花種菜",
+     ".garden.s": "每年約{a}。幸福感 +2。",
+     ".no": "不適合你",
+     ".no.s": "什麼都不變。",
+     "trk.club": "高爾夫俱樂部",
+     "trk.garden": "園藝"
+    }
+   }
+  },
+  {
+   "id": "funeral",
+   "age": [80, 100],
+   "weight": 0.7,
+   "def": "none",
+   "tarot": {"en": "Ace of Swords", "zh": "宝剑王牌", "zht": "寶劍王牌"},
+   "art": "funeral",
+   "vars": {"a": "MN(.3 * base)"},
+   "opts": [
+    {
+     "id": "plan",
+     "sub": {"a": "MN(.25 * base)"},
+     "do": "spend('funeral', .25 * base, 'trk.funeral'); happy += 2"
+    },
+    {
+     "id": "simple",
+     "sub": {"a": "MN(.08 * base)"},
+     "do": "spend('funeral', .08 * base, 'trk.funeralS'); happy += 2"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Planning ahead",
+     ".x": "A funeral costs about {a}. A prepaid plan would spare your family the bill and the decisions.",
+     ".plan": "Buy a prepaid funeral plan",
+     ".plan.s": "About {a}. Happiness +2.",
+     ".simple": "Ask for something simple",
+     ".simple.s": "Set aside about {a}. Happiness +2.",
+     ".none": "Leave it to the family",
+     ".none.s": "Nothing changes for now.",
+     "trk.funeral": "Prepaid funeral plan",
+     "trk.funeralS": "Money for a simple funeral"
+    },
+    "zh": {
+     ".t": "提早规划",
+     ".x": "一场葬礼大约要{a}。预付殡葬计划可以让家人不用付钱，也不用为细节烦恼。",
+     ".plan": "买预付殡葬计划",
+     ".plan.s": "大约{a}。幸福感 +2。",
+     ".simple": "交代一切从简",
+     ".simple.s": "预留约{a}。幸福感 +2。",
+     ".none": "交给家人处理",
+     ".none.s": "暂时什么都不变。",
+     "trk.funeral": "预付殡葬计划",
+     "trk.funeralS": "简单葬礼的预留金"
+    },
+    "zht": {
+     ".t": "提早規劃",
+     ".x": "一場喪禮大約要{a}。生前契約可以讓家人不用付錢，也不用為細節煩惱。",
+     ".plan": "買生前契約",
+     ".plan.s": "大約{a}。幸福感 +2。",
+     ".simple": "交代一切從簡",
+     ".simple.s": "預留約{a}。幸福感 +2。",
+     ".none": "交給家人處理",
+     ".none.s": "暫時什麼都不變。",
+     "trk.funeral": "生前契約",
+     "trk.funeralS": "簡單喪禮的預留金"
+    }
+   }
+  }
+ ]
+}

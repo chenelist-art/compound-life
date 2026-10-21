@@ -1,0 +1,495 @@
+{
+ "about": "Health: exercise, check-ups, serious illness, depression and care in old age.",
+ "events": [
+  {
+   "id": "gym",
+   "age": [26, 36],
+   "weight": 0.65,
+   "def": "none",
+   "tarot": {"en": "Nine of Wands", "zh": "权杖九", "zht": "權杖九"},
+   "art": "gym",
+   "opts": [
+    {
+     "id": "gym",
+     "sub": {"a": "MN(.06 * base)"},
+     "hint": true,
+     "do": "T('gym', { kind: 'ghost', label: M('trk.gym') }); rec('gym', .06 * base, 10, .8)"
+    },
+    {
+     "id": "run",
+     "hint": true,
+     "do": "const r = evR('runOn'); rec('', 0, r() < .4 ? 10 : 1, .5); happy += 1; if (r() < .12) { health -= 4; pay(.05 * base); }"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Getting fit",
+     ".x": "You sit at a desk all day, and it is starting to show.",
+     ".gym": "Join a gym",
+     ".gym.s": "About {a} a year.",
+     ".gym.h": "Health +0.8 a year for 10 years.",
+     ".run": "Run in the park",
+     ".run.s": "Free, if you keep it up. Happiness +1.",
+     ".run.h": "Health +0.5 a year while you keep it up: about 4 in 10 people do. About 1 in 8 get a running injury.",
+     ".none": "Maybe next year",
+     ".none.s": "Nothing changes.",
+     "trk.gym": "Gym membership"
+    },
+    "zh": {
+     ".t": "锻炼身体",
+     ".x": "你整天坐在办公桌前，身体开始出状况了。",
+     ".gym": "办健身房会员",
+     ".gym.s": "每年约{a}。",
+     ".gym.h": "10年内健康每年 +0.8。",
+     ".run": "去公园跑步",
+     ".run.s": "不花钱，只要坚持得下去。幸福感 +1。",
+     ".run.h": "坚持跑的话，健康每年 +0.5；大约十个人里有四个能坚持。大约八分之一的人会跑步受伤。",
+     ".none": "明年再说",
+     ".none.s": "什么都不变。",
+     "trk.gym": "健身房会员"
+    },
+    "zht": {
+     ".t": "鍛鍊身體",
+     ".x": "你整天坐在辦公桌前，身體開始出狀況了。",
+     ".gym": "辦健身房會員",
+     ".gym.s": "每年約{a}。",
+     ".gym.h": "10年內健康每年 +0.8。",
+     ".run": "去公園跑步",
+     ".run.s": "不花錢，只要堅持得下去。幸福感 +1。",
+     ".run.h": "堅持跑的話，健康每年 +0.5；大約十個人裡有四個能堅持。大約八分之一的人會跑步受傷。",
+     ".none": "明年再說",
+     ".none.s": "什麼都不變。",
+     "trk.gym": "健身房會員"
+    }
+   }
+  },
+  {
+   "id": "health",
+   "age": [30, 42],
+   "weight": 0.55,
+   "def": "no",
+   "tarot": {"en": "Ace of Cups", "zh": "圣杯王牌", "zht": "聖杯王牌"},
+   "art": "health",
+   "vars": {"a": "MN(.02 * base)"},
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(.02 * base)"},
+     "hint": true,
+     "do": "pay(.02 * base); screen = true; health += 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A health check",
+     ".x": "A full health screening costs {a}. You feel fine.",
+     ".yes": "Get screened",
+     ".yes.s": "{a} now.",
+     ".yes.h": "Problems caught early cost less: medical bills 30% lower from now on.",
+     ".no": "Skip it",
+     ".no.s": "Keep the money."
+    },
+    "zh": {
+     ".t": "健康检查",
+     ".x": "一次全面体检要{a}。你觉得身体很好。",
+     ".yes": "去体检",
+     ".yes.s": "现在花{a}。",
+     ".yes.h": "早发现，花得少：以后的医药费低30%。",
+     ".no": "不去",
+     ".no.s": "省下这笔钱。"
+    },
+    "zht": {
+     ".t": "健康檢查",
+     ".x": "一次全身健檢要{a}。你覺得身體很好。",
+     ".yes": "去健檢",
+     ".yes.s": "現在花{a}。",
+     ".yes.h": "早發現，花得少：以後的醫藥費低30%。",
+     ".no": "不去",
+     ".no.s": "省下這筆錢。"
+    }
+   }
+  },
+  {
+   "id": "ltc",
+   "age": [56, 64],
+   "weight": 0.7,
+   "def": "no",
+   "tarot": {"en": "Nine of Swords", "zh": "宝剑九", "zht": "寶劍九"},
+   "art": "ltc",
+   "fn": {
+    "care": {"args": [], "do": "return later(76 + Math.floor(roll('careAt') * 12), 'care')"}
+   },
+   "vars": {"a": "MN(.8 * base)"},
+   "hint": true,
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(.025 * base)"},
+     "do": "ltc = true; T('ltc', { kind: 'custom', label: M('trk.ltc') }); rec('ltc', .025 * base, 99); care()"
+    },
+    {"id": "no", "do": "care()"}
+   ],
+   "later": {
+    "care": "if (roll('care') >= .4) return; const amt = .8 * base; rec('', amt * (ltc ? .3 : 1), 3, 0); if (ltc) { const t = trk.ltc; if (t) { t.v += amt * .7 * 3; t.note = M('note.ltcPaid', {a: MN(amt * .7 * 3)}) } } log(M(ltc ? 'log.careIns' : 'log.care', {a: MN(amt)}), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Long-term care insurance",
+     ".x": "A care home or a daily carer can cost {a} a year. Insurance would pay most of it.",
+     ".h": "About 4 in 10 people need long-term care.",
+     ".yes": "Buy the policy",
+     ".yes.s": "About {a} a year for the rest of your life.",
+     ".no": "Skip it",
+     ".no.s": "Keep the money. If you need care, you pay for it.",
+     "trk.ltc": "Long-term care insurance"
+    },
+    "zh": {
+     ".t": "长期护理保险",
+     ".x": "住养老院或请全天看护，每年可能要{a}。保险会付大部分。",
+     ".h": "大约每10个人里有4个需要长期护理。",
+     ".yes": "买这份保险",
+     ".yes.s": "余生每年约{a}。",
+     ".no": "不买",
+     ".no.s": "钱留着。真的需要护理时自己付。",
+     "trk.ltc": "长期护理保险"
+    },
+    "zht": {
+     ".t": "長照險",
+     ".x": "住安養機構或請全天看護，每年可能要{a}。保險會付大部分。",
+     ".h": "大約每10個人裡有4個需要長期照顧。",
+     ".yes": "買這份保險",
+     ".yes.s": "餘生每年約{a}。",
+     ".no": "不買",
+     ".no.s": "錢留著。真的需要照顧時自己付。",
+     "trk.ltc": "長照險"
+    }
+   }
+  },
+  {
+   "id": "medcover",
+   "age": [63, 72],
+   "weight": 0.9,
+   "when": {"insured": true},
+   "def": "keep",
+   "tarot": {"en": "Five of Coins", "zh": "钱币五", "zht": "錢幣五"},
+   "art": "medcover",
+   "vars": {"a": "MN(.035 * base * 2.2)"},
+   "opts": [
+    {"id": "keep", "sub": {"a": "MN(.035 * base * 2.2)"}, "do": "insMul = 2.2"},
+    {
+     "id": "drop",
+     "do": "insured = false; const t = trk.ins; if (t) t.note = M('note.insDrop', { p: MN(t.prem), c: MN(t.saved) })"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Insurance renewal",
+     ".x": "Because of your age, your health insurance premium is jumping to {a} a year.",
+     ".keep": "Keep the policy",
+     ".keep.s": "{a} a year. Big bills stay 85% covered.",
+     ".drop": "Cancel it",
+     ".drop.s": "Save the premium. You pay all medical bills yourself.",
+     "note.insDrop": "Premiums {p} · bills covered {c} · cancelled"
+    },
+    "zh": {
+     ".t": "保险续约",
+     ".x": "因为年纪大了，你的医疗保险保费要涨到每年{a}。",
+     ".keep": "继续保",
+     ".keep.s": "每年{a}。大额账单仍报销85%。",
+     ".drop": "退保",
+     ".drop.s": "省下保费。以后医药费全部自己付。",
+     "note.insDrop": "已付保费{p} · 已报销{c} · 已退保"
+    },
+    "zht": {
+     ".t": "保險續約",
+     ".x": "因為年紀大了，你的醫療險保費要漲到每年{a}。",
+     ".keep": "繼續保",
+     ".keep.s": "每年{a}。大額帳單仍理賠85%。",
+     ".drop": "解約",
+     ".drop.s": "省下保費。以後醫藥費全部自己付。",
+     "note.insDrop": "已付保費{p} · 已理賠{c} · 已解約"
+    }
+   }
+  },
+  {
+   "id": "health2",
+   "age": [65, 86],
+   "weight": 0.7,
+   "def": "wait",
+   "tarot": {"en": "Six of Swords", "zh": "宝剑六", "zht": "寶劍六"},
+   "art": "health2",
+   "let": {"a": ".5 * base * (insured ? .15 : 1)"},
+   "opts": [
+    {
+     "id": "priv",
+     "sub": {"a": "MN(a)", "ins": "insured ? M('.ins') : ''"},
+     "do": "spend('health2', a, 'trk.hipPriv'); health += 4; happy += 3"
+    },
+    {"id": "wait", "hint": true, "do": "happy -= 3; health -= 6"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hip replacement",
+     ".x": "Your hip needs replacing. The public waiting list is about 18 months.",
+     ".priv": "Go private now",
+     ".priv.s": "About {a}{ins}. Back on your feet in weeks. Happiness +3.",
+     ".ins": " after insurance",
+     ".wait": "Wait for the public hospital",
+     ".wait.s": "Free, but 18 months of pain. Happiness −3.",
+     ".wait.h": "Health −6.",
+     "trk.hipPriv": "Private hip surgery"
+    },
+    "zh": {
+     ".t": "髋关节置换",
+     ".x": "你的髋关节需要置换。公立医院要排队大约18个月。",
+     ".priv": "现在去私立医院",
+     ".priv.s": "大约{a}{ins}。几个星期就能下床走路。幸福感 +3。",
+     ".ins": "（保险理赔后）",
+     ".wait": "排队等公立医院",
+     ".wait.s": "不花钱，但要痛18个月。幸福感 −3。",
+     ".wait.h": "健康 −6。",
+     "trk.hipPriv": "私立医院做髋关节手术"
+    },
+    "zht": {
+     ".t": "髖關節置換",
+     ".x": "你的髖關節需要置換。公立醫院要排大約18個月。",
+     ".priv": "現在去私立醫院",
+     ".priv.s": "大約{a}{ins}。幾個星期就能下床走路。幸福感 +3。",
+     ".ins": "（保險理賠後）",
+     ".wait": "排隊等公立醫院",
+     ".wait.s": "不花錢，但要痛18個月。幸福感 −3。",
+     ".wait.h": "健康 −6。",
+     "trk.hipPriv": "私立醫院做髖關節手術"
+    }
+   }
+  },
+  {
+   "id": "hearing",
+   "age": [72, 92],
+   "weight": 0.6,
+   "def": "basic",
+   "tarot": {"en": "Page of Cups", "zh": "圣杯侍从", "zht": "聖杯侍從"},
+   "art": "hearing",
+   "opts": [
+    {
+     "id": "top",
+     "sub": {"a": "MN(.2 * base)"},
+     "do": "spend('hearing', .2 * base, 'trk.hearing'); happy += 3"
+    },
+    {
+     "id": "basic",
+     "sub": {"a": "MN(.05 * base)"},
+     "do": "spend('hearing', .05 * base, 'trk.hearing'); happy += 1"
+    },
+    {"id": "none", "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Hearing aids",
+     ".x": "You keep asking people to repeat themselves.",
+     ".top": "The best hearing aids",
+     ".top.s": "About {a}. Happiness +3.",
+     ".basic": "Basic hearing aids",
+     ".basic.s": "About {a}. Happiness +1.",
+     ".none": "Manage without",
+     ".none.s": "Save the money. Conversations get harder. Happiness −1.",
+     "trk.hearing": "Hearing aids"
+    },
+    "zh": {
+     ".t": "助听器",
+     ".x": "你常常要别人把话再说一遍。",
+     ".top": "最好的助听器",
+     ".top.s": "大约{a}。幸福感 +3。",
+     ".basic": "基本款助听器",
+     ".basic.s": "大约{a}。幸福感 +1。",
+     ".none": "先将就着",
+     ".none.s": "省下这笔钱，但聊天越来越吃力。幸福感 −1。",
+     "trk.hearing": "助听器"
+    },
+    "zht": {
+     ".t": "助聽器",
+     ".x": "你常常要別人把話再說一遍。",
+     ".top": "最好的助聽器",
+     ".top.s": "大約{a}。幸福感 +3。",
+     ".basic": "基本款助聽器",
+     ".basic.s": "大約{a}。幸福感 +1。",
+     ".none": "先將就著",
+     ".none.s": "省下這筆錢，但聊天越來越吃力。幸福感 −1。",
+     "trk.hearing": "助聽器"
+    }
+   }
+  },
+  {
+   "id": "ill",
+   "src": "health: a serious illness and depression come with the situation (see tick); `surv` makes the 40 futures count survivors",
+   "when": {"test": "illAge === age"},
+   "def": "std",
+   "tarot": "insure",
+   "art": "ill",
+   "surv": true,
+   "text": "M('.x.' + illType)",
+   "hint": "M('.hx')",
+   "preLog": "M('log.ill.' + illType)",
+   "opts": [
+    {
+     "each": "['best', 'std', 'skip']",
+     "as": "k",
+     "id": "k",
+     "let": {"y": "illYou(k)", "liq": "liquid()"},
+     "sub": {
+      "a": "MN(y)",
+      "ins": "insured && y > 0 ? M('e.health2.ins') : ''",
+      "off": "working() ? M('.off', {n: ILLT[k].m}) : ''"
+     },
+     "hint": "M('.h', {p: Math.round(survP(k) * 100)})",
+     "ok": "k === 'best' ? (insured || liq >= .5 * y || M('e.home.need', {n: MN(.5 * y), h: MN(liq)})) : undefined",
+     "do": "treat(k)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A serious illness",
+     ".x.heart": "Chest pain sends you to hospital: it's a heart attack. Once you're stable, the doctors explain your treatment options.",
+     ".x.stroke": "One morning your arm goes weak and your words come out wrong: it's a stroke. Once you're stable, the doctors explain your treatment options.",
+     ".x.cancer": "A check-up finds cancer. The doctors explain your treatment options.",
+     ".hx": "Your chances depend on your health, your age, your country and the treatment.",
+     ".best": "The best hospital you can find",
+     ".best.s": "About {a}{ins}: top specialists and no waiting.{off}",
+     ".std": "Standard treatment",
+     ".std.s": "About {a}{ins} at a public hospital.{off}",
+     ".skip": "Go without treatment",
+     ".skip.s": "No hospital bills. You rest at home.{off}",
+     ".off": " About {n} months off work.",
+     ".h": "Survival chance about {p}%."
+    },
+    "zh": {
+     ".t": "一场大病",
+     ".x.heart": "胸口一阵剧痛，你被送进医院：是心脏病发作。情况稳定下来以后，医生向你说明了几种治疗方案。",
+     ".x.stroke": "一天早上，你的手臂突然没力气，话也说不清楚：是中风。情况稳定下来以后，医生向你说明了几种治疗方案。",
+     ".x.cancer": "一次体检发现了癌症。医生向你说明了几种治疗方案。",
+     ".hx": "能不能挺过去，取决于你的健康、年龄、所在的国家和治疗方式。",
+     ".best": "找最好的医院",
+     ".best.s": "大约{a}{ins}：顶尖的专科医生，不用排队。{off}",
+     ".std": "标准治疗",
+     ".std.s": "在公立医院大约{a}{ins}。{off}",
+     ".skip": "不接受治疗",
+     ".skip.s": "没有医药费，在家休养。{off}",
+     ".off": "大约{n}个月不能上班。",
+     ".h": "存活机会约{p}%。"
+    },
+    "zht": {
+     ".t": "一場大病",
+     ".x.heart": "胸口一陣劇痛，你被送進醫院：是心臟病發作。情況穩定下來以後，醫生跟你說明了幾種治療方式。",
+     ".x.stroke": "某天早上，你的手臂突然沒力氣，話也說不清楚：是中風。情況穩定下來以後，醫生跟你說明了幾種治療方式。",
+     ".x.cancer": "一次健康檢查發現了癌症。醫生跟你說明了幾種治療方式。",
+     ".hx": "能不能撐過去，取決於你的健康、年齡、所在的國家和治療方式。",
+     ".best": "找最好的醫院",
+     ".best.s": "大約{a}{ins}：頂尖的專科醫師，不用排隊。{off}",
+     ".std": "標準治療",
+     ".std.s": "在公立醫院大約{a}{ins}。{off}",
+     ".skip": "不接受治療",
+     ".skip.s": "沒有醫藥費，在家休養。{off}",
+     ".off": "大約{n}個月不能上班。",
+     ".h": "存活機會約{p}%。"
+    }
+   }
+  },
+  {
+   "id": "dep",
+   "when": {"test": "depAge === age"},
+   "def": "ignore",
+   "tarot": "ret",
+   "art": "dep",
+   "care": ".care",
+   "let": {"u": "roll('depLen')"},
+   "hint": true,
+   "preLog": "M('log.dep')",
+   "opts": [
+    {
+     "id": "ther",
+     "sub": {"a": "MN(depFee())", "ins": "insured ? M('e.health2.ins') : ''"},
+     "hint": true,
+     "do": "depStart('ther', u < .5 ? 1 : 2)"
+    },
+    {
+     "id": "off",
+     "sub": {"a": "MN(working() ? .33 * salary() : 0)"},
+     "hint": true,
+     "ok": "working() || M('.nojob')",
+     "do": "depStart('off', u < .45 ? 1 : 2)"
+    },
+    {
+     "id": "talk",
+     "hint": true,
+     "rel": 3,
+     "do": "depStart('talk', clamp(Math.floor((65 - rel) / 20 + u + .5), 1, 4))"
+    },
+    {"id": "ignore", "hint": true, "do": "depStart('ignore', 4 + Math.floor(u * 3))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Feeling low",
+     ".x": "For two years you've felt flat and tired, and the things you used to enjoy don't help. A doctor says it's depression: a common health condition that can be treated, not a weakness.",
+     ".h": "While it lasts: pay −30%, fewer promotions, health slowly falls, and your focus works half as well.",
+     ".care": "If you're struggling in real life, talking to someone helps.",
+     ".ther": "See a therapist",
+     ".ther.s": "About {a} a year for sessions{ins}.",
+     ".ther.h": "It usually lifts in one to two years.",
+     ".off": "Take time off work",
+     ".off.s": "Four months off: about {a} less pay this year.",
+     ".off.h": "It usually lifts within one to two years.",
+     ".nojob": "You're not working right now.",
+     ".talk": "Talk to family and friends",
+     ".talk.s": "Free. Tell the people close to you how you've been feeling.",
+     ".talk.h": "The closer your relationships, the sooner it lifts: one to four years.",
+     ".ignore": "Push through on your own",
+     ".ignore.s": "Keep going as if nothing is wrong.",
+     ".ignore.h": "It usually lasts four to six years.",
+     "log.dep": "A doctor tells you it's depression."
+    },
+    "zh": {
+     ".t": "情绪低落",
+     ".x": "这两年你一直提不起劲、很疲惫，以前喜欢的事也帮不上忙。医生说这是抑郁症：一种常见、可以治疗的健康问题，不是软弱。",
+     ".h": "持续期间：收入 −30%，升职机会变少，健康慢慢下降，每年重心的效果减半。",
+     ".care": "如果你在现实生活中也觉得很辛苦，找人聊聊会有帮助。",
+     ".ther": "看心理治疗师",
+     ".ther.s": "每年大约{a}的咨询费{ins}。",
+     ".ther.h": "通常一到两年会好转。",
+     ".off": "请假休息",
+     ".off.s": "休息四个月：今年少赚大约{a}。",
+     ".off.h": "通常一到两年内会好转。",
+     ".nojob": "你现在没有工作。",
+     ".talk": "跟家人朋友聊聊",
+     ".talk.s": "不花钱。把你这阵子的感受告诉身边的人。",
+     ".talk.h": "关系越亲近，好得越快：一到四年。",
+     ".ignore": "自己硬撑",
+     ".ignore.s": "照常过日子，当作没事。",
+     ".ignore.h": "通常会持续四到六年。",
+     "log.dep": "医生告诉你，你得了抑郁症。"
+    },
+    "zht": {
+     ".t": "心情低落",
+     ".x": "這兩年你一直提不起勁、很疲累，以前喜歡的事也幫不上忙。醫生說這是憂鬱症：一種常見、可以治療的健康問題，不是軟弱。",
+     ".h": "持續期間：收入 −30%，升遷機會變少，健康慢慢下降，每年重心的效果減半。",
+     ".care": "如果你在現實生活中也覺得很辛苦，找人聊聊會有幫助。",
+     ".ther": "看心理師",
+     ".ther.s": "每年大約{a}的諮商費{ins}。",
+     ".ther.h": "通常一到兩年會好轉。",
+     ".off": "請假休息",
+     ".off.s": "休息四個月：今年少賺大約{a}。",
+     ".off.h": "通常一到兩年內會好轉。",
+     ".nojob": "你現在沒有工作。",
+     ".talk": "跟家人朋友聊聊",
+     ".talk.s": "不用花錢。把你這陣子的感受告訴身邊的人。",
+     ".talk.h": "關係越親近，好得越快：一到四年。",
+     ".ignore": "自己硬撐",
+     ".ignore.s": "照常過日子，當作沒事。",
+     ".ignore.h": "通常會持續四到六年。",
+     "log.dep": "醫生告訴你，你得了憂鬱症。"
+    }
+   }
+  }
+ ]
+}

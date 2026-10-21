@@ -1,0 +1,324 @@
+{
+ "about": "Country cards for lives born in Philippines. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "PH",
+ "events": [
+  {
+   "id": "ph_ofw",
+   "src": "===================== Philippines (PH) ===================== OFWs: an estimated 2.16 million Overseas Filipino Workers in 2023 (PSA Survey on Overseas Filipinos, via Philstar); placement fees may not exceed one month's basic salary, and none for domestic workers (DMW; PNA). Pay and housing multiples are ESTIMATES.",
+   "age": [21, 42],
+   "weight": 0.5,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "mi"},
+   "use": "ctr",
+   "with": {"m": 2.6, "cm": 0.85, "yrs": 3, "fee": 0.15, "remit": 0.3},
+   "vars": {"a": "MN(2.6 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "Working abroad",
+     ".x": "An agency offers a three-year contract abroad at about {a} a year. About 2.16 million Filipinos worked overseas in 2023. Placement fees can’t exceed one month’s pay, and domestic workers pay none.",
+     "trk.ph_ofw": "Work abroad"
+    },
+    "zh": {
+     ".t": "出国工作",
+     ".x": "一家中介给你一份三年的海外合约，年薪约{a}。2023年约有216万菲律宾人在海外工作。中介费不得超过一个月的工资，家政工完全不用付。",
+     "trk.ph_ofw": "出国工作"
+    },
+    "zht": {
+     ".t": "出國工作",
+     ".x": "一家中介給你一份三年的海外合約，年薪約{a}。2023年約有216萬菲律賓人在海外工作。中介費不得超過一個月的薪水，家政工完全不用付。",
+     "trk.ph_ofw": "出國工作"
+    }
+   }
+  },
+  {
+   "id": "ph_paluwagan",
+   "src": "Paluwagan: an informal rotating savings group; about 4% of adults save this way (BSP, via Moneymax). Risk ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "ya"},
+   "use": "rosca",
+   "with": {"a": 0.15, "n": 1, "early": 1, "late": 1, "risk": 0.06},
+   "i18n": {
+    "en": {
+     ".t": "A paluwagan",
+     ".x": "Officemates start a paluwagan: everyone pays a fixed amount every payday, and each payday one member takes the whole pot."
+    },
+    "zh": {
+     ".t": "互助会（Paluwagan）",
+     ".x": "办公室同事开了一个互助会（paluwagan）：每个发薪日大家交固定金额，每次由一人拿走全部会钱。"
+    },
+    "zht": {
+     ".t": "互助會（Paluwagan）",
+     ".x": "辦公室同事開了一個互助會（paluwagan）：每個發薪日大家交固定金額，每次由一人拿走全部會錢。"
+    }
+   }
+  },
+  {
+   "id": "ph_typhoon",
+   "src": "Typhoons: about 20 tropical cyclones enter the Philippine Area of Responsibility each year, 8 or 9 crossing the country (PAGASA).",
+   "age": [25, 70],
+   "weight": 0.6,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "storm", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012, "p": 0.6},
+   "i18n": {
+    "en": {
+     ".t": "Typhoon season",
+     ".x": "About 20 tropical cyclones enter the Philippine area each year, and 8 or 9 cross the country. Your home is in their path."
+    },
+    "zh": {
+     ".t": "台风季节",
+     ".x": "每年约有20个热带气旋进入菲律宾责任区，其中8到9个会穿越国土。你家正在它们的路径上。"
+    },
+    "zht": {
+     ".t": "颱風季節",
+     ".x": "每年約有20個熱帶氣旋進入菲律賓責任區，其中8到9個會穿越國土。你家正在它們的路徑上。"
+    }
+   }
+  },
+  {
+   "id": "ph_mp2",
+   "src": "Pag-IBIG MP2: 7.10% tax-free dividends for 2024 (Pag-IBIG Fund, via ABS-CBN and Philstar); a five-year program. With 3% inflation, about 4% real: an ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.65,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "edufund",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".06 * base"},
+   "opts": [
+    {
+     "id": "mp2",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('mp2', { amt: a, until: age + 5 }, { rate: .04, lock: age + 5 }, 'trk.mp2')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Pag-IBIG MP2",
+     ".x": "Pag-IBIG’s MP2 is a five-year savings programme; it paid a tax-free 7.1% dividend for 2024.",
+     ".mp2": "Save in MP2",
+     ".mp2.s": "About {a} a year for 5 years. About 4% a year after inflation.",
+     ".none": "Not now",
+     ".none.s": "Keep the money free.",
+     "trk.mp2": "MP2 savings"
+    },
+    "zh": {
+     ".t": "Pag-IBIG MP2储蓄",
+     ".x": "Pag-IBIG的MP2是五年期储蓄计划；2024年派发免税股息7.1%。",
+     ".mp2": "存MP2",
+     ".mp2.s": "每年约{a}，存5年。扣除通胀后每年约4%。",
+     ".none": "暂时不存",
+     ".none.s": "钱随时可用。",
+     "trk.mp2": "MP2储蓄"
+    },
+    "zht": {
+     ".t": "Pag-IBIG MP2儲蓄",
+     ".x": "Pag-IBIG的MP2是五年期儲蓄計畫；2024年派發免稅股息7.1%。",
+     ".mp2": "存MP2",
+     ".mp2.s": "每年約{a}，存5年。扣除通膨後每年約4%。",
+     ".none": "暫時不存",
+     ".none.s": "錢隨時可用。",
+     "trk.mp2": "MP2儲蓄"
+    }
+   }
+  },
+  {
+   "id": "ph_philhealth",
+   "src": "PhilHealth: 5% of income for direct contributors in 2025, floor ₱10,000 (₱500 a month) (PhilHealth Advisory 2025-0002): ₱6,000 a year ≈ 0.057 of the game's typical wage (₱105,000). Share of bills covered is an ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.65,
+   "when": {"selfEmployed": true, "test": "!medCut"},
+   "def": "none",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.057 * base)"},
+     "hint": true,
+     "do": "medPlan('ph_philhealth', .5, .057 * base)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "PhilHealth",
+     ".x": "As a self-employed member you pay PhilHealth yourself: 5% of your income in 2025, at least ₱500 a month.",
+     ".join": "Pay your PhilHealth",
+     ".join.s": "About {a} a year.",
+     ".join.h": "It pays about half of your hospital bills.",
+     ".none": "Skip it",
+     ".none.s": "You pay every bill yourself.",
+     "trk.ph_philhealth": "PhilHealth"
+    },
+    "zh": {
+     ".t": "国家健康保险",
+     ".x": "自雇会员要自己缴国家健康保险（PhilHealth）：2025年是收入的5%，每月至少₱500。",
+     ".join": "缴PhilHealth",
+     ".join.s": "每年约{a}。",
+     ".join.h": "能付约一半的住院费。",
+     ".none": "不缴",
+     ".none.s": "医药费全部自付。",
+     "trk.ph_philhealth": "国家健康保险"
+    },
+    "zht": {
+     ".t": "國家健康保險",
+     ".x": "自僱會員要自己繳國家健康保險（PhilHealth）：2025年是收入的5%，每月至少₱500。",
+     ".join": "繳PhilHealth",
+     ".join.s": "每年約{a}。",
+     ".join.h": "能付約一半的住院費。",
+     ".none": "不繳",
+     ".none.s": "醫藥費全部自付。",
+     "trk.ph_philhealth": "國家健康保險"
+    }
+   }
+  },
+  {
+   "id": "ph_sss",
+   "src": "SSS voluntary members: 15% of the monthly salary credit (from ₱5,000) from Jan 2025, all paid by the member; 120 monthly contributions earn a lifetime pension (Manila Bulletin; Grant Thornton). ₱9,000 a year ≈ 0.086; the pension (≈ ₱2,400 a month, ≈ 0.27) is an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.6,
+   "when": {"selfEmployed": true},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {"a": "MN(.086 * B)", "b": "MN(.27 * B)"},
+     "do": "penScheme('ph_sss', .086 * B, 30, .27 * B, 60)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "SSS contributions",
+     ".x": "Self-employed and voluntary members pay the whole SSS contribution themselves: 15% of the monthly salary credit they choose, from 2025. After 120 monthly contributions you get a pension for life.",
+     ".pay": "Pay in",
+     ".pay.s": "About {a} a year; a pension of about {b} a year from 60.",
+     ".none": "Not now",
+     ".none.s": "Keep the money free.",
+     "trk.ph_sss": "SSS contributions"
+    },
+    "zh": {
+     ".t": "社会保障缴费",
+     ".x": "自雇和自愿会员要自己缴全部社会保障（SSS）费：2025年起是所选月薪基数的15%。缴满120个月就能终身领养老金。",
+     ".pay": "缴费",
+     ".pay.s": "每年约{a}；60岁起每年领约{b}的养老金。",
+     ".none": "暂时不缴",
+     ".none.s": "钱随时可用。",
+     "trk.ph_sss": "社会保障缴费"
+    },
+    "zht": {
+     ".t": "社會保障繳費",
+     ".x": "自僱和自願會員要自己繳全部社會保障（SSS）費：2025年起是所選月薪基數的15%。繳滿120個月就能終身領退休金。",
+     ".pay": "繳費",
+     ".pay.s": "每年約{a}；60歲起每年領約{b}的退休金。",
+     ".none": "暫時不繳",
+     ".none.s": "錢隨時可用。",
+     "trk.ph_sss": "社會保障繳費"
+    }
+   }
+  },
+  {
+   "id": "ph_13th",
+   "src": "13th-month pay: one-twelfth of basic salary, paid by 24 December (Presidential Decree 851).",
+   "age": [22, 55],
+   "weight": 0.65,
+   "when": {"working": true, "test": "!selfEmp()"},
+   "def": "bank",
+   "tarot": "bonus",
+   "art": {"draw": "bonus", "bg": "mi"},
+   "use": "m13",
+   "with": {"m": 0.08333333333333333},
+   "i18n": {
+    "en": {
+     ".t": "Your 13th-month pay",
+     ".x": "By law your 13th-month pay, a twelfth of a year’s basic salary, must be paid by 24 December."
+    },
+    "zh": {
+     ".t": "你的第十三个月薪水",
+     ".x": "依法第十三个月薪水，即全年基本工资的十二分之一，必须在12月24日前发放。"
+    },
+    "zht": {
+     ".t": "你的第十三個月薪水",
+     ".x": "依法第十三個月薪水，即全年基本薪水的十二分之一，必須在12月24日前發放。"
+    }
+   }
+  },
+  {
+   "id": "ph_house",
+   "src": "Pag-IBIG housing loans: 5.75% (1-year) and 6.25% (3-year) repricing in 2025; the Affordable Housing Program charges 3% for low-income members, for up to 30 years (Malaya; Tribune, 2025). Real rates (about 0% and 3%) and prices are ESTIMATES.",
+   "age": [26, 42],
+   "weight": 0.6,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "vars": {"p": "MN(.8 * price())", "q": "MN(.45 * price())"},
+   "opts": [
+    {
+     "id": "ahp",
+     "sub": {"d": "upFront(.45 * P, .05, .02)", "m": "yrPay(.45 * P, .05, 0)"},
+     "ok": "salary() < 1.4 * base || M('.no')",
+     "do": "buyAt(.45 * P, { dp: .05, fee: .02, r: 0, n: 30, lk: 'trk.ph_ahp', fixed: true })"
+    },
+    {
+     "id": "reg",
+     "sub": {"d": "upFront(.8 * P, .1, .03)", "m": "yrPay(.8 * P, .1, .03)"},
+     "ok": "liq >= .13 * .8 * P || M('e.home.need', { n: MN(.104 * P), h: MN(liq) })",
+     "do": "buyAt(.8 * P, { dp: .1, fee: .03, r: .03, n: 30, lk: 'trk.flat' })"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A Pag-IBIG housing loan",
+     ".x": "Pag-IBIG housing loans charged 5.75–6.25% a year in 2025; under its Affordable Housing Program, low-income members can buy socialised housing at 3% for up to 30 years. A small home costs {p}; socialised housing about {q}.",
+     ".ahp": "Socialised housing at 3%",
+     ".ahp.s": "{d} up front, then {m} a year for 30 years.",
+     ".no": "Your income is above the programme’s limit.",
+     ".reg": "A regular Pag-IBIG loan",
+     ".reg.s": "{d} up front, then {m} a year.",
+     ".wait": "Keep renting",
+     ".wait.s": "Your rent stays the same.",
+     "trk.ph_ahp": "Socialised housing"
+    },
+    "zh": {
+     ".t": "Pag-IBIG房贷",
+     ".x": "2025年Pag-IBIG房贷利率为每年5.75–6.25%；在可负担住房计划下，低收入会员可以用3%的利率买社会住房，最长30年。一间小房子要{p}；社会住房约{q}。",
+     ".ahp": "3%利率的社会住房",
+     ".ahp.s": "首付{d}，之后每年{m}，供30年。",
+     ".no": "你的收入超过计划的上限。",
+     ".reg": "一般的Pag-IBIG房贷",
+     ".reg.s": "首付{d}，之后每年{m}。",
+     ".wait": "继续租房",
+     ".wait.s": "房租不变。",
+     "trk.ph_ahp": "社会住房"
+    },
+    "zht": {
+     ".t": "Pag-IBIG房貸",
+     ".x": "2025年Pag-IBIG房貸利率為每年5.75–6.25%；在可負擔住房計畫下，低收入會員可以用3%的利率買社會住房，最長30年。一間小房子要{p}；社會住房約{q}。",
+     ".ahp": "3%利率的社會住房",
+     ".ahp.s": "頭期款{d}，之後每年{m}，繳30年。",
+     ".no": "你的收入超過計畫的上限。",
+     ".reg": "一般的Pag-IBIG房貸",
+     ".reg.s": "頭期款{d}，之後每年{m}。",
+     ".wait": "繼續租房",
+     ".wait.s": "房租不變。",
+     "trk.ph_ahp": "社會住房"
+    }
+   }
+  }
+ ]
+}

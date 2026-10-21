@@ -1,0 +1,366 @@
+{
+ "about": "Shared parts: option sets several events use (\"use\" in an event), and consequences several events schedule.",
+ "templates": {
+  "flood": {
+   "key": "flood",
+   "about": "Floods and storms: insure, prepare or do nothing; a flood may reach you in the next few years. aid: government aid when hit (× typical wage); prem: yearly premium; prep: cost of preparing; p: chance a flood reaches you.",
+   "defaults": {"aid": 0, "p": 0.55},
+   "fn": {
+    "ready": {
+     "args": ["k"],
+     "do": "later(age + 1 + Math.floor(roll(id + 'At') * 7), 'flood', {id: id, lv: k, aid: aid || 0, p: p || .55}); if (k === 2) { T(id, {kind: 'custom', label: M('trk.floodIns'), paid: 0, saved: 0, nk: 'note.floodIns'}); rec(id, prem * base, 10) } if (k === 1) spend(id + 'P', prep * base, 'trk.floodPrep')"
+    }
+   },
+   "opts": [
+    {
+     "id": "cover",
+     "sub": {"a": "MN(prem * base)"},
+     "hint": {"p": "Math.round((p || .55) * 100)"},
+     "do": "ready(2)"
+    },
+    {
+     "id": "prep",
+     "sub": {"a": "MN(prep * base)"},
+     "hint": {"p": "Math.round((p || .55) * 100)"},
+     "do": "ready(1)"
+    },
+    {"id": "none", "hint": {"p": "Math.round((p || .55) * 100)"}, "do": "ready(0)"}
+   ],
+   "later": {
+    "flood": "if (roll(x.id) >= x.p) { log(M('log.floodNo'), 'good'); return; } const B = base, full = (house ? .45 : .15) * B, f = [1, .5, .12][x.lv], loss = full * f, aid = x.aid * B, t = T(x.id, { kind: 'custom', label: M('trk.flood'), paid: 0, saved: 0 }); pay(loss); cash += aid; happy = clamp(happy - 5, 0, 100); health = clamp(health - 2, 3, 100); t.v += aid - loss; t.saved = (t.saved || 0) + full - loss; t.note = M(x.lv === 2 ? 'note.floodIns' : 'note.flood', { a: MN(x.lv === 2 ? t.paid : loss), b: MN(x.lv === 2 ? t.saved : aid) }); log(M(aid > 0 ? 'log.floodAid' : 'log.flood', { a: MN(loss), b: MN(aid) }), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".cover": "Buy flood cover",
+     ".cover.s": "About {a} a year for 10 years.",
+     ".cover.h": "About a {p}% chance a flood reaches you in the next few years; the insurer pays most of the damage.",
+     ".prep": "Get ready yourself",
+     ".prep.s": "Raise furniture and sockets, keep sandbags: about {a} once.",
+     ".prep.h": "About a {p}% chance of a flood soon; being ready halves the damage.",
+     ".none": "Hope it stays dry",
+     ".none.s": "No cost now.",
+     ".none.h": "About a {p}% chance of a flood soon."
+    },
+    "zh": {
+     ".cover": "买水灾保险",
+     ".cover.s": "每年约{a}，保10年。",
+     ".cover.h": "未来几年大约有{p}%的机会淹到你家；保险会赔大部分损失。",
+     ".prep": "自己做好准备",
+     ".prep.s": "把家具和插座垫高，备好沙包：一次约{a}。",
+     ".prep.h": "近期大约有{p}%的机会淹水；有准备的话损失减半。",
+     ".none": "希望别淹",
+     ".none.s": "现在不花钱。",
+     ".none.h": "近期大约有{p}%的机会淹水。"
+    },
+    "zht": {
+     ".cover": "買水災保險",
+     ".cover.s": "每年約{a}，保10年。",
+     ".cover.h": "未來幾年大約有{p}%的機會淹到你家；保險會賠大部分損失。",
+     ".prep": "自己做好準備",
+     ".prep.s": "把家具和插座墊高，備好沙包：一次約{a}。",
+     ".prep.h": "近期大約有{p}%的機會淹水；有準備的話損失減半。",
+     ".none": "希望別淹",
+     ".none.s": "現在不花錢。",
+     ".none.h": "近期大約有{p}%的機會淹水。"
+    }
+   }
+  },
+  "rosca": {
+   "key": "rosca",
+   "about": "A savings group (ROSCA): pay a yearly amount a (× typical wage) for n years; take the pot early (× early) or late (× late, with a small risk that someone stops paying and you get half). draw: the turn is drawn by lot.",
+   "defaults": {"draw": false},
+   "let": {"amt": "a * base", "v": "{a: MN(amt), b: MN(amt * n * early), c: MN(amt * n * late), n: n}"},
+   "fn": {
+    "join": {
+     "args": ["turn"],
+     "do": "const t = T(id, {kind: 'custom', label: M('trk.rosca'), paid: 0, saved: 0, nk: 'note.rosca'}); rec(id, amt, n); if (turn === 'early') { const w = amt * n * early; cash += w; t.v += w; t.saved = w; t.note = M('note.rosca', {a: MN(0), b: MN(w)}) } else later(age + n, 'rosca', {id: id, pot: amt * n, m: late, risk: risk})"
+    }
+   },
+   "opts": [
+    {
+     "id": "join",
+     "show": "draw",
+     "sub": "M('.join.s', v)",
+     "hint": {"p": "Math.round(risk * 100)"},
+     "rel": 2,
+     "do": "join(roll(id + 'Turn') < .5 ? 'early' : 'late')"
+    },
+    {"id": "early", "show": "!draw", "sub": "M('.early.s', v)", "rel": 2, "do": "join('early')"},
+    {
+     "id": "late",
+     "show": "!draw",
+     "sub": "M('.late.s', v)",
+     "hint": {"p": "Math.round(risk * 100)"},
+     "rel": 2,
+     "do": "join('late')"
+    },
+    {"id": "no", "sub": "M('.no.s', v)", "rel": -1}
+   ],
+   "later": {
+    "rosca": "const t = trk[x.id], bad = roll('rosca' + x.id) < x.risk, v = x.pot * x.m * (bad ? .5 : 1); cash += v; if (t) { t.v += v; t.saved = (t.saved || 0) + v; t.note = M('note.rosca', { a: MN(t.paid || 0), b: MN(t.saved) }); } if (bad) rl(-3); log(M(bad ? 'log.roscaBad' : 'log.roscaOk', { a: MN(v) }), bad ? 'bad' : 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".early": "Take an early turn",
+     ".early.s": "Get the pot now, about {b}, then keep paying {a} a year for {n:a year|# years}.",
+     ".late": "Take a late turn",
+     ".late.s": "Pay {a} a year for {n:a year|# years}, then collect about {c}.",
+     ".late.h": "About a {p}% chance someone stops paying and you get only half.",
+     ".join": "Join",
+     ".join.s": "Pay {a} a year for {n:a year|# years}; your turn for the pot is drawn by lot.",
+     ".join.h": "About a {p}% chance someone stops paying and the group pays out less.",
+     ".no": "Stay out",
+     ".no.s": "Keep your money to yourself."
+    },
+    "zh": {
+     ".early": "先拿会钱",
+     ".early.s": "现在拿到约{b}，之后每年继续交{a}，共{n}年。",
+     ".late": "后拿会钱",
+     ".late.s": "每年交{a}，共{n}年，最后拿回约{c}。",
+     ".late.h": "大约{p}%的机会有人中途不交，你只拿回一半。",
+     ".join": "加入",
+     ".join.s": "每年交{a}，共{n}年；轮到谁拿会钱靠抽签。",
+     ".join.h": "大约{p}%的机会有人中途不交，大家拿回的会少一些。",
+     ".no": "不参加",
+     ".no.s": "钱留在自己手里。"
+    },
+    "zht": {
+     ".early": "先拿會錢",
+     ".early.s": "現在拿到約{b}，之後每年繼續交{a}，共{n}年。",
+     ".late": "後拿會錢",
+     ".late.s": "每年交{a}，共{n}年，最後拿回約{c}。",
+     ".late.h": "大約{p}%的機會有人中途不交，你只拿回一半。",
+     ".join": "加入",
+     ".join.s": "每年交{a}，共{n}年；輪到誰拿會錢靠抽籤。",
+     ".join.h": "大約{p}%的機會有人中途不交，大家拿回的會少一些。",
+     ".no": "不參加",
+     ".no.s": "錢留在自己手裡。"
+    }
+   }
+  },
+  "infl": {
+   "key": "infl",
+   "about": "Very high inflation: money left in a local bank account loses a share f ([from, to]) of its value next year. usd: the text naming the dollar account.",
+   "let": {"c": "Math.max(0, cash)", "fx": "roll(id + 'F')", "lose": "inR(fx, f)"},
+   "opts": [
+    {
+     "id": "keep",
+     "hint": {"a": "Math.round(f[0] * 100)", "b": "Math.round(f[1] * 100)"},
+     "do": "later(age + 1, 'infl', {id: id, f: lose})"
+    },
+    {
+     "id": "usd",
+     "sub": {"a": "MN(.02 * c)", "x": "M(usd)"},
+     "do": "const t = T(id, {kind: 'custom', label: M('trk.infl')}); const fe = .02 * Math.max(0, cash); cash -= fe; t.v -= fe; later(age + 1, 'infl', {id: id, f: inR(fx, [-.04, .05])})"
+    },
+    {
+     "id": "stock",
+     "sub": {"a": "MN(.5 * c)"},
+     "do": "putIn(id + 'S', .5 * Math.max(0, cash), {}, 'trk.inflStock'); later(age + 1, 'infl', {id: id, f: lose})"
+    }
+   ],
+   "later": {
+    "infl": "const t = T(x.id, { kind: 'custom', label: M('trk.infl') }), d = -x.f * Math.max(0, cash); cash += d; t.v += d; t.note = M(d < 0 ? 'note.inflLoss' : 'note.inflOk', { a: MN(Math.abs(d)) }); log(M(d < 0 ? 'log.inflLoss' : 'log.inflOk', { a: MN(Math.abs(d)) }), d < 0 ? 'bad' : 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".keep": "Leave it in the bank",
+     ".keep.s": "The interest is far below the rise in prices.",
+     ".keep.h": "Your savings could lose {a}–{b}% of their value this year.",
+     ".usd": "Move it into something steadier",
+     ".usd.s": "Put your savings into {x}; changing money costs about {a}.",
+     ".ng": "a dollar (domiciliary) account",
+     ".pk": "a foreign-currency account",
+     ".et": "gold, which keeps its value as the birr falls",
+     ".stock": "Buy shares with half",
+     ".stock.s": "Put {a} into shares on the local stock exchange; keep the rest in the bank."
+    },
+    "zh": {
+     ".keep": "继续放在银行",
+     ".keep.s": "利息远远赶不上物价上涨。",
+     ".keep.h": "今年你的存款可能贬值{a}–{b}%。",
+     ".usd": "换成更保值的东西",
+     ".usd.s": "把存款换成{x}；换汇约花{a}。",
+     ".ng": "美元（外币）账户",
+     ".pk": "外币账户",
+     ".et": "黄金，比尔贬值时它能保值",
+     ".stock": "拿一半买股票",
+     ".stock.s": "把{a}买成本地交易所的股票，其余留在银行。"
+    },
+    "zht": {
+     ".keep": "繼續放在銀行",
+     ".keep.s": "利息遠遠趕不上物價上漲。",
+     ".keep.h": "今年你的存款可能貶值{a}–{b}%。",
+     ".usd": "換成更保值的東西",
+     ".usd.s": "把存款換成{x}；換匯約花{a}。",
+     ".ng": "美元（外幣）帳戶",
+     ".pk": "外幣帳戶",
+     ".et": "黃金，比爾貶值時它能保值",
+     ".stock": "拿一半買股票",
+     ".stock.s": "把{a}買成本地交易所的股票，其餘留在銀行。"
+    }
+   }
+  },
+  "m13": {
+   "key": "m13",
+   "about": "A bonus month by law (13th-month pay, THR, aguinaldo): how to use it. m: share of a year's pay.",
+   "let": {"a": "m * salary()"},
+   "opts": [
+    {"id": "inv", "sub": {"a": "MN(a)"}, "do": "putIn(id, a, {}, 'trk.m13inv')"},
+    {
+     "id": "debt",
+     "sub": {"a": "MN(a)"},
+     "ok": "debt > 1 || M('.nodebt')",
+     "do": "const p = Math.min(a, debt, Math.max(0, cash)); debt -= p; cash -= p; happy += 1"
+    },
+    {"id": "treat", "sub": {"a": "MN(a)"}, "do": "spend(id, a, 'trk.m13treat'); happy += 3; rl(1)"},
+    {"id": "bank", "sub": {"a": "MN(a)"}}
+   ],
+   "i18n": {
+    "en": {
+     ".inv": "Invest it",
+     ".inv.s": "{a} into an index fund.",
+     ".debt": "Pay down debt",
+     ".debt.s": "Up to {a} off what you owe.",
+     ".nodebt": "You don’t owe anything.",
+     ".treat": "Celebrate with family",
+     ".treat.s": "Gifts, a feast and a trip: {a}. Happiness +3.",
+     ".bank": "Keep it in the bank",
+     ".bank.s": "{a} stays in your account."
+    },
+    "zh": {
+     ".inv": "拿去投资",
+     ".inv.s": "{a}买指数基金。",
+     ".debt": "还债",
+     ".debt.s": "最多还掉{a}。",
+     ".nodebt": "你没有欠债。",
+     ".treat": "和家人庆祝",
+     ".treat.s": "礼物、大餐和一趟旅行：{a}。幸福感 +3。",
+     ".bank": "存在银行",
+     ".bank.s": "{a}留在账户里。"
+    },
+    "zht": {
+     ".inv": "拿去投資",
+     ".inv.s": "{a}買指數基金。",
+     ".debt": "還債",
+     ".debt.s": "最多還掉{a}。",
+     ".nodebt": "你沒有欠債。",
+     ".treat": "和家人慶祝",
+     ".treat.s": "禮物、大餐和一趟旅行：{a}。幸福感 +3。",
+     ".bank": "存在銀行",
+     ".bank.s": "{a}留在帳戶裡。"
+    }
+   }
+  },
+  "ctr": {
+   "key": "ctr",
+   "about": "A contract abroad: pay × m for yrs years, living costs × cm (below 1 when the employer houses you), a fee up front (× typical wage); remit: money sent home each year (× typical wage).",
+   "let": {"sal": "salary()", "f": "fee * base", "r": "(remit || .25) * base"},
+   "opts": [
+    {
+     "id": "go",
+     "sub": {"a": "MN(m * sal)", "b": "MN(sal)", "f": "MN(f)", "n": "yrs"},
+     "do": "contract(id, {m: m, cm: cm, yrs: yrs, fee: f, remit: remit})"
+    },
+    {
+     "id": "send",
+     "sub": {"a": "MN(m * sal)", "f": "MN(f)", "r": "MN(r)", "n": "yrs"},
+     "do": "contract(id, {m: m, cm: cm, yrs: yrs, fee: f, remit: r})"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".go": "Take the contract",
+     ".go.s": "Pay of about {a} a year (you earn {b} now) for {n:a year|# years}. Fees and travel: {f}. Far from home: Happiness −3.",
+     ".send": "Go, and send money home",
+     ".send.s": "The same contract, and you send about {r} a year to your family. Happiness −3.",
+     ".stay": "Stay home",
+     ".stay.s": "Keep your job and your life here."
+    },
+    "zh": {
+     ".go": "签下合约",
+     ".go.s": "年薪约{a}（你现在是{b}），为期{n}年。中介费和路费：{f}。远离家乡：幸福感 −3。",
+     ".send": "出国，并寄钱回家",
+     ".send.s": "同样的合约，每年寄约{r}给家人。幸福感 −3。",
+     ".stay": "留在家乡",
+     ".stay.s": "保住这里的工作和生活。"
+    },
+    "zht": {
+     ".go": "簽下合約",
+     ".go.s": "年薪約{a}（你現在是{b}），為期{n}年。中介費和路費：{f}。遠離家鄉：幸福感 −3。",
+     ".send": "出國，並寄錢回家",
+     ".send.s": "同樣的合約，每年寄約{r}給家人。幸福感 −3。",
+     ".stay": "留在家鄉",
+     ".stay.s": "保住這裡的工作和生活。"
+    }
+   }
+  },
+  "exam": {
+   "key": "exam",
+   "about": "A public exam for a government job: chance is the base chance to pass (Skill adds to it); a full year of unpaid leave to study, or study part-time.",
+   "let": {"p": "clamp(chance + skill() * .004, .04, .4)", "sal": "salary()"},
+   "fn": {
+    "sit": {
+     "args": ["q", "full", "fee"],
+     "do": "pay(fee); const t = T(id, {kind: 'custom', label: M('trk.exam')}); t.v -= fee + (full ? Math.max(0, salary()) : 0); t.note = M('note.examIn'); if (full) offUntil = age + 1; else happy -= 2; later(age + 1, 'exam', {id: id, p: q})"
+    }
+   },
+   "opts": [
+    {
+     "id": "full",
+     "sub": {"a": "MN(sal)", "b": "MN(.1 * base)"},
+     "hint": {"p": "Math.round(p * 100)"},
+     "do": "sit(p, true, .1 * base)"
+    },
+    {
+     "id": "part",
+     "sub": {"b": "MN(.05 * base)"},
+     "hint": {"p": "Math.round(.55 * p * 100)"},
+     "do": "sit(.55 * p, false, .05 * base)"
+    },
+    {"id": "no"}
+   ],
+   "later": {
+    "exam": "const t = trk[x.id]; if (!job || retired) return; if (roll('exam' + x.id) < x.p) { endCareer('quit', age - 1); pickCareer('civ'); if (t) t.note = M('note.examOk'); log(M('log.examOk'), 'good'); } else { happy -= 3; if (t) t.note = M('note.examNo'); log(M('log.examNo'), 'bad'); }"
+   },
+   "i18n": {
+    "en": {
+     ".full": "Take a year off to study",
+     ".full.s": "A year of unpaid leave (you give up {a} of pay) and a prep course of about {b}.",
+     ".full.h": "About a {p}% chance to pass.",
+     ".part": "Study evenings and weekends",
+     ".part.s": "A prep course of about {b}, and tired evenings. Happiness −2.",
+     ".part.h": "About a {p}% chance to pass.",
+     ".no": "Stay where you are",
+     ".no.s": "Keep your career as it is."
+    },
+    "zh": {
+     ".full": "请一年假专心备考",
+     ".full.s": "停薪一年（少赚{a}），再加约{b}的培训班。",
+     ".full.h": "考上的机会大约{p}%。",
+     ".part": "晚上和周末复习",
+     ".part.s": "培训班约{b}，晚上很累。幸福感 −2。",
+     ".part.h": "考上的机会大约{p}%。",
+     ".no": "维持现状",
+     ".no.s": "继续现在的职业。"
+    },
+    "zht": {
+     ".full": "請一年假專心備考",
+     ".full.s": "停薪一年（少賺{a}），再加約{b}的補習班。",
+     ".full.h": "考上的機會大約{p}%。",
+     ".part": "晚上和週末複習",
+     ".part.s": "補習班約{b}，晚上很累。幸福感 −2。",
+     ".part.h": "考上的機會大約{p}%。",
+     ".no": "維持現狀",
+     ".no.s": "繼續現在的職業。"
+    }
+   }
+  }
+ },
+ "later": {
+  "repay": "const u = roll('repay' + x.id), f = x.fam ? u < .7 ? 1 : u < .85 ? .5 : 0 : u < relP(.45) ? 1 : u < relP(.65) ? .5 : 0, v = x.a * f; cash += v; const t = trk[x.id]; if (t) { t.v += v; t.note = M('note.repay', { a: MN(x.a), b: MN(v) }); } log(M((x.fam ? 'log.kidRepay' : 'log.repay') + (f === 1 ? 'All' : f ? 'Half' : 'None'), { a: MN(x.a), b: MN(v) }), f === 1 ? 'good' : 'bad')",
+  "scam": "const t = trk[x.id]; if (t) t.note = M('note.scam', { a: MN(x.a) }); log(M(x.k2 ? 'log.scam2' : 'log.scam', { a: MN(x.a) }), 'bad')",
+  "sideBiz": "if (roll('side' + x.id) < x.p) { T(x.id, { kind: 'custom', label: M('trk.sideBiz') }); rec(x.id, -x.a, x.n); log(M('log.sideBiz'), 'good'); }"
+ }
+}

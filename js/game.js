@@ -1,6 +1,7 @@
 /* A Second Chance game UI: birth, the yearly loop, decisions (each one a tarot card), passbook, chart and the end card.
    All text goes through t()/tr() from js/i18n.js, so switching language re-renders everything. */
-(function(){
+/* starts once this language's text has loaded (js/i18n.js) */
+I18N.ready(function(){
 const $=q=>document.querySelector(q);
 const G={slotMode:null,th:{}};
 const SPEEDS=[900,450,180];
@@ -773,4 +774,4 @@ document.title=t('g.title');
 /* deep links from the landing page */
 if(location.hash==='#born')reveal(pickCountry());
 else if(location.hash==='#pick'){$('#bp-pick').checked=true;$('#countryWrap').hidden=false}
-})();
+});

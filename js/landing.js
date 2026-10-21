@@ -1,6 +1,7 @@
 /* Landing page: live counters, the hero tarot card with its turning sun, the money lab, and the birth map.
    Text comes from js/i18n.js; static copy is translated through data-i18n attributes. */
-(function(){
+/* starts once this language's text has loaded (js/i18n.js) */
+I18N.ready(function(){
 const $=q=>document.querySelector(q);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -147,4 +148,4 @@ window.addEventListener('langchange',()=>{document.title=t('l.title');fillCountr
 document.title=t('l.title');
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(redraw,120)});
 document.fonts&&document.fonts.ready.then(()=>drawLab());
-})();
+});

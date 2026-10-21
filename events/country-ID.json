@@ -1,0 +1,355 @@
+{
+ "about": "Country cards for lives born in Indonesia. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "ID",
+ "events": [
+  {
+   "id": "id_arisan",
+   "src": "===================== Indonesia (ID) ===================== Arisan: a monthly savings group where a name is drawn each meeting to take the pot (a common Indonesian practice). Risk ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.65,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "mi"},
+   "use": "rosca",
+   "with": {"a": 0.15, "n": 2, "early": 1, "late": 1, "risk": 0.04, "draw": true},
+   "i18n": {
+    "en": {
+     ".t": "Arisan",
+     ".x": "Your neighbourhood arisan meets every month: everyone pays the same amount, and a name is drawn to take the whole pot, until everyone has had a turn."
+    },
+    "zh": {
+     ".t": "阿里散（Arisan）",
+     ".x": "你们社区的阿里散每月聚会一次：大家交一样的钱，抽一个名字拿走全部会钱，直到每个人都拿过一次。"
+    },
+    "zht": {
+     ".t": "阿里散（Arisan）",
+     ".x": "你們社區的阿里散每月聚會一次：大家交一樣的錢，抽一個名字拿走全部會錢，直到每個人都拿過一次。"
+    }
+   }
+  },
+  {
+   "id": "id_thr",
+   "src": "THR: one month's wage for a full year of work, paid in full at least 7 days before Idul Fitri (Permenaker 6/2016; Minister of Manpower, via Setkab and Kontan).",
+   "age": [22, 55],
+   "weight": 0.7,
+   "when": {"working": true},
+   "def": "bank",
+   "tarot": "bonus",
+   "art": {"draw": "bonus", "bg": "mi"},
+   "let": {"a": "salary() / 12"},
+   "opts": [
+    {
+     "id": "mudik",
+     "sub": {"a": "MN(a)"},
+     "rel": 4,
+     "do": "spend('id_thr', a, 'trk.id_thr'); happy += 3"
+    },
+    {"id": "send", "sub": {"a": "MN(.5 * a)"}, "rel": 2, "do": "spend('id_thr', .5 * a, 'trk.id_thrS')"},
+    {"id": "bank", "sub": {"a": "MN(a)"}, "rel": -1, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your THR",
+     ".x": "Before Lebaran your employer must pay THR, a holiday allowance of one month’s wage, in full at least seven days before the holiday. Millions of people travel home for mudik.",
+     ".mudik": "Go home for mudik with gifts",
+     ".mudik.s": "Travel and gifts: about {a}. Happiness +3.",
+     ".send": "Send half home and call",
+     ".send.s": "About {a} to your parents.",
+     ".bank": "Save it",
+     ".bank.s": "{a} into the bank. Happiness −1.",
+     "trk.id_thr": "Mudik",
+     "trk.id_thrS": "THR sent home"
+    },
+    "zh": {
+     ".t": "你的宗教节日津贴",
+     ".x": "开斋节前，雇主必须付宗教节日津贴（THR），相当于一个月的工资，而且至少要在节前七天全额付清。数以百万计的人返乡过节（mudik）。",
+     ".mudik": "带着礼物返乡",
+     ".mudik.s": "路费和礼物约{a}。幸福感 +3。",
+     ".send": "寄一半回家，打电话问候",
+     ".send.s": "约{a}给父母。",
+     ".bank": "存起来",
+     ".bank.s": "{a}存进银行。幸福感 −1。",
+     "trk.id_thr": "返乡过节",
+     "trk.id_thrS": "寄回家的节日津贴"
+    },
+    "zht": {
+     ".t": "你的宗教節日津貼",
+     ".x": "開齋節前，僱主必須付宗教節日津貼（THR），相當於一個月的薪水，而且至少要在節前七天全額付清。數以百萬計的人返鄉過節（mudik）。",
+     ".mudik": "帶著禮物返鄉",
+     ".mudik.s": "路費和禮物約{a}。幸福感 +3。",
+     ".send": "寄一半回家，打電話問候",
+     ".send.s": "約{a}給父母。",
+     ".bank": "存起來",
+     ".bank.s": "{a}存進銀行。幸福感 −1。",
+     "trk.id_thr": "返鄉過節",
+     "trk.id_thrS": "寄回家的節日津貼"
+    }
+   }
+  },
+  {
+   "id": "id_bpjs",
+   "src": "BPJS Kesehatan for independent members: Rp150,000 / 100,000 / 42,000 a person a month for classes I / II / III (class III subsidised to Rp35,000), Perpres 64/2020, still in force in Aug 2025 (LPEM; CNN Indonesia). Class I ≈ 0.056 and class III ≈ 0.013 a year of the game's typical wage (Rp32 million). Shares of bills covered are ESTIMATES.",
+   "age": [22, 60],
+   "weight": 0.75,
+   "when": {"selfEmployed": true, "test": "!medCut"},
+   "def": "k3",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "let": {"B": "base"},
+   "opts": [
+    {"id": "k1", "sub": {"a": "MN(.056 * B)"}, "hint": true, "do": "medPlan('id_bpjs', .2, .056 * B)"},
+    {"id": "k3", "sub": {"a": "MN(.013 * B)"}, "hint": true, "do": "medPlan('id_bpjs', .35, .013 * B)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "BPJS Kesehatan",
+     ".x": "As an independent worker you pay BPJS Kesehatan yourself: Rp150,000, Rp100,000 or Rp42,000 a person a month for class I, II or III (class III is subsidised down to Rp35,000).",
+     ".k1": "Class I",
+     ".k1.s": "About {a} a year.",
+     ".k1.h": "It pays about 80% of your medical bills.",
+     ".k3": "Class III",
+     ".k3.s": "About {a} a year.",
+     ".k3.h": "It pays about 65% of your medical bills.",
+     ".none": "Don’t pay in",
+     ".none.s": "You pay every bill yourself.",
+     "trk.id_bpjs": "BPJS Kesehatan"
+    },
+    "zh": {
+     ".t": "国家医疗保险BPJS",
+     ".x": "自由职业者要自己缴国家医疗保险（BPJS Kesehatan）：一等、二等、三等每人每月分别是150,000、100,000和42,000印尼盾（三等有补贴，只需付35,000）。",
+     ".k1": "一等",
+     ".k1.s": "每年约{a}。",
+     ".k1.h": "能付约80%的医药费。",
+     ".k3": "三等",
+     ".k3.s": "每年约{a}。",
+     ".k3.h": "能付约65%的医药费。",
+     ".none": "不缴",
+     ".none.s": "医药费全部自付。",
+     "trk.id_bpjs": "国家医疗保险"
+    },
+    "zht": {
+     ".t": "國家醫療保險BPJS",
+     ".x": "自由職業者要自己繳國家醫療保險（BPJS Kesehatan）：一等、二等、三等每人每月分別是150,000、100,000和42,000印尼盾（三等有補貼，只需付35,000）。",
+     ".k1": "一等",
+     ".k1.s": "每年約{a}。",
+     ".k1.h": "能付約80%的醫藥費。",
+     ".k3": "三等",
+     ".k3.s": "每年約{a}。",
+     ".k3.h": "能付約65%的醫藥費。",
+     ".none": "不繳",
+     ".none.s": "醫藥費全部自付。",
+     "trk.id_bpjs": "國家醫療保險"
+    }
+   }
+  },
+  {
+   "id": "id_flood",
+   "src": "Floods: Jakarta and other cities flood in many rainy seasons (BNPB). Odds and costs are ESTIMATES.",
+   "age": [25, 70],
+   "weight": 0.5,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012},
+   "i18n": {
+    "en": {
+     ".t": "Rainy season",
+     ".x": "Floods hit Jakarta and many other cities in heavy rainy seasons, and your street has flooded before."
+    },
+    "zh": {
+     ".t": "雨季",
+     ".x": "雨季大雨时，雅加达和许多城市都会淹水，你住的那条街以前就淹过。"
+    },
+    "zht": {
+     ".t": "雨季",
+     ".x": "雨季大雨時，雅加達和許多城市都會淹水，你住的那條街以前就淹過。"
+    }
+   }
+  },
+  {
+   "id": "id_pmi",
+   "src": "Working abroad: under Law 18/2017 and BP2MI Regulation 9/2020, employers bear the placement costs for ten job types, including domestic and care work. Pay and housing multiples are ESTIMATES.",
+   "age": [21, 40],
+   "weight": 0.4,
+   "when": {"canWorkAbroad": true, "careerType": ["hands", "office"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "ya"},
+   "use": "ctr",
+   "with": {"m": 2.2, "cm": 0.9, "yrs": 2, "fee": 0.05, "remit": 0.2},
+   "vars": {"a": "MN(2.2 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "Work abroad",
+     ".x": "An agency offers a two-year job in Malaysia, Hong Kong or Taiwan at about {a} a year. Under the 2017 migrant-worker law, employers pay the placement costs for many jobs, so official agencies shouldn’t charge you a fee.",
+     "trk.id_pmi": "Work abroad"
+    },
+    "zh": {
+     ".t": "出国工作",
+     ".x": "一家中介给你一份去马来西亚、香港或台湾的两年工作，年薪约{a}。根据2017年的移工法，很多工作的安置费由雇主负担，合法中介不应该向你收费。",
+     "trk.id_pmi": "出国工作"
+    },
+    "zht": {
+     ".t": "出國工作",
+     ".x": "一家中介給你一份去馬來西亞、香港或台灣的兩年工作，年薪約{a}。根據2017年的移工法，很多工作的安置費由僱主負擔，合法中介不應該向你收費。",
+     "trk.id_pmi": "出國工作"
+    }
+   }
+  },
+  {
+   "id": "id_flpp",
+   "src": "FLPP subsidised mortgages: fixed 5% for up to 20 years, from 1% down, for first-time buyers under an income cap (about Rp8.5–14 million a month, PKP Ministerial Regulation 5/2025) and a price cap (about Rp166–185 million) (Kemenkeu; Kompas TV; Pasardana). With about 2.5% inflation, ≈ 2.5% real; a home at the price cap ≈ half of the game's family-home price.",
+   "age": [24, 40],
+   "weight": 0.65,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"P": ".52 * price()", "ok": "salary() < 1.6 * base || M('.no')"},
+   "vars": {"p": "MN(.52 * price())"},
+   "opts": [
+    {
+     "id": "flpp",
+     "sub": {"d": "upFront(P, .01, .02)", "m": "yrPay(P, .01, .025, 20)", "c": "MN(.04 * base)"},
+     "ok": "ok",
+     "do": "buyAt(P, { dp: .01, fee: .02, r: .025, n: 20, lk: 'trk.id_flpp', fixed: true }); T('id_far', { kind: 'custom', label: M('trk.commute') }); rec('id_far', .04 * base, 20)"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A subsidised home",
+     ".x": "FLPP subsidised mortgages charge a fixed 5% for up to 20 years, from 1% down, for first-time buyers below an income limit. Subsidised homes are usually on the edge of town; one costs {p}.",
+     ".flpp": "Buy a subsidised home",
+     ".flpp.s": "{d} up front, then {m} a year for 20 years, and about {c} a year in extra travel.",
+     ".no": "Your income is above the limit for subsidised homes.",
+     ".wait": "Keep renting",
+     ".wait.s": "Your rent stays the same.",
+     "trk.commute": "Longer commute",
+     "trk.id_flpp": "Subsidised home"
+    },
+    "zh": {
+     ".t": "补贴房",
+     ".x": "FLPP补贴房贷给收入在限额以下的首购族：首付最低1%，固定利率5%，最长20年。补贴房通常在城市边缘，一间要{p}。",
+     ".flpp": "买补贴房",
+     ".flpp.s": "首付{d}，之后每年{m}，供20年；每年还要多花约{c}的交通费。",
+     ".no": "你的收入超过补贴房的限额。",
+     ".wait": "继续租房",
+     ".wait.s": "房租不变。",
+     "trk.commute": "更远的通勤",
+     "trk.id_flpp": "补贴房"
+    },
+    "zht": {
+     ".t": "補貼房",
+     ".x": "FLPP補貼房貸給收入在限額以下的首購族：頭期款最低1%，固定利率5%，最長20年。補貼房通常在城市邊緣，一間要{p}。",
+     ".flpp": "買補貼房",
+     ".flpp.s": "頭期款{d}，之後每年{m}，繳20年；每年還要多花約{c}的交通費。",
+     ".no": "你的收入超過補貼房的限額。",
+     ".wait": "繼續租房",
+     ".wait.s": "房租不變。",
+     "trk.commute": "更遠的通勤",
+     "trk.id_flpp": "補貼房"
+    }
+   }
+  },
+  {
+   "id": "id_ojol",
+   "src": "Ride-hailing (ojol): driving in the evenings for Gojek or Grab. Earnings and wear are ESTIMATES.",
+   "age": [20, 50],
+   "weight": 0.5,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "moto", "bg": "mi"},
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(.25 * base)"},
+     "hint": true,
+     "rel": -2,
+     "do": "T('id_ojol', { kind: 'custom', label: M('trk.id_ojol') }); rec('id_ojol', -.25 * base, 4, -.6); happy -= 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Driving for an app",
+     ".x": "You could drive for a ride-hailing app (ojol) in the evenings and at weekends.",
+     ".yes": "Drive in the evenings",
+     ".yes.s": "About {a} a year after fuel. Long days: Happiness −2.",
+     ".yes.h": "Health −0.6 a year for four years.",
+     ".no": "Keep your evenings free",
+     ".no.s": "Your free time stays free.",
+     "trk.id_ojol": "Ride-hailing"
+    },
+    "zh": {
+     ".t": "开网约车",
+     ".x": "你可以在晚上和周末开网约车或网约摩托（ojol）。",
+     ".yes": "晚上去开车",
+     ".yes.s": "扣掉油钱每年约{a}。整天很累：幸福感 −2。",
+     ".yes.h": "四年内每年健康 −0.6。",
+     ".no": "晚上留给自己",
+     ".no.s": "空闲时间照旧。",
+     "trk.id_ojol": "开网约车"
+    },
+    "zht": {
+     ".t": "跑叫車服務",
+     ".x": "你可以在晚上和週末開叫車服務的汽車或機車（ojol）。",
+     ".yes": "晚上去開車",
+     ".yes.s": "扣掉油錢每年約{a}。整天很累：幸福感 −2。",
+     ".yes.h": "四年內每年健康 −0.6。",
+     ".no": "晚上留給自己",
+     ".no.s": "空閒時間照舊。",
+     "trk.id_ojol": "跑叫車服務"
+    }
+   }
+  },
+  {
+   "id": "id_ori",
+   "src": "Retail government bonds: ORI027 paid 6.65% (3 years) and 6.75% (6 years), from Rp1 million, coupon tax 10% (Bisnis.com; Bareksa, Jan 2025). With inflation near 2.5%, about 3.5% real: an ESTIMATE.",
+   "age": [24, 60],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .2 * base"}},
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".3 * liquid()"},
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "ori", "sub": {"a": "MN(a)"}, "do": "putIn('ori', a, {rate: .035}, 'trk.ori')"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Government retail bonds",
+     ".x": "Retail government bonds such as ORI027 paid 6.65–6.75% a year from Rp1 million, with 10% tax on the coupons. You have {a} to put somewhere.",
+     ".ori": "Buy retail bonds",
+     ".ori.s": "Move {a} in. About 3.5% a year after inflation.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "It stays in your account.",
+     "trk.ori": "Retail bonds"
+    },
+    "zh": {
+     ".t": "零售国债",
+     ".x": "ORI027之类的零售国债年利率6.65–6.75%，100万印尼盾起买，利息税10%。你有{a}要找地方放。",
+     ".ori": "买零售国债",
+     ".ori.s": "放入{a}。扣除通胀后每年约3.5%。",
+     ".keep": "放在银行",
+     ".keep.s": "钱留在账户里。",
+     "trk.ori": "零售国债"
+    },
+    "zht": {
+     ".t": "零售國債",
+     ".x": "ORI027之類的零售國債年利率6.65–6.75%，100萬印尼盾起買，利息稅10%。你有{a}要找地方放。",
+     ".ori": "買零售國債",
+     ".ori.s": "放入{a}。扣除通膨後每年約3.5%。",
+     ".keep": "放在銀行",
+     ".keep.s": "錢留在帳戶裡。",
+     "trk.ori": "零售國債"
+    }
+   }
+  }
+ ]
+}

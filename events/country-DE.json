@@ -1,0 +1,481 @@
+{
+ "about": "Country cards for lives born in Germany. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "DE",
+ "events": [
+  {
+   "id": "de_ausb",
+   "src": "===================== Germany (DE) ===================== Ausbildung: the average collectively agreed training allowance was €1,133 a month in 2024 (BIBB press release, 6 Feb 2025): €13,600 a year ÷ 0.688 (PPP) ≈ 0.62 of the game's typical wage, paid while training (as a study with pay). Public universities charge no tuition. The skill gained is a game rule. Choosing it counts as a diploma, so the card at 18 is skipped.",
+   "age": [18, 18],
+   "when": {"test": "!done.edu"},
+   "def": "abi",
+   "tarot": "tuition",
+   "art": {"draw": "tools", "bg": "mi"},
+   "opts": [
+    {
+     "id": "ausb",
+     "sub": {"a": "MN(.62 * base)"},
+     "hint": true,
+     "do": "done.edu = 'dip'; const lab = M('lbl.ausb'); study = { end: age + 3, gain: 5 * learnLuck('ausb'), pt: .62, label: lab, k: 'dip' }; T('sk_edu', { kind: 'skill', label: lab })"
+    },
+    {"id": "abi"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An Ausbildung?",
+     ".x": "Instead of the Abitur and university, you could start an Ausbildung: three years of training split between a company and a vocational school, paid an average of €1,133 a month in 2024. Public universities charge no tuition fees.",
+     ".ausb": "Start an Ausbildung",
+     ".ausb.s": "Earn about {a} a year while you train, and finish with a vocational qualification.",
+     ".ausb.h": "Skill +5 a year for 3 years; it counts as a diploma.",
+     ".abi": "Stay on at school",
+     ".abi.s": "Then choose between university, a diploma and work.",
+     "lbl.ausb": "Ausbildung"
+    },
+    "zh": {
+     ".t": "要不要读职业培训？",
+     ".x": "除了读文理中学毕业考（Abitur）再上大学，你也可以开始职业培训（Ausbildung）：三年时间在公司和职业学校之间学习，2024年平均每月津贴1,133欧元。公立大学不收学费。",
+     ".ausb": "开始职业培训",
+     ".ausb.s": "培训期间每年赚约{a}，结业时拿到职业资格。",
+     ".ausb.h": "3年内每年技能 +5；算作文凭。",
+     ".abi": "继续读书",
+     ".abi.s": "之后再选上大学、读文凭或工作。",
+     "lbl.ausb": "职业培训"
+    },
+    "zht": {
+     ".t": "要不要讀職業培訓？",
+     ".x": "除了讀文理中學畢業考（Abitur）再上大學，你也可以開始職業培訓（Ausbildung）：三年時間在公司和職業學校之間學習，2024年平均每月津貼1,133歐元。公立大學不收學費。",
+     ".ausb": "開始職業培訓",
+     ".ausb.s": "培訓期間每年賺約{a}，結業時拿到職業資格。",
+     ".ausb.h": "3年內每年技能 +5；算作文憑。",
+     ".abi": "繼續讀書",
+     ".abi.s": "之後再選上大學、讀文憑或工作。",
+     "lbl.ausb": "職業培訓"
+    }
+   }
+  },
+  {
+   "id": "de_bafog",
+   "src": "BAföG: up to €992 a month from winter 2025/26 for students living away from home, by parents' income; half grant, half interest-free loan, repayment capped at €10,010 and starting five years after the funding ends, usually €130 a month (Studierendenwerke FAQ, Jan 2026). In game money: €992 × 12 ÷ 0.688 ≈ 0.54; the cap ≈ 0.45; €130 a month ≈ 0.07.",
+   "age": [18, 19],
+   "weight": 1,
+   "when": {"studying": true, "test": "study.k === 'uni' && age <= 19"},
+   "def": "parents",
+   "tarot": "allow",
+   "art": {"draw": "gradloan", "bg": "mi"},
+   "let": {
+    "g": "byFam({ poor: .54, working: .38, middle: .15, rich: 0 }) * base",
+    "y": "Math.max(1, study.end - age)"
+   },
+   "opts": [
+    {
+     "id": "apply",
+     "sub": {"a": "MN(g)"},
+     "ok": "g > 0 || M('.no')",
+     "do": "T('de_bafog', { kind: 'custom', label: M('trk.de_bafog') }); rec('de_bafog', -g, y); later(study.end + 5, 'bafog', { a: Math.min(.5 * g * y, .45 * base) })"
+    },
+    {
+     "id": "work",
+     "sub": {"a": "MN(.3 * base)"},
+     "hint": true,
+     "do": "T('de_ws', { kind: 'custom', label: M('trk.de_ws') }); rec('de_ws', -.3 * base, y); happy -= 2; addSkill('ws', 2, M('trk.de_ws'))"
+    },
+    {"id": "parents", "rel": 1}
+   ],
+   "later": {
+    "bafog": "const y = Math.ceil(x.a / (.07 * base)); rec('de_bafog', .07 * base, y)"
+   },
+   "i18n": {
+    "en": {
+     ".t": "BAföG",
+     ".x": "BAföG, the state study grant, pays up to €992 a month (from winter 2025/26) if you live away from home, depending on your parents’ income. Half is a grant and half an interest-free loan, and nobody repays more than €10,010.",
+     ".apply": "Apply for BAföG",
+     ".apply.s": "About {a} a year while you study. You repay half, interest-free, starting five years after your studies.",
+     ".no": "Your parents earn too much for BAföG.",
+     ".work": "Work as a Werkstudent",
+     ".work.s": "About {a} a year for 20 hours a week. Less free time: Happiness −2.",
+     ".work.h": "Skill +2.",
+     ".parents": "Your parents support you",
+     ".parents.s": "They cover your rent and food.",
+     "trk.de_bafog": "BAföG",
+     "trk.de_ws": "Werkstudent job"
+    },
+    "zh": {
+     ".t": "助学金BAföG",
+     ".x": "国家助学金BAföG视父母收入而定，不住家里的学生每月最多992欧元（2025/26冬季学期起）。一半是补助、一半是免息贷款，最多只需还10,010欧元。",
+     ".apply": "申请BAföG",
+     ".apply.s": "读书期间每年约{a}。其中一半免息，毕业五年后开始还。",
+     ".no": "你父母的收入太高，领不到BAföG。",
+     ".work": "当学生工",
+     ".work.s": "每周20小时，每年约{a}。空闲时间少了：幸福感 −2。",
+     ".work.h": "技能 +2。",
+     ".parents": "父母供你读书",
+     ".parents.s": "他们负担你的房租和伙食。",
+     "trk.de_bafog": "BAföG",
+     "trk.de_ws": "学生工"
+    },
+    "zht": {
+     ".t": "助學金BAföG",
+     ".x": "國家助學金BAföG視父母收入而定，不住家裡的學生每月最多992歐元（2025/26冬季學期起）。一半是補助、一半是免息貸款，最多只需還10,010歐元。",
+     ".apply": "申請BAföG",
+     ".apply.s": "讀書期間每年約{a}。其中一半免息，畢業五年後開始還。",
+     ".no": "你父母的收入太高，領不到BAföG。",
+     ".work": "當工讀生",
+     ".work.s": "每週20小時，每年約{a}。空閒時間少了：幸福感 −2。",
+     ".work.h": "技能 +2。",
+     ".parents": "父母供你讀書",
+     ".parents.s": "他們負擔你的房租和伙食。",
+     "trk.de_bafog": "BAföG",
+     "trk.de_ws": "工讀生"
+    }
+   }
+  },
+  {
+   "id": "de_buy",
+   "src": "Renting for life: 47.6% of Germans owned their home in 2023, the EU's lowest (Eurostat, via Bundestag research service WD 7-065/24); land transfer tax is 3.5–6.5% by state (finanz.de, 2026), plus notary, land registry and often an agent: about 11% in all.",
+   "age": [30, 42],
+   "weight": 0.65,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "rent",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "let": {"P": "price()", "liq": "liquid()", "a": ".08 * base"},
+   "vars": {"p": "MN(price())"},
+   "opts": [
+    {
+     "id": "buy",
+     "sub": {"d": "upFront(P, .2, .11)", "m": "yrPay(P, .2, .03)"},
+     "ok": "liq >= .31 * P || M('e.home.need', { n: MN(.31 * P), h: MN(liq) })",
+     "do": "buyAt(P, { dp: .2, fee: .11, r: .03, n: 30 })"
+    },
+    {
+     "id": "etf",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('etf', { amt: a, until: age + 30 }, {}, 'trk.etf')"
+    },
+    {"id": "rent"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Rent or buy?",
+     ".x": "About half of Germans rent for life (47.6% owned their home in 2023, the lowest share in the EU), and tenants are well protected. Buying adds about 10–12% on top of the price: land transfer tax of 3.5–6.5%, notary and land registry fees, and often an agent. A family home costs {p}.",
+     ".buy": "Buy",
+     ".buy.s": "{d} up front (fees included), then {m} a year.",
+     ".etf": "Rent, and invest the difference",
+     ".etf.s": "An ETF savings plan of about {a} a year for 30 years.",
+     ".rent": "Just keep renting",
+     ".rent.s": "Your rent stays the same."
+    },
+    "zh": {
+     ".t": "租房还是买房？",
+     ".x": "大约一半的德国人一辈子租房（2023年住房自有率47.6%，欧盟最低），租客受到很好的保护。买房要在房价外多付约10–12%：3.5–6.5%的房地产转让税、公证和土地登记费，常常还有中介费。一间家庭住房要{p}。",
+     ".buy": "买",
+     ".buy.s": "首付{d}（含各项费用），之后每年{m}。",
+     ".etf": "租房，把差额拿去投资",
+     ".etf.s": "ETF定投计划，每年约{a}，投30年。",
+     ".rent": "继续租房就好",
+     ".rent.s": "房租不变。"
+    },
+    "zht": {
+     ".t": "租房還是買房？",
+     ".x": "大約一半的德國人一輩子租房（2023年住房自有率47.6%，歐盟最低），租客受到很好的保護。買房要在房價外多付約10–12%：3.5–6.5%的房地產轉讓稅、公證和土地登記費，常常還有中介費。一間家庭住房要{p}。",
+     ".buy": "買",
+     ".buy.s": "頭期款{d}（含各項費用），之後每年{m}。",
+     ".etf": "租房，把差額拿去投資",
+     ".etf.s": "ETF定期定額計畫，每年約{a}，投30年。",
+     ".rent": "繼續租房就好",
+     ".rent.s": "房租不變。"
+    }
+   }
+  },
+  {
+   "id": "de_riester",
+   "src": "Riester: put in 4% of last year's pay to get the full state allowance of €175 a year plus €300 per child born from 2008 (§§ 84–86 EStG). €175 ≈ 0.008 and €300 ≈ 0.014 of the game's typical wage. Fees (about 1.2% a year) are an ESTIMATE.",
+   "age": [25, 40],
+   "weight": 0.55,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "let": {"w": "Math.max(salary(), .5 * base)", "bon": "(.008 + .014 * kids.length) * base / (.04 * w)"},
+   "opts": [
+    {
+     "id": "riester",
+     "sub": {"a": "MN(.04 * w)", "b": "MN((.008 + .014 * kids.length) * base)"},
+     "do": "yearly('riester', { p: .04, until: 66, bonus: bon }, { lock: 62, fee: .012 }, 'trk.riester')"
+    },
+    {
+     "id": "etf",
+     "sub": {"a": "MN(.04 * w)"},
+     "do": "yearly('etf2', { p: .04, until: 66 }, {}, 'trk.etf')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A Riester pension",
+     ".x": "With a Riester pension, put in 4% of last year’s pay and the state adds €175 a year, plus €300 for each child born since 2008. Riester contracts often charge high fees.",
+     ".riester": "Sign a Riester contract",
+     ".riester.s": "{a} a year; the state adds {b}. Locked until 62.",
+     ".etf": "An ETF savings plan instead",
+     ".etf.s": "{a} a year, no allowance, no lock.",
+     ".none": "Neither",
+     ".none.s": "Keep the money.",
+     "trk.riester": "Riester pension"
+    },
+    "zh": {
+     ".t": "里斯特养老金",
+     ".x": "里斯特养老金：存入上一年收入的4%，国家每年补贴175欧元，2008年以后出生的每个孩子再补300欧元。里斯特合约的手续费常常很高。",
+     ".riester": "签里斯特合约",
+     ".riester.s": "每年{a}；国家补{b}。锁到62岁。",
+     ".etf": "改做ETF定投",
+     ".etf.s": "每年{a}，没有补贴，也不锁定。",
+     ".none": "都不要",
+     ".none.s": "钱留着。",
+     "trk.riester": "里斯特养老金"
+    },
+    "zht": {
+     ".t": "里斯特退休金",
+     ".x": "里斯特退休金：存入上一年收入的4%，國家每年補貼175歐元，2008年以後出生的每個孩子再補300歐元。里斯特合約的手續費常常很高。",
+     ".riester": "籤里斯特合約",
+     ".riester.s": "每年{a}；國家補{b}。鎖到62歲。",
+     ".etf": "改做ETF定期定額",
+     ".etf.s": "每年{a}，沒有補貼，也不鎖定。",
+     ".none": "都不要",
+     ".none.s": "錢留著。",
+     "trk.riester": "里斯特退休金"
+    }
+   }
+  },
+  {
+   "id": "de_eltern",
+   "src": "Elterngeld: about 65% of net pay (67% below €1,200), €300–1,800 a month, for up to 12 months per parent, 14 if both take part; Elternzeit (unpaid leave) up to three years (BEEG, via HUK and kita.de).",
+   "age": [22, 45],
+   "weight": 0.85,
+   "when": {"kidAge": [0, 0], "working": true},
+   "def": "year",
+   "tarot": "kids",
+   "art": {"draw": "baby", "bg": "ya"},
+   "opts": [
+    {"id": "year", "rel": 3, "do": "tmpPay('de_eltern', .65, 1, 'trk.de_eltern'); happy += 3"},
+    {"id": "two", "rel": 1, "do": "tmpPay('de_eltern', .94, 1, 'trk.de_eltern'); happy += 1"},
+    {
+     "id": "three",
+     "hint": true,
+     "rel": 5,
+     "do": "const t = T('de_eltern', { kind: 'custom', label: M('trk.de_eltern3') }); rec('de_eltern', -.6 * Math.max(0, salary()), 1); offUntil = age + 3; ppM = (ppM || 1) * .85; happy += 4"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Parental leave",
+     ".x": "After a birth, each parent can take up to three years of Elternzeit. Elterngeld replaces about 65% of take-home pay, up to €1,800 a month, for up to 12 months (14 if both parents take part).",
+     ".year": "A year at home",
+     ".year.s": "About 65% of your pay for a year. Happiness +3.",
+     ".two": "Two months, then back to work",
+     ".two.s": "A small dip in pay this year. Happiness +1.",
+     ".three": "Three years at home",
+     ".three.s": "Elterngeld in the first year, then no pay for two. Happiness +4.",
+     ".three.h": "Promotions slower afterwards.",
+     "trk.de_eltern": "Parental leave",
+     "trk.de_eltern3": "Elterngeld"
+    },
+    "zh": {
+     ".t": "育儿假",
+     ".x": "孩子出生后，父母每人最多可请三年育儿假（Elternzeit）。父母津贴（Elterngeld）约为税后收入的65%，每月最多1,800欧元，最多12个月（父母都请假可达14个月）。",
+     ".year": "在家一年",
+     ".year.s": "一年领约65%的工资。幸福感 +3。",
+     ".two": "请两个月，然后回去上班",
+     ".two.s": "今年收入稍微少一点。幸福感 +1。",
+     ".three": "在家三年",
+     ".three.s": "第一年有父母津贴，之后两年没有收入。幸福感 +4。",
+     ".three.h": "之后升职较慢。",
+     "trk.de_eltern": "育儿假",
+     "trk.de_eltern3": "父母津贴"
+    },
+    "zht": {
+     ".t": "育兒假",
+     ".x": "孩子出生後，父母每人最多可請三年育兒假（Elternzeit）。父母津貼（Elterngeld）約為稅後收入的65%，每月最多1,800歐元，最多12個月（父母都請假可達14個月）。",
+     ".year": "在家一年",
+     ".year.s": "一年領約65%的薪水。幸福感 +3。",
+     ".two": "請兩個月，然後回去上班",
+     ".two.s": "今年收入稍微少一點。幸福感 +1。",
+     ".three": "在家三年",
+     ".three.s": "第一年有父母津貼，之後兩年沒有收入。幸福感 +4。",
+     ".three.h": "之後升職較慢。",
+     "trk.de_eltern": "育兒假",
+     "trk.de_eltern3": "父母津貼"
+    }
+   }
+  },
+  {
+   "id": "de_tax",
+   "src": "Tax returns: of 14.9 million employees assessed for 2021, 86% got a refund, averaging €1,172 (Destatis, via VLH): ≈ 0.053. An average of about 0.045 a year after costs is an ESTIMATE.",
+   "age": [23, 60],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "skip",
+   "tarot": "save2",
+   "art": {"draw": "tax", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "diy",
+     "sub": {"a": "MN(.045 * B)"},
+     "do": "T('de_tax', { kind: 'custom', label: M('trk.de_tax') }); rec('de_tax', -.045 * B, 25)"
+    },
+    {
+     "id": "help",
+     "sub": {"a": "MN(.035 * B)"},
+     "do": "T('de_tax', { kind: 'custom', label: M('trk.de_tax') }); rec('de_tax', -.035 * B, 25)"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your tax return",
+     ".x": "Filing a tax return is optional for most employees, but 86% of those who filed for 2021 got money back, on average €1,172.",
+     ".diy": "Do it yourself every year",
+     ".diy.s": "Tax software and an evening each spring: back about {a} a year.",
+     ".help": "Pay a tax help association",
+     ".help.s": "They do it for a yearly fee: back about {a} a year after the fee.",
+     ".skip": "Don’t bother",
+     ".skip.s": "No paperwork.",
+     "trk.de_tax": "Tax refunds"
+    },
+    "zh": {
+     ".t": "报税",
+     ".x": "大多数员工可以不报税，但2021年报税的人有86%拿到退税，平均1,172欧元。",
+     ".diy": "每年自己报",
+     ".diy.s": "报税软件，每年春天花一个晚上：每年退约{a}。",
+     ".help": "交给报税互助协会",
+     ".help.s": "他们收年费帮你报：扣掉年费每年退约{a}。",
+     ".skip": "懒得报",
+     ".skip.s": "不用填表。",
+     "trk.de_tax": "退税"
+    },
+    "zht": {
+     ".t": "報稅",
+     ".x": "大多數員工可以不報稅，但2021年報稅的人有86%拿到退稅，平均1,172歐元。",
+     ".diy": "每年自己報",
+     ".diy.s": "報稅軟體，每年春天花一個晚上：每年退約{a}。",
+     ".help": "交給報稅互助協會",
+     ".help.s": "他們收年費幫你報：扣掉年費每年退約{a}。",
+     ".skip": "懶得報",
+     ".skip.s": "不用填表。",
+     "trk.de_tax": "退稅"
+    }
+   }
+  },
+  {
+   "id": "de_minijob",
+   "src": "Minijob: earnings up to €556 a month in 2025, free of income tax and of the worker's social contributions (§ 8 SGB IV; the limit follows the minimum wage): €6,672 a year ≈ 0.3; about 0.25 after travel and time, an ESTIMATE.",
+   "age": [20, 55],
+   "weight": 0.5,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "sidejob", "bg": "mi"},
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(.25 * base)"},
+     "hint": true,
+     "rel": -2,
+     "do": "T('de_mini', { kind: 'custom', label: M('trk.de_mini') }); rec('de_mini', -.25 * base, 5, -.5); happy -= 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A Minijob",
+     ".x": "A Minijob on the side: you can earn up to €556 a month (2025) with no income tax or social contributions taken off.",
+     ".yes": "Take one",
+     ".yes.s": "About {a} a year for evenings and weekends. Happiness −2.",
+     ".yes.h": "Health −0.5 a year for five years.",
+     ".no": "Keep your evenings",
+     ".no.s": "Your free time stays free.",
+     "trk.de_mini": "Minijob"
+    },
+    "zh": {
+     ".t": "迷你工作",
+     ".x": "兼一份迷你工作（Minijob）：每月最多可赚556欧元（2025年），不扣所得税和社保。",
+     ".yes": "兼一份",
+     ".yes.s": "晚上和周末上班，每年约{a}。幸福感 −2。",
+     ".yes.h": "五年内每年健康 −0.5。",
+     ".no": "晚上留给自己",
+     ".no.s": "空闲时间照旧。",
+     "trk.de_mini": "迷你工作"
+    },
+    "zht": {
+     ".t": "迷你工作",
+     ".x": "兼一份迷你工作（Minijob）：每月最多可賺556歐元（2025年），不扣所得稅和社會保險。",
+     ".yes": "兼一份",
+     ".yes.s": "晚上和週末上班，每年約{a}。幸福感 −2。",
+     ".yes.h": "五年內每年健康 −0.5。",
+     ".no": "晚上留給自己",
+     ".no.s": "空閒時間照舊。",
+     "trk.de_mini": "迷你工作"
+    }
+   }
+  },
+  {
+   "id": "de_rente",
+   "src": "Retiring: after 45 insured years, from 65 with no deduction (born 1964 or later, § 38 SGB VI); with 35 years up to four years before 67 with 0.3% less per month (14.4% at 63); each month after 67 adds 0.5% (§ 77 SGB VI) (Deutsche Rentenversicherung rules, as summarised by gegen-hartz.de).",
+   "age": [60, 61],
+   "weight": 1,
+   "def": "67",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "wa"},
+   "opts": [
+    {
+     "each": "[[63,0.856],[65,1],[67,1],[70,1.18]]",
+     "as": "q",
+     "id": "String(q[0])",
+     "sub": {"a": "MN(.18 * base * q[1])", "n": "q[0]"},
+     "ok": "q[0] === 65 ? ((exp || 0) >= 40 || M('.need')) : undefined",
+     "do": "penClaim(q[0], q[1], 'de_rente')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your pension",
+     ".x": "With 35 insured years you can claim your pension up to four years before the regular age of 67, losing 0.3% for every month early (14.4% at 63). After 45 years you can go at 65 with no deduction. Each month you work past 67 adds 0.5%.",
+     ".63": "Claim at 63",
+     ".65": "Claim at 65, after 45 years",
+     ".67": "Claim at 67",
+     ".70": "Claim at 70",
+     ".need": "You need 45 insured years.",
+     ".63.s": "About {a} a year from age {n}, for life.",
+     ".65.s": "About {a} a year from age {n}, for life.",
+     ".67.s": "About {a} a year from age {n}, for life.",
+     ".70.s": "About {a} a year from age {n}, for life."
+    },
+    "zh": {
+     ".t": "你的养老金",
+     ".x": "缴满35年保险，可以在法定的67岁前最多提早四年领养老金，每提前一个月少0.3%（63岁领少14.4%）。缴满45年，65岁就能领且不打折。67岁以后每多工作一个月，增加0.5%。",
+     ".63": "63岁领",
+     ".65": "缴满45年，65岁领",
+     ".67": "67岁领",
+     ".70": "70岁领",
+     ".need": "你需要缴满45年保险。",
+     ".63.s": "从{n}岁起每年约{a}，终身领取。",
+     ".65.s": "从{n}岁起每年约{a}，终身领取。",
+     ".67.s": "从{n}岁起每年约{a}，终身领取。",
+     ".70.s": "从{n}岁起每年约{a}，终身领取。"
+    },
+    "zht": {
+     ".t": "你的退休金",
+     ".x": "繳滿35年保險，可以在法定的67歲前最多提早四年領退休金，每提前一個月少0.3%（63歲領少14.4%）。繳滿45年，65歲就能領且不打折。67歲以後每多工作一個月，增加0.5%。",
+     ".63": "63歲領",
+     ".65": "繳滿45年，65歲領",
+     ".67": "67歲領",
+     ".70": "70歲領",
+     ".need": "你需要繳滿45年保險。",
+     ".63.s": "從{n}歲起每年約{a}，終身領取。",
+     ".65.s": "從{n}歲起每年約{a}，終身領取。",
+     ".67.s": "從{n}歲起每年約{a}，終身領取。",
+     ".70.s": "從{n}歲起每年約{a}，終身領取。"
+    }
+   }
+  }
+ ]
+}

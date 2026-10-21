@@ -1,0 +1,350 @@
+{
+ "about": "Country cards for lives born in Vietnam. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "VN",
+ "events": [
+  {
+   "id": "vn_hui",
+   "src": "===================== Vietnam (VN) ===================== Hụi / họ: legal under Decree 19/2019 if interest stays within 20% a year; organisers sometimes collapse (\"vỡ hụi\") (Thư viện Pháp luật; PLO). Risk ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "rosca", "bg": "mi"},
+   "use": "rosca",
+   "with": {"a": 0.2, "n": 2, "early": 0.88, "late": 1.06, "risk": 0.1},
+   "i18n": {
+    "en": {
+     ".t": "A hụi",
+     ".x": "Your neighbours run a hụi (họ): everyone pays in each month and members bid to take the pot early. It is legal if interest stays within 20% a year, but sometimes the organiser can’t pay (“vỡ hụi”)."
+    },
+    "zh": {
+     ".t": "标会（Hụi）",
+     ".x": "邻居们办了一个标会（hụi，也叫họ）：大家每月交钱，想早点拿钱的人出价竞标。只要利息不超过每年20%就是合法的，但有时会首付不出钱（“倒会”）。"
+    },
+    "zht": {
+     ".t": "標會（Hụi）",
+     ".x": "鄰居們辦了一個標會（hụi，也叫họ）：大家每月交錢，想早點拿錢的人出價競標。只要利息不超過每年20%就是合法的，但有時會頭期款不出錢（「倒會」）。"
+    }
+   }
+  },
+  {
+   "id": "vn_xkld",
+   "src": "Working in Japan: about 200,000 Vietnamese technical interns by June 2025, the largest group (Vietnamese government, via Bao Bac Ninh; MHLW); jobs in Japan cost workers about 192 million dong (≈ US$8,000) on average, though the legal cap is US$3,600 (ILO; IOM study). At market exchange rates that is ≈ 3.8 years of the game's typical wage; pay and costs in Japan are ESTIMATES.",
+   "age": [20, 32],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true, "careerType": ["hands"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "wa"},
+   "use": "ctr",
+   "with": {"m": 3, "cm": 1.8, "yrs": 3, "fee": 3.8, "remit": 0.3},
+   "vars": {"a": "MN(3 * salary())"},
+   "i18n": {
+    "en": {
+     ".t": "Work in Japan",
+     ".x": "An agency offers a three-year traineeship in Japan at about {a} a year. About 200,000 Vietnamese are technical interns there, the largest group. Fees average about US$8,000, often borrowed, although the legal cap is US$3,600.",
+     "trk.vn_xkld": "Traineeship in Japan"
+    },
+    "zh": {
+     ".t": "去日本工作",
+     ".x": "一家中介给你一份去日本的三年实习合约，年薪约{a}。约有20万越南人在日本当技能实习生，是人数最多的群体。中介费平均约8,000美元，常常要借钱，虽然法定上限是3,600美元。",
+     "trk.vn_xkld": "日本实习"
+    },
+    "zht": {
+     ".t": "去日本工作",
+     ".x": "一家中介給你一份去日本的三年實習合約，年薪約{a}。約有20萬越南人在日本當技能實習生，是人數最多的群體。中介費平均約8,000美元，常常要借錢，雖然法定上限是3,600美元。",
+     "trk.vn_xkld": "日本實習"
+    }
+   }
+  },
+  {
+   "id": "vn_typhoon",
+   "src": "Typhoon Yagi (Sep 2024): about $3.3bn of economic losses, 136,705 homes damaged and over 202,000 ha of rice flooded (Vietnamese officials, via ARY and RFA).",
+   "age": [25, 70],
+   "weight": 0.55,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "storm", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0, "prem": 0.006, "prep": 0.012, "p": 0.55},
+   "i18n": {
+    "en": {
+     ".t": "Typhoon season",
+     ".x": "Typhoon Yagi in September 2024 damaged 136,705 homes and caused about $3.3 billion of losses. Your area is often hit by storms and floods."
+    },
+    "zh": {
+     ".t": "台风季节",
+     ".x": "2024年9月的台风“摩羯”（Yagi）毁损了136,705间房屋，经济损失约33亿美元。你住的地区常被台风和洪水侵袭。"
+    },
+    "zht": {
+     ".t": "颱風季節",
+     ".x": "2024年9月的颱風「摩羯」（Yagi）毀損了136,705間房屋，經濟損失約33億美元。你住的地區常被颱風和洪水侵襲。"
+    }
+   }
+  },
+  {
+   "id": "vn_bhxh",
+   "src": "One-time social insurance withdrawal: 1.5 months' average pay per year before 2014 and 2 months per year from 2014; from 1 July 2025 (Law 41/2024) a pension needs only 15 years and new members can no longer take a lump sum (BHXH; baohiemxahoidientu.vn). The cut to the state pension (5% per year taken out) is an ESTIMATE.",
+   "age": [26, 45],
+   "weight": 0.55,
+   "when": {"working": true, "test": "(carN || 0) >= 2"},
+   "def": "keep",
+   "tarot": "annuity",
+   "art": {"draw": "penclock", "bg": "mi"},
+   "let": {"n": "Math.min(10, exp || 0)", "a": "n * 2 / 12 * Math.max(0, salary())"},
+   "opts": [
+    {"id": "keep"},
+    {
+     "id": "take",
+     "sub": {"a": "MN(a)", "n": "n"},
+     "ok": "n >= 1 || M('.no')",
+     "do": "cash += a; penM = (penM || 1) * (1 - .05 * n); penTk = 'vn_bhxh'; T('vn_bhxh', { kind: 'custom', label: M('trk.vn_bhxh'), v: a, note: M('note.got', { a: MN(a) }) })"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your social insurance",
+     ".x": "You’re changing jobs. You can take your social insurance (BHXH) out as a lump sum, about two months’ pay for each year, or keep the years towards a pension. Since July 2025 a pension needs only 15 years, and new members can no longer take a lump sum.",
+     ".keep": "Keep it for your pension",
+     ".keep.s": "Your years keep counting.",
+     ".take": "Take the lump sum",
+     ".take.s": "About {a} now for {n} years of contributions. Your state pension will be smaller.",
+     ".no": "You haven’t paid in long enough.",
+     "trk.vn_bhxh": "Social insurance lump sum"
+    },
+    "zh": {
+     ".t": "你的社会保险",
+     ".x": "你要换工作了。你可以把社会保险（BHXH）一次性领出来，每缴一年约领两个月工资；也可以保留年资，以后领养老金。从2025年7月起，领养老金只需缴15年，新参保的人不能再一次性领取。",
+     ".keep": "保留年资领养老金",
+     ".keep.s": "年资继续累积。",
+     ".take": "一次性领出",
+     ".take.s": "缴了{n}年，现在约领{a}。以后的养老金会变少。",
+     ".no": "你缴的时间还不够。",
+     "trk.vn_bhxh": "一次性领社保"
+    },
+    "zht": {
+     ".t": "你的社會保險",
+     ".x": "你要換工作了。你可以把社會保險（BHXH）一次性領出來，每繳一年約領兩個月薪水；也可以保留年資，以後領退休金。從2025年7月起，領退休金只需繳15年，新參保的人不能再一次性領取。",
+     ".keep": "保留年資領退休金",
+     ".keep.s": "年資繼續累積。",
+     ".take": "一次性領出",
+     ".take.s": "繳了{n}年，現在約領{a}。以後的退休金會變少。",
+     ".no": "你繳的時間還不夠。",
+     "trk.vn_bhxh": "一次性領社會保險"
+    }
+   }
+  },
+  {
+   "id": "vn_gold",
+   "src": "Gold: SJC gold bars traded 9–20 million dong a tael above the world price in 2024 (VTC News; VnBusiness; Znews), a premium of roughly 10–20%; plain gold rings trade closer to the world price. Deposits pay about 1% above inflation: ESTIMATES.",
+   "age": [24, 60],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .25 * base"}},
+   "def": "bank",
+   "tarot": "gold",
+   "art": {"draw": "gold", "bg": "mi"},
+   "let": {"a": ".3 * liquid()"},
+   "fn": {
+    "g": {
+     "args": ["f"],
+     "do": "pay(a); mkLot('gold', { t: 'gold' }, 'trk.gold'); addLot('gold', f * a); lots.gold.tin += (1 - f) * a; happy += 1"
+    }
+   },
+   "opts": [
+    {"id": "sjc", "sub": {"a": "MN(a)"}, "do": "g(.85)"},
+    {"id": "ring", "sub": {"a": "MN(a)"}, "do": "g(.96)"},
+    {"id": "bank", "sub": {"a": "MN(a)"}, "do": "putIn('vnfd', a, {rate: .01}, 'trk.fd')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Buying gold",
+     ".x": "Vietnamese families have long saved in gold. In 2024 SJC gold bars sold for 9–20 million dong a tael above the world price, a premium you may not get back when you sell; plain gold rings trade closer to the world price.",
+     ".sjc": "SJC gold bars",
+     ".sjc.s": "Put {a} in. Happiness +1.",
+     ".ring": "Plain gold rings",
+     ".ring.s": "Put {a} in. Happiness +1.",
+     ".bank": "A savings deposit",
+     ".bank.s": "Put {a} in at a fixed rate, about 1% a year after inflation."
+    },
+    "zh": {
+     ".t": "买黄金",
+     ".x": "越南家庭一向用黄金存钱。2024年SJC金条每两比国际金价贵900万到2,000万越南盾，卖出时这部分溢价不一定拿得回来；普通金戒指的价格较接近国际金价。",
+     ".sjc": "SJC金条",
+     ".sjc.s": "放入{a}。幸福感 +1。",
+     ".ring": "普通金戒指",
+     ".ring.s": "放入{a}。幸福感 +1。",
+     ".bank": "定期存款",
+     ".bank.s": "放入{a}，固定利率，扣除通胀后每年约1%。"
+    },
+    "zht": {
+     ".t": "買黃金",
+     ".x": "越南家庭一向用黃金存錢。2024年SJC金條每兩比國際金價貴900萬到2,000萬越南盾，賣出時這部分溢價不一定拿得回來；普通金戒指的價格較接近國際金價。",
+     ".sjc": "SJC金條",
+     ".sjc.s": "放入{a}。幸福感 +1。",
+     ".ring": "普通金戒指",
+     ".ring.s": "放入{a}。幸福感 +1。",
+     ".bank": "定期存款",
+     ".bank.s": "放入{a}，固定利率，扣除通膨後每年約1%。"
+    }
+   }
+  },
+  {
+   "id": "vn_bhyt",
+   "src": "Household health insurance: 4.5% of the base salary for the first member (Law on Health Insurance, art. 13); the base salary is 2.34 million dong a month from July 2024: about 1.26 million a year ≈ 0.026 of the game's typical wage. Share covered: ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.7,
+   "when": {"selfEmployed": true, "test": "!medCut"},
+   "def": "join",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.026 * base)"},
+     "hint": true,
+     "do": "medPlan('vn_bhyt', .45, .026 * base)"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Household health insurance",
+     ".x": "Without an employer, your household can buy health insurance (BHYT): 4.5% of the base salary a year for the first member, less for each extra member.",
+     ".join": "Join",
+     ".join.s": "About {a} a year.",
+     ".join.h": "It pays about 55% of your medical bills.",
+     ".none": "Not now",
+     ".none.s": "You pay every bill yourself.",
+     "trk.vn_bhyt": "Health insurance"
+    },
+    "zh": {
+     ".t": "家庭医疗保险",
+     ".x": "没有雇主时，你家可以买家庭医疗保险（BHYT）：第一个人每年交基本工资的4.5%，之后每多一人更便宜。",
+     ".join": "参加",
+     ".join.s": "每年约{a}。",
+     ".join.h": "能付约55%的医药费。",
+     ".none": "暂时不参加",
+     ".none.s": "医药费全部自付。",
+     "trk.vn_bhyt": "医疗保险"
+    },
+    "zht": {
+     ".t": "家庭醫療保險",
+     ".x": "沒有僱主時，你家可以買家庭醫療保險（BHYT）：第一個人每年交基本薪水的4.5%，之後每多一人更便宜。",
+     ".join": "參加",
+     ".join.s": "每年約{a}。",
+     ".join.h": "能付約55%的醫藥費。",
+     ".none": "暫時不參加",
+     ".none.s": "醫藥費全部自付。",
+     "trk.vn_bhyt": "醫療保險"
+    }
+   }
+  },
+  {
+   "id": "vn_city",
+   "src": "Moving to Ho Chi Minh City or Hanoi: paper household registration books were abolished from 1 Jan 2023 (Law on Residence 2020). Pay and cost multiples are ESTIMATES.",
+   "age": [19, 28],
+   "weight": 0.6,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "travel",
+   "art": {"draw": "city", "bg": "ya"},
+   "vars": {"a": "MN(1.35 * salary())"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(1.35 * salary())"}, "do": "cityMove('vn_city', 1.35, 1.3, 1.3, -3)"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Moving to the city",
+     ".x": "A job in Ho Chi Minh City or Hanoi pays about {a} a year. Paper household registration books were abolished in 2023, so moving is easier, but rent is higher and family is far away.",
+     ".go": "Move to the city",
+     ".go.s": "Pay {a} a year. Costs about 30% higher. Happiness −1.",
+     ".stay": "Stay home",
+     ".stay.s": "Close to family.",
+     "trk.vn_city": "Moved to the city"
+    },
+    "zh": {
+     ".t": "搬去大城市",
+     ".x": "胡志明市或河内的一份工作年薪约{a}。纸本户口簿在2023年取消了，搬家比较容易，但房租较高，家人也远了。",
+     ".go": "搬去城市",
+     ".go.s": "年薪{a}。开销约高30%。幸福感 −1。",
+     ".stay": "留在家乡",
+     ".stay.s": "离家人近。",
+     "trk.vn_city": "搬到城市"
+    },
+    "zht": {
+     ".t": "搬去大城市",
+     ".x": "胡志明市或河內的一份工作年薪約{a}。紙本戶口簿在2023年取消了，搬家比較容易，但房租較高，家人也遠了。",
+     ".go": "搬去城市",
+     ".go.s": "年薪{a}。開銷約高30%。幸福感 −1。",
+     ".stay": "留在家鄉",
+     ".stay.s": "離家人近。",
+     "trk.vn_city": "搬到城市"
+    }
+   }
+  },
+  {
+   "id": "vn_hocthem",
+   "src": "Extra classes: Circular 29/2024 (from 14 Feb 2025) regulates extra classes; those held in school are free and limited to listed groups, and paid classes outside school must be registered businesses (MOET, via Lao Cai and Nong nghiep newspapers). Fees and outcomes are ESTIMATES.",
+   "age": [30, 58],
+   "weight": 0.6,
+   "when": {"kidAge": [10, 15]},
+   "def": "some",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "ya"},
+   "let": {"B": "base"},
+   "fn": {
+    "go": {
+     "args": ["a", "p"],
+     "do": "if (a) { T('vn_hocthem', { kind: 'ghost', label: M('trk.tuition') }); rec('vn_hocthem', a, 5); } kidWin(p, .75)"
+    }
+   },
+   "opts": [
+    {"id": "many", "sub": {"a": "MN(.1 * B)"}, "hint": true, "do": "go(.1 * B, .3); happy -= 1"},
+    {"id": "some", "sub": {"a": "MN(.04 * B)"}, "hint": true, "do": "go(.04 * B, .2)"},
+    {"id": "none", "hint": true, "do": "go(0, .12)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Extra classes",
+     ".x": "Many children take extra classes after school. Since February 2025 the rules are stricter: classes in school are free and only for some pupils, and paid classes outside school must be registered businesses.",
+     ".many": "Extra classes in every subject",
+     ".many.s": "About {a} a year for 5 years. Busy evenings: Happiness −1.",
+     ".many.h": "A better chance of a scholarship later.",
+     ".some": "A class or two",
+     ".some.s": "About {a} a year for 5 years.",
+     ".some.h": "Some chance of a scholarship later.",
+     ".none": "No extra classes",
+     ".none.s": "Free.",
+     ".none.h": "A small chance of a scholarship later."
+    },
+    "zh": {
+     ".t": "课外补习",
+     ".x": "很多孩子放学后去补习。从2025年2月起规定更严格：校内补习免费且只给部分学生，校外收费补习必须登记为企业。",
+     ".many": "每科都补",
+     ".many.s": "每年约{a}，共5年。晚上很忙：幸福感 −1。",
+     ".many.h": "以后拿奖学金的机会较大。",
+     ".some": "补一两科",
+     ".some.s": "每年约{a}，共5年。",
+     ".some.h": "以后有一些机会拿奖学金。",
+     ".none": "不补习",
+     ".none.s": "免费。",
+     ".none.h": "以后拿奖学金的机会较小。"
+    },
+    "zht": {
+     ".t": "課外補習",
+     ".x": "很多孩子放學後去補習。從2025年2月起規定更嚴格：校內補習免費且只給部分學生，校外收費補習必須登記為企業。",
+     ".many": "每科都補",
+     ".many.s": "每年約{a}，共5年。晚上很忙：幸福感 −1。",
+     ".many.h": "以後拿獎學金的機會較大。",
+     ".some": "補一兩科",
+     ".some.s": "每年約{a}，共5年。",
+     ".some.h": "以後有一些機會拿獎學金。",
+     ".none": "不補習",
+     ".none.s": "免費。",
+     ".none.h": "以後拿獎學金的機會較小。"
+    }
+   }
+  }
+ ]
+}

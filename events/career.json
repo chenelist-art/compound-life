@@ -1,0 +1,972 @@
+{
+ "about": "Study and work: the choice at 18, careers, raises, layoffs, mentors and side businesses.",
+ "events": [
+  {
+   "id": "edu",
+   "age": [18, 18],
+   "def": "work",
+   "tarot": {"en": "The Hierophant", "zh": "教皇", "zht": "教皇"},
+   "art": "edu",
+   "let": {
+    "sk": "skill()",
+    "cu": "eduCost('uni')",
+    "cd": "eduCost('dip')",
+    "eu": "Math.round(26 * (1 - (sk + 13) / 120))",
+    "ed": "Math.round(12 * (1 - (sk + 6) / 120))"
+   },
+   "vars": {
+    "sk": "Math.round(sk)",
+    "sch": "sk >= 26 ? M('.sch') : ''",
+    "fam": "M(fam === 'rich' ? '.rich' : fam === 'middle' ? '.middle' : '.none')"
+   },
+   "opts": [
+    {
+     "id": "uni",
+     "sub": {"c": "MN(cu)", "loan": "cu > Math.max(0, cash) + 1 ? M('.loan') : ''"},
+     "hint": {"e": "eu", "p": "Math.round(eu * SK * 100)"},
+     "do": "startStudy('uni')"
+    },
+    {
+     "id": "dip",
+     "sub": {"c": "MN(cd)"},
+     "hint": {"e": "ed", "p": "Math.round(ed * SK * 100)"},
+     "do": "startStudy('dip')"
+    },
+    {"id": "work"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After school",
+     ".x": "You finish school with skill {sk}.{sch} {fam}",
+     ".sch": " Your grades win a scholarship that covers 60% of university fees.",
+     ".rich": "Your family will pay all your fees.",
+     ".middle": "Your family can pay half your fees.",
+     ".none": "Your family cannot help with fees.",
+     ".uni": "Go to university (4 years)",
+     ".uni.s": "You pay {c} in fees{loan}. Part-time pay only while you study.",
+     ".uni.h": "Skill +{e}, which lifts your pay about {p}% for the rest of your career.",
+     ".loan": ", mostly on a student loan",
+     ".dip": "Get a 2-year diploma",
+     ".dip.s": "You pay {c}, and you start work 2 years sooner.",
+     ".dip.h": "Skill +{e}, about +{p}% pay for life.",
+     ".work": "Start working now",
+     ".work.s": "A full salary from today. No fees, no debt, and four extra years to save."
+    },
+    "zh": {
+     ".t": "毕业之后",
+     ".x": "你以技能{sk}毕业。{sch}{fam}",
+     ".sch": "你的成绩赢得了奖学金，可以抵掉60%的大学学费。",
+     ".rich": "家里会帮你付全部学费。",
+     ".middle": "家里可以帮你付一半学费。",
+     ".none": "家里没办法帮你付学费。",
+     ".uni": "上大学（4年）",
+     ".uni.s": "你要付{c}学费{loan}。读书期间只有兼职收入。",
+     ".uni.h": "技能 +{e}，之后整个职业生涯工资大约多{p}%。",
+     ".loan": "，大部分靠学生贷款",
+     ".dip": "读2年文凭",
+     ".dip.s": "你要付{c}，而且早2年开始工作。",
+     ".dip.h": "技能 +{e}，一辈子工资大约多{p}%。",
+     ".work": "马上去工作",
+     ".work.s": "从今天起领全薪。没有学费，没有债，还多出四年可以存钱。"
+    },
+    "zht": {
+     ".t": "畢業之後",
+     ".x": "你以技能{sk}畢業。{sch}{fam}",
+     ".sch": "你的成績贏得了獎學金，可以抵掉60%的大學學費。",
+     ".rich": "家裡會幫你付全部學費。",
+     ".middle": "家裡可以幫你付一半學費。",
+     ".none": "家裡沒辦法幫你付學費。",
+     ".uni": "上大學（4年）",
+     ".uni.s": "你要付{c}學費{loan}。讀書期間只有兼職收入。",
+     ".uni.h": "技能 +{e}，之後整個職業生涯工資大約多{p}%。",
+     ".loan": "，大部分靠學生貸款",
+     ".dip": "讀2年文憑",
+     ".dip.s": "你要付{c}，而且早2年開始工作。",
+     ".dip.h": "技能 +{e}，一輩子工資大約多{p}%。",
+     ".work": "馬上去工作",
+     ".work.s": "從今天起領全薪。沒有學費，沒有債，還多出四年可以存錢。"
+    }
+   }
+  },
+  {
+   "id": "job",
+   "src": "choosing a career: every career, grouped by family (grp), locked ones show why. It comes back whenever a career ends",
+   "when": {
+    "studying": false,
+    "job": false,
+    "retired": false,
+    "test": "needJob && age >= 18 && age < 64 && !!done.edu && !(jobAt > age)"
+   },
+   "def": "civ",
+   "tarot": {"en": "The Magician", "zh": "魔术师", "zht": "魔術師"},
+   "art": "job",
+   "text": "M(lastCar ? '.x2' : '.x')",
+   "opts": [
+    {
+     "each": "careerIds()",
+     "as": "id",
+     "id": "id",
+     "let": {"c": "career(id)", "a": "MN(carStartPay(id))"},
+     "label": "M('car.' + id)",
+     "sub": "c.tr ? M('car.s.tr', {n: c.tr.y, p: MN(c.tr.pay * base), f: MN(c.tr.fee * base), a: a}) : c.req.cap ? M('car.s.cap', {c: MN(c.req.cap * base), a: a}) : M('car.s', {a: a})",
+     "hint": "carHint(id)",
+     "ok": "carLock(id)",
+     "do": "pickCareer(id)",
+     "grp": "c.f"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Choose a career",
+     ".x": "Time to decide what you'll do for a living. Some careers need a degree, good health or savings to start.",
+     "car.s": "About {a} a year to start.",
+     "car.s.tr": "{n} years of training first, on {p} a year with {f} a year in fees. Then about {a} a year.",
+     "car.s.cap": "You put in {c} of your savings. Then about {a} a year to start.",
+     ".x2": "Time for a new career. Some of what you've learned carries over."
+    },
+    "zh": {
+     ".t": "选择职业",
+     ".x": "是时候决定靠什么谋生了。有些职业要学历、好身体或一笔积蓄才能入行。",
+     "car.s": "起薪每年约{a}。",
+     "car.s.tr": "先培训{n}年，每年收入{p}、学费{f}。之后每年约{a}。",
+     "car.s.cap": "投入{c}积蓄。起步每年约{a}。",
+     ".x2": "是时候换一份新职业了。你学到的东西能带走一部分。"
+    },
+    "zht": {
+     ".t": "選擇職業",
+     ".x": "是時候決定靠什麼謀生了。有些職業要學歷、好身體或一筆積蓄才能入行。",
+     "car.s": "起薪每年約{a}。",
+     "car.s.tr": "先受訓{n}年，每年收入{p}、學費{f}。之後每年約{a}。",
+     "car.s.cap": "投入{c}積蓄。起步每年約{a}。",
+     ".x2": "是時候換一份新職業了。你學到的東西能帶走一部分。"
+    }
+   }
+  },
+  {
+   "id": "switch",
+   "src": "every so often, and the year after a layoff or an injury: stay, or choose a new career",
+   "when": {"working": true, "test": "swAt != null && age >= swAt && age < 62 && !(job.train > age)"},
+   "def": "stay",
+   "tarot": {"en": "Eight of Cups", "zh": "圣杯八", "zht": "聖杯八"},
+   "art": "switch",
+   "text": "M('.x' + (swWhy ? '.' + swWhy : ''), { x: M('car.a.' + job.id), n: age - job.start })",
+   "hint": true,
+   "again": "delete done.switch; swWhy = null; if (job) swAt = age + 6 + Math.floor(roll('swAt') * 5)",
+   "opts": [
+    {"id": "stay"},
+    {"id": "go", "do": "endCareer('quit', age - 1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Switch careers?",
+     ".x": "You've been {x} for {n} years. A friend asks if you've ever thought about doing something else.",
+     ".x.lay": "After the layoffs, you wonder: keep working as {x}, or try something new?",
+     ".x.inj": "Your injury has healed, but it got you thinking. Keep working as {x}, or change?",
+     ".stay": "Stay",
+     ".stay.s": "Keep your experience and your level.",
+     ".go": "Change careers",
+     ".go.s": "Choose a new career now. Only part of your experience carries over.",
+     ".h": "In the same family of careers you keep half your experience and drop two levels; in a new family you keep a fifth and start at the bottom."
+    },
+    "zh": {
+     ".t": "要转行吗？",
+     ".x": "你当{x}已经{n}年了。朋友问你有没有想过换一行。",
+     ".x.lay": "裁员之后，你开始想：继续当{x}，还是换条路？",
+     ".x.inj": "伤好了，但这让你开始思考：继续当{x}，还是转行？",
+     ".stay": "留下",
+     ".stay.s": "保留你的经验和职级。",
+     ".go": "转行",
+     ".go.s": "现在就选一份新职业。经验只能带走一部分。",
+     ".h": "留在同一类职业，保留一半经验、降两级；换到新的类别，只保留五分之一，从最低做起。"
+    },
+    "zht": {
+     ".t": "要轉換跑道嗎？",
+     ".x": "你當{x}已經{n}年了。朋友問你有沒有想過換個跑道。",
+     ".x.lay": "裁員之後，你開始想：繼續當{x}，還是換條路？",
+     ".x.inj": "傷好了，但這讓你開始思考：繼續當{x}，還是轉行？",
+     ".stay": "留下",
+     ".stay.s": "保留你的經驗和職級。",
+     ".go": "轉行",
+     ".go.s": "現在就選一份新職業。經驗只能帶走一部分。",
+     ".h": "留在同一類職業，保留一半經驗、降兩級；換到新的類別，只保留五分之一，從最基層做起。"
+    }
+   }
+  },
+  {
+   "id": "nego",
+   "age": [22, 29],
+   "weight": 0.85,
+   "when": {"working": true},
+   "def": "accept",
+   "tarot": {"en": "Six of Wands", "zh": "权杖六", "zht": "權杖六"},
+   "art": "nego",
+   "vars": {"a": "MN(salary())"},
+   "hint": {"p": "Math.round(negoP() * 100)"},
+   "opts": [
+    {
+     "id": "ask",
+     "sub": {"a": "MN(.1 * salary())"},
+     "do": "later(age, 'nego', { p: negoP(), m: 1.1, lk: 'trk.nego' })"
+    },
+    {"id": "shop", "do": "later(age, 'nego', {p: .9 * negoP(), m: 1.15, lv: 1, lk: 'trk.negoMove'})"},
+    {"id": "accept"}
+   ],
+   "later": {
+    "nego": "const ok = roll(x.lv ? 'negoShop' : 'nego') < x.p; if (ok) { if (x.lv) level = Math.max(0, level - 1); bump('nego', x.m, M(x.lk)); } else happy -= 2; log(M(ok ? 'log.negoOk' : 'log.negoNo', { p: Math.round((x.m - 1) * 100) }), ok ? 'good' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Your annual review",
+     ".x": "You earn {a} a year. Your manager offers the standard raise.",
+     ".h": "Your chance of a yes is about {p}%, and more skill raises it.",
+     ".ask": "Ask for a 10% raise",
+     ".ask.s": "About {a} more a year if they say yes. They might say no.",
+     ".shop": "Interview elsewhere for a better offer",
+     ".shop.s": "Aim for about 15% more. You may have to start one level lower.",
+     ".accept": "Accept the standard raise",
+     ".accept.s": "No risk and no awkward conversation.",
+     "trk.nego": "Asked for a raise",
+     "trk.negoMove": "Changed jobs for more pay"
+    },
+    "zh": {
+     ".t": "年度考核",
+     ".x": "你年薪{a}。上司给你标准加薪。",
+     ".h": "对方答应的机会大约{p}%，技能越高机会越大。",
+     ".ask": "要求加薪10%",
+     ".ask.s": "如果答应，每年多赚约{a}。也可能被拒绝。",
+     ".shop": "去别家面试，争取更好的条件",
+     ".shop.s": "目标是多15%左右，但可能要降一级入职。",
+     ".accept": "接受标准加薪",
+     ".accept.s": "没有风险，也不用尴尬地谈。",
+     "trk.nego": "争取加薪",
+     "trk.negoMove": "跳槽加薪"
+    },
+    "zht": {
+     ".t": "年度考績",
+     ".x": "你年薪{a}。主管給你標準調薪。",
+     ".h": "對方答應的機會大約{p}%，技能越高機會越大。",
+     ".ask": "要求加薪10%",
+     ".ask.s": "如果答應，每年多賺約{a}。也可能被拒絕。",
+     ".shop": "去別家面試，爭取更好的條件",
+     ".shop.s": "目標是多15%左右，但可能要降一級到職。",
+     ".accept": "接受標準調薪",
+     ".accept.s": "沒有風險，也不用尷尬地談。",
+     "trk.nego": "爭取加薪",
+     "trk.negoMove": "跳槽加薪"
+    }
+   }
+  },
+  {
+   "id": "abroad",
+   "age": [26, 35],
+   "weight": 0.45,
+   "when": {"working": true, "abroad": false, "test": "!ctr"},
+   "def": "stay",
+   "tarot": {"en": "Three of Wands", "zh": "权杖三", "zht": "權杖三"},
+   "art": "abroad",
+   "let": {
+    "di": "abroadTo()",
+    "ratio": "C[di][3] / base",
+    "m": "clamp(.8 * ratio, 1.3, 3)",
+    "cm": "clamp(.7 * ratio, 1.2, 2.6)",
+    "sal": "salary()"
+   },
+   "vars": {"c": "{k: '_c', ci: abroadTo()}"},
+   "opts": [
+    {
+     "id": "go",
+     "label": "M('.go', { c: { k: '_c', ci: di } })",
+     "sub": {
+      "c": "{ k: '_c', ci: di }",
+      "a": "MN(m * sal)",
+      "b": "MN(sal)",
+      "p": "Math.round((cm - 1) * 100)",
+      "m": "MN(.2 * base)"
+     },
+     "do": "pay(.2 * base); abroad = di; costMul = cm; happy -= 4; bump('abroad', m, M('trk.abroad', { c: { k: '_c', ci: di } }))"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job abroad",
+     ".x": "A company in {c} offers you a job. You would be far from your family and friends.",
+     ".go": "Move to {c}",
+     ".go.s": "Pay of {a} a year (you earn {b} now). Rent and daily costs are about {p}% higher. Moving costs {m}. Happiness −4.",
+     ".stay": "Stay at home",
+     ".stay.s": "Your life stays as it is."
+    },
+    "zh": {
+     ".t": "海外工作",
+     ".x": "{c}的一家公司给你一份工作。你会离家人和朋友很远。",
+     ".go": "搬去{c}",
+     ".go.s": "年薪{a}（你现在是{b}）。房租和日常开销大约高{p}%。搬家要花{m}。幸福感 −4。",
+     ".stay": "留在国内",
+     ".stay.s": "生活照旧。"
+    },
+    "zht": {
+     ".t": "海外工作",
+     ".x": "{c}的一家公司給你一份工作。你會離家人和朋友很遠。",
+     ".go": "搬去{c}",
+     ".go.s": "年薪{a}（你現在是{b}）。房租和日常開銷大約高{p}%。搬家要花{m}。幸福感 −4。",
+     ".stay": "留在國內",
+     ".stay.s": "生活照舊。"
+    }
+   }
+  },
+  {
+   "id": "cert",
+   "age": [29, 29],
+   "when": {"job": true, "retired": false},
+   "def": "no",
+   "tarot": {"en": "The Hermit", "zh": "隐者", "zht": "隱者"},
+   "art": "cert",
+   "opts": [
+    {"id": "mba", "sub": {"a": "MN(base)"}, "hint": true, "do": "startCert('mba')"},
+    {"id": "cert", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "startCert('cert')"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Level up",
+     ".x": "Your manager says people with a professional qualification get promoted faster.",
+     ".mba": "Part-time Master's (2 years)",
+     ".mba.s": "{a} in fees and 10% less pay for 2 years.",
+     ".mba.h": "Skill +14.",
+     ".cert": "Professional certificate (1 year)",
+     ".cert.s": "{a} in fees.",
+     ".cert.h": "Skill +7.",
+     ".no": "Not now",
+     ".no.s": "Keep your evenings free."
+    },
+    "zh": {
+     ".t": "进修",
+     ".x": "上司说，有专业资格的人升职更快。",
+     ".mba": "在职硕士（2年）",
+     ".mba.s": "学费{a}，2年内工资少10%。",
+     ".mba.h": "技能 +14。",
+     ".cert": "专业证书（1年）",
+     ".cert.s": "学费{a}。",
+     ".cert.h": "技能 +7。",
+     ".no": "暂时不要",
+     ".no.s": "晚上留给自己。"
+    },
+    "zht": {
+     ".t": "進修",
+     ".x": "上司說，有專業資格的人升職更快。",
+     ".mba": "在職碩士（2年）",
+     ".mba.s": "學費{a}，2年內工資少10%。",
+     ".mba.h": "技能 +14。",
+     ".cert": "專業證書（1年）",
+     ".cert.s": "學費{a}。",
+     ".cert.h": "技能 +7。",
+     ".no": "暫時不要",
+     ".no.s": "晚上留給自己。"
+    }
+   }
+  },
+  {
+   "id": "biz",
+   "age": [36, 36],
+   "when": {"job": true, "retired": false, "test": "!biz"},
+   "def": "no",
+   "tarot": {"en": "The Emperor", "zh": "皇帝", "zht": "皇帝"},
+   "art": "biz",
+   "let": {"B": "base", "liq": "liquid()"},
+   "hint": {"p": "Math.round(bizP() * 100)"},
+   "opts": [
+    {
+     "id": "full",
+     "sub": {"a": "MN(1.2 * B)"},
+     "ok": "liq >= 1.2 * B || M('.need', { n: MN(1.2 * B), h: MN(liq) })",
+     "do": "startBiz('full', 1.2 * B)"
+    },
+    {
+     "id": "side",
+     "sub": {"a": "MN(.25 * B)"},
+     "ok": "liq >= .25 * B || M('.need', { n: MN(.25 * B), h: MN(liq) })",
+     "do": "startBiz('side', .25 * B)"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your own business",
+     ".x": "You've spotted a gap in the market. Skill and years of side hustling make success more likely.",
+     ".h": "Your chance of success is about {p}%.",
+     ".full": "Quit and go all in",
+     ".full.s": "Put in {a}. Low pay for 2 years. If it works, it can earn several times your salary.",
+     ".side": "Start it on the side",
+     ".side.s": "Put in {a}. Keep your job. Smaller upside.",
+     ".no": "Stay employed",
+     ".no.s": "Keep your steady salary.",
+     ".need": "Needs {n}. You have {h}."
+    },
+    "zh": {
+     ".t": "自己创业",
+     ".x": "你发现了一个市场空缺。技能和做副业的年数都能提高成功率。",
+     ".h": "成功率大约{p}%。",
+     ".full": "辞职全力以赴",
+     ".full.s": "投入{a}。头2年收入很低。成功的话，能赚到工资的好几倍。",
+     ".side": "当副业来做",
+     ".side.s": "投入{a}。保留工作。上升空间较小。",
+     ".no": "继续打工",
+     ".no.s": "保住稳定的薪水。",
+     ".need": "需要{n}，你只有{h}。"
+    },
+    "zht": {
+     ".t": "自己創業",
+     ".x": "你發現了一個市場空缺。技能和做副業的年數都能提高成功率。",
+     ".h": "成功率大約{p}%。",
+     ".full": "辭職全力以赴",
+     ".full.s": "投入{a}。頭2年收入很低。成功的話，能賺到工資的好幾倍。",
+     ".side": "當副業來做",
+     ".side.s": "投入{a}。保留工作。上升空間較小。",
+     ".no": "繼續打工",
+     ".no.s": "保住穩定的薪水。",
+     ".need": "需要{n}，你只有{h}。"
+    }
+   }
+  },
+  {
+   "id": "layoff",
+   "age": [35, 52],
+   "weight": 0.55,
+   "when": {"working": true, "test": "!(biz && biz.mode === 'full' && biz.ok)"},
+   "def": "stay",
+   "tarot": {"en": "Ten of Swords", "zh": "宝剑十", "zht": "寶劍十"},
+   "art": "layoff",
+   "let": {"a": "salary()"},
+   "vars": {"a": "MN(salary())"},
+   "opts": [
+    {
+     "id": "take",
+     "sub": {"a": "MN(a)"},
+     "do": "cash += a; earned += a; layAt = age + 1; layVol = true; level = Math.max(0, level - 1); T('layoff', { kind: 'custom', label: M('trk.layoff'), v: a, note: M('note.layoff', { a: MN(a) }) })"
+    },
+    {
+     "id": "stay",
+     "hint": true,
+     "do": "later(age + 1 + Math.floor(roll('layAt') * 3), 'lay', { p: .45 })"
+    }
+   ],
+   "later": {
+    "lay": "if (!job || retired) return; if (roll('lay') < x.p) { layAt = age; layVol = false; level = Math.max(0, level - 1); } else log(M('log.layNo'), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Job cuts",
+     ".x": "Your company is cutting jobs. Anyone who leaves now gets a package of one year's pay ({a}).",
+     ".take": "Take the package",
+     ".take.s": "{a} now. You may be out of work for about six months and start a level lower.",
+     ".stay": "Stay and hope",
+     ".stay.s": "Keep your job for now.",
+     ".stay.h": "About a 45% chance you are laid off later without a package.",
+     "trk.layoff": "Took the redundancy package",
+     "note.layoff": "Got {a} up front"
+    },
+    "zh": {
+     ".t": "公司裁员",
+     ".x": "公司正在裁员。现在主动离职的人，可以拿到一年工资（{a}）的补偿。",
+     ".take": "拿补偿走人",
+     ".take.s": "现在拿{a}。你可能要失业半年左右，新工作也可能降一级。",
+     ".stay": "留下来赌一把",
+     ".stay.s": "暂时保住工作。",
+     ".stay.h": "大约有45%的机会，之后还是被裁，而且没有补偿。",
+     "trk.layoff": "拿了裁员补偿",
+     "note.layoff": "先拿了{a}"
+    },
+    "zht": {
+     ".t": "公司裁員",
+     ".x": "公司正在裁員。現在主動離職的人，可以拿到一年薪水（{a}）的資遣費。",
+     ".take": "拿資遣費走人",
+     ".take.s": "現在拿{a}。你可能要失業半年左右，新工作也可能降一級。",
+     ".stay": "留下來賭一把",
+     ".stay.s": "暫時保住工作。",
+     ".stay.h": "大約有45%的機會，之後還是被裁，而且沒有資遣費。",
+     "trk.layoff": "拿了資遣費",
+     "note.layoff": "先拿了{a}"
+    }
+   }
+  },
+  {
+   "id": "fire",
+   "age": [40, 54],
+   "when": {"working": true, "test": "netWorth() >= 12 * base"},
+   "def": "keep",
+   "tarot": {"en": "Ace of Wands", "zh": "权杖王牌", "zht": "權杖王牌"},
+   "art": "fire",
+   "vars": {"a": "MN(netWorth())", "n": "Math.round(netWorth() / (.6 * base))"},
+   "opts": [
+    {"id": "now", "do": "retireAge = age"},
+    {
+     "id": "part",
+     "rel": 4,
+     "do": "bump('fire', .5, M('trk.fire'), 'note.fire'); rec('', 0, 15, .6); happy += 4"
+    },
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Financially independent",
+     ".x": "Your net worth is {a}, about {n} years of your spending. Some people stop working at this point.",
+     ".now": "Retire now",
+     ".now.s": "Stop working this year. Your investments pay for the rest of your life.",
+     ".part": "Go part-time",
+     ".part.s": "Half the pay, much more free time. Happiness +4.",
+     ".keep": "Keep working",
+     ".keep.s": "Keep building.",
+     "trk.fire": "Went part-time",
+     "note.fire": "Half the pay, much more free time"
+    },
+    "zh": {
+     ".t": "财务自由",
+     ".x": "你的净资产是{a}，大约够你花{n}年。有些人到这一步就不工作了。",
+     ".now": "现在就退休",
+     ".now.s": "今年就不干了。下半辈子靠投资生活。",
+     ".part": "改做兼职",
+     ".part.s": "工资减半，自由时间多很多。幸福感 +4。",
+     ".keep": "继续工作",
+     ".keep.s": "继续累积。",
+     "trk.fire": "改做兼职",
+     "note.fire": "工资减半，自由时间多很多"
+    },
+    "zht": {
+     ".t": "財務自由",
+     ".x": "你的淨資產是{a}，大約夠你花{n}年。有些人到這一步就不工作了。",
+     ".now": "現在就退休",
+     ".now.s": "今年就不做了。下半輩子靠投資生活。",
+     ".part": "改做兼職",
+     ".part.s": "薪水減半，自由時間多很多。幸福感 +4。",
+     ".keep": "繼續工作",
+     ".keep.s": "繼續累積。",
+     "trk.fire": "改做兼職",
+     "note.fire": "薪水減半，自由時間多很多"
+    }
+   }
+  },
+  {
+   "id": "pivot",
+   "age": [43, 43],
+   "when": {"job": true, "retired": false, "test": "!(biz && biz.mode === 'full' && biz.ok)"},
+   "def": "stay",
+   "tarot": {"en": "Death", "zh": "死神", "zht": "死神"},
+   "art": "pivot",
+   "opts": [
+    {
+     "id": "re",
+     "sub": {"a": "MN(.3 * base)"},
+     "hint": true,
+     "do": "pivoted = true; pivotYear = age; pay(.3 * base); const t = T('sk_pivot', { kind: 'skill', label: M('trk.pivot') }); t.cost += .3 * base; addSkill('pivot', 10, M('trk.pivot'))"
+    },
+    {"id": "stay", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your industry is changing",
+     ".x": "New software is taking over parts of your job. Without new skills, your skill will slowly fall from 45 onward.",
+     ".re": "Retrain for a year",
+     ".re.s": "Half pay for one year and {a} in fees.",
+     ".re.h": "Skill +10, and no decline later.",
+     ".stay": "Carry on as you are",
+     ".stay.s": "Full pay now.",
+     ".stay.h": "Skill drops about 0.8 a year from 45.",
+     "trk.pivot": "Retrained at 43"
+    },
+    "zh": {
+     ".t": "你的行业在变",
+     ".x": "新软件正在取代你的一部分工作。不学新技能的话，45岁起你的技能会慢慢下降。",
+     ".re": "花一年转型进修",
+     ".re.s": "一年只拿一半工资，外加{a}学费。",
+     ".re.h": "技能 +10，以后也不会下降。",
+     ".stay": "维持现状",
+     ".stay.s": "现在照领全薪。",
+     ".stay.h": "45岁起技能每年约降0.8。",
+     "trk.pivot": "43岁转型进修"
+    },
+    "zht": {
+     ".t": "你的行業在變",
+     ".x": "新軟體正在取代你的一部分工作。不學新技能的話，45歲起你的技能會慢慢下降。",
+     ".re": "花一年轉型進修",
+     ".re.s": "一年只拿一半工資，外加{a}學費。",
+     ".re.h": "技能 +10，以後也不會下降。",
+     ".stay": "維持現狀",
+     ".stay.s": "現在照領全薪。",
+     ".stay.h": "45歲起技能每年約降0.8。",
+     "trk.pivot": "43歲轉型進修"
+    }
+   }
+  },
+  {
+   "id": "team",
+   "age": [22, 32],
+   "weight": 0.7,
+   "when": {"working": true},
+   "def": "some",
+   "tarot": {"en": "Nine of Cups", "zh": "圣杯九", "zht": "聖杯九"},
+   "art": "team",
+   "let": {"a": ".05 * base"},
+   "vars": {"a": "MN(.05 * base)"},
+   "opts": [
+    {
+     "id": "often",
+     "sub": {"a": "MN(a)"},
+     "hint": "M('hx.hl', { n: '−1' })",
+     "rel": 3,
+     "do": "T('team', { kind: 'ghost', label: M('trk.team') }); rec('team', a, 5, -.2)"
+    },
+    {
+     "id": "some",
+     "sub": {"a": "MN(a / 4)"},
+     "rel": 2,
+     "do": "T('team', { kind: 'ghost', label: M('trk.team') }); rec('team', a / 4, 5)"
+    },
+    {"id": "never", "rel": 0}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After-work dinners",
+     ".x": "Your team often eats out together after work. Going every time costs about {a} a year.",
+     ".often": "Go every time",
+     ".often.s": "About {a} a year.",
+     ".some": "Go now and then",
+     ".some.s": "About {a} a year.",
+     ".never": "Head home instead",
+     ".never.s": "Free.",
+     "trk.team": "After-work dinners"
+    },
+    "zh": {
+     ".t": "下班聚餐",
+     ".x": "你的团队常常下班一起吃饭。每次都去的话，一年大约要{a}。",
+     ".often": "每次都去",
+     ".often.s": "每年大约{a}。",
+     ".some": "偶尔去",
+     ".some.s": "每年大约{a}。",
+     ".never": "直接回家",
+     ".never.s": "不花钱。",
+     "trk.team": "下班聚餐"
+    },
+    "zht": {
+     ".t": "下班聚餐",
+     ".x": "你的團隊常常下班一起吃飯。每次都去的話，一年大約要{a}。",
+     ".often": "每次都去",
+     ".often.s": "每年大約{a}。",
+     ".some": "偶爾去",
+     ".some.s": "每年大約{a}。",
+     ".never": "直接回家",
+     ".never.s": "不花錢。",
+     "trk.team": "下班聚餐"
+    }
+   }
+  },
+  {
+   "id": "mentor",
+   "age": [21, 30],
+   "weight": 0.7,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": {"en": "The Hermit", "zh": "隐者", "zht": "隱者"},
+   "art": "mentor",
+   "let": {"a": ".06 * base"},
+   "hint": true,
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {"a": "MN(a)"},
+     "hint": "M('hx.sk', { n: 2.5 })",
+     "rel": 1,
+     "do": "T('mentor', { kind: 'ghost', label: M('trk.mentorLunch') }); rec('mentor', a, 3); happy -= 2; if (mentorFit()) addSkill('mentor', 2.5, M('trk.mentor')); later(age + 3, 'mentor', { p: .3 })"
+    },
+    {
+     "id": "some",
+     "hint": "M('hx.sk', { n: 1 })",
+     "rel": 0,
+     "do": "spend('mentorC', .1 * a, 'trk.mentorLunch'); if (mentorFit()) addSkill('mentor', 1, M('trk.mentor')); later(age + 3, 'mentor', { p: .12 })"
+    },
+    {"id": "no"}
+   ],
+   "later": {
+    "mentor": "if (roll('mentor') < relP(x.p)) refer('mentorRef', 1.1, 'trk.mentorRef', 'log.mentorRef')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A mentor",
+     ".x": "A senior colleague offers to meet you once a month to talk about your career, over lunch. You would pay.",
+     ".yes": "Say yes and buy the lunches",
+     ".yes.s": "About {a} a year for three years, and an evening a month. Happiness −2.",
+     ".some": "Meet now and then, over coffee",
+     ".some.s": "Almost free.",
+     ".no": "Politely say you're too busy",
+     ".no.s": "Free.",
+     "trk.mentorLunch": "Lunches with your mentor",
+     "trk.mentor": "Mentoring",
+     ".h": "About 1 in 3 mentors turn out not to help much."
+    },
+    "zh": {
+     ".t": "一位导师",
+     ".x": "一位资深同事愿意每个月跟你吃顿午饭，聊聊你的职业发展。饭钱由你出。",
+     ".yes": "答应，饭钱你请",
+     ".yes.s": "每年大约{a}，持续三年，每个月还要花一个晚上。幸福感 −2。",
+     ".some": "偶尔喝杯咖啡聊聊",
+     ".some.s": "几乎不花钱。",
+     ".no": "客气地说你太忙",
+     ".no.s": "不花钱。",
+     "trk.mentorLunch": "请导师吃饭",
+     "trk.mentor": "导师指点",
+     ".h": "大约三分之一的导师其实帮不上什么忙。"
+    },
+    "zht": {
+     ".t": "一位導師",
+     ".x": "一位資深同事願意每個月跟你吃頓午餐，聊聊你的職涯發展。餐費由你出。",
+     ".yes": "答應，餐費你請",
+     ".yes.s": "每年大約{a}，持續三年，每個月還要花一個晚上。幸福感 −2。",
+     ".some": "偶爾喝杯咖啡聊聊",
+     ".some.s": "幾乎不花錢。",
+     ".no": "客氣地說你太忙",
+     ".no.s": "不花錢。",
+     "trk.mentorLunch": "請導師吃飯",
+     "trk.mentor": "導師指點",
+     ".h": "大約三分之一的導師其實幫不上什麼忙。"
+    }
+   }
+  },
+  {
+   "id": "credit",
+   "age": [25, 40],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "let",
+   "tarot": {"en": "Five of Swords", "zh": "宝剑五", "zht": "寶劍五"},
+   "art": "credit",
+   "opts": [
+    {"id": "talk", "hint": true, "rel": 0, "do": "later(age, 'credit', {p: .45, m: 1.05})"},
+    {"id": "boss", "hint": true, "rel": -4, "do": "later(age, 'credit', {p: .55, m: 1.08, bad: .25})"},
+    {"id": "let", "rel": 1, "do": "happy -= 2"}
+   ],
+   "later": {
+    "credit": "const u = roll('credit'); if (u < relP(x.p)) { bump('credit', x.m, M('trk.credit')); log(M('log.creditOk', { p: Math.round((x.m - 1) * 100) }), 'good'); } else if (x.bad && u > 1 - x.bad) { happy -= 4; log(M('log.creditBad'), 'bad'); } else log(M('log.creditNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Stolen credit",
+     ".x": "A coworker presents your project to the bosses as their own work.",
+     ".talk": "Talk to them privately",
+     ".talk.s": "Free, but awkward.",
+     ".talk.h": "They might start sharing the credit, which can lead to a raise.",
+     ".boss": "Show your manager the proof",
+     ".boss.s": "Free, but the whole office will notice.",
+     ".boss.h": "Often leads to a raise; sometimes you get a name for being difficult.",
+     ".let": "Let it go",
+     ".let.s": "Free, but it stings. Happiness −2."
+    },
+    "zh": {
+     ".t": "功劳被抢",
+     ".x": "一位同事把你做的项目，当成自己的成果报告给老板。",
+     ".talk": "私下找他谈",
+     ".talk.s": "不花钱，但很尴尬。",
+     ".talk.h": "对方可能开始跟你分享功劳，这有机会带来加薪。",
+     ".boss": "拿证据给主管看",
+     ".boss.s": "不花钱，但整个办公室都会知道。",
+     ".boss.h": "常常能带来加薪；有时也会被当成难相处的人。",
+     ".let": "算了",
+     ".let.s": "不花钱，但心里不好受。幸福感 −2。"
+    },
+    "zht": {
+     ".t": "功勞被搶",
+     ".x": "一位同事把你做的專案，當成自己的成果報告給老闆。",
+     ".talk": "私下找他談",
+     ".talk.s": "不花錢，但很尷尬。",
+     ".talk.h": "對方可能開始跟你分享功勞，這有機會帶來加薪。",
+     ".boss": "拿證據給主管看",
+     ".boss.s": "不花錢，但整個辦公室都會知道。",
+     ".boss.h": "常常能帶來加薪；有時也會被當成難相處的人。",
+     ".let": "算了",
+     ".let.s": "不花錢，但心裡不好受。幸福感 −2。"
+    }
+   }
+  },
+  {
+   "id": "network",
+   "age": [24, 42],
+   "weight": 0.65,
+   "when": {"working": true},
+   "def": "skip",
+   "tarot": {"en": "Six of Wands", "zh": "权杖六", "zht": "權杖六"},
+   "art": "network",
+   "let": {"a": ".02 * base"},
+   "fn": {
+    "at": {"args": [], "do": "return age + 1 + Math.floor(roll('netAt') * 3)"}
+   },
+   "vars": {"a": "MN(.02 * base)"},
+   "opts": [
+    {
+     "id": "follow",
+     "sub": {"a": "MN(4 * a)"},
+     "rel": 1,
+     "do": "spend('network', 4 * a, 'trk.network'); happy -= 1; later(at(), 'network', { p: .35 })"
+    },
+    {
+     "id": "cards",
+     "sub": {"a": "MN(a)"},
+     "rel": 0,
+     "do": "spend('network', a, 'trk.network'); later(at(), 'network', { p: .2 })"
+    },
+    {"id": "skip"}
+   ],
+   "later": {
+    "network": "if (roll('network') < relP(x.p)) refer('netRef', 1.06, 'trk.netRef', 'log.netRef')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A networking evening",
+     ".x": "An industry group is holding an evening event. A ticket costs {a}.",
+     ".follow": "Go, and follow up with everyone you meet",
+     ".follow.s": "About {a} for the ticket and the coffees that follow, and a few evenings. Happiness −1.",
+     ".cards": "Go, collect business cards, leave early",
+     ".cards.s": "{a} for the ticket.",
+     ".skip": "Skip it",
+     ".skip.s": "Free.",
+     "trk.network": "Networking evening"
+    },
+    "zh": {
+     ".t": "行业交流晚会",
+     ".x": "一个行业协会举办晚间交流会，门票{a}。",
+     ".follow": "去，之后跟认识的人一一联络",
+     ".follow.s": "门票加上之后请人喝咖啡，大约{a}，还要花几个晚上。幸福感 −1。",
+     ".cards": "去，收几张名片就早点走",
+     ".cards.s": "门票{a}。",
+     ".skip": "不去",
+     ".skip.s": "不花钱。",
+     "trk.network": "行业交流晚会"
+    },
+    "zht": {
+     ".t": "業界交流晚會",
+     ".x": "一個業界協會舉辦晚間交流會，門票{a}。",
+     ".follow": "去，之後跟認識的人一一聯絡",
+     ".follow.s": "門票加上之後請人喝咖啡，大約{a}，還要花幾個晚上。幸福感 −1。",
+     ".cards": "去，收幾張名片就早點走",
+     ".cards.s": "門票{a}。",
+     ".skip": "不去",
+     ".skip.s": "不花錢。",
+     "trk.network": "業界交流晚會"
+    }
+   }
+  },
+  {
+   "id": "uncle",
+   "age": [20, 28],
+   "weight": 0.4,
+   "when": {"working": true, "abroad": false},
+   "def": "no",
+   "tarot": {"en": "Ten of Coins", "zh": "钱币十", "zht": "錢幣十"},
+   "art": "uncle",
+   "vars": {"a": "MN(1.1 * salary())"},
+   "hint": true,
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(1.1 * salary())"},
+     "rel": 3,
+     "do": "bump('uncle', 1.1, M('trk.uncle')); uncle = true; later(age + 4 + Math.floor(roll('uncAt') * 5), 'uncle')"
+    },
+    {"id": "no", "rel": -1}
+   ],
+   "later": {
+    "uncle": "if (!uncle) return; if (roll('uncle') < .5) { uncle = false; bump.uncle = 1; const t = trk.uncle; if (t) t.note = M('note.uncleEnd', { a: MN(t.v) }); if (job && !retired) { layAt = age; layVol = false; } log(M('log.uncleEnd'), 'bad'); } else log(M('log.uncleOk'), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Your uncle's business",
+     ".x": "Your uncle runs a family business and offers you a job paying {a} a year.",
+     ".h": "Family businesses tend to promote slowly, and about half run into trouble within a few years.",
+     ".join": "Join the family business",
+     ".join.s": "{a} a year.",
+     ".no": "Thank him and stay where you are",
+     ".no.s": "Your pay stays the same.",
+     "trk.uncle": "Your uncle's business"
+    },
+    "zh": {
+     ".t": "叔叔的生意",
+     ".x": "你叔叔经营一家家族生意，想请你过去，年薪{a}。",
+     ".h": "家族生意升职通常比较慢，而且大约一半几年内会遇到困难。",
+     ".join": "加入家族生意",
+     ".join.s": "年薪{a}。",
+     ".no": "谢谢他，留在原来的公司",
+     ".no.s": "工资不变。",
+     "trk.uncle": "叔叔的生意"
+    },
+    "zht": {
+     ".t": "叔叔的生意",
+     ".x": "你叔叔經營一家家族企業，想請你過去，年薪{a}。",
+     ".h": "家族企業升遷通常比較慢，而且大約一半幾年內會遇到困難。",
+     ".join": "加入家族企業",
+     ".join.s": "年薪{a}。",
+     ".no": "謝謝他，留在原來的公司",
+     ".no.s": "薪水不變。",
+     "trk.uncle": "叔叔的家族企業"
+    }
+   }
+  },
+  {
+   "id": "away",
+   "age": [30, 45],
+   "weight": 0.55,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": {"en": "Three of Wands", "zh": "权杖三", "zht": "權杖三"},
+   "art": "away",
+   "vars": {"a": "MN(1.2 * salary())", "b": "MN(salary())"},
+   "opts": [
+    {
+     "id": "go",
+     "sub": {"a": "MN(.1 * base)"},
+     "rel": -10,
+     "do": "pay(.1 * base); bump('away', 1.2, M('trk.away')); trk.away.v -= .1 * base; happy -= 2"
+    },
+    {"id": "remote", "hint": true, "rel": 0, "do": "later(age, 'remote', {p: .35})"},
+    {"id": "stay", "rel": 3}
+   ],
+   "later": {
+    "remote": "const ok = roll('remote') < x.p; if (ok) bump('away', 1.12, M('trk.awayRemote')); log(M(ok ? 'log.remoteOk' : 'log.remoteNo'), ok ? 'good' : '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A promotion far away",
+     ".x": "Your company offers you a bigger role in another city: {a} a year instead of {b}. Your family and friends would be a long way off.",
+     ".go": "Take it and move",
+     ".go.s": "Moving costs about {a}. Happiness −2.",
+     ".remote": "Ask to do the job from here",
+     ".remote.s": "Free to ask.",
+     ".remote.h": "About 1 in 3 companies say yes, for a smaller raise.",
+     ".stay": "Turn it down and stay near family",
+     ".stay.s": "Your pay stays the same.",
+     "trk.away": "Moved for a promotion"
+    },
+    "zh": {
+     ".t": "外地的升职机会",
+     ".x": "公司给你一个在另一个城市的更高职位：年薪{a}，现在是{b}。可是离家人朋友就远了。",
+     ".go": "接受，搬过去",
+     ".go.s": "搬家大约要{a}。幸福感 −2。",
+     ".remote": "问能不能留在这里远程做",
+     ".remote.s": "问一问不花钱。",
+     ".remote.h": "大约三家公司有一家会答应，但加薪会少一点。",
+     ".stay": "拒绝，留在家人身边",
+     ".stay.s": "工资不变。",
+     "trk.away": "为升职搬家"
+    },
+    "zht": {
+     ".t": "外地的升遷機會",
+     ".x": "公司給你一個在另一個城市的更高職位：年薪{a}，現在是{b}。可是離家人朋友就遠了。",
+     ".go": "接受，搬過去",
+     ".go.s": "搬家大約要{a}。幸福感 −2。",
+     ".remote": "問能不能留在這裡遠端工作",
+     ".remote.s": "問一問不花錢。",
+     ".remote.h": "大約三家公司有一家會答應，但加薪會少一點。",
+     ".stay": "拒絕，留在家人身邊",
+     ".stay.s": "薪水不變。",
+     "trk.away": "為升遷搬家"
+    }
+   }
+  }
+ ]
+}

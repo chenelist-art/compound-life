@@ -1,0 +1,460 @@
+{
+ "about": "Country cards for lives born in China. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "CN",
+ "events": [
+  {
+   "id": "cn_gaokao",
+   "src": "===================== China (CN) ===================== Gaokao: 13.35 million registered in 2025 (Ministry of Education via Xinhua and The Paper). Extra-class costs are an ESTIMATE; a poorer family borrows and you help repay it (famCost).",
+   "age": [17, 17],
+   "def": "steady",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "mi"},
+   "opts": [
+    {
+     "id": "cram",
+     "sub": {"a": "MN(.25 * base)"},
+     "hint": true,
+     "ok": "fam === 'poor' ? M('.no') : true",
+     "do": "addSkill('school', 6 * learnLuck('gk'), M('trk.school')); happy -= 5; health -= 2; famCost('cn_gaokao', .25)"
+    },
+    {
+     "id": "steady",
+     "hint": true,
+     "do": "addSkill('school', 4 * learnLuck('gk'), M('trk.school')); happy -= 1"
+    },
+    {"id": "easy", "hint": true, "do": "addSkill('school', 1.5, M('trk.school')); happy += 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The gaokao",
+     ".x": "Next June you sit the gaokao, the university entrance exam, with more than 13 million others (13.35 million in 2025). Your score decides which universities you can enter.",
+     ".cram": "Extra classes every evening and weekend",
+     ".cram.s": "Your family pays about {a}. Exhausting: Happiness −5.",
+     ".cram.h": "Skill +6 (more or less, depending on the exam days). Health −2.",
+     ".no": "Your family can’t afford extra classes.",
+     ".steady": "Study hard but keep your sleep",
+     ".steady.s": "Happiness −1.",
+     ".steady.h": "Skill +4 (more or less).",
+     ".easy": "Take it as it comes",
+     ".easy.s": "Happiness +2.",
+     ".easy.h": "Skill +1.5."
+    },
+    "zh": {
+     ".t": "高考",
+     ".x": "明年六月你要参加高考，和一千三百多万人一起考（2025年报名1335万人）。分数决定你能上哪些大学。",
+     ".cram": "每晚和周末都去补课",
+     ".cram.s": "家里付约{a}。精疲力尽：幸福感 −5。",
+     ".cram.h": "技能 +6（看考试那几天的发挥，或多或少）。健康 −2。",
+     ".no": "家里负担不起补课费。",
+     ".steady": "努力复习，但保证睡眠",
+     ".steady.s": "幸福感 −1。",
+     ".steady.h": "技能 +4（或多或少）。",
+     ".easy": "顺其自然",
+     ".easy.s": "幸福感 +2。",
+     ".easy.h": "技能 +1.5。"
+    },
+    "zht": {
+     ".t": "高考",
+     ".x": "明年六月你要參加高考，和一千三百多萬人一起考（2025年報名1335萬人）。分數決定你能上哪些大學。",
+     ".cram": "每晚和週末都去補課",
+     ".cram.s": "家裡付約{a}。精疲力盡：幸福感 −5。",
+     ".cram.h": "技能 +6（看考試那幾天的發揮，或多或少）。健康 −2。",
+     ".no": "家裡負擔不起補課費。",
+     ".steady": "努力複習，但保證睡眠",
+     ".steady.s": "幸福感 −1。",
+     ".steady.h": "技能 +4（或多或少）。",
+     ".easy": "順其自然",
+     ".easy.s": "幸福感 +2。",
+     ".easy.h": "技能 +1.5。"
+    }
+   }
+  },
+  {
+   "id": "cn_city",
+   "src": "Hukou and the big cities: since 2019 cities with 1–3 million urban residents were told to lift hukou limits (NDRC, Key Tasks for New Urbanisation 2019); first-tier cities still tie home buying and school places to local hukou or years of social insurance. Pay and cost multiples are ESTIMATES from the gap in typical wages and rents.",
+   "age": [22, 28],
+   "weight": 0.7,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "travel",
+   "art": {"draw": "city", "bg": "wa"},
+   "let": {"sal": "salary()"},
+   "vars": {"a": "MN(1.45 * salary())"},
+   "opts": [
+    {
+     "id": "go",
+     "sub": {"a": "MN(1.45 * sal)"},
+     "hint": true,
+     "do": "cityMove('cn_city', 1.45, 1.45, 1.6, -4)"
+    },
+    {"id": "mid", "sub": {"a": "MN(1.2 * sal)"}, "do": "cityMove('cn_city', 1.2, 1.12, 1.1, -2)"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job in a big city",
+     ".x": "A company in a first-tier city (Beijing, Shanghai, Guangzhou or Shenzhen) offers you {a} a year. Without a local hukou, buying a home there or getting a public school place for your children can take years of paying into the city’s social insurance. Many second-tier cities now grant hukou easily.",
+     ".go": "Move to the big city",
+     ".go.s": "Pay {a} a year. Rent and daily costs about 45% higher, and homes cost much more. Happiness −1.",
+     ".go.h": "Far from family: Relationships −4.",
+     ".mid": "A fast-growing second-tier city",
+     ".mid.s": "Pay {a} a year. Costs about 12% higher, and hukou is easy to get. Happiness −1.",
+     ".stay": "Stay in your hometown",
+     ".stay.s": "Close to family, and your costs stay low.",
+     "trk.cn_city": "Moved to the city"
+    },
+    "zh": {
+     ".t": "去大城市工作",
+     ".x": "一线城市（北京、上海、广州或深圳）的一家公司给你年薪{a}。没有当地户口，买房或让孩子上公办学校，往往要先在当地交好几年社保。很多二线城市现在落户很容易。",
+     ".go": "去大城市",
+     ".go.s": "年薪{a}。房租和日常开销约高45%，房价也高得多。幸福感 −1。",
+     ".go.h": "离家远：人际关系 −4。",
+     ".mid": "去发展快的二线城市",
+     ".mid.s": "年薪{a}。开销约高12%，落户容易。幸福感 −1。",
+     ".stay": "留在家乡",
+     ".stay.s": "离家人近，开销也低。",
+     "trk.cn_city": "搬到城市"
+    },
+    "zht": {
+     ".t": "去大城市工作",
+     ".x": "一線城市（北京、上海、廣州或深圳）的一家公司給你年薪{a}。沒有當地戶口，買房或讓孩子上公辦學校，往往要先在當地交好幾年社會保險。很多二線城市現在落戶很容易。",
+     ".go": "去大城市",
+     ".go.s": "年薪{a}。房租和日常開銷約高45%，房價也高得多。幸福感 −1。",
+     ".go.h": "離家遠：人際關係 −4。",
+     ".mid": "去發展快的二線城市",
+     ".mid.s": "年薪{a}。開銷約高12%，落戶容易。幸福感 −1。",
+     ".stay": "留在家鄉",
+     ".stay.s": "離家人近，開銷也低。",
+     "trk.cn_city": "搬到城市"
+    }
+   }
+  },
+  {
+   "id": "cn_996",
+   "src": "996: China's labour law limits work to 44 hours a week on average, with at most 36 hours of overtime a month; in Aug 2021 the Supreme People's Court and the Ministry of Human Resources and Social Security said 996 schedules break the law (Sixth Tone; Quartz). Pay, promotion and health effects are game rules.",
+   "age": [23, 40],
+   "weight": 0.6,
+   "when": {"working": true, "careerType": ["office", "hands"]},
+   "def": "go",
+   "tarot": "roof",
+   "art": {"draw": "late", "bg": "mi"},
+   "opts": [
+    {
+     "id": "go",
+     "hint": true,
+     "rel": -4,
+     "do": "tmpPay('cn_996', 1.1, 5, 'trk.cn_996'); rec('', 0, 5, -1.5); grindY += 3; ppM = (ppM || 1) * 1.25; happy -= 3"
+    },
+    {"id": "line", "hint": true, "do": "ppM = (ppM || 1) * .85; happy += 1"},
+    {"id": "move", "do": "bump('cn_996m', .92, M('trk.cn_996m')); happy += 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "996",
+     ".x": "Your team works “996”: 9 a.m. to 9 p.m., six days a week. The labour law allows 44 hours a week on average and at most 36 hours of overtime a month, and in 2021 the Supreme People’s Court and the labour ministry said 996 schedules break it, but some firms still expect it.",
+     ".go": "Go along with it",
+     ".go.s": "Overtime and bonuses add about 10% to your pay for five years. Happiness −3.",
+     ".go.h": "Faster promotions. Health −1.5 a year for five years.",
+     ".line": "Do your hours well and go home",
+     ".line.s": "Happiness +1.",
+     ".line.h": "Promotions a little slower.",
+     ".move": "Move to a firm with normal hours",
+     ".move.s": "About 8% less pay. Happiness +3.",
+     "trk.cn_996": "996 overtime",
+     "trk.cn_996m": "A calmer job"
+    },
+    "zh": {
+     ".t": "996",
+     ".x": "你的团队实行“996”：早九点到晚九点，一周六天。劳动法规定平均每周不超过44小时、每月加班不超过36小时；2021年最高人民法院和人社部明确996违法，但仍有公司这样要求。",
+     ".go": "跟着加班",
+     ".go.s": "加班费和奖金让收入提高约10%，持续五年。幸福感 −3。",
+     ".go.h": "升职更快。五年内每年健康 −1.5。",
+     ".line": "把分内事做好就下班",
+     ".line.s": "幸福感 +1。",
+     ".line.h": "升职稍慢。",
+     ".move": "换到正常工时的公司",
+     ".move.s": "工资少约8%。幸福感 +3。",
+     "trk.cn_996": "996加班",
+     "trk.cn_996m": "轻松一点的工作"
+    },
+    "zht": {
+     ".t": "996",
+     ".x": "你的團隊實行「996」：早九點到晚九點，一週六天。勞動法規定平均每週不超過44小時、每月加班不超過36小時；2021年最高人民法院和人社部明確996違法，但仍有公司這樣要求。",
+     ".go": "跟著加班",
+     ".go.s": "加班費和獎金讓收入提高約10%，持續五年。幸福感 −3。",
+     ".go.h": "升職更快。五年內每年健康 −1.5。",
+     ".line": "把分內事做好就下班",
+     ".line.s": "幸福感 +1。",
+     ".line.h": "升職稍慢。",
+     ".move": "換到正常工時的公司",
+     ".move.s": "薪水少約8%。幸福感 +3。",
+     "trk.cn_996": "996加班",
+     "trk.cn_996m": "輕鬆一點的工作"
+    }
+   }
+  },
+  {
+   "id": "cn_house",
+   "src": "Buying a flat: housing provident fund loans for a first home cost 2.6% from 8 May 2025 (PBoC, via The Paper and Beijing News); CPI inflation near 0.5% leaves about 2% real. New-home prices in 70 cities fell for 32 months in a row to Feb 2026 (NBS via Trading Economics). Parents' help (\"six wallets\") by family background and the price path ahead are ESTIMATES.",
+   "age": [26, 34],
+   "weight": 0.75,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "rent",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {
+    "P": "price()",
+    "g": "byFam({ poor: 0, working: .08, middle: .15, rich: .3 }) * P",
+    "liq": "liquid()"
+   },
+   "fn": {
+    "drift": {"args": [], "do": "return later(age + 3, 'hmove', {m: inR(roll('cnhm'), [.82, 1.05])})"}
+   },
+   "vars": {"p": "MN(price())"},
+   "opts": [
+    {
+     "id": "family",
+     "sub": {"g": "MN(g)", "d": "MN(.32 * P - g)", "l": "MN(.7 * P)"},
+     "ok": "g <= 0 ? M('.no') : liq + g >= .32 * P || M('e.home.need', { n: MN(.32 * P - g), h: MN(liq) })",
+     "rel": 2,
+     "do": "cash += g; const t = T('cn_gift', { kind: 'custom', label: M('trk.cn_gift'), v: g, note: M('note.got', { a: MN(g) }) }); buyAt(P, { dp: .3, fee: .02, r: .02, n: 30 }); drift()"
+    },
+    {
+     "id": "small",
+     "sub": {"d": "upFront(.55 * P, .3, .02)", "m": "yrPay(.55 * P, .3, .02)"},
+     "ok": "liq >= .18 * P || M('e.home.need', { n: MN(.18 * P), h: MN(liq) })",
+     "do": "buyAt(.55 * P, { dp: .3, fee: .02, r: .02, n: 30, lk: 'trk.flat' }); drift()"
+    },
+    {"id": "rent"}
+   ],
+   "later": {
+    "hmove": "hm *= x.m; if (house) house.value *= x.m; log(M(x.m < 1 ? 'log.hmDown' : 'log.hmUp', { p: Math.round(Math.abs(x.m - 1) * 100) }), x.m < 1 ? 'bad' : 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Buying a flat",
+     ".x": "You’d like to buy a flat ({p}). Parents on both sides often help with the down payment. A housing provident fund loan costs 2.6% a year for a first home (since May 2025), less than a bank mortgage. New-home prices fell for 32 months in a row up to early 2026.",
+     ".family": "Buy with your family’s help",
+     ".family.s": "Your family gives {g}; you add {d} for the 30% down payment and fees, and borrow {l}.",
+     ".no": "Your family can’t help with a down payment.",
+     ".small": "A small flat further out, on your own",
+     ".small.s": "{d} up front, then {m} a year.",
+     ".rent": "Keep renting",
+     ".rent.s": "Your rent stays the same.",
+     "trk.cn_gift": "Family’s help"
+    },
+    "zh": {
+     ".t": "买房",
+     ".x": "你想买一套房（{p}）。双方父母常会帮忙付首付。首套房的住房公积金贷款利率为2.6%（2025年5月起），比商业贷款低。新房价格到2026年初已连续下跌32个月。",
+     ".family": "靠家里帮忙买",
+     ".family.s": "家里给{g}；你再出{d}凑够三成首付和税费，贷款{l}。",
+     ".no": "家里帮不了首付。",
+     ".small": "自己在远一点的地方买套小的",
+     ".small.s": "首付{d}，之后每年{m}。",
+     ".rent": "继续租房",
+     ".rent.s": "房租不变。",
+     "trk.cn_gift": "家里的帮忙"
+    },
+    "zht": {
+     ".t": "買房",
+     ".x": "你想買一套房（{p}）。雙方父母常會幫忙付頭期款。首套房的住房公積金貸款利率為2.6%（2025年5月起），比商業貸款低。新房價格到2026年初已連續下跌32個月。",
+     ".family": "靠家裡幫忙買",
+     ".family.s": "家裡給{g}；你再出{d}湊夠三成頭期款和稅費，貸款{l}。",
+     ".no": "家裡幫不了頭期款。",
+     ".small": "自己在遠一點的地方買套小的",
+     ".small.s": "頭期款{d}，之後每年{m}。",
+     ".rent": "繼續租房",
+     ".rent.s": "房租不變。",
+     "trk.cn_gift": "家裡的幫忙"
+    }
+   }
+  },
+  {
+   "id": "cn_kaogong",
+   "src": "The civil service exam: about 3.7 million people sat the national exam in late 2025 for 38,100 posts; the age limit rose from 35 to 38 (China Daily HK, 1 Dec 2025; Xinhua via The Tribune; Caixin, 15 Oct 2025). The chance to pass is a game rule.",
+   "age": [22, 36],
+   "weight": 0.6,
+   "when": {"working": true, "test": "job.id !== 'civ' && age <= 38"},
+   "def": "no",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "wa"},
+   "use": "exam",
+   "with": {"chance": 0.03},
+   "i18n": {
+    "en": {
+     ".t": "The civil service exam",
+     ".x": "About 3.7 million people sat the national civil service exam in late 2025 for 38,100 posts, after the age limit was raised from 35 to 38. Provincial exams add many more posts. A government job is steady and comes with a pension."
+    },
+    "zh": {
+     ".t": "考公务员",
+     ".x": "2025年底的国考约有370万人参加，招录38,100人；年龄上限从35岁放宽到38岁。各省的省考还有更多岗位。公务员工作稳定，还有养老金。"
+    },
+    "zht": {
+     ".t": "考公務員",
+     ".x": "2025年底的國考約有370萬人參加，招錄38,100人；年齡上限從35歲放寬到38歲。各省的省考還有更多崗位。公務員工作穩定，還有退休金。"
+    }
+   }
+  },
+  {
+   "id": "cn_pension",
+   "src": "Personal pension: up to ¥12,000 a year deductible from taxable income, gains untaxed, 3% tax when you draw it; nationwide from 2024 (Ministry of Finance and State Taxation Administration notice No. 21 of 2024, via cs.com.cn). ¥12,000 ÷ the game's typical wage (¥41,700) ≈ 0.29. The net tax saving (about 7% of what you put in) is an ESTIMATE.",
+   "age": [25, 45],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "max",
+     "sub": {"a": "MN(.29 * B)", "b": "MN(.02 * B)"},
+     "do": "yearly('cnpen', { amt: .29 * B, until: 60, bonus: .07 }, { lock: 60 }, 'trk.cnpen')"
+    },
+    {
+     "id": "half",
+     "sub": {"a": "MN(.14 * B)", "b": "MN(.01 * B)"},
+     "do": "yearly('cnpen', { amt: .14 * B, until: 60, bonus: .07 }, { lock: 60 }, 'trk.cnpen')"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A personal pension account",
+     ".x": "In a personal pension account, up to ¥12,000 a year comes off your taxable income. The money is locked until you retire and taxed at only 3% when you take it out.",
+     ".max": "Put in the full ¥12,000 a year",
+     ".max.s": "About {a} a year until 60, invested in funds. Your tax bill falls by about {b} a year.",
+     ".half": "Put in half",
+     ".half.s": "About {a} a year until 60. Your tax bill falls by about {b} a year.",
+     ".no": "Not now",
+     ".no.s": "Keep your money free to use.",
+     "trk.cnpen": "Personal pension"
+    },
+    "zh": {
+     ".t": "个人养老金账户",
+     ".x": "个人养老金账户每年最多12,000元可以税前扣除。钱要锁到退休，领取时只按3%缴税。",
+     ".max": "每年存满12,000元",
+     ".max.s": "每年约{a}，存到60岁，买基金。每年少缴约{b}的税。",
+     ".half": "存一半",
+     ".half.s": "每年约{a}，存到60岁。每年少缴约{b}的税。",
+     ".no": "暂时不存",
+     ".no.s": "钱随时可用。",
+     "trk.cnpen": "个人养老金"
+    },
+    "zht": {
+     ".t": "個人養老金帳戶",
+     ".x": "個人養老金帳戶每年最多12,000元可以稅前扣除。錢要鎖到退休，領取時只按3%繳稅。",
+     ".max": "每年存滿12,000元",
+     ".max.s": "每年約{a}，存到60歲，買基金。每年少繳約{b}的稅。",
+     ".half": "存一半",
+     ".half.s": "每年約{a}，存到60歲。每年少繳約{b}的稅。",
+     ".no": "暫時不存",
+     ".no.s": "錢隨時可用。",
+     "trk.cnpen": "個人養老金"
+    }
+   }
+  },
+  {
+   "id": "cn_yibao",
+   "src": "Residents' medical insurance: ¥400 a person for 2025 in most places, plus ¥670 of government money (Sichuan and national notices, via The Paper and the Sichuan news site): ¥400 ÷ ¥41,700 ≈ 0.01. The share of bills it pays (about half overall) is an ESTIMATE.",
+   "age": [22, 60],
+   "weight": 0.8,
+   "when": {"selfEmployed": true, "test": "!medCut"},
+   "def": "join",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.01 * base)"},
+     "hint": true,
+     "do": "medPlan('cn_yibao', .5, .01 * base)"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Residents’ medical insurance",
+     ".x": "Without an employer’s insurance, you can join the urban and rural residents’ medical insurance. In most places it cost ¥400 a person for 2025, with ¥670 more paid by the government, and it pays back part of your hospital bills.",
+     ".join": "Join",
+     ".join.s": "About {a} a year.",
+     ".join.h": "It pays about half of your medical bills.",
+     ".skip": "Skip it",
+     ".skip.s": "You keep the premium but pay every bill in full.",
+     "trk.cn_yibao": "Residents’ medical insurance"
+    },
+    "zh": {
+     ".t": "城乡居民医保",
+     ".x": "没有单位的医保，你可以参加城乡居民医保。2025年大多数地方个人每年交400元，财政再补670元，住院费用能报销一部分。",
+     ".join": "参保",
+     ".join.s": "每年约{a}。",
+     ".join.h": "能报销大约一半的医药费。",
+     ".skip": "不参保",
+     ".skip.s": "省下保费，但医药费全部自付。",
+     "trk.cn_yibao": "城乡居民医保"
+    },
+    "zht": {
+     ".t": "城鄉居民醫保",
+     ".x": "沒有單位的醫保，你可以參加城鄉居民醫保。2025年大多數地方個人每年交400元，財政再補670元，住院費用能報銷一部分。",
+     ".join": "參保",
+     ".join.s": "每年約{a}。",
+     ".join.h": "能報銷大約一半的醫藥費。",
+     ".skip": "不參保",
+     ".skip.s": "省下保費，但醫藥費全部自付。",
+     "trk.cn_yibao": "城鄉居民醫保"
+    }
+   }
+  },
+  {
+   "id": "cn_tuixiu",
+   "src": "Retirement age: from 1 Jan 2025 China raises retirement ages over 15 years (men 60 → 63; women 50 → 55 and 55 → 58), allows flexible claiming up to three years early or late, and raises minimum contribution years from 15 to 20 from 2030 (NPC Standing Committee decision, Sep 2024). How much an earlier or later claim changes the pension is an ESTIMATE (about 5% a year).",
+   "age": [57, 60],
+   "weight": 0.9,
+   "def": "std",
+   "tarot": "ret",
+   "art": {"draw": "penclock", "bg": "wa"},
+   "let": {"a": "sex === 'f' ? 58 : 63"},
+   "opts": [
+    {
+     "each": "[[a - 3, .85, 'early'], [a, 1, 'std'], [a + 3, 1.15, 'late']]",
+     "as": "q",
+     "id": "q[2]",
+     "sub": {"a": "MN(.18 * base * q[1])", "n": "q[0]"},
+     "do": "penClaim(q[0], q[1], 'cn_tuixiu')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "When to claim your pension",
+     ".x": "Since January 2025 China has been raising its retirement ages over 15 years (men from 60 to 63; women from 50 or 55 to 55 or 58), and from 2030 a pension needs 20 years of contributions instead of 15. You can claim your basic pension up to three years before or after your statutory age.",
+     ".early": "Claim three years early",
+     ".early.s": "About {a} a year from age {n}.",
+     ".std": "Claim at your statutory age",
+     ".std.s": "About {a} a year from age {n}.",
+     ".late": "Claim three years late",
+     ".late.s": "About {a} a year from age {n}."
+    },
+    "zh": {
+     ".t": "什么时候领养老金",
+     ".x": "从2025年1月起，中国用15年逐步延迟退休年龄（男性从60岁到63岁；女性从50或55岁到55或58岁），从2030年起领养老金的最低缴费年限从15年提高到20年。你可以在法定退休年龄前后三年内弹性领取基本养老金。",
+     ".early": "提前三年领取",
+     ".early.s": "从{n}岁起每年约{a}。",
+     ".std": "按法定年龄领取",
+     ".std.s": "从{n}岁起每年约{a}。",
+     ".late": "推迟三年领取",
+     ".late.s": "从{n}岁起每年约{a}。"
+    },
+    "zht": {
+     ".t": "什麼時候領退休金",
+     ".x": "從2025年1月起，中國用15年逐步延遲退休年齡（男性從60歲到63歲；女性從50或55歲到55或58歲），從2030年起領退休金的最低繳費年限從15年提高到20年。你可以在法定退休年齡前後三年內彈性領取基本養老金。",
+     ".early": "提前三年領取",
+     ".early.s": "從{n}歲起每年約{a}。",
+     ".std": "按法定年齡領取",
+     ".std.s": "從{n}歲起每年約{a}。",
+     ".late": "推遲三年領取",
+     ".late.s": "從{n}歲起每年約{a}。"
+    }
+   }
+  }
+ ]
+}

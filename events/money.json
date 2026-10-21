@@ -1,0 +1,1573 @@
+{
+ "about": "Money: saving, debt, insurance, investing, scams, windfalls and crashes.",
+ "events": [
+  {
+   "id": "save",
+   "when": {"job": true, "test": "!done.save"},
+   "def": "0",
+   "tarot": {"en": "The High Priestess", "zh": "女祭司", "zht": "女祭司"},
+   "art": "save",
+   "let": {"net": "netOf(salary())"},
+   "opts": [
+    {
+     "each": "[0, .1, .2, .3]",
+     "as": "p",
+     "id": "String(pc)",
+     "let": {"pc": "Math.round(p * 100)"},
+     "label": "p ? M('.p', {p: pc}) : M('.0')",
+     "sub": "p ? M('.p.s', {a: MN(net * p)}) : M('.0.s')",
+     "do": "setSave(p)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your first paycheck",
+     ".x": "How much of every paycheck should go straight into a low-cost index fund? You won't see it, so you won't spend it.",
+     ".p": "Invest {p}%",
+     ".p.s": "About {a} a year now, rising as your pay rises.",
+     ".0": "Invest nothing",
+     ".0.s": "Keep all of it. Whatever is left over sits in the bank."
+    },
+    "zh": {
+     ".t": "第一份薪水",
+     ".x": "每份薪水要拿多少直接投进低成本指数基金？看不到的钱，就不会被花掉。",
+     ".p": "投资{p}%",
+     ".p.s": "现在每年约{a}，工资涨它也跟着涨。",
+     ".0": "一分都不投",
+     ".0.s": "全部留着。剩下的钱放在银行里。"
+    },
+    "zht": {
+     ".t": "第一份薪水",
+     ".x": "每份薪水要拿多少直接投進低成本指數基金？看不到的錢，就不會被花掉。",
+     ".p": "投資{p}%",
+     ".p.s": "現在每年約{a}，工資漲它也跟著漲。",
+     ".0": "一分都不投",
+     ".0.s": "全部留著。剩下的錢放在銀行裡。"
+    }
+   }
+  },
+  {
+   "id": "cc",
+   "age": [19, 21],
+   "weight": 0.8,
+   "when": {"retired": false},
+   "def": "full",
+   "tarot": {"en": "Two of Swords", "zh": "宝剑二", "zht": "寶劍二"},
+   "art": "cc",
+   "let": {"a": ".2 * base"},
+   "vars": {"a": "MN(.3 * base)"},
+   "opts": [
+    {"id": "full"},
+    {
+     "id": "min",
+     "sub": {"a": "MN(a)"},
+     "do": "debt += a; happy += 3; const t = T('cc', { kind: 'ghost', label: M('trk.cc') }); t.spent += a; t.g += a"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A credit card offer",
+     ".x": "A bank offers you your first credit card, with a {a} limit. Anything you don't pay off costs 18% a year.",
+     ".full": "Use it, and pay in full every month",
+     ".full.s": "No interest, as long as you stay disciplined.",
+     ".min": "Spend on it and pay the minimum",
+     ".min.s": "About {a} of clothes, gadgets and nights out now. Happiness +3.",
+     ".no": "Cut it up",
+     ".no.s": "No card, no temptation.",
+     "trk.cc": "Spent on the credit card"
+    },
+    "zh": {
+     ".t": "信用卡邀请",
+     ".x": "银行给你办第一张信用卡，额度{a}。没还清的部分，每年利息18%。",
+     ".full": "照用，每月全额还清",
+     ".full.s": "只要有纪律，就不用付利息。",
+     ".min": "刷卡消费，只还最低额",
+     ".min.s": "现在花大约{a}买衣服、电子产品和出去玩。幸福感 +3。",
+     ".no": "剪掉它",
+     ".no.s": "没有卡，就没有诱惑。",
+     "trk.cc": "刷信用卡的消费"
+    },
+    "zht": {
+     ".t": "信用卡邀請",
+     ".x": "銀行幫你辦第一張信用卡，額度{a}。沒繳清的部分，每年利息18%。",
+     ".full": "照用，每月全額繳清",
+     ".full.s": "只要有紀律，就不用付利息。",
+     ".min": "刷卡消費，只繳最低應繳",
+     ".min.s": "現在花大約{a}買衣服、3C和出去玩。幸福感 +3。",
+     ".no": "剪掉它",
+     ".no.s": "沒有卡，就沒有誘惑。",
+     "trk.cc": "刷信用卡的消費"
+    }
+   }
+  },
+  {
+   "id": "scheme",
+   "age": [19, 30],
+   "if": {"country": ["US", "MY", "SG"]},
+   "when": {"working": true},
+   "def": "0",
+   "tarot": {"en": "Ten of Coins", "zh": "钱币十", "zht": "錢幣十"},
+   "art": "scheme",
+   "let": {"k": "CC()", "sc": "SCH[k]", "sal": "salary()"},
+   "text": "M('.x.' + CC())",
+   "opts": [
+    {
+     "each": "sc.ps",
+     "as": "p",
+     "id": "String(pc)",
+     "let": {"pc": "Math.round(p * 100)", "c": "p * sal"},
+     "label": "p ? M('.p', {p: pc}) : M('.0')",
+     "sub": "p ? M('.s.' + k, {a: MN(c), m: MN(k === 'US' ? Math.min(p, sc.match) * sal : sc.rel * c)}) : M('.0.s.' + k)",
+     "do": "if (p) { scheme = {p: p, match: sc.match, rel: sc.rel, lot: sc.lot}; mkLot(sc.lot, {rate: sc.rate, lock: k === 'US' ? 60 : 55}, sc.lk) }"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your retirement account",
+     ".x.US": "Your employer matches whatever you put into your 401(k), up to 5% of your pay. The money is invested in the stock market and locked until you retire.",
+     ".x.MY": "On top of the compulsory EPF, you can top up your EPF account yourself. EPF has paid about 5–6% a year (about 3% after inflation) with little risk. The money is locked until 55.",
+     ".x.SG": "You can top up your CPF Special Account. It pays 4% a year (about 2% after inflation) with no risk, and every top-up cuts your income tax. The money is locked until 55.",
+     ".p": "Put in {p}% of your pay",
+     ".0": "Put in nothing",
+     ".s.US": "About {a} a year from you, plus {m} a year from your employer.",
+     ".s.MY": "About {a} a year.",
+     ".s.SG": "About {a} a year. Your tax bill falls by about {m} a year.",
+     ".0.s.US": "Keep all your pay now, and leave your employer's match on the table.",
+     ".0.s.MY": "Keep all your pay now.",
+     ".0.s.SG": "Keep all your pay now."
+    },
+    "zh": {
+     ".t": "你的退休账户",
+     ".x.US": "你放进401(k)的钱，公司会等额配对，最多到工资的5%。这笔钱投资股市，退休前不能动。",
+     ".x.MY": "除了强制的公积金，你还可以自愿往EPF账户里加钱。EPF过去每年约派5–6%（扣除通胀约3%），风险很低。钱要到55岁才能取。",
+     ".x.SG": "你可以填补CPF特别账户。年利率4%（扣除通胀约2%），没有风险，每次填补还能减所得税。钱要到55岁才能取。",
+     ".p": "存入工资的{p}%",
+     ".0": "一分都不存",
+     ".s.US": "你每年约存{a}，公司再给你{m}。",
+     ".s.MY": "每年约{a}。",
+     ".s.SG": "每年约{a}。每年少缴约{m}的税。",
+     ".0.s.US": "现在全部工资留在手上，公司的配对就白白放弃了。",
+     ".0.s.MY": "现在全部工资留在手上。",
+     ".0.s.SG": "现在全部工资留在手上。"
+    },
+    "zht": {
+     ".t": "你的退休帳戶",
+     ".x.US": "你放進401(k)的錢，公司會等額提撥，最多到薪水的5%。這筆錢投資股市，退休前不能動。",
+     ".x.MY": "除了強制的公積金，你還可以自願往EPF帳戶裡加錢。EPF過去每年約配息5–6%（扣除通膨約3%），風險很低。錢要到55歲才能領。",
+     ".x.SG": "你可以填補CPF特別帳戶。年利率4%（扣除通膨約2%），沒有風險，每次填補還能減所得稅。錢要到55歲才能領。",
+     ".p": "提撥薪水的{p}%",
+     ".0": "一毛都不提撥",
+     ".s.US": "你每年約提撥{a}，公司再給你{m}。",
+     ".s.MY": "每年約{a}。",
+     ".s.SG": "每年約{a}。每年少繳約{m}的稅。",
+     ".0.s.US": "現在全部薪水留在手上，公司的提撥就白白放棄了。",
+     ".0.s.MY": "現在全部薪水留在手上。",
+     ".0.s.SG": "現在全部薪水留在手上。"
+    }
+   }
+  },
+  {
+   "id": "bnpl",
+   "age": [19, 25],
+   "weight": 0.7,
+   "def": "save",
+   "tarot": {"en": "Nine of Cups", "zh": "圣杯九", "zht": "聖杯九"},
+   "art": "bnpl",
+   "let": {"a": ".08 * base"},
+   "vars": {"a": "MN(.08 * base)"},
+   "opts": [
+    {
+     "id": "now",
+     "sub": {"a": "MN(a / 4)"},
+     "hint": true,
+     "do": "spend('bnpl', a, 'trk.bnpl'); happy += 3; later(age + 1, 'late', { a: .5 * a })"
+    },
+    {"id": "save", "do": "spend('bnpl', a, 'trk.bnplSave'); happy += 2"},
+    {"id": "skip"}
+   ],
+   "later": {
+    "late": "if (roll('late') >= .42) return; pay(x.a); const t = trk.bnpl; if (t) { t.spent += x.a; t.g += x.a; } log(M('log.late', { a: MN(x.a) }), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Buy now, pay later",
+     ".x": "You want a new gaming setup that costs {a}. The shop lets you pay in four parts with no interest.",
+     ".now": "Buy it now in four payments",
+     ".now.s": "{a} every two weeks. Happiness +3.",
+     ".now.h": "About 4 in 10 people miss a payment and pay late fees.",
+     ".save": "Save up and buy it in a few months",
+     ".save.s": "Same price, paid from savings. Happiness +2.",
+     ".skip": "Do without it",
+     ".skip.s": "Keep your money.",
+     "trk.bnpl": "Bought now, paid later",
+     "trk.bnplSave": "Saved up, then bought"
+    },
+    "zh": {
+     ".t": "先买后付",
+     ".x": "你想要一套{a}的新游戏设备。店家让你分四期付款，零利息。",
+     ".now": "现在就买，分四期",
+     ".now.s": "每两周付{a}。幸福感 +3。",
+     ".now.h": "大约十个人里有四个会漏付一期，被收滞纳金。",
+     ".save": "存几个月钱再买",
+     ".save.s": "一样的价钱，用存款付。幸福感 +2。",
+     ".skip": "不买了",
+     ".skip.s": "钱留着。",
+     "trk.bnpl": "先买后付",
+     "trk.bnplSave": "存钱后再买"
+    },
+    "zht": {
+     ".t": "先買後付",
+     ".x": "你想要一套{a}的新電競設備。店家讓你分四期付款，零利率。",
+     ".now": "現在就買，分四期",
+     ".now.s": "每兩週付{a}。幸福感 +3。",
+     ".now.h": "大約十個人裡有四個會漏繳一期，被收逾期費。",
+     ".save": "存幾個月錢再買",
+     ".save.s": "一樣的價錢，用存款付。幸福感 +2。",
+     ".skip": "不買了",
+     ".skip.s": "錢留著。",
+     "trk.bnpl": "先買後付",
+     "trk.bnplSave": "存錢後再買"
+    }
+   }
+  },
+  {
+   "id": "efund",
+   "age": [21, 28],
+   "weight": 0.8,
+   "when": {"working": true},
+   "def": "skip",
+   "tarot": {"en": "Four of Coins", "zh": "钱币四", "zht": "錢幣四"},
+   "art": "efund",
+   "fn": {
+    "emerg": {
+     "args": [],
+     "do": "const r = evR('em'); later(age + 2 + Math.floor(r() * 4), 'emerg', {a: (.25 + .25 * r()) * base})"
+    }
+   },
+   "vars": {"a": "MN(efTarget())"},
+   "opts": [
+    {
+     "id": "build",
+     "sub": {"a": "MN(efTarget())"},
+     "do": "efund = efTarget(); T('efund', { kind: 'custom', label: M('trk.efund'), note: M('note.efund0') }); emerg()"
+    },
+    {"id": "skip", "do": "emerg()"}
+   ],
+   "later": {
+    "emerg": "const c = Math.min(Math.max(0, cash), x.a), d = x.a - c; cash -= c; debt += d; const t = trk.efund; if (t && d < 1) t.note = M('note.efund', { a: MN(x.a) }); log(M(d >= 1 ? 'log.emergDebt' : 'log.emergCash', { a: MN(x.a), b: MN(d) }), d >= 1 ? 'bad' : 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "An emergency fund",
+     ".x": "Six months of basic costs comes to about {a}. Car repairs, layoffs and family emergencies happen to almost everyone.",
+     ".build": "Build a 6-month emergency fund",
+     ".build.s": "Part of your savings goes into a high-interest account until it holds {a}. Only then do you invest.",
+     ".skip": "Skip it and invest everything",
+     ".skip.s": "More money in the market. If something happens, it goes on the credit card.",
+     "trk.efund": "Emergency fund",
+     "note.efund0": "Your buffer earns interest instead of losing to inflation"
+    },
+    "zh": {
+     ".t": "紧急备用金",
+     ".x": "六个月的基本开销大约是{a}。修车、失业、家里出事，几乎每个人都会遇到。",
+     ".build": "存够6个月的紧急备用金",
+     ".build.s": "一部分存款先放进高息账户，直到存满{a}，之后才拿去投资。",
+     ".skip": "不存，全部拿去投资",
+     ".skip.s": "更多钱在市场里。万一出事，就刷信用卡。",
+     "trk.efund": "紧急备用金",
+     "note.efund0": "备用金有利息，不会被通胀吃掉"
+    },
+    "zht": {
+     ".t": "緊急預備金",
+     ".x": "六個月的基本開銷大約是{a}。修車、失業、家裡出事，幾乎每個人都會遇到。",
+     ".build": "存夠6個月的緊急預備金",
+     ".build.s": "一部分存款先放進高利活存，直到存滿{a}，之後才拿去投資。",
+     ".skip": "不存，全部拿去投資",
+     ".skip.s": "更多錢在市場裡。萬一出事，就刷信用卡。",
+     "trk.efund": "緊急預備金",
+     "note.efund0": "預備金有利息，不會被通膨吃掉"
+    }
+   }
+  },
+  {
+   "id": "holiday",
+   "age": [22, 32],
+   "weight": 0.7,
+   "def": "local",
+   "tarot": {"en": "Eight of Wands", "zh": "权杖八", "zht": "權杖八"},
+   "art": "holiday",
+   "opts": [
+    {
+     "id": "big",
+     "sub": {"a": "MN(.12 * base)"},
+     "do": "spend('holiday', .12 * base, 'trk.holiday'); happy += 4"
+    },
+    {
+     "id": "local",
+     "sub": {"a": "MN(.03 * base)"},
+     "do": "spend('holiday', .03 * base, 'trk.holidayS'); happy += 2"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A big trip",
+     ".x": "Your friends are planning two weeks abroad.",
+     ".big": "Go with them",
+     ".big.s": "About {a}. Happiness +4.",
+     ".local": "A cheaper trip closer to home",
+     ".local.s": "About {a}. Happiness +2.",
+     ".skip": "Stay home and save",
+     ".skip.s": "Your savings stay where they are.",
+     "trk.holiday": "A big trip abroad",
+     "trk.holidayS": "A cheaper trip"
+    },
+    "zh": {
+     ".t": "一趟大旅行",
+     ".x": "朋友们计划出国玩两个星期。",
+     ".big": "跟他们去",
+     ".big.s": "大约{a}。幸福感 +4。",
+     ".local": "去近一点、便宜一点的地方",
+     ".local.s": "大约{a}。幸福感 +2。",
+     ".skip": "留在家存钱",
+     ".skip.s": "存款不动。",
+     "trk.holiday": "出国大旅行",
+     "trk.holidayS": "便宜一点的旅行"
+    },
+    "zht": {
+     ".t": "一趟大旅行",
+     ".x": "朋友們計畫出國玩兩個星期。",
+     ".big": "跟他們去",
+     ".big.s": "大約{a}。幸福感 +4。",
+     ".local": "去近一點、便宜一點的地方",
+     ".local.s": "大約{a}。幸福感 +2。",
+     ".skip": "留在家存錢",
+     ".skip.s": "存款不動。",
+     "trk.holiday": "出國大旅行",
+     "trk.holidayS": "便宜一點的旅行"
+    }
+   }
+  },
+  {
+   "id": "insure",
+   "age": [24, 24],
+   "def": "no",
+   "tarot": {"en": "Strength", "zh": "力量", "zht": "力量"},
+   "art": "insure",
+   "vars": {"a": "MN(.035 * base)"},
+   "opts": [
+    {
+     "id": "yes",
+     "do": "insured = true; T('ins', { kind: 'custom', label: M('trk.ins'), prem: 0, saved: 0, note: M('note.ins0') })"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Health insurance",
+     ".x": "A policy costs {a} a year and covers 85% of big medical bills. You feel fine.",
+     ".yes": "Buy the policy",
+     ".yes.s": "A fixed cost every year. Protects your savings from a big bill.",
+     ".no": "Skip it",
+     ".no.s": "Keep the money. If something happens, you pay the whole bill.",
+     "trk.ins": "Health insurance",
+     "note.ins0": "No claims yet."
+    },
+    "zh": {
+     ".t": "医疗保险",
+     ".x": "一份保单每年{a}，可以报销85%的大额医疗费。你现在身体很好。",
+     ".yes": "买保险",
+     ".yes.s": "每年固定开销。万一有大额账单，可以保住你的存款。",
+     ".no": "不买",
+     ".no.s": "省下这笔钱。万一出事，账单全部自己付。",
+     "trk.ins": "医疗保险",
+     "note.ins0": "还没有理赔。"
+    },
+    "zht": {
+     ".t": "醫療保險",
+     ".x": "一份保單每年{a}，可以報銷85%的大額醫療費。你現在身體很好。",
+     ".yes": "買保險",
+     ".yes.s": "每年固定開銷。萬一有大額帳單，可以保住你的存款。",
+     ".no": "不買",
+     ".no.s": "省下這筆錢。萬一出事，帳單全部自己付。",
+     "trk.ins": "醫療保險",
+     "note.ins0": "還沒有理賠。"
+    }
+   }
+  },
+  {
+   "id": "lend",
+   "age": [24, 42],
+   "weight": 0.75,
+   "when": {"stats": {"liquid": "> .15 * base"}},
+   "def": "no",
+   "tarot": {"en": "Six of Coins", "zh": "钱币六", "zht": "錢幣六"},
+   "art": "lend",
+   "let": {"a": "Math.min(.3 * base, .5 * liquid())"},
+   "fn": {
+    "go": {
+     "args": ["x", "lk"],
+     "do": "pay(x); T('lend', { kind: 'custom', label: M(lk), v: -x, note: M('note.lend0', { a: MN(x) }) }); const r = roll('lendAt'); later(age + 2 + Math.floor(r * 4), 'repay', { a: x, id: 'lend' })"
+    }
+   },
+   "vars": {"a": "MN(Math.min(.3 * base, .5 * liquid()))"},
+   "hint": true,
+   "opts": [
+    {"id": "all", "rel": 3, "do": "go(a, 'trk.lend')"},
+    {"id": "half", "sub": {"a": "MN(a / 2)"}, "rel": 2, "do": "go(a / 2, 'trk.lendHalf')"},
+    {"id": "no", "rel": 0, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A friend in need",
+     ".x": "A close friend asks to borrow {a} and promises to pay you back.",
+     ".h": "About half of loans to friends are paid back in full.",
+     ".all": "Lend the full amount",
+     ".all.s": "Your friend is very grateful.",
+     ".half": "Lend half",
+     ".half.s": "{a}. A middle path.",
+     ".no": "Say no",
+     ".no.s": "Your money is safe, but the friendship cools. Happiness −1.",
+     "trk.lend": "Lent money to a friend",
+     "trk.lendHalf": "Lent half to a friend"
+    },
+    "zh": {
+     ".t": "朋友有难",
+     ".x": "一个好朋友想跟你借{a}，保证会还。",
+     ".h": "借给朋友的钱，大约只有一半能全数还回来。",
+     ".all": "全借给对方",
+     ".all.s": "朋友非常感激。",
+     ".half": "借一半",
+     ".half.s": "{a}。折中的办法。",
+     ".no": "拒绝",
+     ".no.s": "钱是保住了，但友情淡了。幸福感 −1。",
+     "trk.lend": "借钱给朋友",
+     "trk.lendHalf": "借一半给朋友"
+    },
+    "zht": {
+     ".t": "朋友有難",
+     ".x": "一個好朋友想跟你借{a}，保證會還。",
+     ".h": "借給朋友的錢，大約只有一半能全數還回來。",
+     ".all": "全借給對方",
+     ".all.s": "朋友非常感激。",
+     ".half": "借一半",
+     ".half.s": "{a}。折衷的辦法。",
+     ".no": "拒絕",
+     ".no.s": "錢是保住了，但友情淡了。幸福感 −1。",
+     "trk.lend": "借錢給朋友",
+     "trk.lendHalf": "借一半給朋友"
+    }
+   }
+  },
+  {
+   "id": "mlm",
+   "age": [26, 38],
+   "weight": 0.6,
+   "def": "no",
+   "tarot": {"en": "Seven of Swords", "zh": "宝剑七", "zht": "寶劍七"},
+   "art": "mlm",
+   "vars": {"a": "MN(.12 * base)"},
+   "opts": [
+    {
+     "id": "join",
+     "sub": {"a": "MN(.12 * base)", "b": "MN(.04 * base)"},
+     "hint": true,
+     "rel": -6,
+     "do": "pay(.12 * base); T('mlm', { kind: 'custom', label: M('trk.mlm'), v: -.12 * base, note: M('note.paid', { a: MN(.12 * base) }) }); rec('mlm', .04 * base, 3); later(age + 3, 'mlm')"
+    },
+    {
+     "id": "buy",
+     "sub": {"a": "MN(.05 * base)"},
+     "rel": 1,
+     "do": "spend('mlm', .05 * base, 'trk.mlmBuy')"
+    },
+    {"id": "no", "rel": 0}
+   ],
+   "later": {
+    "mlm": "const ok = roll('mlm') < .1, t = trk.mlm; if (ok) { const v = .5 * base; cash += v; earned += v; if (t) t.v += v; } if (t) t.note = M(ok ? 'note.mlmOk' : 'note.mlmNo', { a: MN(Math.abs(t.v)) }); log(M(ok ? 'log.mlmOk' : 'log.mlmNo'), ok ? 'good' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A business opportunity",
+     ".x": "An old classmate says they are now a \"diamond leader\". You can join their team with a {a} starter kit, then recruit your friends.",
+     ".join": "Join the team",
+     ".join.s": "Pay {a} for the kit, plus about {b} a year in stock for 3 years.",
+     ".join.h": "Most people in schemes like this lose money.",
+     ".buy": "Buy one product to be polite",
+     ".buy.s": "About {a}.",
+     ".no": "Politely decline",
+     ".no.s": "Keep your money.",
+     "trk.mlm": "Joined a \"business opportunity\"",
+     "trk.mlmBuy": "Bought a product to be polite"
+    },
+    "zh": {
+     ".t": "一个“创业机会”",
+     ".x": "一个老同学说自己现在是“钻石领导”。花{a}买入门套装就能加入团队，然后再拉朋友进来。",
+     ".join": "加入团队",
+     ".join.s": "套装{a}，之后3年每年还要进货约{b}。",
+     ".join.h": "参加这类计划的人，大多数都亏钱。",
+     ".buy": "买一件产品给个面子",
+     ".buy.s": "大约{a}。",
+     ".no": "客气地拒绝",
+     ".no.s": "钱留着。",
+     "trk.mlm": "加入了“创业机会”",
+     "trk.mlmBuy": "买产品给面子"
+    },
+    "zht": {
+     ".t": "一個「創業機會」",
+     ".x": "一個老同學說自己現在是「鑽石經銷商」。花{a}買入會套組就能加入團隊，然後再拉朋友進來。",
+     ".join": "加入團隊",
+     ".join.s": "入會套組{a}，之後3年每年還要進貨約{b}。",
+     ".join.h": "參加這類直銷計畫的人，大多數都賠錢。",
+     ".buy": "買一件產品給個面子",
+     ".buy.s": "大約{a}。",
+     ".no": "客氣地拒絕",
+     ".no.s": "錢留著。",
+     "trk.mlm": "加入了「創業機會」",
+     "trk.mlmBuy": "買產品給面子"
+    }
+   }
+  },
+  {
+   "id": "phone",
+   "age": [26, 38],
+   "weight": 0.7,
+   "def": "mid",
+   "tarot": {"en": "Four of Cups", "zh": "圣杯四", "zht": "聖杯四"},
+   "art": "phone",
+   "opts": [
+    {
+     "id": "top",
+     "sub": {"a": "MN(.05 * base)"},
+     "do": "spend('phone', .05 * base, 'trk.phoneTop'); happy += 2"
+    },
+    {
+     "id": "mid",
+     "sub": {"a": "MN(.015 * base)"},
+     "do": "spend('phone', .015 * base, 'trk.phoneMid'); happy += 1"
+    },
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new phone",
+     ".x": "Your phone is three years old, and the new flagship has just come out.",
+     ".top": "The new flagship",
+     ".top.s": "About {a}. Happiness +2.",
+     ".mid": "A good mid-range phone",
+     ".mid.s": "About {a}. Happiness +1.",
+     ".keep": "Keep your old phone",
+     ".keep.s": "It still works fine.",
+     "trk.phoneTop": "Flagship phone",
+     "trk.phoneMid": "Mid-range phone"
+    },
+    "zh": {
+     ".t": "换手机",
+     ".x": "你的手机用了三年，新的旗舰机刚上市。",
+     ".top": "新旗舰机",
+     ".top.s": "大约{a}。幸福感 +2。",
+     ".mid": "一部好用的中端机",
+     ".mid.s": "大约{a}。幸福感 +1。",
+     ".keep": "继续用旧手机",
+     ".keep.s": "还很好用。",
+     "trk.phoneTop": "旗舰手机",
+     "trk.phoneMid": "中端手机"
+    },
+    "zht": {
+     ".t": "換手機",
+     ".x": "你的手機用了三年，新的旗艦機剛上市。",
+     ".top": "新旗艦機",
+     ".top.s": "大約{a}。幸福感 +2。",
+     ".mid": "一支好用的中階機",
+     ".mid.s": "大約{a}。幸福感 +1。",
+     ".keep": "繼續用舊手機",
+     ".keep.s": "還很好用。",
+     "trk.phoneTop": "旗艦手機",
+     "trk.phoneMid": "中階手機"
+    }
+   }
+  },
+  {
+   "id": "tip",
+   "age": [27, 27],
+   "def": "skip",
+   "tarot": {"en": "Wheel of Fortune", "zh": "命运之轮", "zht": "命運之輪"},
+   "art": "tip",
+   "let": {"liq": "liquid()", "no": "liq > .05 * base || M('.no')"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(.4 * liq)"}, "ok": "no", "do": "bet(.4)"},
+    {"id": "small", "sub": {"a": "MN(.05 * liq)"}, "ok": "no", "do": "bet(.05)"},
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hot tip",
+     ".x": "A friend swears a new coin will go up ten times. Half your group chat is already in.",
+     ".big": "Go big: 40% of your savings",
+     ".big.s": "{a}. You find out in 2 years.",
+     ".small": "Small bet: 5%",
+     ".small.s": "{a}. Money you can afford to lose.",
+     ".skip": "Skip it",
+     ".skip.s": "Keep your money where it is.",
+     ".no": "You have almost no savings to bet."
+    },
+    "zh": {
+     ".t": "内幕消息",
+     ".x": "朋友发誓说有个新币会涨十倍。群里一半的人已经买了。",
+     ".big": "重仓：拿出40%的积蓄",
+     ".big.s": "{a}。2年后见分晓。",
+     ".small": "小赌一把：5%",
+     ".small.s": "{a}。输了也不心疼的钱。",
+     ".skip": "不碰",
+     ".skip.s": "钱留在原地。",
+     ".no": "你几乎没有积蓄可以赌。"
+    },
+    "zht": {
+     ".t": "內幕訊息",
+     ".x": "朋友發誓說有個新幣會漲十倍。群裡一半的人已經買了。",
+     ".big": "重倉：拿出40%的積蓄",
+     ".big.s": "{a}。2年後見分曉。",
+     ".small": "小賭一把：5%",
+     ".small.s": "{a}。輸了也不心疼的錢。",
+     ".skip": "不碰",
+     ".skip.s": "錢留在原地。",
+     ".no": "你幾乎沒有積蓄可以賭。"
+    }
+   }
+  },
+  {
+   "id": "scam",
+   "age": [28, 50],
+   "weight": 0.55,
+   "when": {"stats": {"liquid": "> .1 * base"}},
+   "def": "no",
+   "tarot": {"en": "Five of Swords", "zh": "宝剑五", "zht": "寶劍五"},
+   "art": "scam",
+   "let": {"a": "Math.min(.15 * base, .3 * liquid())"},
+   "opts": [
+    {
+     "id": "try",
+     "label": "M('.try', { a: MN(a) })",
+     "hint": true,
+     "do": "pay(a); T('scam', { kind: 'custom', label: M('trk.scam'), v: -a, note: M('note.scamIn', { a: MN(a) }) }); later(age + 1, 'scam', { a, id: 'scam' })"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An investment group",
+     ".x": "You are added to a chat group where members post screenshots of 3% profit a week. A friendly \"mentor\" offers to help you get started.",
+     ".try": "Put in {a} to try it",
+     ".try.s": "The app shows your balance growing fast.",
+     ".try.h": "It is a scam. The money will not come back.",
+     ".no": "Leave the group",
+     ".no.s": "Too good to be true.",
+     "trk.scam": "Investment group"
+    },
+    "zh": {
+     ".t": "投资群",
+     ".x": "你被拉进一个聊天群，群里的人天天晒每周赚3%的截图。一位热心的“导师”说要带你入门。",
+     ".try": "投{a}试试",
+     ".try.s": "App里的余额涨得飞快。",
+     ".try.h": "这是骗局，钱拿不回来。",
+     ".no": "退群",
+     ".no.s": "好得太不像真的了。",
+     "trk.scam": "投资群"
+    },
+    "zht": {
+     ".t": "投資群組",
+     ".x": "你被拉進一個聊天群組，群裡的人天天曬每週賺3%的截圖。一位熱心的「老師」說要帶你入門。",
+     ".try": "投{a}試試",
+     ".try.s": "App裡的餘額漲得飛快。",
+     ".try.h": "這是詐騙，錢拿不回來。",
+     ".no": "退出群組",
+     ".no.s": "好得太不像真的了。",
+     "trk.scam": "投資群組"
+    }
+   }
+  },
+  {
+   "id": "bonus",
+   "age": [28, 46],
+   "weight": 0.65,
+   "when": {"working": true},
+   "def": "bank",
+   "tarot": {"en": "Nine of Coins", "zh": "钱币九", "zht": "錢幣九"},
+   "art": "bonus",
+   "let": {"a": ".3 * salary()"},
+   "fn": {
+    "get": {"args": [], "do": "cash += a; earned += a"}
+   },
+   "vars": {"a": "MN(.3 * salary())"},
+   "opts": [
+    {
+     "id": "inv",
+     "do": "get(); cash -= a; addLot('bonus', a); T('lot_bonus', { kind: 'lot', src: 'bonus', label: M('trk.bonusInv') })"
+    },
+    {"id": "treat", "do": "get(); spend('bonus', a, 'trk.bonusTreat'); happy += 4"},
+    {"id": "bank", "do": "get()"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A bonus",
+     ".x": "You had a great year at work, and you get a bonus of {a}.",
+     ".inv": "Invest it",
+     ".inv.s": "All of it into an index fund.",
+     ".treat": "Treat yourself",
+     ".treat.s": "Spend it on something special. Happiness +4.",
+     ".bank": "Leave it in the bank",
+     ".bank.s": "Safe, but slowly eaten by inflation.",
+     "trk.bonusInv": "Invested your bonus",
+     "trk.bonusTreat": "Spent your bonus"
+    },
+    "zh": {
+     ".t": "奖金",
+     ".x": "你今年工作表现很好，拿到{a}的奖金。",
+     ".inv": "拿去投资",
+     ".inv.s": "全部投进指数基金。",
+     ".treat": "犒赏自己",
+     ".treat.s": "买点特别的东西。幸福感 +4。",
+     ".bank": "放在银行",
+     ".bank.s": "安全，但会被通胀慢慢吃掉。",
+     "trk.bonusInv": "奖金拿去投资",
+     "trk.bonusTreat": "奖金花掉了"
+    },
+    "zht": {
+     ".t": "獎金",
+     ".x": "你今年工作表現很好，拿到{a}的獎金。",
+     ".inv": "拿去投資",
+     ".inv.s": "全部投進指數基金。",
+     ".treat": "犒賞自己",
+     ".treat.s": "買點特別的東西。幸福感 +4。",
+     ".bank": "放在銀行",
+     ".bank.s": "安全，但會被通膨慢慢吃掉。",
+     "trk.bonusInv": "獎金拿去投資",
+     "trk.bonusTreat": "獎金花掉了"
+    }
+   }
+  },
+  {
+   "id": "agent",
+   "age": [29, 42],
+   "weight": 0.6,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": {"en": "Queen of Swords", "zh": "宝剑王后", "zht": "寶劍皇后"},
+   "art": "agent",
+   "vars": {"a": "MN(.08 * base)"},
+   "opts": [
+    {
+     "id": "ilp",
+     "sub": {"a": "MN(.08 * base)"},
+     "hint": true,
+     "do": "ilp = { amt: .08 * base, until: age + 20 }; mkLot('ilp', { fee: .025 }, 'trk.ilp')"
+    },
+    {
+     "id": "term",
+     "sub": {"a": "MN(.015 * base)"},
+     "do": "T('term', { kind: 'custom', label: M('trk.term') }); rec('term', .015 * base, 25); termTo = age + 25; happy += 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An insurance agent",
+     ".x": "An agent offers you a savings plan with life cover: {a} a year for 20 years, with \"guaranteed\" returns and a payout at the end.",
+     ".ilp": "Sign up for the savings plan",
+     ".ilp.s": "{a} a year for 20 years.",
+     ".ilp.h": "Fees take about 2.5% of the fund every year.",
+     ".term": "Buy cheap term life cover instead",
+     ".term.s": "About {a} a year for 25 years. Your family is protected if you die; otherwise nothing comes back. Peace of mind: Happiness +2.",
+     ".no": "No thanks",
+     ".no.s": "Keep your money.",
+     "trk.ilp": "Insurance savings plan",
+     "trk.term": "Term life cover"
+    },
+    "zh": {
+     ".t": "保险经纪",
+     ".x": "一位经纪向你推荐带寿险的储蓄计划：每年{a}，缴20年，“保证”回报，到期还有一笔钱。",
+     ".ilp": "签下储蓄计划",
+     ".ilp.s": "每年{a}，缴20年。",
+     ".ilp.h": "每年的费用大约吃掉基金的2.5%。",
+     ".term": "改买便宜的定期寿险",
+     ".term.s": "每年约{a}，保25年。你万一不在，家人有保障；否则什么也拿不回来。图个安心：幸福感 +2。",
+     ".no": "不用了，谢谢",
+     ".no.s": "钱留着。",
+     "trk.ilp": "保险储蓄计划",
+     "trk.term": "定期寿险"
+    },
+    "zht": {
+     ".t": "保險業務員",
+     ".x": "一位業務員向你推薦附壽險的儲蓄險：每年{a}，繳20年，「保證」回報，期滿還有一筆錢。",
+     ".ilp": "簽下儲蓄險",
+     ".ilp.s": "每年{a}，繳20年。",
+     ".ilp.h": "每年的費用大約吃掉基金的2.5%。",
+     ".term": "改買便宜的定期壽險",
+     ".term.s": "每年約{a}，保25年。你萬一不在，家人有保障；否則什麼也拿不回來。圖個安心：幸福感 +2。",
+     ".no": "不用了，謝謝",
+     ".no.s": "錢留著。",
+     "trk.ilp": "儲蓄險",
+     "trk.term": "定期壽險"
+    }
+   }
+  },
+  {
+   "id": "gold",
+   "age": [30, 46],
+   "weight": 0.65,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "fd",
+   "tarot": {"en": "Queen of Coins", "zh": "钱币王后", "zht": "錢幣皇后"},
+   "art": "gold",
+   "let": {"a": ".3 * liquid()"},
+   "fn": {
+    "go": {
+     "args": ["parts"],
+     "do": "pay(a); for (const q of parts) { mkLot(q[0], q[2], q[3]); addLot(q[0], a * q[1]) }"
+    }
+   },
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "index", "do": "go([['pick', 1, {}, 'trk.pick']])"},
+    {"id": "gold", "do": "go([['gold', 1, {t: 'gold'}, 'trk.gold']])"},
+    {"id": "fd", "do": "go([['fd', 1, {rate: .005}, 'trk.fd']])"},
+    {
+     "id": "split",
+     "do": "go([['pick', 1 / 3, {}, 'trk.pick'], ['gold', 1 / 3, { t: 'gold' }, 'trk.gold'], ['fd', 1 / 3, { rate: .005 }, 'trk.fd']])"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Where to park your savings",
+     ".x": "You have {a} that you won't need for 10 years or more.",
+     ".index": "An index fund",
+     ".index.s": "About 5% a year after inflation on average, with crashes along the way.",
+     ".gold": "Gold",
+     ".gold.s": "Holds its value over long periods. Pays no interest. Moves on its own, not with stocks.",
+     ".fd": "A fixed deposit",
+     ".fd.s": "A fixed rate of about 3.5%, roughly 0.5% after inflation. No risk.",
+     ".split": "A third in each",
+     ".split.s": "Spread the risk."
+    },
+    "zh": {
+     ".t": "积蓄放哪里",
+     ".x": "你有{a}是10年以上都用不到的。",
+     ".index": "指数基金",
+     ".index.s": "扣除通胀后平均每年约5%，中途会遇到股灾。",
+     ".gold": "黄金",
+     ".gold.s": "长期能保值，没有利息。涨跌跟股票不同步。",
+     ".fd": "定期存款",
+     ".fd.s": "固定利率约3.5%，扣除通胀约0.5%。没有风险。",
+     ".split": "三样各放三分之一",
+     ".split.s": "分散风险。"
+    },
+    "zht": {
+     ".t": "積蓄放哪裡",
+     ".x": "你有{a}是10年以上都用不到的。",
+     ".index": "指數基金",
+     ".index.s": "扣除通膨後平均每年約5%，中途會遇到股災。",
+     ".gold": "黃金",
+     ".gold.s": "長期能保值，沒有利息。漲跌跟股票不同步。",
+     ".fd": "定存",
+     ".fd.s": "固定利率約3.5%，扣除通膨約0.5%。沒有風險。",
+     ".split": "三樣各放三分之一",
+     ".split.s": "分散風險。"
+    }
+   }
+  },
+  {
+   "id": "crash",
+   "when": {"test": "age === crashAge"},
+   "def": "hold",
+   "tarot": {"en": "The Tower", "zh": "高塔", "zht": "高塔"},
+   "art": "crash",
+   "let": {"P": "crashP || 0", "a": "Math.max(0, cash - .3 * base) * .6"},
+   "text": "crashP > 1 ? M('.x', { p: crashPct(), a: MN(crashP) }) : M('.x0', { p: crashPct() })",
+   "pre": "const m = crashM || .62; for (const k in lots) if (isMkt(lots[k])) lots[k].v *= m; for (const k in trk) if (trk[k].kind === 'ghost') trk[k].g *= m; crashP = eqTot()",
+   "preLog": "M('log.crash', { p: crashPct(), x: crashP > 1 ? M('log.crashX', { a: MN(crashP) }) : '' })",
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(P)"}, "ok": "P > 1 || M('.sell.no')", "do": "crashSell()"},
+    {"id": "hold", "do": "crashTrack('hold')"},
+    {
+     "id": "buy",
+     "sub": {"a": "MN(a)"},
+     "ok": "cash > .4 * base || M('.buy.no')",
+     "do": "cash -= a; addLot('dip', a); T('lot_dip', { kind: 'lot', src: 'dip', label: M('trk.dip') }); crashTrack('hold')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Market crash",
+     ".x": "Stocks fall {p}% in a few weeks. Your investments are now worth {a}. The news says it will get worse.",
+     ".x0": "Stocks fall {p}% in a few weeks. You don’t own any, but layoffs are rising.",
+     ".sell": "Sell everything",
+     ".sell.s": "Turn {a} into cash and stop the bleeding. You buy back in 3 years.",
+     ".sell.no": "You have no investments to sell.",
+     ".hold": "Hold and keep investing",
+     ".hold.s": "Do nothing. Markets have always recovered, but nobody knows when.",
+     ".buy": "Buy more",
+     ".buy.s": "Move {a} of bank savings into stocks at low prices.",
+     ".buy.no": "Not enough cash in the bank.",
+     "trk.dip": "Bought during the crash",
+     "log.crash": "Market crash. Stocks fall {p}%.{x}",
+     "log.crashX": " Your investments drop to {a}."
+    },
+    "zh": {
+     ".t": "股市崩盘",
+     ".x": "几个星期内股价跌了{p}%。你的投资现在只值{a}。新闻说还会更糟。",
+     ".x0": "几个星期内股价跌了{p}%。你没有股票，但裁员越来越多。",
+     ".sell": "全部卖掉",
+     ".sell.s": "把{a}换成现金，及时止损。3年后再买回来。",
+     ".sell.no": "你没有可以卖的投资。",
+     ".hold": "持有，继续投资",
+     ".hold.s": "什么都不做。股市最后总会回升，只是没人知道什么时候。",
+     ".buy": "逢低加码",
+     ".buy.s": "把银行里的{a}趁低价买进股票。",
+     ".buy.no": "银行里的现金不够。",
+     "trk.dip": "崩盘时加码买入",
+     "log.crash": "股市崩盘，股价跌了{p}%。{x}",
+     "log.crashX": "你的投资跌到{a}。"
+    },
+    "zht": {
+     ".t": "股市崩盤",
+     ".x": "幾個星期內股價跌了{p}%。你的投資現在只值{a}。新聞說還會更糟。",
+     ".x0": "幾個星期內股價跌了{p}%。你沒有股票，但裁員越來越多。",
+     ".sell": "全部賣掉",
+     ".sell.s": "把{a}換成現金，及時止損。3年後再買回來。",
+     ".sell.no": "你沒有可以賣的投資。",
+     ".hold": "持有，繼續投資",
+     ".hold.s": "什麼都不做。股市最後總會回升，只是沒人知道什麼時候。",
+     ".buy": "逢低加碼",
+     ".buy.s": "把銀行裡的{a}趁低價買進股票。",
+     ".buy.no": "銀行裡的現金不夠。",
+     "trk.dip": "崩盤時加碼買入",
+     "log.crash": "股市崩盤，股價跌了{p}%。{x}",
+     "log.crashX": "你的投資跌到{a}。"
+    }
+   }
+  },
+  {
+   "id": "idle",
+   "age": [38, 38],
+   "when": {"stats": {"cash": "> 1.5 * base"}, "retired": false},
+   "def": "keep",
+   "tarot": {"en": "The Hanged Man", "zh": "倒吊人", "zht": "倒吊人"},
+   "art": "idle",
+   "let": {"a": "cash - .5 * base"},
+   "vars": {"a": "MN(cash)"},
+   "opts": [
+    {
+     "id": "inv",
+     "sub": {"a": "MN(a)"},
+     "do": "cash -= a; addLot('idle', a); T('lot_idle', { kind: 'lot', src: 'idle', label: M('trk.idle') })"
+    },
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Money sitting still",
+     ".x": "You have {a} in the bank. After inflation it loses about 1% a year.",
+     ".inv": "Invest it, keep a 6-month buffer",
+     ".inv.s": "Move {a} into an index fund.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "Safe from crashes. Slowly eaten by inflation.",
+     "trk.idle": "Invested idle cash at 38"
+    },
+    "zh": {
+     ".t": "闲置的钱",
+     ".x": "你银行里有{a}。扣除通胀后，它每年大约缩水1%。",
+     ".inv": "拿去投资，留6个月备用金",
+     ".inv.s": "把{a}转进指数基金。",
+     ".keep": "留在银行",
+     ".keep.s": "不怕股灾，但会被通胀慢慢吃掉。",
+     "trk.idle": "38岁把闲钱拿去投资"
+    },
+    "zht": {
+     ".t": "閒置的錢",
+     ".x": "你銀行裡有{a}。扣除通膨後，它每年大約縮水1%。",
+     ".inv": "拿去投資，留6個月備用金",
+     ".inv.s": "把{a}轉進指數基金。",
+     ".keep": "留在銀行",
+     ".keep.s": "不怕股災，但會被通膨慢慢吃掉。",
+     "trk.idle": "38歲把閒錢拿去投資"
+    }
+   }
+  },
+  {
+   "id": "save2",
+   "age": [40, 40],
+   "when": {"job": true, "retired": false},
+   "def": "keep",
+   "tarot": {"en": "Justice", "zh": "正义", "zht": "正義"},
+   "art": "save2",
+   "vars": {"p": "Math.round(savePct * 100)"},
+   "opts": [
+    {"id": "keep", "label": "M('.keep', {p: Math.round(savePct * 100)})"},
+    {
+     "each": "[.1, .2, .3, .4]",
+     "as": "p",
+     "max": 3,
+     "id": "'p' + Math.round(p * 100)",
+     "show": "Math.abs(p - savePct) > .01",
+     "label": "M('.p', {p: Math.round(p * 100)})",
+     "sub": "M('.p.s', {a: MN(netOf(lastSal) * p)})",
+     "do": "setSave(p)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Halfway check-in",
+     ".x": "You're 40. You invest {p}% of every paycheck.",
+     ".keep": "Keep it at {p}%",
+     ".keep.s": "No change.",
+     ".p": "Change to {p}%",
+     ".p.s": "About {a} a year."
+    },
+    "zh": {
+     ".t": "人生过半",
+     ".x": "你40岁了。你每份薪水投资{p}%。",
+     ".keep": "维持{p}%",
+     ".keep.s": "不变。",
+     ".p": "改成{p}%",
+     ".p.s": "每年约{a}。"
+    },
+    "zht": {
+     ".t": "人生過半",
+     ".x": "你40歲了。你每份薪水投資{p}%。",
+     ".keep": "維持{p}%",
+     ".keep.s": "不變。",
+     ".p": "改成{p}%",
+     ".p.s": "每年約{a}。"
+    }
+   }
+  },
+  {
+   "id": "life",
+   "age": [47, 47],
+   "when": {"retired": false},
+   "def": "same",
+   "tarot": {"en": "The Devil", "zh": "恶魔", "zht": "惡魔"},
+   "art": "life",
+   "opts": [
+    {
+     "id": "up",
+     "sub": {"a": "MN(base)"},
+     "do": "pay(base); life = .95; happy += 5; const t = T('life', { kind: 'ghost', label: M('trk.lifeUp') }); t.spent += base; t.g += base"
+    },
+    {"id": "same"},
+    {
+     "id": "frugal",
+     "do": "life = .65; happy -= 3; T('life', { kind: 'ghost', label: M('trk.lifeFrugal') })"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A bigger life?",
+     ".x": "Your friends are moving to bigger homes, newer cars and fancier holidays.",
+     ".up": "Upgrade your lifestyle",
+     ".up.s": "{a} now on a renovation, then you spend 95% of spare money instead of 85%. Happiness +5.",
+     ".same": "Keep things as they are",
+     ".same.s": "Spend about 85% of spare money, like now.",
+     ".frugal": "Live below your means",
+     ".frugal.s": "Spend 65% of spare money and save the rest. Happiness −3.",
+     "trk.lifeUp": "Upgraded your lifestyle",
+     "trk.lifeFrugal": "Lived below your means"
+    },
+    "zh": {
+     ".t": "过更好的生活？",
+     ".x": "朋友们都换了大房子、新车，还去更高级的地方度假。",
+     ".up": "升级生活方式",
+     ".up.s": "现在花{a}装修，之后闲钱从花85%变成花95%。幸福感 +5。",
+     ".same": "保持现状",
+     ".same.s": "跟现在一样，闲钱大约花85%。",
+     ".frugal": "量入为出",
+     ".frugal.s": "闲钱只花65%，其余存起来。幸福感 −3。",
+     "trk.lifeUp": "升级了生活方式",
+     "trk.lifeFrugal": "量入为出"
+    },
+    "zht": {
+     ".t": "過更好的生活？",
+     ".x": "朋友們都換了大房子、新車，還去更高階的地方度假。",
+     ".up": "升級生活方式",
+     ".up.s": "現在花{a}裝修，之後閒錢從花85%變成花95%。幸福感 +5。",
+     ".same": "保持現狀",
+     ".same.s": "跟現在一樣，閒錢大約花85%。",
+     ".frugal": "量入為出",
+     ".frugal.s": "閒錢只花65%，其餘存起來。幸福感 −3。",
+     "trk.lifeUp": "升級了生活方式",
+     "trk.lifeFrugal": "量入為出"
+    }
+   }
+  },
+  {
+   "id": "inh",
+   "when": {"family": ["middle", "rich"], "test": "age === inheritAge"},
+   "def": "bank",
+   "tarot": {"en": "Judgement", "zh": "审判", "zht": "審判"},
+   "art": "inh",
+   "let": {"A": "inhAmt()"},
+   "vars": {"a": "MN(inhAmt())"},
+   "opts": [
+    {
+     "id": "inv",
+     "do": "addLot('inh', A); T('lot_inh', {kind: 'lot', src: 'inh', label: M('trk.inhInv')})"
+    },
+    {
+     "id": "mort",
+     "show": "!!house && house.mort > 1",
+     "sub": {"a": "MN(Math.min(A, house.mort))"},
+     "do": "const p = Math.min(A, house.mort); house.mort -= p; house.out += p; cash += A - p; happy += 3; if (house.mort < 1) house.mort = 0; else setRate(house, house.rate || .03, age)"
+    },
+    {
+     "id": "spend",
+     "do": "happy += 6; const t = T('inhs', {kind: 'ghost', label: M('trk.inhSpent')}); t.spent += A; t.g += A"
+    },
+    {"id": "bank", "do": "cash += A"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An inheritance",
+     ".x": "Your parents have passed away and left you {a}.",
+     ".inv": "Invest it",
+     ".inv.s": "All of it into an index fund.",
+     ".mort": "Pay down the mortgage",
+     ".mort.s": "Clears {a} of a 3% loan. The rest goes to the bank. No more mortgage worries: Happiness +3.",
+     ".spend": "Travel the world and buy a dream car",
+     ".spend.s": "Happiness +6.",
+     ".bank": "Leave it in the bank",
+     ".bank.s": "Safe. Slowly eaten by inflation.",
+     "trk.inhInv": "Invested the inheritance",
+     "trk.inhSpent": "Spent the inheritance"
+    },
+    "zh": {
+     ".t": "一笔遗产",
+     ".x": "你的父母过世了，留给你{a}。",
+     ".inv": "拿去投资",
+     ".inv.s": "全部投进指数基金。",
+     ".mort": "提前还房贷",
+     ".mort.s": "还掉{a}利率3%的房贷，剩下的存银行。少了房贷的烦恼：幸福感 +3。",
+     ".spend": "环游世界，再买辆梦想中的车",
+     ".spend.s": "幸福感 +6。",
+     ".bank": "放在银行",
+     ".bank.s": "安全，但会被通胀慢慢吃掉。",
+     "trk.inhInv": "把遗产拿去投资",
+     "trk.inhSpent": "花掉了遗产"
+    },
+    "zht": {
+     ".t": "一筆遺產",
+     ".x": "你的父母過世了，留給你{a}。",
+     ".inv": "拿去投資",
+     ".inv.s": "全部投進指數基金。",
+     ".mort": "提前還房貸",
+     ".mort.s": "還掉{a}利率3%的房貸，剩下的存銀行。少了房貸的煩惱：幸福感 +3。",
+     ".spend": "環遊世界，再買輛夢想中的車",
+     ".spend.s": "幸福感 +6。",
+     ".bank": "放在銀行",
+     ".bank.s": "安全，但會被通膨慢慢吃掉。",
+     "trk.inhInv": "把遺產拿去投資",
+     "trk.inhSpent": "花掉了遺產"
+    }
+   }
+  },
+  {
+   "id": "charity",
+   "age": [55, 85],
+   "weight": 0.55,
+   "def": "small",
+   "tarot": {"en": "Three of Cups", "zh": "圣杯三", "zht": "聖杯三"},
+   "art": "charity",
+   "opts": [
+    {
+     "id": "big",
+     "sub": {"a": "MN(.3 * base)"},
+     "do": "spend('charity', .3 * base, 'trk.charity'); happy += 4"
+    },
+    {
+     "id": "small",
+     "sub": {"a": "MN(.05 * base)"},
+     "do": "spend('charity', .05 * base, 'trk.charity'); happy += 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Giving back",
+     ".x": "A cause you care about is raising money.",
+     ".big": "Give generously",
+     ".big.s": "{a}. Happiness +4.",
+     ".small": "Give a little",
+     ".small.s": "{a}. Happiness +2.",
+     ".no": "Not this time",
+     ".no.s": "Keep your money.",
+     "trk.charity": "Gave to charity"
+    },
+    "zh": {
+     ".t": "回馈社会",
+     ".x": "一个你关心的公益团体在募款。",
+     ".big": "慷慨捐款",
+     ".big.s": "{a}。幸福感 +4。",
+     ".small": "捐一点",
+     ".small.s": "{a}。幸福感 +2。",
+     ".no": "这次先不捐",
+     ".no.s": "钱留着。",
+     "trk.charity": "捐款"
+    },
+    "zht": {
+     ".t": "回饋社會",
+     ".x": "一個你關心的公益團體在募款。",
+     ".big": "慷慨捐款",
+     ".big.s": "{a}。幸福感 +4。",
+     ".small": "捐一點",
+     ".small.s": "{a}。幸福感 +2。",
+     ".no": "這次先不捐",
+     ".no.s": "錢留著。",
+     "trk.charity": "捐款"
+    }
+   }
+  },
+  {
+   "id": "glide",
+   "age": [56, 64],
+   "weight": 0.8,
+   "when": {"test": "mktTot() > base"},
+   "def": "stay",
+   "tarot": {"en": "King of Swords", "zh": "宝剑国王", "zht": "寶劍國王"},
+   "art": "glide",
+   "fn": {
+    "move": {
+     "args": ["f", "to"],
+     "do": "let x = 0; for (const k in lots) { const l = lots[k]; if (!isMkt(l)) continue; const y = l.v * f; l.v -= y; l.tout += y; x += y; } if (to) addLot(to, x); else cash += x"
+    }
+   },
+   "vars": {"a": "MN(mktTot())"},
+   "opts": [
+    {"id": "stay"},
+    {"id": "mix", "do": "mkLot('bond', {t: 'bond'}, 'trk.bond'); move(.4, 'bond')"},
+    {"id": "cash", "do": "move(1, null)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your retirement portfolio",
+     ".x": "You have {a} in stocks. A big crash just before or after you retire hurts most, because you have to sell to live.",
+     ".stay": "Stay 100% in stocks",
+     ".stay.s": "The highest average return, and the biggest swings.",
+     ".mix": "Move 40% into bonds",
+     ".mix.s": "Bonds pay about 1.5% a year after inflation and swing much less.",
+     ".cash": "Move everything to the bank",
+     ".cash.s": "No swings, but inflation eats it.",
+     "trk.bond": "Bonds"
+    },
+    "zh": {
+     ".t": "退休投资组合",
+     ".x": "你有{a}在股票里。退休前后遇到大股灾伤害最大，因为你得卖股票过日子。",
+     ".stay": "继续100%股票",
+     ".stay.s": "平均回报最高，波动也最大。",
+     ".mix": "把40%转进债券",
+     ".mix.s": "债券扣除通胀后每年约1.5%，波动小很多。",
+     ".cash": "全部转进银行",
+     ".cash.s": "没有波动，但会被通胀吃掉。",
+     "trk.bond": "债券"
+    },
+    "zht": {
+     ".t": "退休投資組合",
+     ".x": "你有{a}在股票裡。退休前後遇到大股災傷害最大，因為你得賣股票過日子。",
+     ".stay": "繼續100%股票",
+     ".stay.s": "平均報酬最高，波動也最大。",
+     ".mix": "把40%轉進債券",
+     ".mix.s": "債券扣除通膨後每年約1.5%，波動小很多。",
+     ".cash": "全部轉進銀行",
+     ".cash.s": "沒有波動，但會被通膨吃掉。",
+     "trk.bond": "債券"
+    }
+   }
+  },
+  {
+   "id": "annuity",
+   "age": [60, 68],
+   "weight": 0.65,
+   "when": {"stats": {"liquid": "> 2 * base"}},
+   "def": "no",
+   "tarot": {"en": "Four of Swords", "zh": "宝剑四", "zht": "寶劍四"},
+   "art": "annuity",
+   "let": {"a": ".3 * liquid()"},
+   "opts": [
+    {
+     "id": "buy",
+     "label": "M('.buy', { a: MN(a) })",
+     "sub": {"b": "MN(.07 * a)"},
+     "do": "pay(a); annu += .07 * a; T('annuity', { kind: 'custom', label: M('trk.annuity'), v: -a, cost: a, note: M('note.annuity', { a: MN(a), b: MN(0) }) })"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An income for life",
+     ".x": "An insurer offers to turn a lump sum into a fixed income for as long as you live.",
+     ".buy": "Buy an annuity with {a}",
+     ".buy.s": "Pays {b} a year for life. The lump sum is gone, even if you die early.",
+     ".no": "Keep it invested",
+     ".no.s": "You keep control of the money, but it has to last.",
+     "trk.annuity": "Annuity"
+    },
+    "zh": {
+     ".t": "终身收入",
+     ".x": "保险公司提议把一笔钱换成终身的固定收入，你活多久就领多久。",
+     ".buy": "用{a}买年金",
+     ".buy.s": "每年领{b}，领到终老。本金就没了，早走也拿不回来。",
+     ".no": "继续投资",
+     ".no.s": "钱在自己手里，但要撑得够久。",
+     "trk.annuity": "年金"
+    },
+    "zht": {
+     ".t": "終身收入",
+     ".x": "保險公司提議把一筆錢換成終身的固定收入，你活多久就領多久。",
+     ".buy": "用{a}買年金險",
+     ".buy.s": "每年領{b}，領到終老。本金就沒了，早走也拿不回來。",
+     ".no": "繼續投資",
+     ".no.s": "錢在自己手裡，但要撐得夠久。",
+     "trk.annuity": "年金險"
+    }
+   }
+  },
+  {
+   "id": "scam2",
+   "age": [66, 90],
+   "weight": 0.6,
+   "when": {"stats": {"liquid": "> .1 * base"}},
+   "def": "check",
+   "tarot": {"en": "Five of Cups", "zh": "圣杯五", "zht": "聖杯五"},
+   "art": "scam2",
+   "let": {"a": "Math.min(.3 * base, .3 * liquid())"},
+   "vars": {"a": "MN(Math.min(.3 * base, .3 * liquid()))"},
+   "opts": [
+    {
+     "id": "send",
+     "do": "pay(a); T('scam2', { kind: 'custom', label: M('trk.scam2'), v: -a, note: M('note.scamIn', { a: MN(a) }) }); later(age, 'scam', { a, id: 'scam2', k2: 1 })"
+    },
+    {"id": "check"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A phone call",
+     ".x": "A voice that sounds like your grandson says he is in trouble and needs {a} sent right now. He begs you not to tell anyone.",
+     ".send": "Send the money",
+     ".send.s": "He sounds so scared.",
+     ".check": "Hang up and call the family",
+     ".check.s": "Check first.",
+     "trk.scam2": "The \"grandson\" call"
+    },
+    "zh": {
+     ".t": "一通电话",
+     ".x": "电话里一个听起来像你孙子的声音说他出事了，要你马上汇{a}过去，还求你别告诉任何人。",
+     ".send": "汇钱过去",
+     ".send.s": "他听起来好害怕。",
+     ".check": "挂断，打给家人确认",
+     ".check.s": "先查清楚。",
+     "trk.scam2": "假“孙子”的电话"
+    },
+    "zht": {
+     ".t": "一通電話",
+     ".x": "電話裡一個聽起來像你孫子的聲音說他出事了，要你馬上匯{a}過去，還求你別告訴任何人。",
+     ".send": "匯錢過去",
+     ".send.s": "他聽起來好害怕。",
+     ".check": "掛斷，打給家人確認",
+     ".check.s": "先查清楚。",
+     "trk.scam2": "假「孫子」的電話"
+    }
+   }
+  },
+  {
+   "id": "debt",
+   "when": {"retired": false, "test": "age >= 18 && debt > .4 * base"},
+   "def": "min",
+   "tarot": {"en": "Temperance", "zh": "节制", "zht": "節制"},
+   "art": "debt",
+   "let": {"eq": "eqTot(1)"},
+   "vars": {"a": "MN(debt)", "i": "MN(debt * .18)"},
+   "opts": [
+    {
+     "id": "sell",
+     "show": "eq > 1",
+     "sub": {"a": "MN(Math.min(eq, debt))"},
+     "do": "debtSeen = age; const p = Math.min(eqTot(1), debt); withdrawEq(p); debt -= p; happy += 3"
+    },
+    {"id": "cut", "do": "debtSeen = age; cutDebt = true; happy -= 4"},
+    {"id": "min", "do": "debtSeen = age"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Credit card debt",
+     ".x": "You owe {a} at 18% interest. The interest alone is {i} a year.",
+     ".sell": "Sell investments to clear it",
+     ".sell.s": "Uses {a}. A weight off your mind: Happiness +3.",
+     ".cut": "Cut spending until it is gone",
+     ".cut.s": "Spend only 40% of spare money until you are debt-free. Happiness −4, and −2 a year until then.",
+     ".min": "Keep paying the minimum",
+     ".min.s": "Nothing changes. The interest keeps piling up."
+    },
+    "zh": {
+     ".t": "信用卡债",
+     ".x": "你欠了{a}，利率18%。光是利息每年就要{i}。",
+     ".sell": "卖掉投资还清",
+     ".sell.s": "要用掉{a}。心头大石落地：幸福感 +3。",
+     ".cut": "缩减开支直到还清",
+     ".cut.s": "还清之前闲钱只花40%。幸福感 −4，还清前每年再 −2。",
+     ".min": "继续只还最低额",
+     ".min.s": "什么都不变，利息继续越滚越多。"
+    },
+    "zht": {
+     ".t": "信用卡債",
+     ".x": "你欠了{a}，利率18%。光是利息每年就要{i}。",
+     ".sell": "賣掉投資還清",
+     ".sell.s": "要用掉{a}。心頭大石落地：幸福感 +3。",
+     ".cut": "縮減開支直到還清",
+     ".cut.s": "還清之前閒錢只花40%。幸福感 −4，還清前每年再 −2。",
+     ".min": "繼續只還最低額",
+     ".min.s": "什麼都不變，利息繼續越滾越多。"
+    }
+   }
+  },
+  {
+   "id": "cosign",
+   "age": [28, 52],
+   "weight": 0.5,
+   "def": "no",
+   "tarot": {"en": "Two of Swords", "zh": "宝剑二", "zht": "寶劍二"},
+   "art": "cosign",
+   "vars": {"a": "MN(base)"},
+   "hint": true,
+   "opts": [
+    {
+     "id": "sign",
+     "sub": {"a": "MN(base)"},
+     "rel": 2,
+     "do": "T('cosign', { kind: 'custom', label: M('trk.cosign'), note: M('note.cosign0') }); later(age + 2 + Math.floor(roll('cosAt') * 4), 'cosign', { a: .8 * base })"
+    },
+    {
+     "id": "gift",
+     "label": "M('.gift', { a: MN(.12 * base) })",
+     "rel": 2,
+     "do": "spend('cosign', .12 * base, 'trk.cosignGift')"
+    },
+    {"id": "no", "rel": 0}
+   ],
+   "later": {
+    "cosign": "const t = trk.cosign; if (roll('cosign') < .3) { pay(x.a); if (t) { t.v -= x.a; t.note = M('note.cosignPaid', { a: MN(x.a) }); } rl(-6); log(M('log.cosignPaid', { a: MN(x.a) }), 'bad'); } else { if (t) t.note = M('note.cosignOk'); log(M('log.cosignOk'), 'good'); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Co-sign a loan?",
+     ".x": "A cousin wants to borrow {a} for a car, and the bank needs someone to co-sign. If your cousin stops paying, you owe the bank.",
+     ".h": "About 3 in 10 family co-signers like you end up paying part of the loan.",
+     ".sign": "Co-sign",
+     ".sign.s": "Nothing to pay unless your cousin stops paying.",
+     ".gift": "Say no, but give {a} to help",
+     ".gift.s": "A one-off gift.",
+     ".no": "Say no",
+     ".no.s": "Free.",
+     "trk.cosign": "Co-signed your cousin's loan",
+     "trk.cosignGift": "Gift to your cousin",
+     "note.cosign0": "Nothing paid so far."
+    },
+    "zh": {
+     ".t": "帮忙做担保？",
+     ".x": "你的表哥想贷款{a}买车，银行要找一个担保人。如果他不还，就要你来还。",
+     ".h": "像这样的家庭担保，大约十次有三次最后要担保人还一部分。",
+     ".sign": "帮他担保",
+     ".sign.s": "只要他按时还，你一分钱都不用付。",
+     ".gift": "拒绝，但送他{a}帮帮忙",
+     ".gift.s": "一次性的心意。",
+     ".no": "拒绝",
+     ".no.s": "不花钱。",
+     "trk.cosign": "帮表哥担保贷款",
+     "trk.cosignGift": "送表哥的心意",
+     "note.cosign0": "目前还没付过钱。"
+    },
+    "zht": {
+     ".t": "幫忙當保證人？",
+     ".x": "你的表哥想貸款{a}買車，銀行要找一個保證人。如果他不還，就要你來還。",
+     ".h": "像這樣幫家人作保，大約十次有三次最後要保證人還一部分。",
+     ".sign": "幫他作保",
+     ".sign.s": "只要他按時還，你一毛錢都不用付。",
+     ".gift": "拒絕，但送他{a}幫幫忙",
+     ".gift.s": "一次性的心意。",
+     ".no": "拒絕",
+     ".no.s": "不花錢。",
+     "trk.cosign": "幫表哥作保貸款",
+     "trk.cosignGift": "送表哥的心意",
+     "note.cosign0": "目前還沒付過錢。"
+    }
+   }
+  },
+  {
+   "id": "bizpal",
+   "age": [30, 46],
+   "weight": 0.5,
+   "when": {"stats": {"liquid": "> .15 * base"}, "retired": false},
+   "def": "no",
+   "tarot": {"en": "Three of Coins", "zh": "钱币三", "zht": "錢幣三"},
+   "art": "bizpal",
+   "let": {"liq": "liquid()", "big": "Math.min(.5 * base, .6 * liq)", "sm": "Math.min(.12 * base, .3 * liq)"},
+   "fn": {
+    "go": {
+     "args": ["a", "lk"],
+     "do": "pay(a); T('bizpal', { kind: 'custom', label: M(lk), v: -a, note: M('note.bizpalIn', { a: MN(a) }) }); later(age + 3, 'bizpal', { a })"
+    }
+   },
+   "hint": true,
+   "opts": [
+    {"id": "in", "label": "M('.in', {a: MN(big)})", "rel": 2, "do": "go(big, 'trk.bizpal')"},
+    {"id": "small", "label": "M('.small', {a: MN(sm)})", "rel": 2, "do": "go(sm, 'trk.bizpalS')"},
+    {"id": "no", "rel": -1}
+   ],
+   "later": {
+    "bizpal": "const u = roll('bizpal'), f = u < .25 ? 3 : u < .55 ? 1 : 0, v = x.a * f; cash += v; const t = trk.bizpal; if (t) { t.v += v; t.note = M('note.bizpal', { a: MN(x.a), b: MN(v) }); } rl(f ? 4 : -6); log(M(f > 1 ? 'log.bizpalWin' : f ? 'log.bizpalBack' : 'log.bizpalFail', { a: MN(x.a), b: MN(v) }), f ? 'good' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A friend's business",
+     ".x": "Your best friend is opening a small café and asks you to come in as a partner.",
+     ".h": "About 1 in 4 do very well, about 3 in 10 just pay back what you put in, and the rest close.",
+     ".in": "Go in as a partner: {a}",
+     ".in.s": "Your money is tied up for a few years.",
+     ".small": "Put in a little: {a}",
+     ".small.s": "Your money is tied up for a few years.",
+     ".no": "Wish them luck",
+     ".no.s": "Free.",
+     "trk.bizpal": "Partner in a friend's café",
+     "trk.bizpalS": "Small stake in a friend's café",
+     "note.bizpalIn": "{a} put in. Results in 3 years."
+    },
+    "zh": {
+     ".t": "朋友的生意",
+     ".x": "你最好的朋友要开一家小咖啡馆，想请你一起当合伙人。",
+     ".h": "大约四家有一家做得很好，十家有三家只能还你本钱，其他的会关门。",
+     ".in": "当合伙人：{a}",
+     ".in.s": "这笔钱会被绑住好几年。",
+     ".small": "小投一点：{a}",
+     ".small.s": "这笔钱会被绑住好几年。",
+     ".no": "祝他好运",
+     ".no.s": "不花钱。",
+     "trk.bizpal": "朋友咖啡馆的合伙人",
+     "trk.bizpalS": "朋友咖啡馆的小股份",
+     "note.bizpalIn": "投入{a}，三年后见分晓。"
+    },
+    "zht": {
+     ".t": "朋友的生意",
+     ".x": "你最好的朋友要開一家小咖啡店，想請你一起當合夥人。",
+     ".h": "大約四家有一家做得很好，十家有三家只能還你本錢，其他的會收掉。",
+     ".in": "當合夥人：{a}",
+     ".in.s": "這筆錢會被綁住好幾年。",
+     ".small": "小投一點：{a}",
+     ".small.s": "這筆錢會被綁住好幾年。",
+     ".no": "祝他好運",
+     ".no.s": "不花錢。",
+     "trk.bizpal": "朋友咖啡店的合夥人",
+     "trk.bizpalS": "朋友咖啡店的小股份",
+     "note.bizpalIn": "投入{a}，三年後見分曉。"
+    }
+   }
+  }
+ ]
+}

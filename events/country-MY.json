@@ -1,0 +1,414 @@
+{
+ "about": "Country cards for lives born in Malaysia. Each card is dealt only to them (and a little more often than general cards). Sources are in each card's \"src\".",
+ "country": "MY",
+ "events": [
+  {
+   "id": "my_ptptn",
+   "src": "===================== Malaysia (MY) ===================== PTPTN: study loans charge a 1% yearly ujrah (fee) and are repaid by salary deduction (ptptn.gov.my, as summarised by malaysia4u.com and CTOS, 2026). Malaysian inflation has run at about 2% (DOSM), so in today's money about −1% a year. Many borrowers park spare loan money in ASB/ASM, which paid 4.75–5.75% (PNB): about 2.5% after inflation, an ESTIMATE.",
+   "age": [18, 19],
+   "weight": 1,
+   "when": {"studying": true, "test": "study.k === 'uni' && fam !== 'rich'"},
+   "def": "take",
+   "tarot": "debt",
+   "art": {"draw": "gradloan", "bg": "mi"},
+   "let": {"B": "base"},
+   "opts": [
+    {"id": "take", "do": "sloanR = -.01; sloanN = 15"},
+    {
+     "id": "park",
+     "sub": {"a": "MN(.3 * B)"},
+     "hint": true,
+     "do": "sloanR = -.01; sloanN = 15; sloan += .3 * B; mkLot('ptinv', { rate: .025 }, 'trk.ptinv'); addLot('ptinv', .3 * B)"
+    },
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A PTPTN study loan",
+     ".x": "PTPTN, the national higher-education fund, offers you a loan for your fees and living costs. It charges a 1% yearly fee (ujrah) and is repaid from your salary after you graduate.",
+     ".take": "Take the PTPTN loan",
+     ".take.s": "Your study costs go on PTPTN at 1% a year, repaid over 15 years.",
+     ".park": "Borrow the full amount and save the extra",
+     ".park.s": "Borrow {a} more than you need and put it in a PNB fixed-price fund.",
+     ".park.h": "The fund’s yearly payout has been well above the loan’s 1% fee.",
+     ".skip": "Don’t take it",
+     ".skip.s": "Pay with savings and an ordinary loan at the usual interest.",
+     "trk.ptinv": "Spare PTPTN money"
+    },
+    "zh": {
+     ".t": "国家高教基金贷款",
+     ".x": "国家高等教育基金（PTPTN）愿意贷款给你付学费和生活费。每年收1%的管理费（ujrah），毕业后从薪水里扣还。",
+     ".take": "申请PTPTN贷款",
+     ".take.s": "学费转成PTPTN贷款，年费1%，分15年还。",
+     ".park": "借足额度，把多的存起来",
+     ".park.s": "多借{a}，放进PNB固定价格基金。",
+     ".park.h": "这类基金每年的派息一直远高于贷款的1%年费。",
+     ".skip": "不申请",
+     ".skip.s": "用存款和一般利率的贷款来付。",
+     "trk.ptinv": "多借的PTPTN"
+    },
+    "zht": {
+     ".t": "國家高教基金貸款",
+     ".x": "國家高等教育基金（PTPTN）願意貸款給你付學費和生活費。每年收1%的管理費（ujrah），畢業後從薪水裡扣還。",
+     ".take": "申請PTPTN貸款",
+     ".take.s": "學費轉成PTPTN貸款，年費1%，分15年還。",
+     ".park": "借足額度，把多的存起來",
+     ".park.s": "多借{a}，放進PNB固定價格基金。",
+     ".park.h": "這類基金每年的派息一直遠高於貸款的1%年費。",
+     ".skip": "不申請",
+     ".skip.s": "用存款和一般利率的貸款來付。",
+     "trk.ptinv": "多借的PTPTN"
+    }
+   }
+  },
+  {
+   "id": "my_epf3",
+   "src": "EPF Akaun Fleksibel: since 11 May 2024, 10% of new contributions go to Account 3, withdrawable at any time (min RM50) (EPF via Malay Mail, 25 Apr 2024). EPF paid 6.30% for 2024 (EPF, 1 Mar 2025, via The Star and Malay Mail).",
+   "age": [26, 50],
+   "weight": 0.8,
+   "when": {"test": "!!lots.epf && age < 55 && lots.epf.v > .3 * base"},
+   "def": "keep",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "let": {"x": ".1 * lots.epf.v"},
+   "fn": {
+    "out": {"args": [], "do": "const l = lots.epf, y = Math.min(x, l.v); l.v -= y; l.tout += y; return y"}
+   },
+   "vars": {"a": "MN(.1 * lots.epf.v)"},
+   "opts": [
+    {"id": "keep"},
+    {
+     "id": "spend",
+     "sub": {"a": "MN(x)"},
+     "do": "const y = out(); happy += 3; const t = T('my_epf3', { kind: 'ghost', label: M('trk.my_epf3') }); t.spent += y; t.g += y"
+    },
+    {"id": "cash", "sub": {"a": "MN(x)"}, "do": "cash += out()"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "EPF Akaun Fleksibel",
+     ".x": "Since May 2024, a tenth of every EPF contribution goes into Akaun Fleksibel, which you can take out at any time. About {a} has built up there. EPF paid a 6.3% dividend for 2024.",
+     ".keep": "Leave it in EPF",
+     ".keep.s": "It keeps earning EPF dividends until you retire.",
+     ".spend": "Take it out for a holiday and a new phone",
+     ".spend.s": "{a} to spend now. Happiness +3.",
+     ".cash": "Take it out as a safety net",
+     ".cash.s": "{a} goes into your bank account.",
+     "trk.my_epf3": "Akaun Fleksibel spent"
+    },
+    "zh": {
+     ".t": "公积金灵活户头",
+     ".x": "从2024年5月起，每笔公积金（EPF）供款有十分之一存进灵活户头（Akaun Fleksibel），随时可以提出。里面已经有约{a}。公积金2024年派息6.3%。",
+     ".keep": "留在公积金里",
+     ".keep.s": "继续领公积金股息，直到退休。",
+     ".spend": "提出来去旅行、换手机",
+     ".spend.s": "现在可以花{a}。幸福感 +3。",
+     ".cash": "提出来当应急钱",
+     ".cash.s": "{a}转进你的银行户头。",
+     "trk.my_epf3": "花掉的灵活户头"
+    },
+    "zht": {
+     ".t": "公積金靈活戶頭",
+     ".x": "從2024年5月起，每筆公積金（EPF）供款有十分之一存進靈活戶頭（Akaun Fleksibel），隨時可以提出。裡面已經有約{a}。公積金2024年派息6.3%。",
+     ".keep": "留在公積金裡",
+     ".keep.s": "繼續領公積金股息，直到退休。",
+     ".spend": "提出來去旅行、換手機",
+     ".spend.s": "現在可以花{a}。幸福感 +3。",
+     ".cash": "提出來當應急錢",
+     ".cash.s": "{a}轉進你的銀行戶頭。",
+     "trk.my_epf3": "花掉的靈活戶頭"
+    }
+   }
+  },
+  {
+   "id": "my_asm",
+   "src": "PNB fixed-price funds: ASM 2 Wawasan paid 4.75 sen a unit (4.75%) for FY2024, beating 12-month fixed deposits by 2.04 points (PNB press release, 30 Aug 2024). After about 2% inflation, roughly 2.5% a year: an ESTIMATE.",
+   "age": [22, 48],
+   "weight": 0.7,
+   "when": {"stats": {"liquid": "> .25 * base"}},
+   "def": "keep",
+   "tarot": "edufund",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".3 * liquid()"},
+   "vars": {"a": "MN(.3 * liquid())"},
+   "opts": [
+    {"id": "asm", "sub": {"a": "MN(a)"}, "do": "putIn('asm', a, {rate: .025}, 'trk.asm')"},
+    {"id": "index", "sub": {"a": "MN(a)"}, "do": "putIn('pick', a, {}, 'trk.pick')"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "PNB unit trusts",
+     ".x": "PNB’s fixed-price funds sell units at RM1 that never change price and pay a yearly distribution: ASM 2 Wawasan, open to all Malaysians, paid 4.75% for 2024. You have {a} you won’t need for years.",
+     ".asm": "Put it in ASM",
+     ".asm.s": "Move {a} in. About 2.5% a year after inflation if payouts stay near recent levels; the price never falls.",
+     ".index": "An index fund",
+     ".index.s": "Move {a} in. About 5% a year after inflation on average, with crashes along the way.",
+     ".keep": "Keep it in the bank",
+     ".keep.s": "It stays in your account.",
+     "trk.asm": "ASM fund"
+    },
+    "zh": {
+     ".t": "PNB信托基金",
+     ".x": "PNB的固定价格基金每单位卖RM1，价格不变，每年派息：开放给所有马来西亚人的ASM 2 Wawasan，2024年派息4.75%。你有{a}好几年都用不到。",
+     ".asm": "存进ASM",
+     ".asm.s": "放入{a}。若派息维持近年水平，扣除通胀后每年约2.5%；价格不会跌。",
+     ".index": "指数基金",
+     ".index.s": "放入{a}。扣除通胀后平均每年约5%，中途会遇到股灾。",
+     ".keep": "放在银行",
+     ".keep.s": "钱留在户头里。",
+     "trk.asm": "ASM基金"
+    },
+    "zht": {
+     ".t": "PNB信託基金",
+     ".x": "PNB的固定價格基金每單位賣RM1，價格不變，每年派息：開放給所有馬來西亞人的ASM 2 Wawasan，2024年派息4.75%。你有{a}好幾年都用不到。",
+     ".asm": "存進ASM",
+     ".asm.s": "放入{a}。若派息維持近年水準，扣除通膨後每年約2.5%；價格不會跌。",
+     ".index": "指數基金",
+     ".index.s": "放入{a}。扣除通膨後平均每年約5%，中途會遇到股災。",
+     ".keep": "放在銀行",
+     ".keep.s": "錢留在戶頭裡。",
+     "trk.asm": "ASM基金"
+    }
+   }
+  },
+  {
+   "id": "my_open",
+   "src": "Open houses (rumah terbuka) at Hari Raya, Chinese New Year, Deepavali and Christmas, with duit raya / ang pao for children: a long-standing Malaysian custom (Tourism Malaysia). The costs are ESTIMATES.",
+   "age": [27, 62],
+   "weight": 0.7,
+   "def": "small",
+   "tarot": "charity",
+   "art": {"draw": "feast", "bg": "ya"},
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "big",
+     "sub": {"a": "MN(.06 * B)"},
+     "rel": 4,
+     "do": "spend('my_open', .06 * B, 'trk.my_open'); happy += 2"
+    },
+    {
+     "id": "small",
+     "sub": {"a": "MN(.015 * B)"},
+     "rel": 2,
+     "do": "spend('my_open', .015 * B, 'trk.my_open')"
+    },
+    {
+     "id": "visit",
+     "sub": {"a": "MN(.004 * B)"},
+     "rel": 1,
+     "do": "spend('my_open', .004 * B, 'trk.my_open')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Open house",
+     ".x": "It’s festival season (Hari Raya, Chinese New Year, Deepavali or Christmas) and your turn to hold an open house, where friends, neighbours and colleagues of every background drop in to eat. There is duit raya or ang pao for the children too.",
+     ".big": "A big open house with catering",
+     ".big.s": "Food for a crowd: about {a}. Happiness +2.",
+     ".small": "Home-cooked dishes for close friends",
+     ".small.s": "About {a}.",
+     ".visit": "Visit other people’s open houses instead",
+     ".visit.s": "About {a} in small gifts.",
+     "trk.my_open": "Open houses"
+    },
+    "zh": {
+     ".t": "开放门户",
+     ".x": "佳节到了（开斋节、农历新年、屠妖节或圣诞节），轮到你办开放门户，各族的朋友、邻居和同事都会来吃东西。还要给孩子们派青包或红包。",
+     ".big": "办个大型开放门户，请人到会",
+     ".big.s": "招待一大群人：约{a}。幸福感 +2。",
+     ".small": "自己煮几道菜请好朋友",
+     ".small.s": "约{a}。",
+     ".visit": "不办，去别人家拜访",
+     ".visit.s": "小礼物约{a}。",
+     "trk.my_open": "开放门户"
+    },
+    "zht": {
+     ".t": "開放門戶",
+     ".x": "佳節到了（開齋節、農曆新年、屠妖節或聖誕節），輪到你辦開放門戶，各族的朋友、鄰居和同事都會來吃東西。還要給孩子們派青包或紅包。",
+     ".big": "辦個大型開放門戶，請人到會",
+     ".big.s": "招待一大群人：約{a}。幸福感 +2。",
+     ".small": "自己煮幾道菜請好朋友",
+     ".small.s": "約{a}。",
+     ".visit": "不辦，去別人家拜訪",
+     ".visit.s": "小禮物約{a}。",
+     "trk.my_open": "開放門戶"
+    }
+   }
+  },
+  {
+   "id": "my_flood",
+   "src": "Monsoon floods: the northeast monsoon (November to March) brings floods in many years (MetMalaysia). After the December 2021 floods, NADMA paid RM1,000 per flood-hit household as Bantuan Wang Ihsan (Malay Mail, 22 Dec 2021): RM1,000 ÷ the game's typical wage (RM21,000 a year) = 0.048. Premiums for a \"special perils\" flood add-on are an ESTIMATE.",
+   "age": [24, 75],
+   "weight": 0.7,
+   "def": "none",
+   "tarot": "crash",
+   "art": {"draw": "flood", "bg": "wh"},
+   "use": "flood",
+   "with": {"aid": 0.048, "prem": 0.006, "prep": 0.01},
+   "i18n": {
+    "en": {
+     ".t": "Monsoon season",
+     ".x": "Your area floods in many northeast-monsoon seasons (November to March). Insurers sell a “special perils” add-on that covers flood damage. After the December 2021 floods, the government paid each flood-hit household RM1,000."
+    },
+    "zh": {
+     ".t": "季候风季节",
+     ".x": "你住的地方在东北季候风季节（11月到3月）常常淹水。保险公司有“特别风险”附加保障，可赔水灾损失。2021年12月水灾后，政府给每户受灾家庭RM1,000。"
+    },
+    "zht": {
+     ".t": "季候風季節",
+     ".x": "你住的地方在東北季候風季節（11月到3月）常常淹水。保險公司有「特別風險」附加保障，可賠水災損失。2021年12月水災後，政府給每戶受災家庭RM1,000。"
+    }
+   }
+  },
+  {
+   "id": "my_jb",
+   "src": "Working in Singapore from Johor: 250,000–300,000 Malaysians commute daily, some for three hours (Malay Mail 2023; SCMP 2023). Pay in Singapore dollars: about 1.7× (game estimate from the two countries' typical wages); tolls and fuel are ESTIMATES.",
+   "age": [22, 40],
+   "weight": 0.5,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "bridge", "bg": "wh"},
+   "let": {"sal": "salary()", "B": "base"},
+   "vars": {"a": "MN(1.7 * salary())"},
+   "opts": [
+    {
+     "id": "go",
+     "sub": {"a": "MN(1.7 * sal)", "b": "MN(sal)", "c": "MN(.06 * B)"},
+     "hint": true,
+     "do": "contract('my_jb', { m: 1.7, cm: 1, yrs: 8, fee: .02 * B }); rec('my_jb', .06 * B, 8, -.8); happy -= 1"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Work across the Causeway",
+     ".x": "About 250,000–300,000 Malaysians cross into Singapore for work every day, some spending three hours or more on the road. A Singapore company offers you {a} a year while you keep living in Johor.",
+     ".go": "Take the job and commute",
+     ".go.s": "Paid in Singapore dollars: about {a} a year (you earn {b} now). Tolls and fuel: about {c} a year. Long days on the road: Happiness −4.",
+     ".go.h": "The commute costs Health every year.",
+     ".stay": "Stay with your job here",
+     ".stay.s": "Your days stay as they are.",
+     "trk.my_jb": "Work in Singapore"
+    },
+    "zh": {
+     ".t": "过长堤去工作",
+     ".x": "每天约有25万到30万马来西亚人进新加坡上班，有人单是路上就要花三小时以上。一家新加坡公司给你年薪{a}，你可以继续住在柔佛。",
+     ".go": "接下工作，每天通勤",
+     ".go.s": "领新币：年薪约{a}（你现在是{b}）。过路费和油钱每年约{c}。整天在路上：幸福感 −4。",
+     ".go.h": "通勤每年都会消耗健康。",
+     ".stay": "留在本地工作",
+     ".stay.s": "日子照旧。",
+     "trk.my_jb": "在新加坡工作"
+    },
+    "zht": {
+     ".t": "過長堤去工作",
+     ".x": "每天約有25萬到30萬馬來西亞人進新加坡上班，有人單是路上就要花三小時以上。一家新加坡公司給你年薪{a}，你可以繼續住在柔佛。",
+     ".go": "接下工作，每天通勤",
+     ".go.s": "領新幣：年薪約{a}（你現在是{b}）。過路費和油錢每年約{c}。整天在路上：幸福感 −4。",
+     ".go.h": "通勤每年都會消耗健康。",
+     ".stay": "留在本地工作",
+     ".stay.s": "日子照舊。",
+     "trk.my_jb": "在新加坡工作"
+    }
+   }
+  },
+  {
+   "id": "my_first",
+   "src": "First home: first-time buyers pay no stamp duty on homes up to RM500,000 until 31 Dec 2027 (P.U.(A) 448/2025, Budget 2026; Bernama, SAYS). Banks lend up to 90% on a first or second home (Bank Negara's loan-to-value limit applies from the third).",
+   "age": [26, 40],
+   "weight": 0.6,
+   "when": {"house": false, "working": true, "test": "!(hWait > age)"},
+   "def": "wait",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": ".85 * price()", "liq": "liquid()"},
+   "vars": {"p": "MN(.85 * price())"},
+   "opts": [
+    {
+     "id": "buy",
+     "sub": {"d": "upFront(P, .1, .01)", "m": "yrPay(P, .1, .03, 35)"},
+     "ok": "liq >= .11 * P || M('e.home.need', { n: MN(.11 * P), h: MN(liq) })",
+     "do": "buyAt(P, { dp: .1, fee: .01, r: .03, n: 35, lk: 'trk.flat' })"
+    },
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your first home",
+     ".x": "First-time buyers pay no stamp duty on homes up to RM500,000 until the end of 2027, and banks lend up to 90% of the price. A starter home near you costs {p}.",
+     ".buy": "Buy now",
+     ".buy.s": "{d} up front, then {m} a year for 35 years.",
+     ".wait": "Keep renting for now",
+     ".wait.s": "Your rent stays the same."
+    },
+    "zh": {
+     ".t": "你的第一间房子",
+     ".x": "首购族买RM500,000以下的房子，到2027年底都免印花税，银行最多贷九成。你附近一间入门房子要{p}。",
+     ".buy": "现在就买",
+     ".buy.s": "头期{d}，之后每年{m}，供35年。",
+     ".wait": "先继续租房",
+     ".wait.s": "房租不变。"
+    },
+    "zht": {
+     ".t": "你的第一間房子",
+     ".x": "首購族買RM500,000以下的房子，到2027年底都免印花稅，銀行最多貸九成。你附近一間入門房子要{p}。",
+     ".buy": "現在就買",
+     ".buy.s": "頭期{d}，之後每年{m}，繳35年。",
+     ".wait": "先繼續租房",
+     ".wait.s": "房租不變。"
+    }
+   }
+  },
+  {
+   "id": "my_sspn",
+   "src": "SSPN: the national education savings scheme paid 4.05% for 2024, the highest in a decade (PTPTN via Bernama); up to RM8,000 a year of net savings is tax-deductible (RinggitPlus; extended to YA2027 in Budget 2025, Deloitte). After inflation about 2%; the tax saving (about 5% of what you put in) is an ESTIMATE.",
+   "age": [26, 48],
+   "weight": 0.75,
+   "when": {"kidAge": [0, 8]},
+   "def": "none",
+   "tarot": "edufund",
+   "art": {"draw": "baby", "bg": "wa"},
+   "let": {"a": ".04 * base"},
+   "opts": [
+    {
+     "id": "save",
+     "sub": {"a": "MN(a)"},
+     "do": "yearly('sspn', { amt: a, until: age + 15, bonus: .05 }, { rate: .02 }, 'trk.sspn')"
+    },
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Saving for your child’s studies",
+     ".x": "SSPN, the national education savings scheme, paid a 4.05% dividend for 2024, and up to RM8,000 a year of net savings can be deducted from your taxable income.",
+     ".save": "Save in SSPN every year",
+     ".save.s": "About {a} a year for 15 years. About 2% a year after inflation, plus a small tax saving.",
+     ".none": "Not now",
+     ".none.s": "Keep the money for now.",
+     "trk.sspn": "SSPN"
+    },
+    "zh": {
+     ".t": "为孩子存教育基金",
+     ".x": "国家教育储蓄计划（SSPN）2024年派息4.05%，每年最多RM8,000的净储蓄可以扣税。",
+     ".save": "每年存进SSPN",
+     ".save.s": "每年约{a}，存15年。扣除通胀后每年约2%，还能省一点税。",
+     ".none": "暂时不存",
+     ".none.s": "钱先留着。",
+     "trk.sspn": "SSPN"
+    },
+    "zht": {
+     ".t": "為孩子存教育基金",
+     ".x": "國家教育儲蓄計畫（SSPN）2024年派息4.05%，每年最多RM8,000的淨儲蓄可以扣稅。",
+     ".save": "每年存進SSPN",
+     ".save.s": "每年約{a}，存15年。扣除通膨後每年約2%，還能省一點稅。",
+     ".none": "暫時不存",
+     ".none.s": "錢先留著。",
+     "trk.sspn": "SSPN"
+    }
+   }
+  }
+ ]
+}

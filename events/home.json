@@ -1,0 +1,663 @@
+{
+ "about": "Home and car: renting, buying, mortgages, repairs and moving.",
+ "events": [
+  {
+   "id": "move",
+   "age": [19, 23],
+   "weight": 0.85,
+   "when": {"house": false},
+   "def": "alone",
+   "tarot": {"en": "Four of Wands", "zh": "权杖四", "zht": "權杖四"},
+   "art": "move",
+   "let": {"r": "rent()"},
+   "fn": {
+    "set": {
+     "args": ["m", "h", "lk"],
+     "do": "rentMul = m; rentUntil = age + 7; happy += h; T('move', { kind: 'custom', label: M(lk), note: M('note.move') })"
+    }
+   },
+   "vars": {"r": "MN(rent())"},
+   "opts": [
+    {"id": "alone", "sub": {"r": "MN(r)"}, "do": "happy += 4"},
+    {"id": "share", "sub": {"r": "MN(.55 * r)"}, "do": "set(.55, 1, 'trk.moveShare')"},
+    {"id": "home", "sub": {"r": "MN(.2 * r)"}, "do": "set(.2, -4, 'trk.moveHome')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Moving out",
+     ".x": "Renting a place of your own costs about {r} a year. You'll live with this choice for the next few years.",
+     ".alone": "Rent a place on your own",
+     ".alone.s": "About {r} a year. Your own space. Happiness +4.",
+     ".share": "Share a flat with friends",
+     ".share.s": "About {r} a year for your room. Happiness +1.",
+     ".home": "Stay with your parents",
+     ".home.s": "About {r} a year towards the bills. Less freedom. Happiness −4.",
+     "trk.moveShare": "Shared a flat",
+     "trk.moveHome": "Stayed with your parents",
+     "note.move": "Rent saved compared with living alone"
+    },
+    "zh": {
+     ".t": "搬出去住",
+     ".x": "自己租一个地方，每年大约{r}。接下来几年都要跟着这个决定过。",
+     ".alone": "自己租房",
+     ".alone.s": "每年约{r}。有自己的空间。幸福感 +4。",
+     ".share": "跟朋友合租",
+     ".share.s": "你那间房每年约{r}。幸福感 +1。",
+     ".home": "继续住家里",
+     ".home.s": "每年给家里约{r}贴补开销。没那么自由。幸福感 −4。",
+     "trk.moveShare": "跟朋友合租",
+     "trk.moveHome": "住在家里",
+     "note.move": "跟自己租房相比省下的房租"
+    },
+    "zht": {
+     ".t": "搬出去住",
+     ".x": "自己租一個地方，每年大約{r}。接下來幾年都要跟著這個決定過。",
+     ".alone": "自己租房",
+     ".alone.s": "每年約{r}。有自己的空間。幸福感 +4。",
+     ".share": "跟朋友分租",
+     ".share.s": "你那間房每年約{r}。幸福感 +1。",
+     ".home": "繼續住家裡",
+     ".home.s": "每年給家裡約{r}貼補開銷。沒那麼自由。幸福感 −4。",
+     "trk.moveShare": "跟朋友分租",
+     "trk.moveHome": "住在家裡",
+     "note.move": "跟自己租房相比省下的房租"
+    }
+   }
+  },
+  {
+   "id": "car",
+   "age": [25, 25],
+   "when": {"retired": false, "test": "C[ci][1] !== 'SG'"},
+   "def": "used",
+   "tarot": {"en": "The Chariot", "zh": "战车", "zht": "戰車"},
+   "art": "car",
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "new",
+     "sub": {"c": "MN(1.1 * B)", "p": "MN(carPay(1.1 * B))"},
+     "do": "car = { type: 'new', bal: 1.1 * B, pay: carPay(1.1 * B) }; happy += 4; T('car', { kind: 'ghost', label: M('trk.carNew') })"
+    },
+    {
+     "id": "used",
+     "sub": {"c": "MN(.35 * B)"},
+     "do": "car = { type: 'used', bal: 0, pay: 0 }; pay(.35 * B); const t = T('car', { kind: 'ghost', label: M('trk.carUsed') }); t.spent += .35 * B; t.g += .35 * B"
+    },
+    {"id": "none", "do": "car = null"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Buying a car",
+     ".x": "Getting to work is a hassle, and everyone you know is buying a car.",
+     ".new": "New car on a 5-year loan",
+     ".new.s": "A {c} car. Payments of {p} a year. Happiness +4.",
+     ".used": "Used car, paid in cash",
+     ".used.s": "{c} once, plus running costs.",
+     ".none": "Keep taking the bus",
+     ".none.s": "Cheapest. A little less convenient.",
+     "trk.carNew": "New car on a loan",
+     "trk.carUsed": "Bought a used car"
+    },
+    "zh": {
+     ".t": "买车",
+     ".x": "上班通勤很麻烦，身边的人都在买车。",
+     ".new": "贷款5年买新车",
+     ".new.s": "一辆{c}的车。每年还款{p}。幸福感 +4。",
+     ".used": "现金买二手车",
+     ".used.s": "一次付清{c}，再加上日常开销。",
+     ".none": "继续搭巴士",
+     ".none.s": "最省钱，只是没那么方便。",
+     "trk.carNew": "贷款买新车",
+     "trk.carUsed": "买了二手车"
+    },
+    "zht": {
+     ".t": "買車",
+     ".x": "上班通勤很麻煩，身邊的人都在買車。",
+     ".new": "貸款5年買新車",
+     ".new.s": "一輛{c}的車。每年還款{p}。幸福感 +4。",
+     ".used": "現金買二手車",
+     ".used.s": "一次付清{c}，再加上日常開銷。",
+     ".none": "繼續搭公車",
+     ".none.s": "最省錢，只是沒那麼方便。",
+     "trk.carNew": "貸款買新車",
+     "trk.carUsed": "買了二手車"
+    }
+   }
+  },
+  {
+   "id": "home",
+   "age": [31, 31],
+   "when": {"house": false, "job": true, "retired": false, "test": "!(hWait > age)"},
+   "def": "rent",
+   "tarot": {"en": "The Empress", "zh": "女皇", "zht": "皇后"},
+   "art": "home",
+   "let": {"P": "price()", "liq": "liquid()"},
+   "vars": {"p": "MN(price())"},
+   "opts": [
+    {
+     "id": "buy",
+     "sub": {"d": "MN(.23 * P)", "m": "MN(mPay(.8 * P))"},
+     "ok": "liq >= .23 * P || M('.need', { n: MN(.23 * P), h: MN(liq) })",
+     "do": "buy(P)"
+    },
+    {
+     "id": "small",
+     "sub": {"d": "MN(.138 * P)", "m": "MN(mPay(.48 * P))"},
+     "ok": "liq >= .138 * P || M('.need', { n: MN(.138 * P), h: MN(liq) })",
+     "do": "buy(.6 * P)"
+    },
+    {"id": "rent", "sub": {"r": "MN(rent())"}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Rent or buy",
+     ".x": "A typical family home costs {p}. Banks want 20% down, plus 3% in fees.",
+     ".buy": "Buy a family home",
+     ".buy.s": "{d} up front, then {m} a year for 30 years. No more rent.",
+     ".small": "Buy a small flat",
+     ".small.s": "{d} up front, then {m} a year. Saves 60% of your rent.",
+     ".rent": "Keep renting",
+     ".rent.s": "Rent stays about {r} a year. Your savings stay where they are.",
+     ".need": "Needs {n} up front. You have {h}."
+    },
+    "zh": {
+     ".t": "租房还是买房",
+     ".x": "一间普通的家庭住宅要{p}。银行要20%首付，外加3%手续费。",
+     ".buy": "买一间家庭住宅",
+     ".buy.s": "首付加费用共{d}，之后30年每年还{m}。不用再付房租。",
+     ".small": "买一间小公寓",
+     ".small.s": "首付加费用共{d}，之后每年还{m}。省下60%的房租。",
+     ".rent": "继续租房",
+     ".rent.s": "房租大约每年{r}。你的存款不动。",
+     ".need": "需要{n}首付，你只有{h}。"
+    },
+    "zht": {
+     ".t": "租房還是買房",
+     ".x": "一間普通的家庭住宅要{p}。銀行要20%頭期款，外加3%手續費。",
+     ".buy": "買一間家庭住宅",
+     ".buy.s": "頭期款加費用共{d}，之後30年每年還{m}。不用再付房租。",
+     ".small": "買一間小公寓",
+     ".small.s": "頭期款加費用共{d}，之後每年還{m}。省下60%的房租。",
+     ".rent": "繼續租房",
+     ".rent.s": "房租大約每年{r}。你的存款不動。",
+     ".need": "需要{n}頭期款，你只有{h}。"
+    }
+   }
+  },
+  {
+   "id": "rates",
+   "age": [32, 52],
+   "weight": 0.8,
+   "when": {"house": true, "test": "!house.fixed && house.mort > .2 * house.value"},
+   "def": "ride",
+   "tarot": {"en": "Eight of Swords", "zh": "宝剑八", "zht": "寶劍八"},
+   "art": "rates",
+   "let": {
+    "h": "house",
+    "x": "Math.min(.3 * h.mort, .5 * liquid())",
+    "n": "Math.max(1, (h.end || age + 20) - age)"
+   },
+   "fn": {
+    "ride": {
+     "args": [],
+     "do": "setRate(house, .065, age); T('rates', { kind: 'custom', label: M('trk.rates'), note: M('note.rates') }); later(age + 2 + Math.floor(roll('rateLen') * 4), 'rate')"
+    }
+   },
+   "vars": {"a": "MN(h.pay)", "b": "MN(amort(h.mort, .065, n))"},
+   "opts": [
+    {
+     "id": "fix",
+     "sub": {"a": "MN(.01 * h.mort)"},
+     "do": "pay(.01 * house.mort); setRate(house, .05, age); T('rates', { kind: 'custom', label: M('trk.ratesFix'), v: -.01 * house.mort, note: M('note.rates') }); later(age + 5, 'rate')"
+    },
+    {
+     "id": "pay",
+     "sub": {"a": "MN(x)"},
+     "ok": "x > .05 * h.mort || M('.payNo')",
+     "do": "pay(x); house.mort -= x; house.out += x; ride()"
+    },
+    {"id": "ride", "do": "ride()"}
+   ],
+   "later": {
+    "rate": "const h = house; if (h && h.rate > .03) { setRate(h, .03, age); log(M('log.rateDown'), 'good'); }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Interest rates jump",
+     ".x": "Mortgage rates rise from 3% to 6.5%. Your yearly payment would go from {a} to {b}. Nobody knows how long rates will stay high.",
+     ".fix": "Fix your rate at 5% for 5 years",
+     ".fix.s": "A fee of {a}. Your payment stays steady.",
+     ".pay": "Pay down part of the loan",
+     ".pay.s": "Use {a} of your savings. Smaller payments from now on.",
+     ".payNo": "Not enough savings to make a difference.",
+     ".ride": "Stay on the floating rate",
+     ".ride.s": "Pay the higher rate until rates come down again.",
+     "trk.rates": "Floating-rate mortgage",
+     "trk.ratesFix": "Fixed your mortgage rate",
+     "note.rates": "Extra interest paid above 3%"
+    },
+    "zh": {
+     ".t": "利率暴涨",
+     ".x": "房贷利率从3%涨到6.5%。你每年的还款会从{a}变成{b}。没人知道高利率会持续多久。",
+     ".fix": "锁定5年5%的固定利率",
+     ".fix.s": "手续费{a}。还款金额稳定。",
+     ".pay": "提前还一部分房贷",
+     ".pay.s": "用掉{a}的存款。以后每期还得少一点。",
+     ".payNo": "存款不够，提前还也没多大差别。",
+     ".ride": "继续浮动利率",
+     ".ride.s": "付高利率，直到利率再降下来。",
+     "trk.rates": "浮动利率房贷",
+     "trk.ratesFix": "锁定房贷利率",
+     "note.rates": "超过3%的部分多付的利息"
+    },
+    "zht": {
+     ".t": "利率暴漲",
+     ".x": "房貸利率從3%漲到6.5%。你每年的還款會從{a}變成{b}。沒人知道高利率會持續多久。",
+     ".fix": "鎖定5年5%的固定利率",
+     ".fix.s": "手續費{a}。還款金額穩定。",
+     ".pay": "提前還一部分房貸",
+     ".pay.s": "用掉{a}的存款。以後每期還得少一點。",
+     ".payNo": "存款不夠，提前還也沒多大差別。",
+     ".ride": "繼續機動利率",
+     ".ride.s": "付高利率，直到利率再降下來。",
+     "trk.rates": "機動利率房貸",
+     "trk.ratesFix": "鎖定房貸利率",
+     "note.rates": "超過3%的部分多付的利息"
+    }
+   }
+  },
+  {
+   "id": "bubble",
+   "age": [35, 54],
+   "weight": 0.6,
+   "def": "hold",
+   "tarot": {"en": "Five of Wands", "zh": "权杖五", "zht": "權杖五"},
+   "art": "bubble",
+   "let": {"P": "price()", "liq": "liquid()", "net": "house ? house.value * .95 - house.mort : 0"},
+   "text": "house ? M('.x', { a: MN(house.value) }) : M('.x0', { p: MN(price()) })",
+   "pre": "hm *= 1.3; if (house) house.value *= 1.3; later(age + 1 + Math.floor(roll('bubAt') * 4), 'burst')",
+   "preLog": "M('log.boomUp')",
+   "opts": [
+    {
+     "id": "sell",
+     "show": "!!house",
+     "sub": {"a": "MN(net)"},
+     "do": "const h = house, v = h.value; cash += v * .95 - h.mort; const t = trk.home; if (t) t.note = M('note.homeSold', {a: MN(v)}); house = null; T('bubble', {kind: 'custom', label: M('trk.bubbleSell'), ref: v, note: M('note.bubble0')})"
+    },
+    {"id": "hold", "show": "!!house"},
+    {
+     "id": "buy",
+     "show": "!house",
+     "sub": "M('e.home.buy.s', {d: MN(.23 * P), m: MN(mPay(.8 * P))})",
+     "ok": "liq >= .23 * P || M('e.home.need', {n: MN(.23 * P), h: MN(liq)})",
+     "do": "buy(P)"
+    },
+    {"id": "hold", "show": "!house", "label": "M('.wait')", "sub": "M('.wait.s')"}
+   ],
+   "later": {
+    "burst": "const down = roll('burst') < .6, m = down ? .7 : 1.15; hm *= m; if (house) house.value *= m; const t = trk.bubble; if (t) { t.v = (1 - m) * t.ref; t.note = M(down ? 'note.bubbleDodge' : 'note.bubbleMiss', { a: MN(Math.abs(t.v)) }); } log(M(down ? 'log.burst' : 'log.boom'), down ? 'bad' : 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A property boom",
+     ".x": "Home prices are up 30% in two years. Your home is now worth {a}. Everyone says prices only go up.",
+     ".x0": "Home prices are up 30% in two years. A family home now costs {p}. Everyone says prices only go up.",
+     ".sell": "Sell and rent instead",
+     ".sell.s": "About {a} after fees and the loan.",
+     ".hold": "Stay put",
+     ".hold.s": "It's your home. Ride it out.",
+     ".buy": "Buy before prices rise more",
+     ".wait": "Keep renting",
+     ".wait.s": "Wait and see.",
+     "trk.bubbleSell": "Sold your home in the boom",
+     "note.homeSold": "Sold for {a}",
+     "note.bubble0": "Waiting to see where prices go"
+    },
+    "zh": {
+     ".t": "楼市狂热",
+     ".x": "两年内房价涨了30%。你的房子现在值{a}。人人都说房价只会涨。",
+     ".x0": "两年内房价涨了30%。一间家庭住宅现在要{p}。人人都说房价只会涨。",
+     ".sell": "卖掉房子改租房",
+     ".sell.s": "扣掉费用和房贷后大约拿到{a}。",
+     ".hold": "不动",
+     ".hold.s": "这是你的家，熬过去就好。",
+     ".buy": "趁还没再涨赶快买",
+     ".wait": "继续租房",
+     ".wait.s": "先观望。",
+     "trk.bubbleSell": "在楼市狂热时卖房",
+     "note.homeSold": "以{a}卖出",
+     "note.bubble0": "等着看房价往哪走"
+    },
+    "zht": {
+     ".t": "房市狂熱",
+     ".x": "兩年內房價漲了30%。你的房子現在值{a}。人人都說房價只會漲。",
+     ".x0": "兩年內房價漲了30%。一間家庭住宅現在要{p}。人人都說房價只會漲。",
+     ".sell": "賣掉房子改租屋",
+     ".sell.s": "扣掉費用和房貸後大約拿到{a}。",
+     ".hold": "不動",
+     ".hold.s": "這是你的家，撐過去就好。",
+     ".buy": "趁還沒再漲趕快買",
+     ".wait": "繼續租屋",
+     ".wait.s": "先觀望。",
+     "trk.bubbleSell": "在房市狂熱時賣房",
+     "note.homeSold": "以{a}賣出",
+     "note.bubble0": "等著看房價往哪走"
+    }
+   }
+  },
+  {
+   "id": "roof",
+   "age": [38, 74],
+   "weight": 0.65,
+   "when": {"house": true},
+   "def": "patch",
+   "tarot": {"en": "Ten of Wands", "zh": "权杖十", "zht": "權杖十"},
+   "art": "roof",
+   "opts": [
+    {"id": "fix", "sub": {"a": "MN(.12 * base)"}, "do": "spend('roof', .12 * base, 'trk.roofFix')"},
+    {
+     "id": "patch",
+     "sub": {"a": "MN(.02 * base)"},
+     "hint": true,
+     "do": "spend('roof', .02 * base, 'trk.roofPatch'); later(age + 2 + Math.floor(roll('roofAt') * 3), 'roof')"
+    }
+   ],
+   "later": {
+    "roof": "if (!house || roll('roof') >= .5) return; const c = .3 * base; pay(c); const t = trk.roof; if (t) { t.spent += c; t.g += c; } log(M('log.roof', { a: MN(c) }), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A leaking roof",
+     ".x": "Your roof has started leaking in heavy rain.",
+     ".fix": "Replace the roof properly",
+     ".fix.s": "About {a} now.",
+     ".patch": "Patch it for now",
+     ".patch.s": "About {a}.",
+     ".patch.h": "Half the time, a patched roof fails within a few years and costs far more.",
+     "trk.roofFix": "Replaced the roof",
+     "trk.roofPatch": "Patched the roof"
+    },
+    "zh": {
+     ".t": "屋顶漏水",
+     ".x": "下大雨时，你家屋顶开始漏水。",
+     ".fix": "彻底换新屋顶",
+     ".fix.s": "现在大约{a}。",
+     ".patch": "先补一补",
+     ".patch.s": "大约{a}。",
+     ".patch.h": "补过的屋顶有一半会在几年内再坏，到时花得更多。",
+     "trk.roofFix": "换新屋顶",
+     "trk.roofPatch": "修补屋顶"
+    },
+    "zht": {
+     ".t": "屋頂漏水",
+     ".x": "下大雨時，你家屋頂開始漏水。",
+     ".fix": "徹底換新屋頂",
+     ".fix.s": "現在大約{a}。",
+     ".patch": "先補一補",
+     ".patch.s": "大約{a}。",
+     ".patch.h": "補過的屋頂有一半會在幾年內再壞，到時花得更多。",
+     "trk.roofFix": "換新屋頂",
+     "trk.roofPatch": "修補屋頂"
+    }
+   }
+  },
+  {
+   "id": "car2",
+   "age": [39, 52],
+   "weight": 0.6,
+   "when": {"car": true, "retired": false},
+   "def": "keep",
+   "tarot": {"en": "Knight of Wands", "zh": "权杖骑士", "zht": "權杖騎士"},
+   "art": "car2",
+   "let": {"B": "base"},
+   "opts": [
+    {
+     "id": "lux",
+     "sub": {"c": "MN(1.6 * B)", "p": "MN(carPay(1.5 * B))"},
+     "do": "const old = car.bal || 0; car = { type: 'new', bal: 1.5 * B + old, pay: carPay(1.5 * B + old), trk: 'car2' }; happy += 4; T('car2', { kind: 'ghost', label: M('trk.car2Lux') })"
+    },
+    {
+     "id": "sens",
+     "sub": {"c": "MN(.45 * B)"},
+     "do": "spend('car2', .45 * B, 'trk.car2'); car.trk = 'car2'; happy += 1"
+    },
+    {
+     "id": "keep",
+     "sub": {"a": "MN(.07 * B)"},
+     "do": "T('car2', { kind: 'ghost', label: M('trk.car2Keep') }); rec('car2', .07 * base, 8)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new car?",
+     ".x": "Your car is getting old, and a friend has just bought a luxury car.",
+     ".lux": "A luxury car on a loan",
+     ".lux.s": "A {c} car, trading in your old one. Payments of {p} a year for 5 years. Happiness +4.",
+     ".sens": "A sensible car, paid in cash",
+     ".sens.s": "{c} once. Happiness +1.",
+     ".keep": "Keep driving your old car",
+     ".keep.s": "Repairs come to about {a} a year.",
+     "trk.car2Lux": "Luxury car on a loan",
+     "trk.car2": "A second car",
+     "trk.car2Keep": "Repairs on your old car"
+    },
+    "zh": {
+     ".t": "换车？",
+     ".x": "你的车越来越旧，朋友刚买了一辆豪车。",
+     ".lux": "贷款买豪车",
+     ".lux.s": "一辆{c}的车，旧车折价。5年内每年还{p}。幸福感 +4。",
+     ".sens": "现金买一辆实用的车",
+     ".sens.s": "一次付{c}。幸福感 +1。",
+     ".keep": "继续开旧车",
+     ".keep.s": "每年修车大约要{a}。",
+     "trk.car2Lux": "贷款买豪车",
+     "trk.car2": "换了第二辆车",
+     "trk.car2Keep": "旧车的维修费"
+    },
+    "zht": {
+     ".t": "換車？",
+     ".x": "你的車越來越舊，朋友剛買了一輛名車。",
+     ".lux": "貸款買名車",
+     ".lux.s": "一輛{c}的車，舊車折價。5年內每年還{p}。幸福感 +4。",
+     ".sens": "現金買一輛實用的車",
+     ".sens.s": "一次付{c}。幸福感 +1。",
+     ".keep": "繼續開舊車",
+     ".keep.s": "每年修車大約要{a}。",
+     "trk.car2Lux": "貸款買名車",
+     "trk.car2": "換了第二輛車",
+     "trk.car2Keep": "舊車的維修費"
+    }
+   }
+  },
+  {
+   "id": "room",
+   "age": [58, 80],
+   "weight": 0.45,
+   "when": {"house": true},
+   "def": "no",
+   "tarot": {"en": "Two of Cups", "zh": "圣杯二", "zht": "聖杯二"},
+   "art": "room",
+   "opts": [
+    {
+     "id": "rent",
+     "sub": {"a": "MN(.06 * base)"},
+     "do": "T('room', { kind: 'custom', label: M('trk.room') }); rec('room', -.06 * base, 10); happy -= 2"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A spare room",
+     ".x": "Your house has a spare bedroom now.",
+     ".rent": "Rent it to a lodger",
+     ".rent.s": "About {a} a year. Less privacy. Happiness −2.",
+     ".no": "Keep it for guests",
+     ".no.s": "Nothing changes.",
+     "trk.room": "A lodger"
+    },
+    "zh": {
+     ".t": "空房间",
+     ".x": "你家现在多了一间空卧室。",
+     ".rent": "租给房客",
+     ".rent.s": "每年约{a}。少了点隐私。幸福感 −2。",
+     ".no": "留着给客人住",
+     ".no.s": "什么都不变。",
+     "trk.room": "房客"
+    },
+    "zht": {
+     ".t": "空房間",
+     ".x": "你家現在多了一間空臥室。",
+     ".rent": "租給房客",
+     ".rent.s": "每年約{a}。少了點隱私。幸福感 −2。",
+     ".no": "留著給客人住",
+     ".no.s": "什麼都不變。",
+     "trk.room": "房客"
+    }
+   }
+  },
+  {
+   "id": "downsize",
+   "age": [62, 76],
+   "weight": 0.65,
+   "when": {"house": true},
+   "def": "stay",
+   "tarot": {"en": "Eight of Cups", "zh": "圣杯八", "zht": "聖杯八"},
+   "art": "downsize",
+   "let": {"h": "house", "free": ".45 * h.value"},
+   "vars": {"a": "MN(house.value)"},
+   "opts": [
+    {
+     "id": "sell",
+     "sub": {"b": "MN(Math.max(0, free - h.mort))"},
+     "do": "const h = house; let x = .45 * h.value; h.value *= .5; h.frac *= .5; h.out += .05 * h.value; const p = Math.min(x, h.mort); h.mort -= p; x -= p; if (h.mort < 1) h.mort = 0; mkLot('down', {}, 'trk.down'); addLot('down', x); happy -= 2"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Downsizing",
+     ".x": "Your home is worth {a}, and it feels bigger than you need now.",
+     ".sell": "Move to a smaller place",
+     ".sell.s": "Frees up about {b} to invest, with lower upkeep. Happiness −2.",
+     ".stay": "Stay in the family home",
+     ".stay.s": "Familiar walls and memories.",
+     "trk.down": "Downsized your home"
+    },
+    "zh": {
+     ".t": "换小房子",
+     ".x": "你的房子值{a}，现在住起来觉得太大了。",
+     ".sell": "搬到小一点的地方",
+     ".sell.s": "空出大约{b}可以投资，维护费也更低。幸福感 −2。",
+     ".stay": "留在老房子",
+     ".stay.s": "熟悉的家，满满的回忆。",
+     "trk.down": "换了小房子"
+    },
+    "zht": {
+     ".t": "換小房子",
+     ".x": "你的房子值{a}，現在住起來覺得太大了。",
+     ".sell": "搬到小一點的地方",
+     ".sell.s": "空出大約{b}可以投資，維護費也更低。幸福感 −2。",
+     ".stay": "留在老房子",
+     ".stay.s": "熟悉的家，滿滿的回憶。",
+     "trk.down": "換了小房子"
+    }
+   }
+  },
+  {
+   "id": "reverse",
+   "age": [72, 90],
+   "weight": 0.5,
+   "when": {"house": true, "retired": true, "test": "house.mort < 1"},
+   "def": "no",
+   "tarot": {"en": "Seven of Wands", "zh": "权杖七", "zht": "權杖七"},
+   "art": "reverse",
+   "vars": {"a": "MN(house.value)"},
+   "opts": [
+    {
+     "id": "unlock",
+     "label": "M('.unlock', { a: MN(.3 * house.value) })",
+     "do": "const h = house, x = .3 * h.value; cash += x; h.mort += x; h.rate = .05; h.pay = 0; happy += 3; T('reverse', { kind: 'custom', label: M('trk.reverse'), note: M('note.reverse', { a: MN(x) }) })"
+    },
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Unlocking your home",
+     ".x": "Your home is worth {a} and fully paid off. A bank offers a reverse mortgage: cash now, repaid from the house later.",
+     ".unlock": "Take {a} out of your home",
+     ".unlock.s": "No monthly payments. The loan grows at 5% a year and is repaid when the house is sold. Money for comforts: Happiness +3.",
+     ".no": "Keep the house debt-free",
+     ".no.s": "Nothing changes.",
+     "trk.reverse": "Reverse mortgage",
+     "note.reverse": "Took {a} out. The loan grows each year."
+    },
+    "zh": {
+     ".t": "以房养老",
+     ".x": "你的房子值{a}，房贷已经还清。银行提议以房养老：现在给你现金，以后从房子里还。",
+     ".unlock": "从房子里拿出{a}",
+     ".unlock.s": "不用每月还款。贷款每年以5%增长，等房子卖掉时再还清。多了钱过得舒服些：幸福感 +3。",
+     ".no": "房子不背债",
+     ".no.s": "什么都不变。",
+     "trk.reverse": "以房养老",
+     "note.reverse": "拿出了{a}，贷款每年都在增长。"
+    },
+    "zht": {
+     ".t": "以房養老",
+     ".x": "你的房子值{a}，房貸已經還清。銀行提議以房養老：現在給你現金，以後從房子裡還。",
+     ".unlock": "從房子裡拿出{a}",
+     ".unlock.s": "不用每月還款。貸款每年以5%增長，等房子賣掉時再還清。多了錢過得舒服些：幸福感 +3。",
+     ".no": "房子不背債",
+     ".no.s": "什麼都不變。",
+     "trk.reverse": "以房養老",
+     "note.reverse": "拿出了{a}，貸款每年都在增長。"
+    }
+   }
+  },
+  {
+   "id": "move2",
+   "age": [75, 92],
+   "weight": 0.6,
+   "def": "stay",
+   "tarot": {"en": "Knight of Cups", "zh": "圣杯骑士", "zht": "聖杯騎士"},
+   "art": "move2",
+   "vars": {"a": "MN(.25 * base)"},
+   "opts": [
+    {
+     "id": "move",
+     "sub": {"a": "MN(.25 * base)"},
+     "do": "T('move2', { kind: 'ghost', label: M('trk.move2') }); rec('move2', .25 * base, 40, 1); happy += 4"
+    },
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A retirement village",
+     ".x": "A retirement village nearby has care on hand, meals and neighbours your age. It costs about {a} a year on top of your home costs.",
+     ".move": "Move in",
+     ".move.s": "About {a} a year. Company, and help when you need it. Happiness +4.",
+     ".stay": "Stay at home",
+     ".stay.s": "Familiar and cheaper.",
+     "trk.move2": "Retirement village"
+    },
+    "zh": {
+     ".t": "养老社区",
+     ".x": "附近有一个养老社区，有护理人员、三餐，还有同龄的邻居。除了原本的住房开销，每年还要约{a}。",
+     ".move": "搬进去",
+     ".move.s": "每年约{a}。有人作伴，需要时有人帮忙。幸福感 +4。",
+     ".stay": "留在家里",
+     ".stay.s": "熟悉，也更省钱。",
+     "trk.move2": "养老社区"
+    },
+    "zht": {
+     ".t": "養生村",
+     ".x": "附近有一個養生村，有照護人員、三餐，還有同齡的鄰居。除了原本的住房開銷，每年還要約{a}。",
+     ".move": "搬進去",
+     ".move.s": "每年約{a}。有人作伴，需要時有人幫忙。幸福感 +4。",
+     ".stay": "留在家裡",
+     ".stay.s": "熟悉，也更省錢。",
+     "trk.move2": "養生村"
+    }
+   }
+  }
+ ]
+}
