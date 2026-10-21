@@ -2100,6 +2100,736 @@
      "log.y_shop2No": "擴大後的網店賣不動，你帶著一堆庫存關店了。"
     }
    }
+  },
+  {
+   "id": "f_promo",
+   "age": [32, 44],
+   "weight": 0.4,
+   "when": {"working": true, "careerType": ["office", "hands"]},
+   "def": "stay",
+   "tarot": "job",
+   "art": {"draw": "suit", "bg": "ya"},
+   "opts": [
+    {"id": "lead", "hint": true, "rel": -2, "do": "bump('f_promo', 1.12, M('trk.f_promo')); health -= 2; happy -= 1", "next": {"event": "f_promo2", "in": [3, 4], "p": 0.5}},
+    {"id": "stay", "do": "happy += 1"},
+    {"id": "four", "hint": true, "rel": 2, "do": "bump('f_four', .8, M('trk.f_four')); happy += 4"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Managing a team",
+     ".x": "Your boss offers you a team to manage. You could also ask for something else entirely: a four-day week.",
+     ".lead": "Become a manager",
+     ".lead.s": "A pay rise, and longer days.",
+     ".lead.h": "Pay about 12% higher. Health −2, Happiness −1.",
+     ".stay": "Stay a specialist",
+     ".stay.s": "The work you know and like.",
+     ".four": "Ask for a four-day week",
+     ".four.s": "80% of your pay, every Friday off.",
+     ".four.h": "Happiness +4.",
+     "trk.f_promo": "Became a manager",
+     "trk.f_four": "A four-day week"
+    },
+    "zh": {
+     ".t": "带团队",
+     ".x": "老板要你带一个团队。你也可以提出完全不同的要求：每周上四天班。",
+     ".lead": "当主管",
+     ".lead.s": "加薪，工时也变长。",
+     ".lead.h": "工资大约高12%。健康 −2，幸福感 −1。",
+     ".stay": "继续做专业岗位",
+     ".stay.s": "做熟悉又喜欢的事。",
+     ".four": "申请每周四天班",
+     ".four.s": "拿八成工资，每周五都休。",
+     ".four.h": "幸福感 +4。",
+     "trk.f_promo": "升为主管",
+     "trk.f_four": "每周四天班"
+    },
+    "zht": {
+     ".t": "帶團隊",
+     ".x": "老闆要你帶一個團隊。你也可以提出完全不同的要求：每週上四天班。",
+     ".lead": "當主管",
+     ".lead.s": "加薪，工時也變長。",
+     ".lead.h": "薪水大約高12%。健康 −2，幸福感 −1。",
+     ".stay": "繼續做專業職",
+     ".stay.s": "做熟悉又喜歡的事。",
+     ".four": "申請每週上四天班",
+     ".four.s": "領八成薪水，每週五都休。",
+     ".four.h": "幸福感 +4。",
+     "trk.f_promo": "升為主管",
+     "trk.f_four": "每週四天班"
+    }
+   }
+  },
+  {
+   "id": "f_promo2",
+   "chain": true,
+   "when": {"working": true},
+   "def": "carry",
+   "tarot": "job",
+   "art": {"draw": "suit", "bg": "mi"},
+   "opts": [
+    {"id": "up", "hint": true, "rel": -2, "do": "bump('f_promo2', 1.15, M('trk.f_promo2')); health -= 3; happy -= 2"},
+    {"id": "back", "hint": true, "do": "bump.f_promo = 1; happy += 3"},
+    {"id": "carry"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The next step up",
+     ".x": "You have managed your team for a few years. A director’s job is open, and you are tired.",
+     ".up": "Go for director",
+     ".up.s": "More pay, more meetings, more evenings.",
+     ".up.h": "Pay about 15% higher. Health −3, Happiness −2.",
+     ".back": "Step back to specialist",
+     ".back.s": "Your manager’s pay rise goes away.",
+     ".back.h": "Happiness +3.",
+     ".carry": "Carry on as you are",
+     ".carry.s": "Nothing changes.",
+     "trk.f_promo2": "Became a director"
+    },
+    "zh": {
+     ".t": "再往上一步",
+     ".x": "你带团队几年了。现在有个总监的位子空出来，而你很累了。",
+     ".up": "争取当总监",
+     ".up.s": "更多工资，更多会议，更多加班的晚上。",
+     ".up.h": "工资大约高15%。健康 −3，幸福感 −2。",
+     ".back": "退回专业岗位",
+     ".back.s": "主管加的那份工资就没了。",
+     ".back.h": "幸福感 +3。",
+     ".carry": "维持现状",
+     ".carry.s": "什么都不变。",
+     "trk.f_promo2": "升为总监"
+    },
+    "zht": {
+     ".t": "再往上一步",
+     ".x": "你帶團隊幾年了。現在有個總監的位子空出來，而你很累了。",
+     ".up": "爭取當總監",
+     ".up.s": "更多薪水，更多會議，更多加班的晚上。",
+     ".up.h": "薪水大約高15%。健康 −3，幸福感 −2。",
+     ".back": "退回專業職",
+     ".back.s": "主管加的那份薪水就沒了。",
+     ".back.h": "幸福感 +3。",
+     ".carry": "維持現狀",
+     ".carry.s": "什麼都不變。",
+     "trk.f_promo2": "升為總監"
+    }
+   }
+  },
+  {
+   "id": "f_headhunt",
+   "age": [32, 44],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "network",
+   "art": {"draw": "suit", "bg": "co"},
+   "opts": [
+    {"id": "go", "hint": true, "do": "bump('f_headhunt', 1.2, M('trk.f_headhunt')); layM = (layM || 1) * 1.6", "next": {"event": "f_headhunt2", "in": [2, 4], "p": 0.4}},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A headhunter calls",
+     ".x": "A headhunter offers you a job at a fast-growing company that is spending a lot of money.",
+     ".go": "Take it",
+     ".go.s": "20% more pay.",
+     ".go.h": "Fast-growing companies lay people off more often.",
+     ".stay": "Stay where you are",
+     ".stay.s": "Steady.",
+     "trk.f_headhunt": "A job through a headhunter"
+    },
+    "zh": {
+     ".t": "猎头来电",
+     ".x": "猎头给你介绍一家高速扩张、花钱很凶的公司。",
+     ".go": "接受",
+     ".go.s": "工资高20%。",
+     ".go.h": "高速扩张的公司裁员也比较频繁。",
+     ".stay": "留在原公司",
+     ".stay.s": "稳定。",
+     "trk.f_headhunt": "猎头介绍的工作"
+    },
+    "zht": {
+     ".t": "獵頭來電",
+     ".x": "獵頭幫你介紹一家高速擴張、花錢很兇的公司。",
+     ".go": "接受",
+     ".go.s": "薪水高20%。",
+     ".go.h": "高速擴張的公司裁員也比較頻繁。",
+     ".stay": "留在原公司",
+     ".stay.s": "穩定。",
+     "trk.f_headhunt": "獵頭介紹的工作"
+    }
+   }
+  },
+  {
+   "id": "f_headhunt2",
+   "chain": true,
+   "when": {"working": true},
+   "def": "ride",
+   "tarot": "layoff",
+   "art": {"draw": "late", "bg": "co"},
+   "opts": [
+    {"id": "leave", "hint": true, "do": "bump.f_headhunt = 1.05; layM = (layM || 1) / 1.6"},
+    {"id": "ride", "hint": true, "do": "happy -= 1; if (roll('f_headhunt2') < .5) { layAt = age; layVol = false }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Trouble at the new firm",
+     ".x": "The company that hired you has run short of money. Rumours of cuts are everywhere.",
+     ".leave": "Leave for a steadier job",
+     ".leave.s": "A little less pay than now.",
+     ".leave.h": "Pay about 5% above where you started; layoff risk back to normal.",
+     ".ride": "Ride it out",
+     ".ride.s": "Keep your pay and hope.",
+     ".ride.h": "Happiness −1. About half the time you are laid off this year."
+    },
+    "zh": {
+     ".t": "新公司出状况了",
+     ".x": "挖你过去的公司资金紧张，到处都在传要裁员。",
+     ".leave": "跳去稳定一点的公司",
+     ".leave.s": "工资比现在少一点。",
+     ".leave.h": "比当初高大约5%；裁员风险恢复正常。",
+     ".ride": "撑过去",
+     ".ride.s": "保住工资，祈祷没事。",
+     ".ride.h": "幸福感 −1。大约一半机会今年会被裁。"
+    },
+    "zht": {
+     ".t": "新公司出狀況了",
+     ".x": "挖你過去的公司資金緊張，到處都在傳要裁員。",
+     ".leave": "跳去穩定一點的公司",
+     ".leave.s": "薪水比現在少一點。",
+     ".leave.h": "比當初高大約5%；裁員風險恢復正常。",
+     ".ride": "撐過去",
+     ".ride.s": "保住薪水，祈禱沒事。",
+     ".ride.h": "幸福感 −1。大約一半機會今年會被裁。"
+    }
+   }
+  },
+  {
+   "id": "f_leave",
+   "age": [30, 44],
+   "weight": 0.6,
+   "when": {"working": true, "kidAge": [0, 0]},
+   "def": "short",
+   "tarot": "grandkid",
+   "art": {"draw": "baby", "bg": "mi"},
+   "opts": [
+    {"id": "long", "hint": true, "do": "tmpPay('f_leave', .4, 1, 'trk.f_leave'); happy += 3; bond('kid', 5)"},
+    {"id": "share", "hint": true, "show": "!!pt && pt.st !== 'date'", "do": "tmpPay('f_leave', .75, 1, 'trk.f_leave'); happy += 2; bond('kid', 3); bond('pt', 3)"},
+    {"id": "short", "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Time with the baby",
+     ".x": "Your baby has arrived. How long will you take off work?",
+     ".long": "A long leave",
+     ".long.s": "Most of the year off, on 40% of your pay.",
+     ".long.h": "Happiness +3, closer to your child.",
+     ".share": "Share the leave with your partner",
+     ".share.s": "A few months each, on 75% of your pay.",
+     ".share.h": "Happiness +2, closer to your child and your partner.",
+     ".short": "Back to work quickly",
+     ".short.s": "Full pay.",
+     "trk.f_leave": "Parental leave"
+    },
+    "zh": {
+     ".t": "陪宝宝的时间",
+     ".x": "宝宝出生了。你要请多久的假？",
+     ".long": "请长假",
+     ".long.s": "这一年大半在家，拿四成工资。",
+     ".long.h": "幸福感 +3，跟孩子更亲。",
+     ".share": "跟伴侣分着请",
+     ".share.s": "各请几个月，拿七成半工资。",
+     ".share.h": "幸福感 +2，跟孩子和伴侣都更亲。",
+     ".short": "很快回去上班",
+     ".short.s": "全薪。",
+     "trk.f_leave": "育儿假"
+    },
+    "zht": {
+     ".t": "陪寶寶的時間",
+     ".x": "寶寶出生了。你要請多久的假？",
+     ".long": "請長假",
+     ".long.s": "這一年大半在家，領四成薪水。",
+     ".long.h": "幸福感 +3，跟孩子更親。",
+     ".share": "跟伴侶分著請",
+     ".share.s": "各請幾個月，領七成半薪水。",
+     ".share.h": "幸福感 +2，跟孩子和伴侶都更親。",
+     ".short": "很快回去上班",
+     ".short.s": "全薪。",
+     "trk.f_leave": "育嬰假"
+    }
+   }
+  },
+  {
+   "id": "f_franchise",
+   "src": "ESTIMATE: game rule (franchise costs and how often franchises close in their first years)",
+   "age": [35, 44],
+   "weight": 0.3,
+   "when": {"working": true, "stats": {"liquid": "> .8 * base"}},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "mi"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.8 * base)"}, "hint": true, "do": "spend('f_franB', .8 * base, 'trk.f_franB'); happy -= 1; later(age + 1, 'f_fran', {})"},
+    {"id": "no"}
+   ],
+   "later": {
+    "f_fran": "if (roll('f_fran') < .6) { T('f_fran', {kind: 'custom', label: M('trk.f_fran')}); rec('f_fran', -.15 * base, 10); log(M('log.f_franOk', {a: MN(.15 * base)}), 'good'); next('f_franchise2', [3, 4], {}) } else log(M('log.f_franNo'), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Buy a franchise?",
+     ".x": "A sandwich chain is looking for franchise owners in your area. A manager would run it day to day.",
+     ".buy": "Buy in",
+     ".buy.s": "About {a} for the fee, the fit-out and the first stock.",
+     ".buy.h": "Happiness −1. About six in ten franchises pay a good yearly income; the rest close. You find out next year.",
+     ".no": "Keep your savings",
+     ".no.s": "No shop.",
+     "trk.f_fran": "Franchise income",
+     "trk.f_franB": "Buying the franchise",
+     "log.f_franOk": "Your franchise is doing well: about {a} a year.",
+     "log.f_franNo": "Your franchise never found enough customers and has closed."
+    },
+    "zh": {
+     ".t": "加盟连锁店？",
+     ".x": "一家三明治连锁店在你这一带招加盟主，日常由店长打理。",
+     ".buy": "加盟",
+     ".buy.s": "加盟费、装修和首批货大约{a}。",
+     ".buy.h": "幸福感 −1。大约六成加盟店每年都有不错的收入，其余会关门。明年就知道。",
+     ".no": "钱留着",
+     ".no.s": "不开店。",
+     "trk.f_fran": "加盟店收入",
+     "trk.f_franB": "加盟成本",
+     "log.f_franOk": "你的加盟店经营得不错：每年大约{a}。",
+     "log.f_franNo": "你的加盟店一直客人不够，关门了。"
+    },
+    "zht": {
+     ".t": "加盟連鎖店？",
+     ".x": "一家三明治連鎖店在你這一帶招加盟主，日常由店長打理。",
+     ".buy": "加盟",
+     ".buy.s": "加盟金、裝潢和首批貨大約{a}。",
+     ".buy.h": "幸福感 −1。大約六成加盟店每年都有不錯的收入，其餘會關門。明年就知道。",
+     ".no": "錢留著",
+     ".no.s": "不開店。",
+     "trk.f_fran": "加盟店收入",
+     "trk.f_franB": "加盟成本",
+     "log.f_franOk": "你的加盟店經營得不錯：每年大約{a}。",
+     "log.f_franNo": "你的加盟店一直客人不夠，關門了。"
+    }
+   }
+  },
+  {
+   "id": "f_franchise2",
+   "chain": true,
+   "def": "keep",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "opts": [
+    {"id": "second", "sub": {"a": "MN(.6 * base)"}, "hint": true, "do": "spend('f_franB', .6 * base, 'trk.f_franB'); later(age + 1, 'f_fran2', {})"},
+    {"id": "sell", "sub": {"a": "MN(.8 * base)"}, "do": "stopRec('f_fran'); cash += .8 * base; const tq = T('f_franS', {kind: 'custom', label: M('trk.f_franS')}); tq.v += .8 * base"},
+    {"id": "keep"}
+   ],
+   "later": {
+    "f_fran2": "if (roll('f_fran2') < .55) { T('f_fran2', {kind: 'custom', label: M('trk.f_fran2')}); rec('f_fran2', -.12 * base, 10); log(M('log.f_fran2Ok'), 'good') } else log(M('log.f_fran2No'), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A second shop?",
+     ".x": "Your franchise is doing well. The chain offers you a second site, and another owner would buy yours.",
+     ".second": "Open a second shop",
+     ".second.s": "About {a} up front.",
+     ".second.h": "A second site works a bit more than half the time.",
+     ".sell": "Sell the shop",
+     ".sell.s": "{a} for the business.",
+     ".keep": "Keep one shop",
+     ".keep.s": "Steady income.",
+     "trk.f_fran2": "Second shop income",
+     "trk.f_franS": "Sold the franchise",
+     "log.f_fran2Ok": "Your second shop is doing well too.",
+     "log.f_fran2No": "Your second shop didn’t work out and has closed."
+    },
+    "zh": {
+     ".t": "开第二家店？",
+     ".x": "你的加盟店做得不错。总部给你第二个店址，也有别的加盟主想买你的店。",
+     ".second": "开第二家",
+     ".second.s": "先投入大约{a}。",
+     ".second.h": "第二家店成功的机会一半多一点。",
+     ".sell": "把店卖掉",
+     ".sell.s": "店卖{a}。",
+     ".keep": "维持一家店",
+     ".keep.s": "收入稳定。",
+     "trk.f_fran2": "第二家店收入",
+     "trk.f_franS": "卖掉加盟店",
+     "log.f_fran2Ok": "第二家店也做起来了。",
+     "log.f_fran2No": "第二家店没做起来，关门了。"
+    },
+    "zht": {
+     ".t": "開第二家店？",
+     ".x": "你的加盟店做得不錯。總部給你第二個店址，也有別的加盟主想買你的店。",
+     ".second": "開第二家",
+     ".second.s": "先投入大約{a}。",
+     ".second.h": "第二家店成功的機會一半多一點。",
+     ".sell": "把店賣掉",
+     ".sell.s": "店賣{a}。",
+     ".keep": "維持一家店",
+     ".keep.s": "收入穩定。",
+     "trk.f_fran2": "第二家店收入",
+     "trk.f_franS": "賣掉加盟店",
+     "log.f_fran2Ok": "第二家店也做起來了。",
+     "log.f_fran2No": "第二家店沒做起來，關門了。"
+    }
+   }
+  },
+  {
+   "id": "f_retrain",
+   "age": [35, 44],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "wait",
+   "tarot": "cert",
+   "art": {"draw": "gradloan", "bg": "mi"},
+   "opts": [
+    {"id": "course", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('f_retrain', .1 * base, 'trk.f_retrain'); addSkill('learn', 2, M('trk.learn')); bump('f_retrain', 1.03, M('trk.f_retrainP')); happy -= 2", "next": {"event": "f_retrain2", "in": [1, 2], "p": 0.4}},
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Learning something new",
+     ".x": "Your work is changing fast. A part-time course would teach you the new skills.",
+     ".course": "Take the course",
+     ".course.s": "About {a}, and evenings for a year.",
+     ".course.h": "Skill +2, pay about 3% higher, Happiness −2. Some get a better offer afterwards.",
+     ".wait": "Wait and see",
+     ".wait.s": "Your evenings stay free.",
+     "trk.f_retrain": "A part-time course",
+     "trk.f_retrainP": "New skills at work"
+    },
+    "zh": {
+     ".t": "充电进修",
+     ".x": "你的工作变化得很快。读个在职课程能学到新技能。",
+     ".course": "去读",
+     ".course.s": "大约{a}，加上一年的晚上。",
+     ".course.h": "技能 +2，工资大约高3%，幸福感 −2。有些人之后会收到更好的工作邀请。",
+     ".wait": "先观望",
+     ".wait.s": "晚上空着。",
+     "trk.f_retrain": "在职课程",
+     "trk.f_retrainP": "新的工作技能"
+    },
+    "zht": {
+     ".t": "充電進修",
+     ".x": "你的工作變化得很快。讀個在職課程能學到新技能。",
+     ".course": "去讀",
+     ".course.s": "大約{a}，加上一年的晚上。",
+     ".course.h": "技能 +2，薪水大約高3%，幸福感 −2。有些人之後會收到更好的工作邀請。",
+     ".wait": "先觀望",
+     ".wait.s": "晚上空著。",
+     "trk.f_retrain": "在職課程",
+     "trk.f_retrainP": "新的工作技能"
+    }
+   }
+  },
+  {
+   "id": "f_retrain2",
+   "chain": true,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "cert",
+   "art": {"draw": "suit", "bg": "wa"},
+   "opts": [
+    {"id": "take", "hint": true, "do": "bump('f_retrain2', 1.1, M('trk.f_retrain2')); happy -= 1"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job in the new field",
+     ".x": "A classmate from your course recommends you for a job using your new skills.",
+     ".take": "Take it",
+     ".take.s": "A new team and new work.",
+     ".take.h": "Pay about 10% higher. Happiness −1 while you settle in.",
+     ".stay": "Stay where you are",
+     ".stay.s": "You use your new skills at your job.",
+     "trk.f_retrain2": "A job after retraining"
+    },
+    "zh": {
+     ".t": "新领域的工作",
+     ".x": "进修班的同学推荐你去一个用得上新技能的职位。",
+     ".take": "接受",
+     ".take.s": "新的团队，新的工作。",
+     ".take.h": "工资大约高10%。适应期间幸福感 −1。",
+     ".stay": "留在原地",
+     ".stay.s": "在现在的工作上用新技能。",
+     "trk.f_retrain2": "进修后的新工作"
+    },
+    "zht": {
+     ".t": "新領域的工作",
+     ".x": "進修班的同學推薦你去一個用得上新技能的職位。",
+     ".take": "接受",
+     ".take.s": "新的團隊，新的工作。",
+     ".take.h": "薪水大約高10%。適應期間幸福感 −1。",
+     ".stay": "留在原地",
+     ".stay.s": "在現在的工作上用新技能。",
+     "trk.f_retrain2": "進修後的新工作"
+    }
+   }
+  },
+  {
+   "id": "f_govjob",
+   "src": "Public-sector jobs are laid off far less often than private ones, though top pay is lower (OECD, Government at a Glance 2023); sizes are an ESTIMATE",
+   "age": [30, 40],
+   "weight": 0.3,
+   "when": {"working": true, "careerType": ["office"]},
+   "def": "stay",
+   "tarot": "save2",
+   "art": {"draw": "service", "bg": "mi"},
+   "opts": [
+    {"id": "gov", "hint": true, "do": "bump('f_gov', .9, M('trk.f_gov')); layM = (layM || 1) * .3; happy += 1"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A government job",
+     ".x": "A government department is hiring people with your experience.",
+     ".gov": "Apply and move",
+     ".gov.s": "Pay about 10% lower.",
+     ".gov.h": "Happiness +1. Layoffs become rare.",
+     ".stay": "Stay in your job",
+     ".stay.s": "Same pay.",
+     "trk.f_gov": "A government job"
+    },
+    "zh": {
+     ".t": "进政府部门",
+     ".x": "有个政府部门在招有你这种经验的人。",
+     ".gov": "申请过去",
+     ".gov.s": "工资低大约10%。",
+     ".gov.h": "幸福感 +1。几乎不会被裁员。",
+     ".stay": "留在原公司",
+     ".stay.s": "工资不变。",
+     "trk.f_gov": "政府部门的工作"
+    },
+    "zht": {
+     ".t": "進公家機關",
+     ".x": "有個政府機關在招有你這種經驗的人。",
+     ".gov": "申請過去",
+     ".gov.s": "薪水低大約10%。",
+     ".gov.h": "幸福感 +1。幾乎不會被裁員。",
+     ".stay": "留在原公司",
+     ".stay.s": "薪水不變。",
+     "trk.f_gov": "公家機關的工作"
+    }
+   }
+  },
+  {
+   "id": "f_idea",
+   "src": "ESTIMATE: game rule (few individual inventions are ever licensed)",
+   "age": [32, 44],
+   "weight": 0.3,
+   "when": {"working": true, "careerType": ["office", "hands"]},
+   "def": "drop",
+   "tarot": "tip",
+   "art": {"draw": "tools", "bg": "ya"},
+   "opts": [
+    {"id": "give", "sub": {"a": "MN(.05 * base)"}, "do": "cash += .05 * base; const tq = T('f_ideaB', {kind: 'custom', label: M('trk.f_ideaB')}); tq.v += .05 * base"},
+    {"id": "build", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('f_idea', .05 * base, 'trk.f_idea'); happy -= 1; later(age + 2, 'f_idea', {})"},
+    {"id": "drop"}
+   ],
+   "later": {
+    "f_idea": "if (roll('f_idea') < .2) { log(M('log.f_ideaOk'), 'good'); next('f_idea2', 0, {}) } else log(M('log.f_ideaNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A good idea",
+     ".x": "You come up with a clever fix for a problem everyone in your trade has.",
+     ".give": "Hand it to your employer",
+     ".give.s": "A {a} bonus for the suggestion.",
+     ".build": "Develop it yourself at night",
+     ".build.s": "About {a} for a prototype and a patent filing.",
+     ".build.h": "Happiness −1. About one such idea in five interests a company. You find out in two years.",
+     ".drop": "Let it go",
+     ".drop.s": "Someone else will think of it.",
+     "trk.f_ideaB": "Suggestion bonus",
+     "trk.f_idea": "Prototype and patent",
+     "log.f_ideaOk": "A company is interested in your invention.",
+     "log.f_ideaNo": "Nobody wants your invention. The prototype goes in the garage."
+    },
+    "zh": {
+     ".t": "一个好点子",
+     ".x": "你想出一个巧妙的办法，解决了整个行业都头痛的问题。",
+     ".give": "交给公司",
+     ".give.s": "提案奖金{a}。",
+     ".build": "晚上自己开发",
+     ".build.s": "样品和专利申请大约{a}。",
+     ".build.h": "幸福感 −1。这种点子大约五个有一个会引起公司兴趣。两年后揭晓。",
+     ".drop": "算了",
+     ".drop.s": "总会有人想到的。",
+     "trk.f_ideaB": "提案奖金",
+     "trk.f_idea": "样品和专利",
+     "log.f_ideaOk": "有公司对你的发明感兴趣。",
+     "log.f_ideaNo": "没人要你的发明，样品被收进车库。"
+    },
+    "zht": {
+     ".t": "一個好點子",
+     ".x": "你想出一個巧妙的辦法，解決了整個產業都頭痛的問題。",
+     ".give": "交給公司",
+     ".give.s": "提案獎金{a}。",
+     ".build": "晚上自己開發",
+     ".build.s": "樣品和專利申請大約{a}。",
+     ".build.h": "幸福感 −1。這種點子大約五個有一個會引起公司興趣。兩年後揭曉。",
+     ".drop": "算了",
+     ".drop.s": "總會有人想到的。",
+     "trk.f_ideaB": "提案獎金",
+     "trk.f_idea": "樣品和專利",
+     "log.f_ideaOk": "有公司對你的發明感興趣。",
+     "log.f_ideaNo": "沒人要你的發明，樣品被收進車庫。"
+    }
+   }
+  },
+  {
+   "id": "f_idea2",
+   "chain": true,
+   "def": "royal",
+   "tarot": "tip",
+   "art": {"draw": "bonus", "bg": "ya"},
+   "opts": [
+    {"id": "royal", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "T('f_idea2', {kind: 'custom', label: M('trk.f_idea2')}); rec('f_idea2', -.08 * base, 10)"},
+    {"id": "sell", "sub": {"a": "MN(.5 * base)"}, "do": "cash += .5 * base; const tq = T('f_idea2', {kind: 'custom', label: M('trk.f_idea2')}); tq.v += .5 * base"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A licence for your invention",
+     ".x": "A company wants to make your invention. They offer yearly royalties, or a lump sum for the patent.",
+     ".royal": "Take royalties",
+     ".royal.s": "About {a} a year for ten years.",
+     ".royal.h": "Royalties depend on sales, but are usually worth more than the lump sum.",
+     ".sell": "Sell the patent",
+     ".sell.s": "{a} now.",
+     "trk.f_idea2": "Your invention"
+    },
+    "zh": {
+     ".t": "发明的授权",
+     ".x": "有家公司想生产你的发明，可以每年付授权费，也可以一次买断专利。",
+     ".royal": "收授权费",
+     ".royal.s": "十年里每年大约{a}。",
+     ".royal.h": "授权费看销量，但通常比一次买断划算。",
+     ".sell": "卖掉专利",
+     ".sell.s": "现在拿{a}。",
+     "trk.f_idea2": "你的发明"
+    },
+    "zht": {
+     ".t": "發明的授權",
+     ".x": "有家公司想生產你的發明，可以每年付授權金，也可以一次買斷專利。",
+     ".royal": "收授權金",
+     ".royal.s": "十年裡每年大約{a}。",
+     ".royal.h": "授權金看銷量，但通常比一次買斷划算。",
+     ".sell": "賣掉專利",
+     ".sell.s": "現在拿{a}。",
+     "trk.f_idea2": "你的發明"
+    }
+   }
+  },
+  {
+   "id": "f_package",
+   "age": [36, 44],
+   "weight": 0.3,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "layoff",
+   "art": {"draw": "cashout", "bg": "wa"},
+   "let": {"a": ".6 * salary()"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "take", "sub": {"a": "MN(a)"}, "hint": true, "do": "cash += a; const tq = T('f_package', {kind: 'custom', label: M('trk.f_package')}); tq.v += a; layAt = age; layVol = true"},
+    {"id": "stay", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A voluntary package",
+     ".x": "Your employer needs to cut staff and offers {a} to anyone who leaves voluntarily.",
+     ".take": "Take the money and go",
+     ".take.s": "{a}, and you need a new job.",
+     ".take.h": "Most people find work again within a year.",
+     ".stay": "Stay",
+     ".stay.s": "And hope you are not cut later.",
+     ".stay.h": "Cuts often come again.",
+     "trk.f_package": "Voluntary leaving package"
+    },
+    "zh": {
+     ".t": "自愿离职方案",
+     ".x": "公司要裁员，自愿离职的人可以拿{a}。",
+     ".take": "拿钱走人",
+     ".take.s": "{a}，然后得找新工作。",
+     ".take.h": "大部分人一年内能找到新工作。",
+     ".stay": "留下",
+     ".stay.s": "祈祷以后不会被裁。",
+     ".stay.h": "裁员常常不只一轮。",
+     "trk.f_package": "自愿离职补偿"
+    },
+    "zht": {
+     ".t": "優退方案",
+     ".x": "公司要裁員，自願離職的人可以拿{a}。",
+     ".take": "拿錢走人",
+     ".take.s": "{a}，然後得找新工作。",
+     ".take.h": "大部分人一年內能找到新工作。",
+     ".stay": "留下",
+     ".stay.s": "祈禱以後不會被裁。",
+     ".stay.h": "裁員常常不只一輪。",
+     "trk.f_package": "優退補償"
+    }
+   }
+  },
+  {
+   "id": "f_wfh",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"working": true, "careerType": ["office"]},
+   "def": "comply",
+   "tarot": "team",
+   "art": {"draw": "city", "bg": "wa"},
+   "opts": [
+    {"id": "comply", "sub": {"a": "MN(.02 * base)"}, "rel": 1, "do": "T('f_wfh', {kind: 'ghost', label: M('trk.f_wfh')}); rec('f_wfh', .02 * base, 10)"},
+    {"id": "ask", "hint": true, "do": "if (roll('f_wfh') >= .6) { T('f_wfh', {kind: 'ghost', label: M('trk.f_wfh')}); rec('f_wfh', .02 * base, 10); happy -= 1 }"},
+    {"id": "quit", "hint": true, "do": "bump('f_wfh', .95, M('trk.f_wfhR')); happy += 3"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back to the office",
+     ".x": "Your employer wants everyone back in the office five days a week.",
+     ".comply": "Go back",
+     ".comply.s": "About {a} a year in fares and lunches.",
+     ".ask": "Ask to keep two days at home",
+     ".ask.s": "Your manager will think about it.",
+     ".ask.h": "About six in ten get it.",
+     ".quit": "Find a fully remote job",
+     ".quit.s": "About 5% less pay.",
+     ".quit.h": "Happiness +3.",
+     "trk.f_wfh": "Commuting again",
+     "trk.f_wfhR": "A fully remote job"
+    },
+    "zh": {
+     ".t": "回办公室上班",
+     ".x": "公司要求所有人每周五天回办公室。",
+     ".comply": "回去上班",
+     ".comply.s": "车费和午餐每年大约{a}。",
+     ".ask": "争取每周两天在家",
+     ".ask.s": "主管说会考虑。",
+     ".ask.h": "大约六成会被批准。",
+     ".quit": "找一份完全远程的工作",
+     ".quit.s": "工资少大约5%。",
+     ".quit.h": "幸福感 +3。",
+     "trk.f_wfh": "重新通勤",
+     "trk.f_wfhR": "完全远程的工作"
+    },
+    "zht": {
+     ".t": "回辦公室上班",
+     ".x": "公司要求所有人每週五天回辦公室。",
+     ".comply": "回去上班",
+     ".comply.s": "車資和午餐每年大約{a}。",
+     ".ask": "爭取每週兩天在家",
+     ".ask.s": "主管說會考慮。",
+     ".ask.h": "大約六成會被批准。",
+     ".quit": "找一份完全遠端的工作",
+     ".quit.s": "薪水少大約5%。",
+     ".quit.h": "幸福感 +3。",
+     "trk.f_wfh": "重新通勤",
+     "trk.f_wfhR": "完全遠端的工作"
+    }
+   }
   }
  ]
 }

@@ -756,6 +756,279 @@
      "trk.y_meals": "外送和料理包"
     }
    }
+  },
+  {
+   "id": "f_checkup",
+   "src": "Regular screening finds heart disease and some cancers earlier, which improves survival (WHO, Screening programmes: a short guide, 2020); the size is the game’s screening rule",
+   "age": [35, 44],
+   "weight": 0.4,
+   "def": "none",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "yearly", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "T('f_screen', {kind: 'custom', label: M('trk.f_screen')}); rec('f_screen', .01 * base, 25); screen = true"},
+    {"id": "once", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "spend('f_check', .02 * base, 'trk.f_check'); health += 1"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A health check",
+     ".x": "You are approaching midlife. A clinic offers full health checks.",
+     ".yearly": "A full check every year",
+     ".yearly.s": "About {a} a year.",
+     ".yearly.h": "Problems found early are much easier to treat.",
+     ".once": "One check now",
+     ".once.s": "About {a}.",
+     ".once.h": "Health +1.",
+     ".none": "You feel fine",
+     ".none.s": "No cost.",
+     "trk.f_screen": "Yearly health checks",
+     "trk.f_check": "A health check"
+    },
+    "zh": {
+     ".t": "健康检查",
+     ".x": "你快到中年了。有家诊所推出全面健康检查。",
+     ".yearly": "每年做全面检查",
+     ".yearly.s": "每年大约{a}。",
+     ".yearly.h": "问题越早发现越好治。",
+     ".once": "现在做一次",
+     ".once.s": "大约{a}。",
+     ".once.h": "健康 +1。",
+     ".none": "你觉得自己没事",
+     ".none.s": "不花钱。",
+     "trk.f_screen": "每年健康检查",
+     "trk.f_check": "健康检查"
+    },
+    "zht": {
+     ".t": "健康檢查",
+     ".x": "你快到中年了。有家診所推出全面健康檢查。",
+     ".yearly": "每年做全面檢查",
+     ".yearly.s": "每年大約{a}。",
+     ".yearly.h": "問題越早發現越好治。",
+     ".once": "現在做一次",
+     ".once.s": "大約{a}。",
+     ".once.h": "健康 +1。",
+     ".none": "你覺得自己沒事",
+     ".none.s": "不花錢。",
+     "trk.f_screen": "每年健康檢查",
+     "trk.f_check": "健康檢查"
+    }
+   }
+  },
+  {
+   "id": "f_backpain",
+   "age": [32, 44],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "pills",
+   "tarot": "gym",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "physio", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('f_back', .03 * base, 'trk.f_back'); health += 2"},
+    {"id": "ignore", "hint": true, "do": "health -= 2", "next": {"event": "f_back2", "in": [3, 6], "p": 0.4}},
+    {"id": "pills", "hint": true, "do": "health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back pain",
+     ".x": "Years at work have given you a stiff, aching back.",
+     ".physio": "Physiotherapy and a better desk",
+     ".physio.s": "About {a}.",
+     ".physio.h": "Health +2.",
+     ".ignore": "Ignore it",
+     ".ignore.s": "It will pass.",
+     ".ignore.h": "Health −2. Untreated backs sometimes get much worse.",
+     ".pills": "Painkillers when it flares up",
+     ".pills.s": "Cheap.",
+     ".pills.h": "Health −1.",
+     "trk.f_back": "Back treatment"
+    },
+    "zh": {
+     ".t": "腰痛",
+     ".x": "工作多年，你的背又僵又痛。",
+     ".physio": "做复健，换张好桌子",
+     ".physio.s": "大约{a}。",
+     ".physio.h": "健康 +2。",
+     ".ignore": "不管它",
+     ".ignore.s": "会好的。",
+     ".ignore.h": "健康 −2。没处理的背痛有时会严重恶化。",
+     ".pills": "痛的时候吃止痛药",
+     ".pills.s": "很便宜。",
+     ".pills.h": "健康 −1。",
+     "trk.f_back": "背痛治疗"
+    },
+    "zht": {
+     ".t": "腰痛",
+     ".x": "工作多年，你的背又僵又痛。",
+     ".physio": "做復健，換張好桌子",
+     ".physio.s": "大約{a}。",
+     ".physio.h": "健康 +2。",
+     ".ignore": "不管它",
+     ".ignore.s": "會好的。",
+     ".ignore.h": "健康 −2。沒處理的背痛有時會嚴重惡化。",
+     ".pills": "痛的時候吃止痛藥",
+     ".pills.s": "很便宜。",
+     ".pills.h": "健康 −1。",
+     "trk.f_back": "背痛治療"
+    }
+   }
+  },
+  {
+   "id": "f_back2",
+   "chain": true,
+   "def": "live",
+   "tarot": "gym",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "surgery", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "spend('f_back2', .08 * base, 'trk.f_back2'); health += 3; if (working()) tmpPay('f_back2', .8, 1, 'trk.f_back2off')"},
+    {"id": "live", "hint": true, "do": "health -= 3; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your back gives out",
+     ".x": "Your back pain has become a slipped disc. Some mornings you can hardly stand.",
+     ".surgery": "Have an operation",
+     ".surgery.s": "About {a}, and weeks off work.",
+     ".surgery.h": "Health +3; pay 20% lower this year.",
+     ".live": "Manage it",
+     ".live.s": "Careful lifting and a heat pad.",
+     ".live.h": "Health −3, Happiness −2.",
+     "trk.f_back2": "Back surgery",
+     "trk.f_back2off": "Time off after back surgery"
+    },
+    "zh": {
+     ".t": "腰撑不住了",
+     ".x": "背痛变成了椎间盘突出，有些早上几乎站不起来。",
+     ".surgery": "动手术",
+     ".surgery.s": "大约{a}，还要请好几个星期假。",
+     ".surgery.h": "健康 +3；今年工资少20%。",
+     ".live": "忍着过",
+     ".live.s": "小心搬东西，敷热敷垫。",
+     ".live.h": "健康 −3，幸福感 −2。",
+     "trk.f_back2": "背部手术",
+     "trk.f_back2off": "背部手术后休假"
+    },
+    "zht": {
+     ".t": "腰撐不住了",
+     ".x": "背痛變成了椎間盤突出，有些早上幾乎站不起來。",
+     ".surgery": "動手術",
+     ".surgery.s": "大約{a}，還要請好幾個星期假。",
+     ".surgery.h": "健康 +3；今年薪水少20%。",
+     ".live": "忍著過",
+     ".live.s": "小心搬東西，敷熱敷墊。",
+     ".live.h": "健康 −3，幸福感 −2。",
+     "trk.f_back2": "背部手術",
+     "trk.f_back2off": "背部手術後休假"
+    }
+   }
+  },
+  {
+   "id": "f_sleep",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"kidAge": [0, 1]},
+   "def": "coffee",
+   "tarot": "grandkid",
+   "art": {"draw": "late", "bg": "ya"},
+   "opts": [
+    {"id": "nanny", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('f_nightnanny', .05 * base, 'trk.f_nightnanny'); health += 2; happy += 2"},
+    {"id": "turns", "show": "!!pt", "hint": true, "do": "health -= 1; bond('pt', 2)"},
+    {"id": "coffee", "hint": true, "do": "health -= 3; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sleepless nights",
+     ".x": "The baby wakes up every two hours, and you are exhausted.",
+     ".nanny": "A night nanny for a few weeks",
+     ".nanny.s": "About {a}.",
+     ".nanny.h": "Health +2, Happiness +2.",
+     ".turns": "Take turns with your partner",
+     ".turns.s": "Free.",
+     ".turns.h": "Health −1; you grow closer.",
+     ".coffee": "Coffee and willpower",
+     ".coffee.s": "Free.",
+     ".coffee.h": "Health −3, Happiness −1.",
+     "trk.f_nightnanny": "Night nanny"
+    },
+    "zh": {
+     ".t": "睡不好的夜晚",
+     ".x": "宝宝每两个小时就醒一次，你累坏了。",
+     ".nanny": "请几个星期的夜班保姆",
+     ".nanny.s": "大约{a}。",
+     ".nanny.h": "健康 +2，幸福感 +2。",
+     ".turns": "跟伴侣轮流",
+     ".turns.s": "不花钱。",
+     ".turns.h": "健康 −1；感情更好。",
+     ".coffee": "靠咖啡和意志力",
+     ".coffee.s": "不花钱。",
+     ".coffee.h": "健康 −3，幸福感 −1。",
+     "trk.f_nightnanny": "夜班保姆"
+    },
+    "zht": {
+     ".t": "睡不好的夜晚",
+     ".x": "寶寶每兩個小時就醒一次，你累壞了。",
+     ".nanny": "請幾個星期的夜班保母",
+     ".nanny.s": "大約{a}。",
+     ".nanny.h": "健康 +2，幸福感 +2。",
+     ".turns": "跟伴侶輪流",
+     ".turns.s": "不花錢。",
+     ".turns.h": "健康 −1；感情更好。",
+     ".coffee": "靠咖啡和意志力",
+     ".coffee.s": "不花錢。",
+     ".coffee.h": "健康 −3，幸福感 −1。",
+     "trk.f_nightnanny": "夜班保母"
+    }
+   }
+  },
+  {
+   "id": "f_drink",
+   "age": [33, 44],
+   "weight": 0.35,
+   "def": "cut",
+   "tarot": "life",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "cut", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "T('f_drinkS', {kind: 'custom', label: M('trk.f_drinkS')}); rec('f_drinkS', -.01 * base, 10); health += 2; happy -= 1"},
+    {"id": "carry", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('f_drink', {kind: 'ghost', label: M('trk.f_drink')}); rec('f_drink', .02 * base, 10, -.4)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A glass or two",
+     ".x": "A drink after work has become two or three, most nights.",
+     ".cut": "Cut down to weekends",
+     ".cut.s": "Saves about {a} a year.",
+     ".cut.h": "Health +2, Happiness −1.",
+     ".carry": "Carry on",
+     ".carry.s": "About {a} a year.",
+     ".carry.h": "Health a little lower each year.",
+     "trk.f_drinkS": "Money saved on drink",
+     "trk.f_drink": "Drinks"
+    },
+    "zh": {
+     ".t": "小酌两杯",
+     ".x": "下班后的一杯酒，变成几乎每晚两三杯。",
+     ".cut": "只在周末喝",
+     ".cut.s": "每年省下大约{a}。",
+     ".cut.h": "健康 +2，幸福感 −1。",
+     ".carry": "照喝",
+     ".carry.s": "每年大约{a}。",
+     ".carry.h": "健康每年少一点。",
+     "trk.f_drinkS": "少喝省下的钱",
+     "trk.f_drink": "喝酒的开销"
+    },
+    "zht": {
+     ".t": "小酌兩杯",
+     ".x": "下班後的一杯酒，變成幾乎每晚兩三杯。",
+     ".cut": "只在週末喝",
+     ".cut.s": "每年省下大約{a}。",
+     ".cut.h": "健康 +2，幸福感 −1。",
+     ".carry": "照喝",
+     ".carry.s": "每年大約{a}。",
+     ".carry.h": "健康每年少一點。",
+     "trk.f_drinkS": "少喝省下的錢",
+     "trk.f_drink": "喝酒的開銷"
+    }
+   }
   }
  ]
 }

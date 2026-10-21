@@ -1336,6 +1336,763 @@
      "trk.y_inlaws": "給伴侶家人的禮物"
     }
    }
+  },
+  {
+   "id": "f_childcare",
+   "age": [30, 44],
+   "weight": 0.5,
+   "when": {"working": true, "kidAge": [0, 2]},
+   "def": "nursery",
+   "tarot": "grandkid",
+   "art": {"draw": "blocks", "bg": "mi"},
+   "opts": [
+    {"id": "nursery", "sub": {"a": "MN(.12 * base)"}, "do": "T('f_care', {kind: 'custom', label: M('trk.f_care')}); rec('f_care', .12 * base, 3)"},
+    {"id": "gran", "show": "!!person('mother') || !!person('father')", "rel": 2, "do": "bond('parent', 4); happy -= 1"},
+    {"id": "part", "hint": true, "do": "tmpPay('f_part', .6, 3, 'trk.f_part'); happy += 2; bond('kid', 3)"},
+    {"id": "nanny", "sub": {"a": "MN(.25 * base)"}, "hint": true, "do": "T('f_care', {kind: 'custom', label: M('trk.f_care')}); rec('f_care', .25 * base, 3); happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Childcare",
+     ".x": "You need to be back at work, and someone has to look after your little one.",
+     ".nursery": "A nursery",
+     ".nursery.s": "About {a} a year for three years.",
+     ".gran": "The grandparents",
+     ".gran.s": "Free, though they have their own ideas.",
+     ".part": "Work part-time for a few years",
+     ".part.s": "60% of your pay for three years.",
+     ".part.h": "Happiness +2, closer to your child.",
+     ".nanny": "A nanny at home",
+     ".nanny.s": "About {a} a year for three years.",
+     ".nanny.h": "Happiness +1.",
+     "trk.f_care": "Childcare",
+     "trk.f_part": "Part-time while the children are small"
+    },
+    "zh": {
+     ".t": "谁来带孩子",
+     ".x": "你得回去上班，得有人带孩子。",
+     ".nursery": "送托儿所",
+     ".nursery.s": "三年里每年大约{a}。",
+     ".gran": "让爷爷奶奶带",
+     ".gran.s": "不花钱，但他们有自己的一套。",
+     ".part": "改做几年兼职",
+     ".part.s": "三年拿六成工资。",
+     ".part.h": "幸福感 +2，跟孩子更亲。",
+     ".nanny": "请保姆在家带",
+     ".nanny.s": "三年里每年大约{a}。",
+     ".nanny.h": "幸福感 +1。",
+     "trk.f_care": "托育费",
+     "trk.f_part": "孩子小时做兼职"
+    },
+    "zht": {
+     ".t": "誰來帶孩子",
+     ".x": "你得回去上班，得有人帶孩子。",
+     ".nursery": "送托嬰中心",
+     ".nursery.s": "三年裡每年大約{a}。",
+     ".gran": "讓阿公阿嬤帶",
+     ".gran.s": "不花錢，但他們有自己的一套。",
+     ".part": "改做幾年兼職",
+     ".part.s": "三年領六成薪水。",
+     ".part.h": "幸福感 +2，跟孩子更親。",
+     ".nanny": "請保母在家帶",
+     ".nanny.s": "三年裡每年大約{a}。",
+     ".nanny.h": "幸福感 +1。",
+     "trk.f_care": "托育費",
+     "trk.f_part": "孩子小時做兼職"
+    }
+   }
+  },
+  {
+   "id": "f_school",
+   "src": "ESTIMATE: game rule (private-school fees, and how often pupils later win university bursaries)",
+   "age": [30, 44],
+   "weight": 0.45,
+   "when": {"kidAge": [4, 6]},
+   "def": "local",
+   "tarot": "edufund",
+   "art": {"draw": "schoolbag", "bg": "ya"},
+   "opts": [
+    {"id": "local", "do": ""},
+    {"id": "private", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "T('f_school', {kind: 'custom', label: M('trk.f_school')}); rec('f_school', .15 * base, 12); kidWin(.35, .5)", "next": {"event": "f_school2", "in": [4, 6], "p": 0.5}},
+    {"id": "move", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('f_move', .1 * base, 'trk.f_move'); happy -= 1; kidWin(.2, .7)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child’s school",
+     ".x": "Your child starts school soon. The local school is fine; a private school and a better school district are both options.",
+     ".local": "The local school",
+     ".local.s": "Free.",
+     ".private": "A private school",
+     ".private.s": "About {a} a year for twelve years.",
+     ".private.h": "About a third of private pupils later win a university bursary that halves the fees.",
+     ".move": "Move to a good school district",
+     ".move.s": "About {a} in moving costs and fees.",
+     ".move.h": "Happiness −1. Some pupils win a smaller bursary later.",
+     "trk.f_school": "Private school fees",
+     "trk.f_move": "Moving for a school"
+    },
+    "zh": {
+     ".t": "孩子的学校",
+     ".x": "孩子快要上学了。附近的学校还行；私立学校和更好的学区也都可以考虑。",
+     ".local": "附近的学校",
+     ".local.s": "免费。",
+     ".private": "私立学校",
+     ".private.s": "十二年里每年大约{a}。",
+     ".private.h": "大约三分之一的私校学生以后能拿到减半学费的大学助学金。",
+     ".move": "搬到好学区",
+     ".move.s": "搬家和各种费用大约{a}。",
+     ".move.h": "幸福感 −1。有些学生以后能拿到较小的助学金。",
+     "trk.f_school": "私立学校学费",
+     "trk.f_move": "为了学区搬家"
+    },
+    "zht": {
+     ".t": "孩子的學校",
+     ".x": "孩子快要上學了。附近的學校還行；私立學校和更好的學區也都可以考慮。",
+     ".local": "附近的學校",
+     ".local.s": "免費。",
+     ".private": "私立學校",
+     ".private.s": "十二年裡每年大約{a}。",
+     ".private.h": "大約三分之一的私校學生以後能拿到減半學費的大學助學金。",
+     ".move": "搬到好學區",
+     ".move.s": "搬家和各種費用大約{a}。",
+     ".move.h": "幸福感 −1。有些學生以後能拿到較小的助學金。",
+     "trk.f_school": "私立學校學費",
+     "trk.f_move": "為了學區搬家"
+    }
+   }
+  },
+  {
+   "id": "f_school2",
+   "chain": true,
+   "def": "keep",
+   "tarot": "edufund",
+   "art": {"draw": "bill", "bg": "ya"},
+   "opts": [
+    {"id": "keep", "sub": {"a": "MN(.05 * base)"}, "do": "T('f_school2', {kind: 'custom', label: M('trk.f_school2')}); rec('f_school2', .05 * base, 8)"},
+    {"id": "state", "hint": true, "do": "stopRec('f_school'); happy -= 1; bond('kid', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "School fees go up",
+     ".x": "The private school raises its fees by a third.",
+     ".keep": "Keep paying",
+     ".keep.s": "About {a} a year more.",
+     ".state": "Move to a state school",
+     ".state.s": "No more fees.",
+     ".state.h": "Happiness −1; your child misses their friends.",
+     "trk.f_school2": "Higher school fees"
+    },
+    "zh": {
+     ".t": "学费涨了",
+     ".x": "私立学校的学费涨了三分之一。",
+     ".keep": "继续读",
+     ".keep.s": "每年多大约{a}。",
+     ".state": "转去公立学校",
+     ".state.s": "不用再交学费。",
+     ".state.h": "幸福感 −1；孩子会想念朋友。",
+     "trk.f_school2": "学费上涨"
+    },
+    "zht": {
+     ".t": "學費漲了",
+     ".x": "私立學校的學費漲了三分之一。",
+     ".keep": "繼續讀",
+     ".keep.s": "每年多大約{a}。",
+     ".state": "轉去公立學校",
+     ".state.s": "不用再繳學費。",
+     ".state.h": "幸福感 −1；孩子會想念朋友。",
+     "trk.f_school2": "學費上漲"
+    }
+   }
+  },
+  {
+   "id": "f_tutor",
+   "age": [30, 44],
+   "weight": 0.4,
+   "when": {"kidAge": [8, 12]},
+   "def": "none",
+   "tarot": "tuition",
+   "art": "tuition",
+   "opts": [
+    {"id": "tutor", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "T('f_tutor', {kind: 'custom', label: M('trk.f_tutor')}); rec('f_tutor', .05 * base, 5); kidWin(.25, .6)"},
+    {"id": "you", "hint": true, "rel": 1, "do": "happy -= 1; bond('kid', 3); kidWin(.15, .8)"},
+    {"id": "none", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Extra lessons",
+     ".x": "Your child is falling behind in maths, and the other parents all seem to use tutors.",
+     ".tutor": "A private tutor",
+     ".tutor.s": "About {a} a year for five years.",
+     ".tutor.h": "Some tutored children later win a university bursary.",
+     ".you": "Help them yourself every evening",
+     ".you.s": "Free, and patience needed.",
+     ".you.h": "Happiness −1, closer to your child. A smaller chance of a bursary.",
+     ".none": "Let them find their own pace",
+     ".none.s": "They will catch up.",
+     "trk.f_tutor": "Your child’s tutor"
+    },
+    "zh": {
+     ".t": "孩子补习",
+     ".x": "孩子数学跟不上，别的家长好像都请了家教。",
+     ".tutor": "请家教",
+     ".tutor.s": "五年里每年大约{a}。",
+     ".tutor.h": "有些补过习的孩子以后能拿到大学助学金。",
+     ".you": "每晚自己陪他们做",
+     ".you.s": "不花钱，需要耐心。",
+     ".you.h": "幸福感 −1，跟孩子更亲。拿助学金的机会小一些。",
+     ".none": "让他们按自己的步调",
+     ".none.s": "他们会跟上的。",
+     "trk.f_tutor": "孩子的家教"
+    },
+    "zht": {
+     ".t": "孩子補習",
+     ".x": "孩子數學跟不上，別的家長好像都請了家教。",
+     ".tutor": "請家教",
+     ".tutor.s": "五年裡每年大約{a}。",
+     ".tutor.h": "有些補過習的孩子以後能拿到大學助學金。",
+     ".you": "每晚自己陪他們做",
+     ".you.s": "不花錢，需要耐心。",
+     ".you.h": "幸福感 −1，跟孩子更親。拿助學金的機會小一些。",
+     ".none": "讓他們按自己的步調",
+     ".none.s": "他們會跟上的。",
+     "trk.f_tutor": "孩子的家教"
+    }
+   }
+  },
+  {
+   "id": "f_kidacct",
+   "age": [30, 44],
+   "weight": 0.4,
+   "who": {"role": "kid", "age": [0, 5]},
+   "def": "none",
+   "tarot": "edufund",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "lump", "sub": {"a": "MN(.1 * base)"}, "bond": 5, "do": "spend('f_kidacct', .1 * base, 'trk.f_kidacct'); happy += 1"},
+    {"id": "monthly", "sub": {"a": "MN(.01 * base)"}, "bond": 4, "do": "T('f_kidacctM', {kind: 'ghost', label: M('trk.f_kidacct')}); rec('f_kidacctM', .01 * base, 18)"},
+    {"id": "none", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An account for your child",
+     ".x": "You could open an investment account in {p}’s name. It would be theirs at 18.",
+     ".lump": "Put in a lump sum",
+     ".lump.s": "{a} now, theirs to keep.",
+     ".monthly": "A little every month",
+     ".monthly.s": "About {a} a year until they are 18.",
+     ".none": "Not now",
+     ".none.s": "Your savings stay yours.",
+     "trk.f_kidacct": "Money for your child"
+    },
+    "zh": {
+     ".t": "给孩子开账户",
+     ".x": "你可以用{p}的名字开个投资账户，18岁时归他们。",
+     ".lump": "一次存一笔",
+     ".lump.s": "现在存{a}，归孩子。",
+     ".monthly": "每个月存一点",
+     ".monthly.s": "每年大约{a}，存到18岁。",
+     ".none": "暂时不开",
+     ".none.s": "钱还是你的。",
+     "trk.f_kidacct": "给孩子的钱"
+    },
+    "zht": {
+     ".t": "幫孩子開帳戶",
+     ".x": "你可以用{p}的名字開個投資帳戶，18歲時歸他們。",
+     ".lump": "一次存一筆",
+     ".lump.s": "現在存{a}，歸孩子。",
+     ".monthly": "每個月存一點",
+     ".monthly.s": "每年大約{a}，存到18歲。",
+     ".none": "暫時不開",
+     ".none.s": "錢還是你的。",
+     "trk.f_kidacct": "給孩子的錢"
+    }
+   }
+  },
+  {
+   "id": "f_famholiday",
+   "age": [30, 44],
+   "weight": 0.45,
+   "when": {"kids": true},
+   "def": "stay",
+   "tarot": "holiday",
+   "art": {"draw": "tent", "bg": "co"},
+   "opts": [
+    {"id": "park", "sub": {"a": "MN(.12 * base)"}, "hint": true, "do": "spend('f_famhol', .12 * base, 'trk.f_famhol'); happy += 4; bond('kid', 4)"},
+    {"id": "camp", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('f_famhol', .03 * base, 'trk.f_famhol'); happy += 2; bond('kid', 3)"},
+    {"id": "stay", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A family holiday",
+     ".x": "The children have been asking for a proper holiday.",
+     ".park": "A theme park abroad",
+     ".park.s": "About {a} for flights, hotel and tickets.",
+     ".park.h": "Happiness +4, closer to your children.",
+     ".camp": "Camping by a lake",
+     ".camp.s": "About {a}.",
+     ".camp.h": "Happiness +2, closer to your children.",
+     ".stay": "Days out from home",
+     ".stay.s": "Parks and picnics.",
+     "trk.f_famhol": "Family holiday"
+    },
+    "zh": {
+     ".t": "全家旅行",
+     ".x": "孩子们一直吵着要好好去度个假。",
+     ".park": "出国去主题乐园",
+     ".park.s": "机票、酒店加门票大约{a}。",
+     ".park.h": "幸福感 +4，跟孩子更亲。",
+     ".camp": "去湖边露营",
+     ".camp.s": "大约{a}。",
+     ".camp.h": "幸福感 +2，跟孩子更亲。",
+     ".stay": "在家附近玩几天",
+     ".stay.s": "公园和野餐。",
+     "trk.f_famhol": "全家旅行"
+    },
+    "zht": {
+     ".t": "全家旅行",
+     ".x": "孩子們一直吵著要好好去度個假。",
+     ".park": "出國去主題樂園",
+     ".park.s": "機票、飯店加門票大約{a}。",
+     ".park.h": "幸福感 +4，跟孩子更親。",
+     ".camp": "去湖邊露營",
+     ".camp.s": "大約{a}。",
+     ".camp.h": "幸福感 +2，跟孩子更親。",
+     ".stay": "在家附近玩幾天",
+     ".stay.s": "公園和野餐。",
+     "trk.f_famhol": "全家旅行"
+    }
+   }
+  },
+  {
+   "id": "f_activities",
+   "age": [30, 44],
+   "weight": 0.4,
+   "when": {"kidAge": [6, 12]},
+   "def": "one",
+   "tarot": "hobby",
+   "art": "hobby",
+   "opts": [
+    {"id": "lots", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "T('f_act', {kind: 'custom', label: M('trk.f_act')}); rec('f_act', .05 * base, 6); happy -= 1; bond('kid', 3)"},
+    {"id": "one", "sub": {"a": "MN(.015 * base)"}, "do": "T('f_act', {kind: 'custom', label: M('trk.f_act')}); rec('f_act', .015 * base, 6); bond('kid', 1)"},
+    {"id": "none", "hint": true, "do": "bond('kid', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "After-school activities",
+     ".x": "Swimming, piano, football, coding club: your child wants to do everything.",
+     ".lots": "Let them do several",
+     ".lots.s": "About {a} a year, and a lot of driving.",
+     ".lots.h": "Happiness −1, closer to your child.",
+     ".one": "Pick one",
+     ".one.s": "About {a} a year.",
+     ".none": "Free play at home",
+     ".none.s": "No fees.",
+     ".none.h": "Your child is a little disappointed.",
+     "trk.f_act": "Children’s activities"
+    },
+    "zh": {
+     ".t": "孩子的课外活动",
+     ".x": "游泳、钢琴、足球、编程班：孩子什么都想学。",
+     ".lots": "让他们学好几样",
+     ".lots.s": "每年大约{a}，还要到处接送。",
+     ".lots.h": "幸福感 −1，跟孩子更亲。",
+     ".one": "选一样",
+     ".one.s": "每年大约{a}。",
+     ".none": "在家自由玩",
+     ".none.s": "不用费用。",
+     ".none.h": "孩子有点失望。",
+     "trk.f_act": "孩子的课外活动"
+    },
+    "zht": {
+     ".t": "孩子的課外活動",
+     ".x": "游泳、鋼琴、足球、程式班：孩子什麼都想學。",
+     ".lots": "讓他們學好幾樣",
+     ".lots.s": "每年大約{a}，還要到處接送。",
+     ".lots.h": "幸福感 −1，跟孩子更親。",
+     ".one": "選一樣",
+     ".one.s": "每年大約{a}。",
+     ".none": "在家自由玩",
+     ".none.s": "不用費用。",
+     ".none.h": "孩子有點失望。",
+     "trk.f_act": "孩子的課外活動"
+    }
+   }
+  },
+  {
+   "id": "f_kidsick",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"working": true, "kidAge": [0, 10]},
+   "def": "leave",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "leave", "hint": true, "do": "tmpPay('f_kidsick', .85, 1, 'trk.f_kidsick'); bond('kid', 4)"},
+    {"id": "gran", "show": "!!person('mother') || !!person('father')", "rel": 1, "do": "bond('parent', 2)"},
+    {"id": "carer", "sub": {"a": "MN(.03 * base)"}, "do": "spend('f_carer', .03 * base, 'trk.f_carer')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A sick child",
+     ".x": "Your child has one illness after another this winter and keeps missing school.",
+     ".leave": "Take unpaid days off",
+     ".leave.s": "About 15% less pay this year.",
+     ".leave.h": "Closer to your child.",
+     ".gran": "Ask the grandparents",
+     ".gran.s": "Free.",
+     ".carer": "Pay a carer",
+     ".carer.s": "About {a} this winter.",
+     "trk.f_kidsick": "Days off for a sick child",
+     "trk.f_carer": "A carer for a sick child"
+    },
+    "zh": {
+     ".t": "孩子生病了",
+     ".x": "这个冬天孩子病了一场又一场，一直请假。",
+     ".leave": "请无薪假",
+     ".leave.s": "今年工资少大约15%。",
+     ".leave.h": "跟孩子更亲。",
+     ".gran": "请爷爷奶奶帮忙",
+     ".gran.s": "不花钱。",
+     ".carer": "请人照顾",
+     ".carer.s": "这个冬天大约{a}。",
+     "trk.f_kidsick": "孩子生病请的假",
+     "trk.f_carer": "请人照顾生病的孩子"
+    },
+    "zht": {
+     ".t": "孩子生病了",
+     ".x": "這個冬天孩子病了一場又一場，一直請假。",
+     ".leave": "請無薪假",
+     ".leave.s": "今年薪水少大約15%。",
+     ".leave.h": "跟孩子更親。",
+     ".gran": "請阿公阿嬤幫忙",
+     ".gran.s": "不花錢。",
+     ".carer": "請人照顧",
+     ".carer.s": "這個冬天大約{a}。",
+     "trk.f_kidsick": "孩子生病請的假",
+     "trk.f_carer": "請人照顧生病的孩子"
+    }
+   }
+  },
+  {
+   "id": "f_braces",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"kidAge": [10, 14]},
+   "def": "now",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "now", "sub": {"a": "MN(.12 * base)"}, "do": "spend('f_braces', .12 * base, 'trk.f_braces'); bond('kid', 2)"},
+    {"id": "abroad", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "spend('f_braces', .06 * base, 'trk.f_braces'); happy -= 1; if (roll('f_braces') < .2) spend('f_braces', .04 * base, 'trk.f_braces')"},
+    {"id": "wait", "hint": true, "do": "bond('kid', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Braces for your child",
+     ".x": "The dentist says your child needs braces.",
+     ".now": "Go ahead here",
+     ".now.s": "About {a}.",
+     ".abroad": "A cheaper clinic abroad",
+     ".abroad.s": "About {a}, and a few trips.",
+     ".abroad.h": "Happiness −1. About one in five needs extra work later.",
+     ".wait": "Wait and see",
+     ".wait.s": "Free for now.",
+     ".wait.h": "Your child is self-conscious about their smile.",
+     "trk.f_braces": "Your child’s braces"
+    },
+    "zh": {
+     ".t": "孩子要矫正牙齿",
+     ".x": "牙医说孩子要戴牙套矫正。",
+     ".now": "在这里做",
+     ".now.s": "大约{a}。",
+     ".abroad": "去国外便宜的诊所",
+     ".abroad.s": "大约{a}，要跑好几趟。",
+     ".abroad.h": "幸福感 −1。大约五个有一个之后要再补做。",
+     ".wait": "先看看",
+     ".wait.s": "暂时不花钱。",
+     ".wait.h": "孩子会在意自己的笑容。",
+     "trk.f_braces": "孩子的牙套"
+    },
+    "zht": {
+     ".t": "孩子要矯正牙齒",
+     ".x": "牙醫說孩子要戴牙套矯正。",
+     ".now": "在這裡做",
+     ".now.s": "大約{a}。",
+     ".abroad": "去國外便宜的診所",
+     ".abroad.s": "大約{a}，要跑好幾趟。",
+     ".abroad.h": "幸福感 −1。大約五個有一個之後要再補做。",
+     ".wait": "先看看",
+     ".wait.s": "暫時不花錢。",
+     ".wait.h": "孩子會在意自己的笑容。",
+     "trk.f_braces": "孩子的牙套"
+    }
+   }
+  },
+  {
+   "id": "f_kidtrip",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"kidAge": [12, 16]},
+   "def": "pay",
+   "tarot": "trip",
+   "art": "trip",
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(.05 * base)"}, "do": "spend('f_kidtrip', .05 * base, 'trk.f_kidtrip'); bond('kid', 3)"},
+    {"id": "half", "sub": {"a": "MN(.025 * base)"}, "hint": true, "do": "spend('f_kidtrip', .025 * base, 'trk.f_kidtrip'); bond('kid', 1)"},
+    {"id": "no", "hint": true, "do": "bond('kid', -3)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your teenager’s school trip",
+     ".x": "Your teenager’s class is going abroad for a week, and they really want to go.",
+     ".pay": "Pay for it",
+     ".pay.s": "About {a}.",
+     ".half": "Pay half; they earn the rest",
+     ".half.s": "About {a} from you.",
+     ".half.h": "They learn the value of money.",
+     ".no": "Say no",
+     ".no.s": "Not this year.",
+     ".no.h": "Your teenager is upset with you.",
+     "trk.f_kidtrip": "Your child’s school trip"
+    },
+    "zh": {
+     ".t": "孩子的学校旅行",
+     ".x": "孩子的班级要出国一星期，他们非常想去。",
+     ".pay": "你出钱",
+     ".pay.s": "大约{a}。",
+     ".half": "你出一半，其余他们自己赚",
+     ".half.s": "你出大约{a}。",
+     ".half.h": "他们会学到钱的价值。",
+     ".no": "不让去",
+     ".no.s": "今年不行。",
+     ".no.h": "孩子会生你的气。",
+     "trk.f_kidtrip": "孩子的学校旅行"
+    },
+    "zht": {
+     ".t": "孩子的學校旅行",
+     ".x": "孩子的班級要出國一星期，他們非常想去。",
+     ".pay": "你出錢",
+     ".pay.s": "大約{a}。",
+     ".half": "你出一半，其餘他們自己賺",
+     ".half.s": "你出大約{a}。",
+     ".half.h": "他們會學到錢的價值。",
+     ".no": "不讓去",
+     ".no.s": "今年不行。",
+     ".no.h": "孩子會生你的氣。",
+     "trk.f_kidtrip": "孩子的學校旅行"
+    }
+   }
+  },
+  {
+   "id": "f_kidphone",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"kidAge": [10, 13]},
+   "def": "basic",
+   "tarot": "phone1",
+   "art": "phone1",
+   "opts": [
+    {"id": "top", "sub": {"a": "MN(.04 * base)"}, "do": "spend('f_kidphone', .04 * base, 'trk.f_kidphone'); bond('kid', 2)"},
+    {"id": "basic", "sub": {"a": "MN(.01 * base)"}, "do": "spend('f_kidphone', .01 * base, 'trk.f_kidphone')"},
+    {"id": "wait", "hint": true, "do": "bond('kid', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child’s first phone",
+     ".x": "Your child says everyone in their class has a phone.",
+     ".top": "The latest model",
+     ".top.s": "About {a}.",
+     ".basic": "A basic phone",
+     ".basic.s": "About {a}.",
+     ".wait": "Wait until they are older",
+     ".wait.s": "Free.",
+     ".wait.h": "Your child sulks for a while.",
+     "trk.f_kidphone": "Your child’s phone"
+    },
+    "zh": {
+     ".t": "孩子的第一部手机",
+     ".x": "孩子说全班都有手机了。",
+     ".top": "买最新款",
+     ".top.s": "大约{a}。",
+     ".basic": "买基本款",
+     ".basic.s": "大约{a}。",
+     ".wait": "等大一点再说",
+     ".wait.s": "不花钱。",
+     ".wait.h": "孩子会闹一阵子脾气。",
+     "trk.f_kidphone": "孩子的手机"
+    },
+    "zht": {
+     ".t": "孩子的第一支手機",
+     ".x": "孩子說全班都有手機了。",
+     ".top": "買最新款",
+     ".top.s": "大約{a}。",
+     ".basic": "買基本款",
+     ".basic.s": "大約{a}。",
+     ".wait": "等大一點再說",
+     ".wait.s": "不花錢。",
+     ".wait.h": "孩子會鬧一陣子脾氣。",
+     "trk.f_kidphone": "孩子的手機"
+    }
+   }
+  },
+  {
+   "id": "f_anniv",
+   "age": [33, 44],
+   "weight": 0.35,
+   "when": {"married": true},
+   "who": {"role": "pt"},
+   "def": "dinner",
+   "tarot": "wed",
+   "art": "wed",
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "trip", "sub": {"a": "MN(.06 * base)"}, "hint": true, "bond": 6, "do": "spend('f_anniv', .06 * base, 'trk.f_anniv'); happy += 2"},
+    {"id": "dinner", "sub": {"a": "MN(.01 * base)"}, "bond": 2, "do": "spend('f_anniv', .01 * base, 'trk.f_anniv')"},
+    {"id": "forget", "hint": true, "bond": -5, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your anniversary",
+     ".x": "It is ten years since you married {p}.",
+     ".trip": "A trip away, just the two of you",
+     ".trip.s": "About {a}.",
+     ".trip.h": "Happiness +2.",
+     ".dinner": "A nice dinner",
+     ".dinner.s": "About {a}.",
+     ".forget": "It slips your mind",
+     ".forget.s": "Work has been busy.",
+     ".forget.h": "Happiness −1.",
+     "trk.f_anniv": "Anniversary"
+    },
+    "zh": {
+     ".t": "结婚纪念日",
+     ".x": "你和{p}结婚十年了。",
+     ".trip": "两个人去旅行",
+     ".trip.s": "大约{a}。",
+     ".trip.h": "幸福感 +2。",
+     ".dinner": "吃顿好的",
+     ".dinner.s": "大约{a}。",
+     ".forget": "忘了",
+     ".forget.s": "最近工作太忙。",
+     ".forget.h": "幸福感 −1。",
+     "trk.f_anniv": "结婚纪念日"
+    },
+    "zht": {
+     ".t": "結婚紀念日",
+     ".x": "你和{p}結婚十年了。",
+     ".trip": "兩個人去旅行",
+     ".trip.s": "大約{a}。",
+     ".trip.h": "幸福感 +2。",
+     ".dinner": "吃頓好的",
+     ".dinner.s": "大約{a}。",
+     ".forget": "忘了",
+     ".forget.s": "最近工作太忙。",
+     ".forget.h": "幸福感 −1。",
+     "trk.f_anniv": "結婚紀念日"
+    }
+   }
+  },
+  {
+   "id": "f_ptstudy",
+   "age": [30, 42],
+   "weight": 0.3,
+   "when": {"partner": ["living", "married"]},
+   "who": {"role": "pt"},
+   "def": "no",
+   "tarot": "cert",
+   "art": {"draw": "gradloan", "bg": "co"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.12 * base)"}, "hint": true, "bond": 5, "do": "T('f_ptstudy', {kind: 'custom', label: M('trk.f_ptstudy')}); rec('f_ptstudy', .12 * base, 2); pt.q = pt.q * 1.15"},
+    {"id": "no", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your partner wants to retrain",
+     ".x": "{p} wants to go back to study for two years and change career.",
+     ".yes": "Support them",
+     ".yes.s": "About {a} a year for two years in fees and lost income.",
+     ".yes.h": "Their pay afterwards is about 15% higher.",
+     ".no": "Ask them to wait",
+     ".no.s": "Money is tight.",
+     "trk.f_ptstudy": "Your partner’s studies"
+    },
+    "zh": {
+     ".t": "伴侣想进修转行",
+     ".x": "{p}想回学校读两年书，换个职业。",
+     ".yes": "支持他们",
+     ".yes.s": "两年里每年大约{a}的学费和少掉的收入。",
+     ".yes.h": "读完后他们的工资大约高15%。",
+     ".no": "请他们等等",
+     ".no.s": "手头太紧。",
+     "trk.f_ptstudy": "伴侣的学业"
+    },
+    "zht": {
+     ".t": "伴侶想進修轉行",
+     ".x": "{p}想回學校讀兩年書，換個職業。",
+     ".yes": "支持他們",
+     ".yes.s": "兩年裡每年大約{a}的學費和少掉的收入。",
+     ".yes.h": "讀完後他們的薪水大約高15%。",
+     ".no": "請他們等等",
+     ".no.s": "手頭太緊。",
+     "trk.f_ptstudy": "伴侶的學業"
+    }
+   }
+  },
+  {
+   "id": "f_parentsmoney",
+   "age": [35, 44],
+   "weight": 0.35,
+   "if": {"family": ["poor", "working"]},
+   "who": {"role": "parent"},
+   "def": "half",
+   "tarot": "parents",
+   "art": {"draw": "carer", "bg": "co"},
+   "vars": {"p": "Who(p)", "a": "MN(.1 * base)"},
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(.1 * base)"}, "bond": 6, "rel": 1, "do": "pay(.1 * base); const tq = T('f_parmed', {kind: 'custom', label: M('trk.f_parmed')}); tq.v -= .1 * base"},
+    {"id": "half", "sub": {"a": "MN(.05 * base)"}, "bond": 3, "do": "pay(.05 * base); const tq = T('f_parmed', {kind: 'custom', label: M('trk.f_parmed')}); tq.v -= .05 * base"},
+    {"id": "no", "hint": true, "bond": -5, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hospital bill",
+     ".x": "{p} needs an operation, and the bill is {a}. They can’t pay it.",
+     ".all": "Pay all of it",
+     ".all.s": "{a} of your savings.",
+     ".half": "Pay half; siblings share the rest",
+     ".half.s": "{a} from you.",
+     ".no": "You can’t afford it",
+     ".no.s": "They borrow from elsewhere.",
+     ".no.h": "Happiness −2.",
+     "trk.f_parmed": "A parent’s hospital bill"
+    },
+    "zh": {
+     ".t": "医药费",
+     ".x": "{p}要动手术，医药费{a}，他们付不起。",
+     ".all": "全部帮付",
+     ".all.s": "你存款里的{a}。",
+     ".half": "付一半，其余兄弟姐妹分摊",
+     ".half.s": "你出{a}。",
+     ".no": "你负担不起",
+     ".no.s": "他们去别处借。",
+     ".no.h": "幸福感 −2。",
+     "trk.f_parmed": "父母的医药费"
+    },
+    "zht": {
+     ".t": "醫藥費",
+     ".x": "{p}要動手術，醫藥費{a}，他們付不起。",
+     ".all": "全部幫付",
+     ".all.s": "你存款裡的{a}。",
+     ".half": "付一半，其餘兄弟姊妹分攤",
+     ".half.s": "你出{a}。",
+     ".no": "你負擔不起",
+     ".no.s": "他們去別處借。",
+     ".no.h": "幸福感 −2。",
+     "trk.f_parmed": "父母的醫藥費"
+    }
+   }
   }
  ]
 }

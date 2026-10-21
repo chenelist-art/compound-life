@@ -1054,6 +1054,336 @@
      "trk.y_furnish": "家具"
     }
    }
+  },
+  {
+   "id": "f_bigflat",
+   "age": [31, 44],
+   "weight": 0.35,
+   "when": {"house": false, "kids": true},
+   "def": "squeeze",
+   "tarot": "move",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "opts": [
+    {"id": "big", "hint": true, "do": "rentMul = 1.35; rentUntil = age + 10; happy += 3"},
+    {"id": "out", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "T('f_far', {kind: 'ghost', label: M('trk.f_far')}); rec('f_far', .015 * base, 10, -.2); happy += 1"},
+    {"id": "squeeze", "hint": true, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Running out of room",
+     ".x": "With children, your rented flat feels tiny.",
+     ".big": "Rent a bigger place nearby",
+     ".big.s": "About 35% more rent.",
+     ".big.h": "Happiness +3.",
+     ".out": "A bigger place further out",
+     ".out.s": "Same rent, about {a} a year more in travel.",
+     ".out.h": "Happiness +1; longer commutes wear you down a little.",
+     ".squeeze": "Make it work",
+     ".squeeze.s": "Bunk beds and clever shelving.",
+     ".squeeze.h": "Happiness −2.",
+     "trk.f_far": "A longer commute"
+    },
+    "zh": {
+     ".t": "房子不够住了",
+     ".x": "有了孩子，租的房子显得好小。",
+     ".big": "在附近租大一点的",
+     ".big.s": "房租多大约35%。",
+     ".big.h": "幸福感 +3。",
+     ".out": "搬去远一点但更大的",
+     ".out.s": "房租一样，每年多花大约{a}的交通费。",
+     ".out.h": "幸福感 +1；通勤变长会有点累。",
+     ".squeeze": "挤一挤",
+     ".squeeze.s": "上下铺和巧妙的收纳。",
+     ".squeeze.h": "幸福感 −2。",
+     "trk.f_far": "更长的通勤"
+    },
+    "zht": {
+     ".t": "房子不夠住了",
+     ".x": "有了孩子，租的房子顯得好小。",
+     ".big": "在附近租大一點的",
+     ".big.s": "房租多大約35%。",
+     ".big.h": "幸福感 +3。",
+     ".out": "搬去遠一點但更大的",
+     ".out.s": "房租一樣，每年多花大約{a}的交通費。",
+     ".out.h": "幸福感 +1；通勤變長會有點累。",
+     ".squeeze": "擠一擠",
+     ".squeeze.s": "上下鋪和巧妙的收納。",
+     ".squeeze.h": "幸福感 −2。",
+     "trk.f_far": "更長的通勤"
+    }
+   }
+  },
+  {
+   "id": "f_reno",
+   "src": "ESTIMATE: game rule (renovations usually add less to a home’s value than they cost)",
+   "age": [33, 44],
+   "weight": 0.35,
+   "when": {"house": true},
+   "def": "none",
+   "tarot": "roof",
+   "art": {"draw": "tools", "bg": "ya"},
+   "opts": [
+    {"id": "pro", "sub": {"a": "MN(.25 * base)"}, "hint": true, "do": "spend('f_reno', .25 * base, 'trk.f_reno'); house.value += .15 * base; happy += 3"},
+    {"id": "diy", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "spend('f_reno', .08 * base, 'trk.f_reno'); house.value += .07 * base; happy += 1; if (roll('f_reno') < .1) health -= 3"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new kitchen",
+     ".x": "Your kitchen is tired and the cupboards are falling apart.",
+     ".pro": "Have it done properly",
+     ".pro.s": "About {a}.",
+     ".pro.h": "Happiness +3. Adds a little over half its cost to the home’s value.",
+     ".diy": "Do it yourself",
+     ".diy.s": "About {a} in materials, and many weekends.",
+     ".diy.h": "Happiness +1. Adds nearly its cost to the home’s value. A small risk of hurting yourself.",
+     ".none": "Make do",
+     ".none.s": "It still works.",
+     "trk.f_reno": "Kitchen renovation"
+    },
+    "zh": {
+     ".t": "翻新厨房",
+     ".x": "厨房旧了，柜子也快散了。",
+     ".pro": "请人好好装修",
+     ".pro.s": "大约{a}。",
+     ".pro.h": "幸福感 +3。房子增值大约是花费的一半多。",
+     ".diy": "自己动手",
+     ".diy.s": "材料大约{a}，还要好多个周末。",
+     ".diy.h": "幸福感 +1。房子增值接近花费。有一点受伤的风险。",
+     ".none": "将就着用",
+     ".none.s": "还能用。",
+     "trk.f_reno": "厨房装修"
+    },
+    "zht": {
+     ".t": "翻新廚房",
+     ".x": "廚房舊了，櫃子也快散了。",
+     ".pro": "請人好好裝修",
+     ".pro.s": "大約{a}。",
+     ".pro.h": "幸福感 +3。房子增值大約是花費的一半多。",
+     ".diy": "自己動手",
+     ".diy.s": "材料大約{a}，還要好多個週末。",
+     ".diy.h": "幸福感 +1。房子增值接近花費。有一點受傷的風險。",
+     ".none": "將就著用",
+     ".none.s": "還能用。",
+     "trk.f_reno": "廚房裝修"
+    }
+   }
+  },
+  {
+   "id": "f_solar",
+   "src": "Rooftop solar usually pays for itself in 6–12 years (IEA, Renewables 2023); the figures used here are an ESTIMATE",
+   "age": [33, 44],
+   "weight": 0.3,
+   "when": {"house": true},
+   "def": "no",
+   "tarot": "roof",
+   "art": {"draw": "solar", "bg": "mi"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.12 * base)", "b": "MN(.015 * base)"}, "do": "spend('f_solarB', .12 * base, 'trk.f_solarB'); T('f_solar', {kind: 'custom', label: M('trk.f_solar')}); rec('f_solar', -.015 * base, 25)"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Solar panels",
+     ".x": "A neighbour has put solar panels on the roof and hardly pays for electricity any more.",
+     ".yes": "Install them",
+     ".yes.s": "About {a} up front; saves about {b} a year.",
+     ".no": "Not now",
+     ".no.s": "Keep paying the bills.",
+     "trk.f_solar": "Electricity saved",
+     "trk.f_solarB": "Solar panels"
+    },
+    "zh": {
+     ".t": "太阳能板",
+     ".x": "邻居在屋顶装了太阳能板，现在几乎不用付电费。",
+     ".yes": "安装",
+     ".yes.s": "先花大约{a}；每年省下大约{b}。",
+     ".no": "暂时不装",
+     ".no.s": "继续付电费。",
+     "trk.f_solar": "省下的电费",
+     "trk.f_solarB": "太阳能板"
+    },
+    "zht": {
+     ".t": "太陽能板",
+     ".x": "鄰居在屋頂裝了太陽能板，現在幾乎不用付電費。",
+     ".yes": "安裝",
+     ".yes.s": "先花大約{a}；每年省下大約{b}。",
+     ".no": "暫時不裝",
+     ".no.s": "繼續付電費。",
+     "trk.f_solar": "省下的電費",
+     "trk.f_solarB": "太陽能板"
+    }
+   }
+  },
+  {
+   "id": "f_car",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"car": true},
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "lease", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "T('f_lease', {kind: 'ghost', label: M('trk.f_lease')}); rec('f_lease', .06 * base, 4); happy += 2"},
+    {"id": "used", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('f_used', .1 * base, 'trk.f_used'); happy += 1"},
+    {"id": "keep", "hint": true, "do": "if (roll('f_car') < .35) pay(.03 * base)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new car?",
+     ".x": "Your car is getting old. The dealer has a leasing offer on a new one.",
+     ".lease": "Lease a new car",
+     ".lease.s": "About {a} a year for four years; then you hand it back.",
+     ".lease.h": "Happiness +2.",
+     ".used": "Buy a newer used car",
+     ".used.s": "About {a}, after trading in yours.",
+     ".used.h": "Happiness +1.",
+     ".keep": "Keep driving the old one",
+     ".keep.s": "Free, for now.",
+     ".keep.h": "Old cars need repairs more often.",
+     "trk.f_lease": "A leased car",
+     "trk.f_used": "A newer used car"
+    },
+    "zh": {
+     ".t": "换车？",
+     ".x": "你的车开旧了。车行有新车租赁方案。",
+     ".lease": "租一辆新车",
+     ".lease.s": "四年里每年大约{a}，到期还车。",
+     ".lease.h": "幸福感 +2。",
+     ".used": "买辆较新的二手车",
+     ".used.s": "旧车折价后大约{a}。",
+     ".used.h": "幸福感 +1。",
+     ".keep": "继续开旧车",
+     ".keep.s": "暂时不花钱。",
+     ".keep.h": "旧车比较常要修。",
+     "trk.f_lease": "租赁的车",
+     "trk.f_used": "较新的二手车"
+    },
+    "zht": {
+     ".t": "換車？",
+     ".x": "你的車開舊了。車行有新車租賃方案。",
+     ".lease": "租一台新車",
+     ".lease.s": "四年裡每年大約{a}，到期還車。",
+     ".lease.h": "幸福感 +2。",
+     ".used": "買台較新的二手車",
+     ".used.s": "舊車折價後大約{a}。",
+     ".used.h": "幸福感 +1。",
+     ".keep": "繼續開舊車",
+     ".keep.s": "暫時不花錢。",
+     ".keep.h": "舊車比較常要修。",
+     "trk.f_lease": "租賃的車",
+     "trk.f_used": "較新的二手車"
+    }
+   }
+  },
+  {
+   "id": "f_secondcar",
+   "age": [32, 44],
+   "weight": 0.3,
+   "when": {"car": true, "kids": true},
+   "def": "one",
+   "tarot": "car2",
+   "art": {"draw": "moto", "bg": "ya"},
+   "opts": [
+    {"id": "two", "sub": {"a": "MN(.15 * base)", "b": "MN(.03 * base)"}, "hint": true, "do": "spend('f_car2', .15 * base, 'trk.f_car2'); T('f_car2run', {kind: 'ghost', label: M('trk.f_car2run')}); rec('f_car2run', .03 * base, 10); happy += 2"},
+    {"id": "one", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A second car",
+     ".x": "School runs, two jobs and weekend clubs: one car is not enough any more.",
+     ".two": "Buy a second car",
+     ".two.s": "About {a}, plus about {b} a year to run.",
+     ".two.h": "Happiness +2.",
+     ".one": "Manage with one",
+     ".one.s": "Careful planning and the odd taxi.",
+     ".one.h": "Happiness −1.",
+     "trk.f_car2": "A second car",
+     "trk.f_car2run": "Running a second car"
+    },
+    "zh": {
+     ".t": "第二辆车",
+     ".x": "接送孩子、两份工作、周末活动：一辆车不够用了。",
+     ".two": "再买一辆",
+     ".two.s": "大约{a}，每年养车大约{b}。",
+     ".two.h": "幸福感 +2。",
+     ".one": "一辆就好",
+     ".one.s": "仔细安排，偶尔叫车。",
+     ".one.h": "幸福感 −1。",
+     "trk.f_car2": "第二辆车",
+     "trk.f_car2run": "第二辆车的开销"
+    },
+    "zht": {
+     ".t": "第二台車",
+     ".x": "接送孩子、兩份工作、週末活動：一台車不夠用了。",
+     ".two": "再買一台",
+     ".two.s": "大約{a}，每年養車大約{b}。",
+     ".two.h": "幸福感 +2。",
+     ".one": "一台就好",
+     ".one.s": "仔細安排，偶爾叫車。",
+     ".one.h": "幸福感 −1。",
+     "trk.f_car2": "第二台車",
+     "trk.f_car2run": "第二台車的開銷"
+    }
+   }
+  },
+  {
+   "id": "f_holidayhome",
+   "age": [38, 44],
+   "weight": 0.25,
+   "when": {"stats": {"netWorth": "> 4 * base", "liquid": "> .8 * base"}},
+   "def": "no",
+   "tarot": "home",
+   "art": {"draw": "akiya", "bg": "ya"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.8 * base)", "b": "MN(.03 * base)"}, "hint": true, "do": "putIn('f_cottage', .8 * base, {rate: .01}, 'trk.f_cottage'); T('f_cottageC', {kind: 'ghost', label: M('trk.f_cottageC')}); rec('f_cottageC', .03 * base, 20); happy += 4"},
+    {"id": "let", "sub": {"a": "MN(.8 * base)"}, "hint": true, "do": "putIn('f_cottage', .8 * base, {rate: .01}, 'trk.f_cottage'); happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A cottage by the sea",
+     ".x": "A little cottage by the sea, where you have spent many holidays, is for sale.",
+     ".buy": "Buy it for yourselves",
+     ".buy.s": "{a}, plus about {b} a year in upkeep.",
+     ".buy.h": "Happiness +4.",
+     ".let": "Buy it and rent it to holidaymakers",
+     ".let.s": "{a}; the rent roughly covers the upkeep.",
+     ".let.h": "Happiness +2.",
+     ".no": "Keep renting it for a week each summer",
+     ".no.s": "No upkeep.",
+     "trk.f_cottage": "A cottage by the sea",
+     "trk.f_cottageC": "Cottage upkeep"
+    },
+    "zh": {
+     ".t": "海边小屋",
+     ".x": "你度过很多假期的海边小屋要卖了。",
+     ".buy": "买下来自己住",
+     ".buy.s": "{a}，每年维护费大约{b}。",
+     ".buy.h": "幸福感 +4。",
+     ".let": "买下来租给游客",
+     ".let.s": "{a}；租金大致打平维护费。",
+     ".let.h": "幸福感 +2。",
+     ".no": "每年夏天照样租一周",
+     ".no.s": "不用维护。",
+     "trk.f_cottage": "海边小屋",
+     "trk.f_cottageC": "小屋维护费"
+    },
+    "zht": {
+     ".t": "海邊小屋",
+     ".x": "你度過很多假期的海邊小屋要賣了。",
+     ".buy": "買下來自己住",
+     ".buy.s": "{a}，每年維護費大約{b}。",
+     ".buy.h": "幸福感 +4。",
+     ".let": "買下來租給遊客",
+     ".let.s": "{a}；租金大致打平維護費。",
+     ".let.h": "幸福感 +2。",
+     ".no": "每年夏天照樣租一週",
+     ".no.s": "不用維護。",
+     "trk.f_cottage": "海邊小屋",
+     "trk.f_cottageC": "小屋維護費"
+    }
+   }
   }
  ]
 }

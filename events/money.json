@@ -2183,6 +2183,600 @@
      "trk.y_escoot": "電動滑板車"
     }
    }
+  },
+  {
+   "id": "f_overpay",
+   "age": [31, 44],
+   "weight": 0.4,
+   "when": {"house": true, "stats": {"liquid": "> .3 * base"}, "test": "house.mort > .5 * base"},
+   "def": "none",
+   "tarot": "rates",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"a": "Math.min(.3 * base, liquid(), house.mort)"},
+   "opts": [
+    {"id": "over", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); house.mort -= a; house.out += a; setRate(house, house.rate || .03, age); happy += 1"},
+    {"id": "inv", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('f_overI', a, {}, 'trk.f_overI')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Pay the mortgage down?",
+     ".x": "You have built up some savings. You could pay off part of your mortgage early.",
+     ".over": "Overpay the mortgage",
+     ".over.s": "{a} off what you owe; lower monthly payments.",
+     ".over.h": "Happiness +1. A sure return equal to your mortgage rate.",
+     ".inv": "Invest it instead",
+     ".inv.s": "{a} into an index fund.",
+     ".inv.h": "Stocks have usually grown about 5% a year after inflation, more than most mortgage rates, with bad years along the way.",
+     ".none": "Keep it in the bank",
+     ".none.s": "Ready for emergencies.",
+     "trk.f_overI": "Invested instead of overpaying"
+    },
+    "zh": {
+     ".t": "提前还房贷？",
+     ".x": "你存了一些钱，可以提前还一部分房贷。",
+     ".over": "提前还",
+     ".over.s": "欠款少{a}，月供也变少。",
+     ".over.h": "幸福感 +1。稳拿相当于房贷利率的回报。",
+     ".inv": "改拿去投资",
+     ".inv.s": "{a}投进指数基金。",
+     ".inv.h": "股票扣除通胀后平均每年约涨5%，比多数房贷利率高，但中间会有很差的年份。",
+     ".none": "放在银行",
+     ".none.s": "以备不时之需。",
+     "trk.f_overI": "没提前还房贷，拿去投资"
+    },
+    "zht": {
+     ".t": "提前還房貸？",
+     ".x": "你存了一些錢，可以提前還一部分房貸。",
+     ".over": "提前還",
+     ".over.s": "欠款少{a}，月付也變少。",
+     ".over.h": "幸福感 +1。穩拿相當於房貸利率的報酬。",
+     ".inv": "改拿去投資",
+     ".inv.s": "{a}投進指數基金。",
+     ".inv.h": "股票扣除通膨後平均每年約漲5%，比多數房貸利率高，但中間會有很差的年份。",
+     ".none": "放在銀行",
+     ".none.s": "以備不時之需。",
+     "trk.f_overI": "沒提前還房貸，拿去投資"
+    }
+   }
+  },
+  {
+   "id": "f_rental",
+   "src": "ESTIMATE: game rule (rental yields of about 4–5% before vacancies and repairs; flats rise a little faster than inflation)",
+   "age": [33, 44],
+   "weight": 0.3,
+   "when": {"working": true, "stats": {"liquid": "> 1 * base"}},
+   "def": "none",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"a": "Math.min(1.2 * base, liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "flat", "sub": {"a": "MN(a)", "b": "MN(.045 * a)"}, "hint": true, "do": "putIn('f_rental', a, {rate: .015}, 'trk.f_rental'); T('f_rentI', {kind: 'custom', label: M('trk.f_rentI')}); rec('f_rentI', -.045 * a, 40); happy -= 1", "next": {"event": "f_tenant", "in": [2, 5], "p": 0.35}},
+    {"id": "reit", "sub": {"a": "MN(a / 2)"}, "hint": true, "do": "putIn('f_reit', a / 2, {}, 'trk.f_reit')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A flat to rent out",
+     ".x": "A small flat near the station is for sale. You could use {a} of savings to buy it and rent it out.",
+     ".flat": "Buy it and become a landlord",
+     ".flat.s": "{a} up front; rent of about {b} a year after costs.",
+     ".flat.h": "Happiness −1: calls about boilers. Some tenants are trouble.",
+     ".reit": "Buy shares in a property fund",
+     ".reit.s": "{a}, no tenants to deal with.",
+     ".reit.h": "Rises and falls with the stock market.",
+     ".none": "Not for you",
+     ".none.s": "Keep it simple.",
+     "trk.f_rental": "A flat you rent out",
+     "trk.f_rentI": "Rent from your flat",
+     "trk.f_reit": "Property fund"
+    },
+    "zh": {
+     ".t": "买房出租",
+     ".x": "车站附近有间小公寓在卖。你可以拿{a}的存款买下来出租。",
+     ".flat": "买下来当房东",
+     ".flat.s": "先付{a}；扣掉开销后每年租金大约{b}。",
+     ".flat.h": "幸福感 −1：热水器坏了也要管。有些房客很难缠。",
+     ".reit": "买房地产信托基金",
+     ".reit.s": "{a}，不用应付房客。",
+     ".reit.h": "跟着股市涨跌。",
+     ".none": "不碰",
+     ".none.s": "简单就好。",
+     "trk.f_rental": "出租的公寓",
+     "trk.f_rentI": "公寓租金",
+     "trk.f_reit": "房地产信托基金"
+    },
+    "zht": {
+     ".t": "買房出租",
+     ".x": "車站附近有間小公寓在賣。你可以拿{a}的存款買下來出租。",
+     ".flat": "買下來當房東",
+     ".flat.s": "先付{a}；扣掉開銷後每年租金大約{b}。",
+     ".flat.h": "幸福感 −1：熱水器壞了也要管。有些房客很難纏。",
+     ".reit": "買不動產信託基金",
+     ".reit.s": "{a}，不用應付房客。",
+     ".reit.h": "跟著股市漲跌。",
+     ".none": "不碰",
+     ".none.s": "簡單就好。",
+     "trk.f_rental": "出租的公寓",
+     "trk.f_rentI": "公寓租金",
+     "trk.f_reit": "不動產信託基金"
+    }
+   }
+  },
+  {
+   "id": "f_tenant",
+   "chain": true,
+   "when": {"test": "!!lots.f_rental && lots.f_rental.v > 0"},
+   "def": "court",
+   "tarot": "home",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"v": "lots.f_rental.v"},
+   "opts": [
+    {"id": "court", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('f_tenant', .05 * base, 'trk.f_tenant'); happy -= 2"},
+    {"id": "deal", "sub": {"a": "MN(.03 * base)"}, "do": "pay(.03 * base); happy -= 1"},
+    {"id": "sell", "sub": {"a": "MN(.92 * v)"}, "do": "lots.f_rental.v = 0; lots.f_rental.tout += v; cash += .92 * v; stopRec('f_rentI')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A tenant from hell",
+     ".x": "Your tenant has stopped paying rent and the flat is in a bad state.",
+     ".court": "Go to court to evict them",
+     ".court.s": "About {a} in legal fees and lost rent.",
+     ".court.h": "Happiness −2. Then a new tenant.",
+     ".deal": "Pay them a little to leave",
+     ".deal.s": "About {a}, and it is over quickly.",
+     ".sell": "Sell the flat",
+     ".sell.s": "About {a} after fees.",
+     "trk.f_tenant": "Evicting a tenant"
+    },
+    "zh": {
+     ".t": "难缠的房客",
+     ".x": "你的房客不交房租，房子也被弄得一团糟。",
+     ".court": "上法院请他们搬走",
+     ".court.s": "律师费和损失的房租大约{a}。",
+     ".court.h": "幸福感 −2。之后换新房客。",
+     ".deal": "给点钱请他们走",
+     ".deal.s": "大约{a}，很快就结束。",
+     ".sell": "把房子卖了",
+     ".sell.s": "扣掉手续费大约{a}。",
+     "trk.f_tenant": "驱逐房客"
+    },
+    "zht": {
+     ".t": "難纏的房客",
+     ".x": "你的房客不繳房租，房子也被弄得一團糟。",
+     ".court": "上法院請他們搬走",
+     ".court.s": "律師費和損失的房租大約{a}。",
+     ".court.h": "幸福感 −2。之後換新房客。",
+     ".deal": "給點錢請他們走",
+     ".deal.s": "大約{a}，很快就結束。",
+     ".sell": "把房子賣了",
+     ".sell.s": "扣掉手續費大約{a}。",
+     "trk.f_tenant": "驅逐房客"
+    }
+   }
+  },
+  {
+   "id": "f_pension",
+   "src": "Pension contributions usually get tax relief or an employer top-up (OECD, Pensions at a Glance 2023); the 25% used here is an ESTIMATE",
+   "age": [30, 44],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "save2",
+   "art": {"draw": "penjar", "bg": "mi"},
+   "opts": [
+    {"id": "more", "hint": true, "do": "yearly('f_pen', {p: .05, until: 60, bonus: .25}, {lock: 60}, 'trk.f_pen')"},
+    {"id": "some", "hint": true, "do": "yearly('f_pen', {p: .02, until: 60, bonus: .25}, {lock: 60}, 'trk.f_pen')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your pension",
+     ".x": "A letter says you could pay more into your pension, with tax relief on top.",
+     ".more": "Add 5% of your pay",
+     ".more.s": "Locked away until 60.",
+     ".more.h": "Tax relief adds about a quarter on top, and it is invested.",
+     ".some": "Add 2% of your pay",
+     ".some.s": "Locked away until 60.",
+     ".some.h": "Tax relief adds about a quarter on top, and it is invested.",
+     ".none": "Keep things as they are",
+     ".none.s": "More take-home pay.",
+     "trk.f_pen": "Extra pension savings"
+    },
+    "zh": {
+     ".t": "你的养老金",
+     ".x": "一封信说你可以多缴一些养老金，还能享受税务优惠。",
+     ".more": "多存工资的5%",
+     ".more.s": "锁到60岁。",
+     ".more.h": "税务优惠大约再加四分之一，而且会拿去投资。",
+     ".some": "多存工资的2%",
+     ".some.s": "锁到60岁。",
+     ".some.h": "税务优惠大约再加四分之一，而且会拿去投资。",
+     ".none": "维持现状",
+     ".none.s": "到手的钱多一些。",
+     "trk.f_pen": "额外的养老金"
+    },
+    "zht": {
+     ".t": "你的退休金",
+     ".x": "一封信說你可以多繳一些退休金，還能享受稅務優惠。",
+     ".more": "多存薪水的5%",
+     ".more.s": "鎖到60歲。",
+     ".more.h": "稅務優惠大約再加四分之一，而且會拿去投資。",
+     ".some": "多存薪水的2%",
+     ".some.s": "鎖到60歲。",
+     ".some.h": "稅務優惠大約再加四分之一，而且會拿去投資。",
+     ".none": "維持現狀",
+     ".none.s": "到手的錢多一些。",
+     "trk.f_pen": "額外的退休金"
+    }
+   }
+  },
+  {
+   "id": "f_managed",
+   "src": "Most actively managed funds do worse than their index after fees over 10–15 years (S&P Dow Jones Indices, SPIVA Scorecard 2024)",
+   "age": [38, 44],
+   "weight": 0.35,
+   "when": {"stats": {"netWorth": "> 3 * base", "liquid": "> .5 * base"}},
+   "def": "none",
+   "tarot": "agent",
+   "art": {"draw": "suit", "bg": "wa"},
+   "let": {"a": "Math.min(.5 * base, liquid())"},
+   "opts": [
+    {"id": "managed", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('f_managed', a, {fee: .015}, 'trk.f_managed')"},
+    {"id": "index", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('f_idx', a, {fee: .001}, 'trk.f_idx')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A private banker",
+     ".x": "Your bank invites you to meet a private banker, who offers to manage your savings.",
+     ".managed": "Let them manage it",
+     ".managed.s": "{a}, for a fee of 1.5% a year.",
+     ".managed.h": "Most managed funds end up behind a plain index fund once the fee is paid.",
+     ".index": "Buy a cheap index fund yourself",
+     ".index.s": "{a}, for 0.1% a year.",
+     ".index.h": "Stocks have usually grown about 5% a year after inflation.",
+     ".none": "Leave things as they are",
+     ".none.s": "No change.",
+     "trk.f_managed": "Managed fund",
+     "trk.f_idx": "Low-cost index fund"
+    },
+    "zh": {
+     ".t": "私人银行",
+     ".x": "银行邀请你见私人银行家，他提出帮你打理存款。",
+     ".managed": "交给他们打理",
+     ".managed.s": "{a}，每年收1.5%的费用。",
+     ".managed.h": "扣掉费用后，大部分主动管理基金赢不过普通指数基金。",
+     ".index": "自己买低费用指数基金",
+     ".index.s": "{a}，每年0.1%的费用。",
+     ".index.h": "股票扣除通胀后平均每年约涨5%。",
+     ".none": "维持现状",
+     ".none.s": "不变。",
+     "trk.f_managed": "私人银行理财",
+     "trk.f_idx": "低费用指数基金"
+    },
+    "zht": {
+     ".t": "私人銀行",
+     ".x": "銀行邀請你見私人銀行家，他提出幫你打理存款。",
+     ".managed": "交給他們打理",
+     ".managed.s": "{a}，每年收1.5%的費用。",
+     ".managed.h": "扣掉費用後，大部分主動管理基金贏不過普通指數基金。",
+     ".index": "自己買低費用指數基金",
+     ".index.s": "{a}，每年0.1%的費用。",
+     ".index.h": "股票扣除通膨後平均每年約漲5%。",
+     ".none": "維持現狀",
+     ".none.s": "不變。",
+     "trk.f_managed": "私人銀行理財",
+     "trk.f_idx": "低費用指數基金"
+    }
+   }
+  },
+  {
+   "id": "f_timeshare",
+   "src": "Timeshares carry yearly maintenance fees and usually resell for a small fraction of their price (US Federal Trade Commission, Timeshares and Vacation Plans, 2023)",
+   "age": [35, 44],
+   "weight": 0.3,
+   "def": "no",
+   "tarot": "holiday",
+   "art": {"draw": "tent", "bg": "ya"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.15 * base)", "b": "MN(.02 * base)"}, "hint": true, "do": "spend('f_tsB', .15 * base, 'trk.f_tsB'); T('f_ts', {kind: 'ghost', label: M('trk.f_ts')}); rec('f_ts', .02 * base, 25); happy += 2", "next": {"event": "f_timeshare2", "in": [4, 6], "p": 0.6}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A holiday presentation",
+     ".x": "On holiday you are invited to a free breakfast. It turns out to be a sales pitch for a share of a holiday flat.",
+     ".buy": "Buy a week a year",
+     ".buy.s": "{a} now, and {b} a year in maintenance fees.",
+     ".buy.h": "Happiness +2. They are very hard to sell later.",
+     ".no": "Finish your breakfast and leave",
+     ".no.s": "A free breakfast.",
+     "trk.f_tsB": "A holiday timeshare",
+     "trk.f_ts": "Timeshare fees"
+    },
+    "zh": {
+     ".t": "度假村说明会",
+     ".x": "度假时有人请你吃免费早餐，原来是推销度假公寓分时度假权的说明会。",
+     ".buy": "买每年一周的使用权",
+     ".buy.s": "现在付{a}，每年管理费{b}。",
+     ".buy.h": "幸福感 +2。以后很难转手。",
+     ".no": "吃完早餐就走",
+     ".no.s": "白吃一顿早餐。",
+     "trk.f_tsB": "分时度假权",
+     "trk.f_ts": "分时度假管理费"
+    },
+    "zht": {
+     ".t": "度假村說明會",
+     ".x": "度假時有人請你吃免費早餐，原來是推銷度假公寓分時度假權的說明會。",
+     ".buy": "買每年一週的使用權",
+     ".buy.s": "現在付{a}，每年管理費{b}。",
+     ".buy.h": "幸福感 +2。以後很難轉手。",
+     ".no": "吃完早餐就走",
+     ".no.s": "白吃一頓早餐。",
+     "trk.f_tsB": "分時度假權",
+     "trk.f_ts": "分時度假管理費"
+    }
+   }
+  },
+  {
+   "id": "f_timeshare2",
+   "chain": true,
+   "def": "keep",
+   "tarot": "scam2",
+   "art": {"draw": "bill", "bg": "mi"},
+   "opts": [
+    {"id": "exit", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('f_tsX', .03 * base, 'trk.f_tsX'); if (roll('f_timeshare2') < .4) stopRec('f_ts')"},
+    {"id": "keep", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Getting out of the timeshare",
+     ".x": "The fees keep rising and you rarely use your week. A company offers to take it off your hands, for a fee.",
+     ".exit": "Pay them to take it",
+     ".exit.s": "{a} up front.",
+     ".exit.h": "Many of these companies take the fee and do nothing.",
+     ".keep": "Keep paying",
+     ".keep.s": "At least you get a week by the sea.",
+     "trk.f_tsX": "Timeshare exit fee"
+    },
+    "zh": {
+     ".t": "摆脱分时度假",
+     ".x": "管理费越来越高，你也很少去用。有家公司说可以帮你脱手，但要收费。",
+     ".exit": "付钱请他们处理",
+     ".exit.s": "先付{a}。",
+     ".exit.h": "很多这种公司收了钱就不办事。",
+     ".keep": "继续缴费",
+     ".keep.s": "至少每年能去海边一周。",
+     "trk.f_tsX": "分时度假脱手费"
+    },
+    "zht": {
+     ".t": "擺脫分時度假",
+     ".x": "管理費越來越高，你也很少去用。有家公司說可以幫你脫手，但要收費。",
+     ".exit": "付錢請他們處理",
+     ".exit.s": "先付{a}。",
+     ".exit.h": "很多這種公司收了錢就不辦事。",
+     ".keep": "繼續繳費",
+     ".keep.s": "至少每年能去海邊一週。",
+     "trk.f_tsX": "分時度假脫手費"
+    }
+   }
+  },
+  {
+   "id": "f_syndicate",
+   "src": "Lottery jackpot odds are in the tens of millions to one; games pay back about half of what is staked (e.g. UK National Lottery, 2024)",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "tip",
+   "art": {"draw": "rosca", "bg": "ya"},
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(.005 * base)"}, "hint": true, "rel": 1, "do": "T('f_synd', {kind: 'ghost', label: M('trk.f_synd')}); rec('f_synd', .005 * base, 20); if (roll('f_syndicate') < .003) { cash += 2 * base; log(M('log.f_synd', {a: MN(2 * base)}), 'good') }"},
+    {"id": "no", "rel": -1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The office lottery",
+     ".x": "Your colleagues buy lottery tickets together every week. They ask if you are in.",
+     ".join": "Join in",
+     ".join.s": "About {a} a year.",
+     ".join.h": "On average the lottery pays back about half of what goes in.",
+     ".no": "Stay out",
+     ".no.s": "And hope they never win.",
+     "trk.f_synd": "Office lottery",
+     "log.f_synd": "Your office lottery group won! Your share is {a}."
+    },
+    "zh": {
+     ".t": "办公室合买彩票",
+     ".x": "同事们每周合买彩票，问你要不要一起。",
+     ".join": "加入",
+     ".join.s": "每年大约{a}。",
+     ".join.h": "平均来说，彩票只会还你投入的一半左右。",
+     ".no": "不参加",
+     ".no.s": "祈祷他们别中奖。",
+     "trk.f_synd": "办公室彩票",
+     "log.f_synd": "办公室合买的彩票中奖了！你分到{a}。"
+    },
+    "zht": {
+     ".t": "辦公室合買彩券",
+     ".x": "同事們每週合買彩券，問你要不要一起。",
+     ".join": "加入",
+     ".join.s": "每年大約{a}。",
+     ".join.h": "平均來說，彩券只會還你投入的一半左右。",
+     ".no": "不參加",
+     ".no.s": "祈禱他們別中獎。",
+     "trk.f_synd": "辦公室彩券",
+     "log.f_synd": "辦公室合買的彩券中獎了！你分到{a}。"
+    }
+   }
+  },
+  {
+   "id": "f_homeins",
+   "src": "ESTIMATE: game rule (chance of a burglary, fire or leak claim over the years, and its cost)",
+   "age": [30, 44],
+   "weight": 0.35,
+   "when": {"house": true},
+   "def": "no",
+   "tarot": "insure",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.008 * base)"}, "hint": true, "do": "T('f_homeins', {kind: 'custom', label: M('trk.f_homeins')}); rec('f_homeins', .008 * base, 30); later(age + 3 + Math.floor(roll('f_homeinsAt') * 10), 'f_homeins', {ins: 1})"},
+    {"id": "no", "hint": true, "do": "later(age + 3 + Math.floor(roll('f_homeinsAt') * 10), 'f_homeins', {ins: 0})"}
+   ],
+   "later": {
+    "f_homeins": "if (roll('f_homeins') < .15) { if (x.ins) log(M('log.f_homeinsOk'), 'good'); else { pay(.1 * base); log(M('log.f_homeinsNo', {a: MN(.1 * base)}), 'bad') } }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Home insurance",
+     ".x": "Your mortgage doesn’t require it, but an insurer offers to cover your home and belongings.",
+     ".yes": "Insure it",
+     ".yes.s": "About {a} a year.",
+     ".yes.h": "About one home in seven has a big claim in ten years.",
+     ".no": "Take the risk",
+     ".no.s": "No premiums.",
+     ".no.h": "About one home in seven has a big claim in ten years.",
+     "trk.f_homeins": "Home insurance",
+     "log.f_homeinsOk": "A burst pipe flooded your kitchen. The insurance pays for the repairs.",
+     "log.f_homeinsNo": "A burst pipe flooded your kitchen. The repairs cost you {a}."
+    },
+    "zh": {
+     ".t": "房屋保险",
+     ".x": "房贷没有强制，但有保险公司想帮你的房子和家当投保。",
+     ".yes": "投保",
+     ".yes.s": "每年大约{a}。",
+     ".yes.h": "大约每七户就有一户十年内会有大笔理赔。",
+     ".no": "自己承担风险",
+     ".no.s": "不用付保费。",
+     ".no.h": "大约每七户就有一户十年内会有大笔理赔。",
+     "trk.f_homeins": "房屋保险",
+     "log.f_homeinsOk": "水管爆裂淹了厨房，保险付了维修费。",
+     "log.f_homeinsNo": "水管爆裂淹了厨房，维修花了你{a}。"
+    },
+    "zht": {
+     ".t": "房屋保險",
+     ".x": "房貸沒有強制，但有保險公司想幫你的房子和家當投保。",
+     ".yes": "投保",
+     ".yes.s": "每年大約{a}。",
+     ".yes.h": "大約每七戶就有一戶十年內會有大筆理賠。",
+     ".no": "自己承擔風險",
+     ".no.s": "不用付保費。",
+     ".no.h": "大約每七戶就有一戶十年內會有大筆理賠。",
+     "trk.f_homeins": "房屋保險",
+     "log.f_homeinsOk": "水管爆裂淹了廚房，保險付了維修費。",
+     "log.f_homeinsNo": "水管爆裂淹了廚房，維修花了你{a}。"
+    }
+   }
+  },
+  {
+   "id": "f_sibbiz",
+   "age": [32, 44],
+   "weight": 0.35,
+   "when": {"stats": {"liquid": "> .2 * base"}},
+   "who": {"role": "sib", "age": [25, 60]},
+   "def": "no",
+   "tarot": "bizpal",
+   "art": {"draw": "stall", "bg": "co"},
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "invest", "sub": {"a": "MN(.2 * base)"}, "hint": true, "bond": 4, "do": "pay(.2 * base); later(age + 3, 'f_sibbiz', {a: .2 * base})", "next": {"event": "f_sibbiz2", "in": [1, 2], "p": 0.4}},
+    {"id": "lend", "sub": {"a": "MN(.1 * base)"}, "hint": true, "bond": 2, "do": "pay(.1 * base); later(age + 3, 'f_sibbiz', {a: .1 * base})"},
+    {"id": "no", "bond": -4}
+   ],
+   "later": {
+    "f_sibbiz": "const u = roll('f_sibbiz'), v = (u < .35 ? 3 : u < .7 ? 1 : 0) * x.a; cash += v; log(M(v > x.a ? 'log.f_sibbizOk' : v > 0 ? 'log.f_sibbizEven' : 'log.f_sibbizNo', {a: MN(v)}), v > x.a ? 'good' : v > 0 ? '' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Your sibling’s business",
+     ".x": "{p} is opening a café and asks if you would put money in.",
+     ".invest": "Invest as a partner",
+     ".invest.s": "{a} of your savings, for a share of the profits.",
+     ".invest.h": "A third of small cafés do well; a third close and lose the money. You find out in three years.",
+     ".lend": "Lend a smaller amount",
+     ".lend.s": "{a}, to be paid back.",
+     ".lend.h": "If the café closes, the loan may not come back.",
+     ".no": "Say no",
+     ".no.s": "Family and money don’t mix.",
+     "log.f_sibbizOk": "Your sibling’s café is thriving. Your share comes to {a}.",
+     "log.f_sibbizEven": "Your sibling’s café pays back what you put in: {a}.",
+     "log.f_sibbizNo": "Your sibling’s café has closed. The money is gone."
+    },
+    "zh": {
+     ".t": "兄弟姐妹的生意",
+     ".x": "{p}要开咖啡馆，问你愿不愿意投资。",
+     ".invest": "入股当合伙人",
+     ".invest.s": "拿{a}存款，分利润。",
+     ".invest.h": "三分之一的小咖啡馆做得好，三分之一会倒、钱也没了。三年后揭晓。",
+     ".lend": "借少一点",
+     ".lend.s": "借{a}，以后要还。",
+     ".lend.h": "咖啡馆倒了的话，借的钱可能要不回来。",
+     ".no": "拒绝",
+     ".no.s": "亲兄弟，明算账。",
+     "log.f_sibbizOk": "兄弟姐妹的咖啡馆生意兴隆，你分到{a}。",
+     "log.f_sibbizEven": "兄弟姐妹的咖啡馆把你的本钱还给你了：{a}。",
+     "log.f_sibbizNo": "兄弟姐妹的咖啡馆倒了，钱也没了。"
+    },
+    "zht": {
+     ".t": "兄弟姊妹的生意",
+     ".x": "{p}要開咖啡館，問你願不願意投資。",
+     ".invest": "入股當合夥人",
+     ".invest.s": "拿{a}存款，分利潤。",
+     ".invest.h": "三分之一的小咖啡館做得好，三分之一會倒、錢也沒了。三年後揭曉。",
+     ".lend": "借少一點",
+     ".lend.s": "借{a}，以後要還。",
+     ".lend.h": "咖啡館倒了的話，借的錢可能要不回來。",
+     ".no": "拒絕",
+     ".no.s": "親兄弟，明算帳。",
+     "log.f_sibbizOk": "兄弟姊妹的咖啡館生意興隆，你分到{a}。",
+     "log.f_sibbizEven": "兄弟姊妹的咖啡館把你的本錢還給你了：{a}。",
+     "log.f_sibbizNo": "兄弟姊妹的咖啡館倒了，錢也沒了。"
+    }
+   }
+  },
+  {
+   "id": "f_sibbiz2",
+   "chain": true,
+   "who": {"role": "sib", "age": [25, 62]},
+   "def": "no",
+   "tarot": "bizpal",
+   "art": {"draw": "stall", "bg": "wa"},
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "more", "sub": {"a": "MN(.1 * base)"}, "hint": true, "bond": 3, "do": "pay(.1 * base); later(age + 2, 'f_sibbiz', {a: .1 * base})"},
+    {"id": "no", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A little more?",
+     ".x": "{p} says the café needs a new coffee machine to keep going, and asks you for more.",
+     ".more": "Put in more",
+     ".more.s": "{a} more.",
+     ".more.h": "Money put in to rescue a business often doesn’t come back.",
+     ".no": "Say you have given enough",
+     ".no.s": "They find another way."
+    },
+    "zh": {
+     ".t": "再投一点？",
+     ".x": "{p}说咖啡馆要换新咖啡机才撑得下去，想再跟你拿一些钱。",
+     ".more": "再投",
+     ".more.s": "再投{a}。",
+     ".more.h": "为了救生意投进去的钱，常常拿不回来。",
+     ".no": "说你已经尽力了",
+     ".no.s": "他们另想办法。"
+    },
+    "zht": {
+     ".t": "再投一點？",
+     ".x": "{p}說咖啡館要換新咖啡機才撐得下去，想再跟你拿一些錢。",
+     ".more": "再投",
+     ".more.s": "再投{a}。",
+     ".more.h": "為了救生意投進去的錢，常常拿不回來。",
+     ".no": "說你已經盡力了",
+     ".no.s": "他們另想辦法。"
+    }
+   }
   }
  ]
 }
