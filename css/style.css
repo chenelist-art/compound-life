@@ -303,7 +303,7 @@ tbody tr:hover td{background:var(--washi)}
 
 /* the net-worth tarot card */
 .nw-card .t-in{gap:16px;padding-top:30px}
-.note-body{display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-areas:"seal main" "seal stats";gap:14px 26px;align-items:center}
+.note-body{display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-areas:"seal main" "seal stats" "ppl ppl";gap:14px 26px;align-items:center}
 .seal-box{grid-area:seal;display:grid;justify-items:center;gap:8px;align-self:start;min-width:0}
 .seal-win{position:relative;aspect-ratio:10/11}
 #seal{position:absolute;left:7%;top:13%;width:86%;height:auto;aspect-ratio:1;display:block}
@@ -329,6 +329,18 @@ tbody tr:hover td{background:var(--washi)}
 .track i{display:block;height:100%;background:var(--mizu);border-right:2.5px solid var(--charcoal);transition:width .35s}
 .track.sk i{background:var(--coral)} .track.he i{background:var(--wakatake)} .track.ha i{background:var(--yamabuki)} .track.re i{background:var(--mizu)}
 .sx{font-size:12.5px;margin-top:5px}
+/* the people in your life, next to your pixel character: role, name, age and how close you are */
+.ppl{grid-area:ppl;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none;min-width:0}
+.ppl:empty{display:none}
+.pp{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;max-width:100%;min-width:0;padding:3px 11px 5px;border:2.5px solid var(--charcoal);border-radius:14px;background:var(--washi);font-size:13.5px;line-height:1.35}
+.pp-r{font-size:12px;letter-spacing:.03em}
+.pp-n{overflow-wrap:anywhere}
+.pp-a{font-size:12px;font-variant-numeric:tabular-nums}
+.pp-b{flex:1 0 100%;height:7px;margin-top:3px;border:2px solid var(--charcoal);border-radius:999px;overflow:hidden;background:var(--washi)}
+.pp-b i{display:block;height:100%;background:var(--coral)}
+.pp.g-pt{background:var(--yamabuki)} .pp.g-kid{background:var(--wakatake)} .pp.g-par{background:var(--mizu)}
+.pp-more{align-self:center;font-size:13px;padding:3px 10px;border:2.5px dashed var(--charcoal);border-radius:14px}
+.rp-ppl{font-size:14px;margin:6px 0 0}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips:empty{display:none}
 .chip{font-size:13px;padding:3px 12px;border-radius:999px;border:2.5px solid var(--charcoal);background:var(--mizu)}
@@ -657,7 +669,7 @@ body.rp-open{overflow:hidden}
 
 @media (max-width:1100px){.ggrid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:700px){
-  .note-body{grid-template-columns:minmax(0,1fr) 112px;grid-template-areas:"main seal" "stats stats";gap:14px}
+  .note-body{grid-template-columns:minmax(0,1fr) 112px;grid-template-areas:"main seal" "stats stats" "ppl ppl";gap:14px}
   .seal-cap{display:none}
   .pix-nw{--px:2}
   .pix-end{--px:4}

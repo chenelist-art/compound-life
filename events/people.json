@@ -1,0 +1,361 @@
+{
+ "about": "The people in your life: cards about your brothers and sisters, children, parents, best friend and boss. \"who\" picks the person a card is about (their name and role come from js/people.js); an option's \"bond\" changes how close you are.",
+ "events": [
+  {
+   "id": "sib_wed",
+   "when": {"age": [16, 95]},
+   "who": {"role": "sib", "test": "p.eng"},
+   "def": "usual",
+   "tarot": "fwed",
+   "art": "fwed",
+   "let": {"a": ".05 * base"},
+   "fn": {
+    "gift": {
+     "args": ["x"],
+     "do": "pay(x); const t = T('sibwed', {kind: 'ghost', label: M('trk.sibWed', {p: name(p)})}); t.spent += x; t.g += x"
+    },
+    "wedded": {"args": [], "do": "p.eng = false; p.wed = true"}
+   },
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {
+     "id": "big",
+     "sub": {"a": "MN(3 * a)"},
+     "rel": 1,
+     "bond": 12,
+     "do": "wedded(); gift(3 * a); happy += 2"
+    },
+    {"id": "usual", "sub": {"a": "MN(a)"}, "bond": 6, "do": "wedded(); gift(a)"},
+    {"id": "skip", "bond": -10, "do": "wedded()"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A wedding in the family",
+     ".x": "{p} is getting married. Everyone expects a gift, and you're asked to help with the day.",
+     ".big": "Give a generous gift and help pay for the day",
+     ".big.s": "{a}. Happiness +2.",
+     ".usual": "Give the usual gift",
+     ".usual.s": "{a}.",
+     ".skip": "Send your best wishes",
+     ".skip.s": "Free, but it's noticed.",
+     "trk.sibWed": "{p}'s wedding"
+    },
+    "zh": {
+     ".t": "家里的喜事",
+     ".x": "{p}要结婚了。大家都等着送礼，你也被请去帮忙张罗。",
+     ".big": "包个大礼，还帮忙出婚礼的钱",
+     ".big.s": "{a}。幸福感 +2。",
+     ".usual": "照惯例送礼",
+     ".usual.s": "{a}。",
+     ".skip": "送上祝福就好",
+     ".skip.s": "不花钱，但大家都看在眼里。",
+     "trk.sibWed": "{p}的婚礼"
+    },
+    "zht": {
+     ".t": "家裡的喜事",
+     ".x": "{p}要結婚了。大家都等著送禮，你也被請去幫忙張羅。",
+     ".big": "包個大禮，還幫忙出婚禮的錢",
+     ".big.s": "{a}。幸福感 +2。",
+     ".usual": "照慣例送禮",
+     ".usual.s": "{a}。",
+     ".skip": "送上祝福就好",
+     ".skip.s": "不花錢，但大家都看在眼裡。",
+     "trk.sibWed": "{p}的婚禮"
+    }
+   }
+  },
+  {
+   "id": "kid_uni",
+   "who": {"role": "kid", "age": [18, 19], "test": "!p.uni"},
+   "def": "pay",
+   "tarot": "edufund",
+   "art": "edu",
+   "let": {"f": "kidFee()", "fund": "lots.kidedu ? lots.kidedu.v : 0"},
+   "fn": {
+    "fees": {
+     "args": ["share"],
+     "do": "let need = f * share; const l = lots.kidedu; if (l && l.v > 0) { const x = Math.min(l.v, need); l.v -= x; l.tout += x; need -= x } if (need > 0) pay(need); const t = T('uni_' + p.id, {kind: 'custom', label: M('trk.kidUni', {p: name(p)})}); t.v -= need; t.note = M('note.paid', {a: MN(-t.v)})"
+    },
+    "mark": {"args": [], "do": "p.uni = true; if (!kidUni) kidUni = {}; kidUni[p.b] = 1"}
+   },
+   "vars": {"p": "Who(p)", "a": "MN(f)", "x": "fund > 1 ? M('.fund', {a: MN(Math.min(fund, f))}) : ''"},
+   "again": "delete done.kid_uni",
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(f)"}, "bond": 8, "do": "mark(); fees(1); happy += 2"},
+    {"id": "half", "sub": {"a": "MN(f / 2)"}, "bond": 3, "do": "mark(); fees(.5)"},
+    {"id": "loan", "bond": -5, "do": "mark(); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Off to university",
+     ".x": "{p} got into university. The fees come to about {a}.{x}",
+     ".fund": " Your education fund can cover {a}.",
+     ".pay": "Pay the fees",
+     ".pay.s": "{a}, from the education fund first. Happiness +2.",
+     ".half": "Pay half; they borrow the rest",
+     ".half.s": "{a}.",
+     ".loan": "Let them take student loans",
+     ".loan.s": "Costs you nothing. They start adult life in debt. Happiness −2.",
+     "trk.kidUni": "{p}'s university fees"
+    },
+    "zh": {
+     ".t": "上大学了",
+     ".x": "{p}考上了大学，学费大约要{a}。{x}",
+     ".fund": "教育基金可以支付{a}。",
+     ".pay": "付全部学费",
+     ".pay.s": "{a}，先从教育基金扣。幸福感 +2。",
+     ".half": "付一半，剩下的让孩子贷款",
+     ".half.s": "{a}。",
+     ".loan": "让孩子申请助学贷款",
+     ".loan.s": "你不用花钱，孩子一踏入社会就背着债。幸福感 −2。",
+     "trk.kidUni": "{p}的大学学费"
+    },
+    "zht": {
+     ".t": "上大學了",
+     ".x": "{p}考上了大學，學費大約要{a}。{x}",
+     ".fund": "教育基金可以支付{a}。",
+     ".pay": "付全部學費",
+     ".pay.s": "{a}，先從教育基金扣。幸福感 +2。",
+     ".half": "付一半，剩下的讓孩子貸款",
+     ".half.s": "{a}。",
+     ".loan": "讓孩子申請就學貸款",
+     ".loan.s": "你不用花錢，孩子一踏入社會就背著債。幸福感 −2。",
+     "trk.kidUni": "{p}的大學學費"
+    }
+   }
+  },
+  {
+   "id": "kid_wed",
+   "who": {"role": "kid", "test": "p.eng"},
+   "def": "small",
+   "tarot": "wed",
+   "art": "wed",
+   "let": {"a": ".3 * base"},
+   "fn": {
+    "gift": {
+     "args": ["x"],
+     "do": "pay(x); const t = T('kidwed', {kind: 'ghost', label: M('trk.kidWed', {p: name(p)})}); t.spent += x; t.g += x"
+    },
+    "wedded": {"args": [], "do": "p.eng = false; p.wed = true"}
+   },
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "help", "sub": {"a": "MN(a)"}, "bond": 10, "do": "wedded(); gift(a); happy += 3"},
+    {"id": "small", "sub": {"a": "MN(.25 * a)"}, "bond": 4, "do": "wedded(); gift(.25 * a); happy += 1"},
+    {"id": "none", "bond": -6, "do": "wedded()"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child's wedding",
+     ".x": "{p} is getting married, and the couple are saving hard. Parents often help with the day.",
+     ".help": "Pay for a big part of it",
+     ".help.s": "{a}. Happiness +3.",
+     ".small": "Give a gift",
+     ".small.s": "{a}. Happiness +1.",
+     ".none": "Let them manage",
+     ".none.s": "Free.",
+     "trk.kidWed": "{p}'s wedding"
+    },
+    "zh": {
+     ".t": "孩子的婚礼",
+     ".x": "{p}要结婚了，小两口正在拼命存钱。父母通常会帮忙出一份。",
+     ".help": "出一大部分",
+     ".help.s": "{a}。幸福感 +3。",
+     ".small": "送一份礼金",
+     ".small.s": "{a}。幸福感 +1。",
+     ".none": "让他们自己处理",
+     ".none.s": "不花钱。",
+     "trk.kidWed": "{p}的婚礼"
+    },
+    "zht": {
+     ".t": "孩子的婚禮",
+     ".x": "{p}要結婚了，小倆口正在拚命存錢。父母通常會幫忙出一份。",
+     ".help": "出一大部分",
+     ".help.s": "{a}。幸福感 +3。",
+     ".small": "送一份禮金",
+     ".small.s": "{a}。幸福感 +1。",
+     ".none": "讓他們自己處理",
+     ".none.s": "不花錢。",
+     "trk.kidWed": "{p}的婚禮"
+    }
+   }
+  },
+  {
+   "id": "par_funeral",
+   "when": {"age": [18, 95]},
+   "who": {"role": "parent", "dead": true, "test": "p.dead === age - 1 && !p.fun"},
+   "def": "simple",
+   "tarot": "funeral",
+   "art": "funeral",
+   "let": {"a": ".25 * base", "b": ".08 * base", "n": "people('sib').length"},
+   "fn": {
+    "bury": {
+     "args": ["x"],
+     "do": "p.fun = true; pay(x); const t = T('fun_' + p.id, {kind: 'ghost', label: M('trk.funeralP', {p: name(p)})}); t.spent += x; t.g += x"
+    }
+   },
+   "vars": {"p": "Who(p)"},
+   "again": "delete done.par_funeral",
+   "opts": [
+    {"id": "full", "sub": {"a": "MN(a)"}, "rel": 2, "do": "bury(a); happy += 1"},
+    {"id": "simple", "sub": {"a": "MN(b)"}, "do": "bury(b)"},
+    {
+     "id": "share",
+     "show": "n > 0",
+     "sub": {"a": "MN(a / (n + 1))"},
+     "do": "bury(a / (n + 1)); bond('sib', 3)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Saying goodbye",
+     ".x": "{p} passed away last year. The family is planning the funeral.",
+     ".full": "A full funeral, with everyone invited",
+     ".full.s": "{a}. Happiness +1.",
+     ".simple": "A simple, quiet funeral",
+     ".simple.s": "{a}.",
+     ".share": "A full funeral, sharing the costs with your siblings",
+     ".share.s": "Your part: about {a}.",
+     "trk.funeralP": "Funeral for {p}"
+    },
+    "zh": {
+     ".t": "送别",
+     ".x": "{p}去年离开了。家里正在准备葬礼。",
+     ".full": "办一场隆重的葬礼，请大家都来",
+     ".full.s": "{a}。幸福感 +1。",
+     ".simple": "简单安静地办",
+     ".simple.s": "{a}。",
+     ".share": "办隆重的葬礼，跟兄弟姐妹分摊费用",
+     ".share.s": "你出大约{a}。",
+     "trk.funeralP": "{p}的葬礼"
+    },
+    "zht": {
+     ".t": "送別",
+     ".x": "{p}去年離開了。家裡正在準備喪禮。",
+     ".full": "辦一場隆重的喪禮，請大家都來",
+     ".full.s": "{a}。幸福感 +1。",
+     ".simple": "簡單安靜地辦",
+     ".simple.s": "{a}。",
+     ".share": "辦隆重的喪禮，跟兄弟姊妹分攤費用",
+     ".share.s": "你出大約{a}。",
+     "trk.funeralP": "{p}的喪禮"
+    }
+   }
+  },
+  {
+   "id": "boss_ot",
+   "age": [24, 60],
+   "weight": 0.5,
+   "when": {"working": true},
+   "who": {"role": "boss"},
+   "def": "week",
+   "tarot": "credit",
+   "art": "credit",
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {
+     "id": "yes",
+     "hint": true,
+     "bond": 12,
+     "do": "happy -= 3; health -= 2; bump('bossOt', 1.03, M('trk.bossOt', {p: name(p)}))"
+    },
+    {"id": "week", "bond": 4, "do": "happy -= 1"},
+    {"id": "no", "bond": -10, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Over the holidays",
+     ".x": "{p} asks you to take on an urgent project over the holidays. It would be noticed.",
+     ".yes": "Give up the holidays for it",
+     ".yes.s": "Happiness −3, Health −2.",
+     ".yes.h": "A pay rise of about 3% for the effort.",
+     ".week": "Help for a week",
+     ".week.s": "Happiness −1.",
+     ".no": "Say no: the holidays are for family",
+     ".no.s": "Happiness +1. Your boss won't forget.",
+     "trk.bossOt": "A holiday project for {p}"
+    },
+    "zh": {
+     ".t": "假期加班",
+     ".x": "{p}请你在假期接一个急件，表现会被看在眼里。",
+     ".yes": "放弃假期全力投入",
+     ".yes.s": "幸福感 −3，健康 −2。",
+     ".yes.h": "努力会换来大约3%的加薪。",
+     ".week": "帮忙一个星期",
+     ".week.s": "幸福感 −1。",
+     ".no": "拒绝：假期要陪家人",
+     ".no.s": "幸福感 +1。上司会记住的。",
+     "trk.bossOt": "替{p}赶的假期急件"
+    },
+    "zht": {
+     ".t": "假期加班",
+     ".x": "{p}請你在假期接一個急件，表現會被看在眼裡。",
+     ".yes": "放棄假期全力投入",
+     ".yes.s": "幸福感 −3，健康 −2。",
+     ".yes.h": "努力會換來大約3%的加薪。",
+     ".week": "幫忙一個星期",
+     ".week.s": "幸福感 −1。",
+     ".no": "拒絕：假期要陪家人",
+     ".no.s": "幸福感 +1。上司會記住的。",
+     "trk.bossOt": "替{p}趕的假期急件"
+    }
+   }
+  },
+  {
+   "id": "friend_move",
+   "when": {"age": [18, 95]},
+   "who": {"role": "friend", "test": "p.moving"},
+   "def": "dinner",
+   "tarot": "abroad",
+   "art": "abroad",
+   "fn": {
+    "off": {"args": [], "do": "p.moving = false; p.away = true"},
+    "bye": {
+     "args": ["x"],
+     "do": "pay(x); const t = T('bye_' + p.id, {kind: 'ghost', label: M('trk.farewell', {p: name(p)})}); t.spent += x; t.g += x"
+    }
+   },
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "trip", "sub": {"a": "MN(.1 * base)"}, "bond": 10, "do": "off(); bye(.1 * base); happy += 2"},
+    {"id": "dinner", "sub": {"a": "MN(.02 * base)"}, "bond": 4, "do": "off(); bye(.02 * base)"},
+    {"id": "skip", "bond": -6, "do": "off()"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A friend moves away",
+     ".x": "{p} has a job abroad and leaves next month.",
+     ".trip": "A farewell trip together",
+     ".trip.s": "{a}. Happiness +2.",
+     ".dinner": "A farewell dinner",
+     ".dinner.s": "{a}.",
+     ".skip": "Send a message",
+     ".skip.s": "Free.",
+     "trk.farewell": "Farewell to {p}"
+    },
+    "zh": {
+     ".t": "好友远行",
+     ".x": "{p}在国外找到了工作，下个月就要走了。",
+     ".trip": "一起去一趟告别旅行",
+     ".trip.s": "{a}。幸福感 +2。",
+     ".dinner": "吃一顿饯行饭",
+     ".dinner.s": "{a}。",
+     ".skip": "发个信息道别",
+     ".skip.s": "不花钱。",
+     "trk.farewell": "为{p}饯行"
+    },
+    "zht": {
+     ".t": "好友遠行",
+     ".x": "{p}在國外找到了工作，下個月就要走了。",
+     ".trip": "一起去一趟告別旅行",
+     ".trip.s": "{a}。幸福感 +2。",
+     ".dinner": "吃一頓餞行飯",
+     ".dinner.s": "{a}。",
+     ".skip": "傳個訊息道別",
+     ".skip.s": "不花錢。",
+     "trk.farewell": "為{p}餞行"
+    }
+   }
+  }
+ ]
+}

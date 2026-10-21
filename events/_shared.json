@@ -359,7 +359,7 @@
   }
  },
  "later": {
-  "repay": "const u = roll('repay' + x.id), f = x.fam ? u < .7 ? 1 : u < .85 ? .5 : 0 : u < relP(.45) ? 1 : u < relP(.65) ? .5 : 0, v = x.a * f; cash += v; const t = trk[x.id]; if (t) { t.v += v; t.note = M('note.repay', { a: MN(x.a), b: MN(v) }); } log(M((x.fam ? 'log.kidRepay' : 'log.repay') + (f === 1 ? 'All' : f ? 'Half' : 'None'), { a: MN(x.a), b: MN(v) }), f === 1 ? 'good' : 'bad')",
+  "repay": "const pb = x.pid ? bondOf(x.pid) : null, q1 = pb != null ? clamp(.45 + (pb - 50) * .004, 0, .95) : relP(.45), q2 = pb != null ? clamp(.65 + (pb - 50) * .004, 0, .95) : relP(.65); const u = roll('repay' + x.id), f = x.fam ? u < .7 ? 1 : u < .85 ? .5 : 0 : u < q1 ? 1 : u < q2 ? .5 : 0, v = x.a * f; cash += v; const t = trk[x.id]; if (t) { t.v += v; t.note = M('note.repay', { a: MN(x.a), b: MN(v) }); } if (pb != null) bond(x.pid, f === 1 ? 4 : f ? 0 : -10); log(M((x.fam ? 'log.kidRepay' : 'log.repay') + (f === 1 ? 'All' : f ? 'Half' : 'None'), { a: MN(x.a), b: MN(v) }), f === 1 ? 'good' : 'bad')",
   "scam": "const t = trk[x.id]; if (t) t.note = M('note.scam', { a: MN(x.a) }); log(M(x.k2 ? 'log.scam2' : 'log.scam', { a: MN(x.a) }), 'bad')",
   "sideBiz": "if (roll('side' + x.id) < x.p) { T(x.id, { kind: 'custom', label: M('trk.sideBiz') }); rec(x.id, -x.a, x.n); log(M('log.sideBiz'), 'good'); }"
  }

@@ -15,8 +15,9 @@ const fs=require('fs'),path=require('path'),vm=require('vm');
 const B=require('./build.js');
 const{LANGS,ROOT,full}=B;
 
-const EVENT_KEYS=new Set(['id','src','age','weight','dens','if','when','chain','def','tarot','art','surv','care','use','with','let','fn','text','vars','hint','pre','preLog','again','opts','later','i18n','country','_file']);
-const OPT_KEYS=new Set(['each','as','max','id','let','show','label','sub','hint','ok','rel','do','next','grp']);
+const EVENT_KEYS=new Set(['id','src','age','weight','dens','if','when','chain','def','tarot','art','surv','care','use','with','let','fn','text','vars','hint','pre','preLog','again','opts','later','i18n','country','_file','who']);
+const OPT_KEYS=new Set(['each','as','max','id','let','show','label','sub','hint','ok','rel','bond','do','next','grp']);
+const WHO_KEYS=new Set(['role','age','test','pick','dead']),WHO_ROLES=['mother','father','parent','sib','friend','pt','kid','boss','mentor'];
 const TPL_KEYS=new Set(['key','about','defaults','let','fn','opts','later','i18n']);
 const BG=new Set(['co','ya','mi','wa','wh']);
 
@@ -24,13 +25,13 @@ const BG=new Set(['co','ya','mi','wa','wh']);
 function sandbox(gen,langs){const ctx={console};vm.createContext(ctx);
  const run=(f,src)=>vm.runInContext(src!=null?src:fs.readFileSync(path.join(ROOT,f),'utf8'),ctx,{filename:f});
  run('js/i18n.js');for(const L of langs||['en'])run('gen/'+L+'.js',gen['gen/'+L+'.js']);
- for(const f of['js/engine.js','js/script.js','js/verbs.js'])run(f);
+ for(const f of['js/engine.js','js/people.js','js/script.js','js/verbs.js'])run(f);
  return{ctx,run}}
 function artNames(){const src=fs.readFileSync(path.join(ROOT,'js/art.js'),'utf8');
  const cards=new Set([...src.matchAll(/^(\w+):\{n:'/gm)].map(m=>m[1]));const a=src.indexOf('const CA={'),b=src.indexOf('\n};',a);
  const themes=new Set([...src.slice(a,b).matchAll(/^(\w+):\(\)=>/gm)].map(m=>m[1]));return{cards,themes}}
 /* fields a life has: those newLife() sets, those the engine and verbs set, and those any event script sets */
-function engineFields(){const out=new Set();for(const f of['js/engine.js','js/verbs.js']){const src=fs.readFileSync(path.join(ROOT,f),'utf8');
+function engineFields(){const out=new Set();for(const f of['js/engine.js','js/people.js','js/verbs.js']){const src=fs.readFileSync(path.join(ROOT,f),'utf8');
   for(const m of src.matchAll(/\bs\.(\w+)\s*(?:=(?!=)|\+=|-=|\*=|\/=|\+\+|--|\|\|=)/g))out.add(m[1]);for(const m of src.matchAll(/\bs\[['"](\w+)['"]\]/g))out.add(m[1])}return out}
 function near(name,list){let best=null,bd=3;for(const x of list){const d=lev(name,x);if(d<bd){bd=d;best=x}}return best}
 function lev(a,b){const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];for(let j=1;j<=b.length;j++)m[i][j]=i?Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1)):j}return m[a.length][b.length]}
@@ -102,6 +103,7 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
   if(o.sub===undefined){if(key)needKey(w,key+'.s')}else if(key)msgSpec(w+'.sub',o.sub,sc,key+'.s');else if(typeof o.sub==='string')compile(w+'.sub',o.sub,'expr',sc);
   if(o.hint!=null){if(key)msgSpec(w+'.hint',o.hint,sc,key+'.h');else if(typeof o.hint==='string')compile(w+'.hint',o.hint,'expr',sc)}
   if(o.rel!=null&&typeof o.rel!=='number')E(w+'.rel','should be a number (how much Relationships change)');
+  if(o.bond!=null){if(typeof o.bond!=='number')E(w+'.bond','should be a number (how much closeness with the card’s person changes)');else if(!scope.vars.includes('p'))E(w+'.bond','"bond" needs a "who" on the event: whose closeness?')}
   if(o.do!=null)compile(w+'.do',o.do,'script',sc);
   for(const n of[].concat(o.next||[])){if(!n||typeof n.event!=='string'){E(w+'.next','needs {"event": id, "in": years}');continue}nextRefs.push([w+'.next',n.event]);
    if(n.in!=null&&!(Number.isFinite(n.in)||(Array.isArray(n.in)&&n.in.length===2&&n.in[0]<=n.in[1])))E(w+'.next.in','should be years, or [from, to]');
@@ -125,10 +127,15 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
   if(e.chain&&e.age)E(where,'a follow-up card ("chain") comes when scheduled; it should not have an "age"');
   if(e.weight!=null&&typeof e.weight==='number'&&!(e.weight>=0&&e.weight<=1))E(where+'.weight','should be a chance between 0 and 1');
   if(e.weight!=null&&!e.age)W(where+'.weight','only cards with an "age" window use a weight');
-  if(e.age==null&&e.when==null&&!e.chain)E(where,'needs an "age" window, a "when" condition, or "chain": true');
+  if(e.age==null&&e.when==null&&!e.chain&&!e.who)E(where,'needs an "age" window, a "when" condition, a "who", or "chain": true');
   if(e.dens!=null&&!(e.dens>0&&e.dens<=1))E(where+'.dens','should be between 0 and 1');
   const params=Object.assign({},tp&&tp.defaults,e.with,tp?{id:e.id}:{});
-  const vars=[...Object.keys(params),...Object.keys(tp&&tp.let||{}),...Object.keys(e.let||{}),'chain'],fns=[...Object.keys(tp&&tp.fn||{}),...Object.keys(e.fn||{})];
+  /* who the card is about */
+  if(e.who!=null){const w=e.who,ww=where+'.who';if(typeof w!=='object'||Array.isArray(w))E(ww,'should be {"role": …}');else{for(const k of Object.keys(w))if(!WHO_KEYS.has(k))E(ww,'unknown field "'+k+'" (role, age, test, pick, dead)');
+   if(!WHO_ROLES.includes(w.role))E(ww+'.role','one of '+WHO_ROLES.join(', '));if(w.age!=null&&!(Array.isArray(w.age)&&w.age.length===2&&w.age[0]<=w.age[1]))E(ww+'.age','should be [from, to] (their age)');
+   if(w.pick!=null&&!['first','oldest','youngest','closest'].includes(w.pick))E(ww+'.pick','first, oldest, youngest or closest');if(w.dead!=null&&typeof w.dead!=='boolean')E(ww+'.dead','true or false');
+   if(w.test!=null)compile(ww+'.test',w.test,'expr',{vars:[...Object.keys(params),'chain','p'],fns:[],pre})}}
+  const vars=[...Object.keys(params),...Object.keys(tp&&tp.let||{}),...Object.keys(e.let||{}),'chain',...(e.who?['p']:[])],fns=[...Object.keys(tp&&tp.fn||{}),...Object.keys(e.fn||{})];
   const sc={vars,fns,pre},csc={vars:[...Object.keys(params),'chain'],fns:[],pre};
   if(typeof e.weight==='string')compile(where+'.weight',e.weight,'expr',csc);
   condition(where+'.if',e.if,csc,true);condition(where+'.when',e.when,csc,false);
@@ -191,6 +198,12 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
  for(const L of LANGS)for(const k of Object.keys(data.ui[L]))for(const M of LANGS)if(M!==L&&data.ui[M][k]==null&&!(M==='en'&&/^(h|cn)\./.test(k)))E('i18n/'+M+'.json','missing "'+k+'" (it is in i18n/'+L+'.json)');
  /* a placeholder only another language uses is probably a typo; {b} for the English {a} is the money-without-sign convention */
  for(const k of Object.keys(data.ui.en))for(const L of['zh','zht'])if(data.ui[L][k]!=null){const a=holes(data.ui.en[k]),b=holes(data.ui[L][k]);for(const x of b)if(!a.has(x)&&!(x==='b'&&a.has('a')))W('i18n/'+L+'.json "'+k+'"','uses {'+x+'}, the English does not (fine if the code gives it)')}
+ /* ---------- names: every country, both sexes, at least 6 each, all three languages, no repeats ---------- */
+ const codes=vm.runInContext('C.map(c=>c[1])',ctx);
+ for(const c of codes)for(const sex of['f','m']){const l=(data.names[c]||{})[sex],w='events/_names.json '+c+'.'+sex;
+  if(!Array.isArray(l)||l.length<6){E(w,'needs at least 6 names');continue}
+  const seenN=new Set();l.forEach((x,i)=>{if(!Array.isArray(x)||x.length!==3||!x.every(y=>typeof y==='string'&&y.trim()))E(w+'['+i+']','should be ["English", "简体", "繁體"]');else{if(seenN.has(x[0]))E(w+'['+i+']','"'+x[0]+'" is in the list twice');seenN.add(x[0])}})}
+ for(const c of Object.keys(data.names))if(!codes.includes(c))E('events/_names.json '+c,'not a country of the game');
  /* ---------- gen/ up to date ---------- */
  if(opt.stale!==false)for(const[f,txt]of Object.entries(gen)){const p=path.join(ROOT,f);if(!fs.existsSync(p)||fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n')!==txt){E(f,'out of date: run node tools/build.js');break}}
  /* ---------- play ---------- */

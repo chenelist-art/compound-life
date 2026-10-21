@@ -50,20 +50,34 @@
    "id": "wed",
    "src": "the wedding comes up when you propose (the Life choices panel, or the autopilot's own timing; see relAct and autoRel)",
    "when": {"married": false, "test": "ask === 'wed' && !!pt"},
+   "who": {"role": "pt"},
    "def": "modest",
    "tarot": {"en": "The Lovers", "zh": "恋人", "zht": "戀人"},
    "art": "wed",
    "let": {"B": "base"},
+   "vars": {"n": "name(p)"},
    "again": "delete done.wed; ask = null",
    "opts": [
-    {"id": "big", "sub": {"a": "MN(1.6 * B)"}, "rel": 4, "do": "wed(1.6, 'trk.wedBig'); happy += 4"},
-    {"id": "modest", "sub": {"a": "MN(.4 * B)"}, "rel": 2, "do": "wed(.4, 'trk.wedModest'); happy += 2"},
-    {"id": "reg", "sub": {"a": "MN(.05 * B)"}, "do": "wed(.05, 'trk.wedReg')"}
+    {
+     "id": "big",
+     "sub": {"a": "MN(1.6 * B)"},
+     "rel": 4,
+     "bond": 6,
+     "do": "wed(1.6, 'trk.wedBig'); happy += 4"
+    },
+    {
+     "id": "modest",
+     "sub": {"a": "MN(.4 * B)"},
+     "rel": 2,
+     "bond": 4,
+     "do": "wed(.4, 'trk.wedModest'); happy += 2"
+    },
+    {"id": "reg", "sub": {"a": "MN(.05 * B)"}, "bond": 2, "do": "wed(.05, 'trk.wedReg')"}
    ],
    "i18n": {
     "en": {
      ".t": "Getting married",
-     ".x": "You've found your person. Now, the wedding.",
+     ".x": "You and {n} have found each other. Now, the wedding.",
      ".big": "Big wedding, 300 guests",
      ".big.s": "{a}. A day everyone remembers. Happiness +4.",
      ".modest": "Modest wedding",
@@ -76,7 +90,7 @@
     },
     "zh": {
      ".t": "结婚",
-     ".x": "你找到对的人了。接下来是婚礼。",
+     ".x": "你和{n}找到了彼此。接下来是婚礼。",
      ".big": "盛大婚礼，300位宾客",
      ".big.s": "{a}。一场大家都会记得的婚礼。幸福感 +4。",
      ".modest": "简单婚礼",
@@ -89,7 +103,7 @@
     },
     "zht": {
      ".t": "結婚",
-     ".x": "你找到對的人了。接下來是婚禮。",
+     ".x": "你和{n}找到了彼此。接下來是婚禮。",
      ".big": "盛大婚禮，300位賓客",
      ".big.s": "{a}。一場大家都會記得的婚禮。幸福感 +4。",
      ".modest": "簡單婚禮",
@@ -160,60 +174,62 @@
    "id": "parents",
    "age": [38, 54],
    "weight": "fam === 'poor' || fam === 'working' ? .85 : fam === 'middle' ? .3 : 0",
+   "who": {"role": "parent"},
    "def": "send",
    "tarot": {"en": "Six of Cups", "zh": "圣杯六", "zht": "聖杯六"},
    "art": "parents",
+   "vars": {"p": "folks()"},
    "opts": [
     {
      "id": "send",
      "sub": {"a": "MN(.1 * base)"},
      "rel": 5,
-     "do": "T('parents', { kind: 'custom', label: M('trk.parents') }); rec('parents', .1 * base, 12)"
+     "do": "T('parents', { kind: 'custom', label: M('trk.parents', {p: folks()}) }); rec('parents', .1 * base, 12); bond('parent', 8)"
     },
     {
      "id": "move",
      "sub": {"a": "MN(.04 * base)"},
      "rel": 4,
-     "do": "T('parents', { kind: 'custom', label: M('trk.parentsIn') }); rec('parents', .04 * base, 12); happy -= 3"
+     "do": "T('parents', { kind: 'custom', label: M('trk.parentsIn', {p: Folks()}) }); rec('parents', .04 * base, 12); happy -= 3; bond('parent', 10)"
     },
-    {"id": "sib", "rel": -1, "do": "happy -= 3"}
+    {"id": "sib", "show": "people('sib').length > 0", "rel": -1, "do": "happy -= 3; bond('parent', -6)"}
    ],
    "i18n": {
     "en": {
-     ".t": "Your parents are getting older",
-     ".x": "Your parents have stopped working, and their savings are thin.",
+     ".t": "Looking after family",
+     ".x": "Work has ended for {p}, and the savings are thin.",
      ".send": "Send them money every year",
      ".send.s": "About {a} a year.",
      ".move": "Move them in with you",
      ".move.s": "About {a} a year in extra costs, and less space. Happiness −3.",
      ".sib": "Let your siblings handle it",
      ".sib.s": "It costs you nothing, but you feel guilty. Happiness −3.",
-     "trk.parents": "Supporting your parents",
-     "trk.parentsIn": "Your parents moved in"
+     "trk.parents": "Supporting {p}",
+     "trk.parentsIn": "{p} moved in"
     },
     "zh": {
-     ".t": "父母老了",
-     ".x": "你的父母已经不工作了，积蓄也不多。",
+     ".t": "照顾家人",
+     ".x": "{p}已经不工作了，积蓄也不多。",
      ".send": "每年给他们钱",
      ".send.s": "每年约{a}。",
      ".move": "接他们来同住",
      ".move.s": "每年多花约{a}，空间也变小了。幸福感 −3。",
      ".sib": "让兄弟姐妹去处理",
      ".sib.s": "你不用花钱，但心里过意不去。幸福感 −3。",
-     "trk.parents": "供养父母",
-     "trk.parentsIn": "父母搬来同住"
+     "trk.parents": "供养{p}",
+     "trk.parentsIn": "{p}搬来同住"
     },
     "zht": {
-     ".t": "父母老了",
-     ".x": "你的父母已經不工作了，積蓄也不多。",
+     ".t": "照顧家人",
+     ".x": "{p}已經不工作了，積蓄也不多。",
      ".send": "每年給他們孝親費",
      ".send.s": "每年約{a}。",
      ".move": "接他們來同住",
      ".move.s": "每年多花約{a}，空間也變小了。幸福感 −3。",
      ".sib": "讓兄弟姊妹去處理",
      ".sib.s": "你不用花錢，但心裡過意不去。幸福感 −3。",
-     "trk.parents": "奉養父母",
-     "trk.parentsIn": "父母搬來同住"
+     "trk.parents": "奉養{p}",
+     "trk.parentsIn": "{p}搬來同住"
     }
    }
   },
@@ -288,29 +304,33 @@
    "age": [58, 74],
    "weight": 0.65,
    "when": {"kids": true},
+   "who": {"role": "kid", "age": [22, 70]},
    "def": "no",
    "tarot": {"en": "Queen of Cups", "zh": "圣杯王后", "zht": "聖杯皇后"},
    "art": "grandkid",
    "let": {"a": ".4 * base"},
+   "vars": {"p": "Who(p)"},
    "opts": [
     {
      "id": "gift",
      "label": "M('.gift', { a: MN(a) })",
      "rel": 3,
+     "bond": 9,
      "do": "spend('gift', a, 'trk.gift'); happy += 4"
     },
     {
      "id": "lend",
      "label": "M('.lend', { a: MN(a) })",
      "rel": 2,
+     "bond": 6,
      "do": "pay(a); T('kidloan', { kind: 'custom', label: M('trk.kidloan'), v: -a, note: M('note.lend0', { a: MN(a) }) }); later(age + 3, 'repay', { a, id: 'kidloan', fam: 1 })"
     },
-    {"id": "no", "rel": -1}
+    {"id": "no", "rel": -1, "bond": -3}
    ],
    "i18n": {
     "en": {
      ".t": "Helping your children",
-     ".x": "Your child is trying to buy a first home and is short of the down payment.",
+     ".x": "{p} is trying to buy a first home and is short of the down payment.",
      ".gift": "Give them {a}",
      ".gift.s": "A gift. Happiness +4.",
      ".lend": "Lend them {a}",
@@ -322,7 +342,7 @@
     },
     "zh": {
      ".t": "帮孩子一把",
-     ".x": "你的孩子想买第一套房，首付还差一截。",
+     ".x": "{p}想买第一套房，首付还差一截。",
      ".gift": "送他们{a}",
      ".gift.s": "当作礼物。幸福感 +4。",
      ".lend": "借他们{a}",
@@ -334,7 +354,7 @@
     },
     "zht": {
      ".t": "幫孩子一把",
-     ".x": "你的孩子想買第一間房子，頭期款還差一截。",
+     ".x": "{p}想買第一間房子，頭期款還差一截。",
      ".gift": "送他們{a}",
      ".gift.s": "當作禮物。幸福感 +4。",
      ".lend": "借他們{a}",
@@ -474,7 +494,7 @@
    "def": "yes",
    "tarot": {"en": "The Lovers", "zh": "恋人", "zht": "戀人"},
    "art": "date",
-   "vars": {"x": "M('car.a.' + meetCar)"},
+   "vars": {"x": "M('car.a.' + meetCar)", "n": "meetName ? M(meetName) : M('.someone')"},
    "again": "delete done.date; meetAt = null",
    "opts": [
     {"id": "yes", "sub": {"a": "MN(.04 * base)"}, "hint": true, "rel": 3, "do": "startDating()"},
@@ -483,30 +503,33 @@
    "i18n": {
     "en": {
      ".t": "You met someone",
-     ".x": "You've met someone you really like. They work as {x}. Dating takes time and a little money.",
+     ".x": "You've met {n}, and you really like them. They work as {x}. Dating takes time and a little money.",
      ".yes": "Start dating",
      ".yes.s": "Dinners, trips and small gifts: about {a} a year.",
      ".yes.h": "Happiness +3.",
      ".no": "Stay single for now",
-     ".no.s": "More time and money for yourself."
+     ".no.s": "More time and money for yourself.",
+     ".someone": "someone"
     },
     "zh": {
      ".t": "你遇见了一个人",
-     ".x": "你遇见了一个很喜欢的人，对方是{x}。谈恋爱要花时间，也要花一点钱。",
+     ".x": "你遇见了{n}，很喜欢对方。对方是{x}。谈恋爱要花时间，也要花一点钱。",
      ".yes": "开始交往",
      ".yes.s": "吃饭、出游和小礼物：每年大约{a}。",
      ".yes.h": "幸福感 +3。",
      ".no": "暂时保持单身",
-     ".no.s": "多些时间和钱留给自己。"
+     ".no.s": "多些时间和钱留给自己。",
+     ".someone": "一个人"
     },
     "zht": {
      ".t": "你遇見了一個人",
-     ".x": "你遇見了一個很喜歡的人，對方是{x}。談戀愛要花時間，也要花一點錢。",
+     ".x": "你遇見了{n}，很喜歡對方。對方是{x}。談戀愛要花時間，也要花一點錢。",
      ".yes": "開始交往",
      ".yes.s": "吃飯、出遊和小禮物：每年大約{a}。",
      ".yes.h": "幸福感 +3。",
      ".no": "暫時保持單身",
-     ".no.s": "多些時間和錢留給自己。"
+     ".no.s": "多些時間和錢留給自己。",
+     ".someone": "一個人"
     }
    }
   },
@@ -514,20 +537,33 @@
    "id": "fwed",
    "age": [23, 34],
    "weight": 0.85,
+   "who": {"role": "friend", "age": [20, 50], "test": "!p.wed"},
    "def": "norm",
    "tarot": {"en": "Two of Cups", "zh": "圣杯二", "zht": "聖杯二"},
    "art": "fwed",
    "let": {"a": ".04 * base"},
-   "vars": {"a": "MN(.04 * base)"},
+   "vars": {"p": "Who(p)", "a": "MN(.04 * base)"},
    "opts": [
-    {"id": "big", "sub": {"a": "MN(3 * a)"}, "rel": 3, "do": "spend('fwed', 3 * a, 'trk.fwed')"},
-    {"id": "norm", "sub": {"a": "MN(a)"}, "rel": 2, "do": "spend('fwed', a, 'trk.fwed')"},
-    {"id": "skip", "rel": 0}
+    {
+     "id": "big",
+     "sub": {"a": "MN(3 * a)"},
+     "rel": 3,
+     "bond": 9,
+     "do": "p.wed = true; spend('fwed', 3 * a, 'trk.fwed')"
+    },
+    {
+     "id": "norm",
+     "sub": {"a": "MN(a)"},
+     "rel": 2,
+     "bond": 6,
+     "do": "p.wed = true; spend('fwed', a, 'trk.fwed')"
+    },
+    {"id": "skip", "rel": 0, "bond": -4, "do": "p.wed = true"}
    ],
    "i18n": {
     "en": {
      ".t": "A friend's wedding",
-     ".x": "Your close friend is getting married. In your circle, a cash gift in a red envelope of about {a} is normal.",
+     ".x": "{p} is getting married. In your circle, a cash gift in a red envelope of about {a} is normal.",
      ".big": "Give a generous gift",
      ".big.s": "{a}.",
      ".norm": "Give the usual amount",
@@ -538,7 +574,7 @@
     },
     "zh": {
      ".t": "好朋友的婚礼",
-     ".x": "你的好朋友要结婚了。按你们这边的习惯，红包大约包{a}。",
+     ".x": "{p}要结婚了。按你们这边的习惯，红包大约包{a}。",
      ".big": "包个大红包",
      ".big.s": "{a}。",
      ".norm": "照一般行情包",
@@ -549,7 +585,7 @@
     },
     "zht": {
      ".t": "好朋友的婚禮",
-     ".x": "你的好朋友要結婚了。照你們這邊的習慣，紅包大約包{a}。",
+     ".x": "{p}要結婚了。照你們這邊的習慣，紅包大約包{a}。",
      ".big": "包個大紅包",
      ".big.s": "{a}。",
      ".norm": "照一般行情包",
@@ -564,6 +600,7 @@
    "id": "sibfees",
    "age": [22, 36],
    "weight": 0.5,
+   "who": {"role": "sib", "age": [16, 24], "test": "p.d < 0"},
    "def": "no",
    "tarot": {"en": "Six of Coins", "zh": "钱币六", "zht": "錢幣六"},
    "art": "sibfees",
@@ -574,13 +611,14 @@
      "do": "pay(x); T('sib', { kind: 'custom', label: M(lk), v: -x, note: M('note.paid', { a: MN(x) }) }); later(age + 5 + Math.floor(roll('sibAt') * 5), 'sib', { a: x })"
     }
    },
-   "vars": {"a": "MN(.4 * base)"},
+   "vars": {"p": "Who(p)", "a": "MN(.4 * base)"},
    "opts": [
     {
      "id": "all",
      "sub": {"a": "MN(a)"},
      "ok": "liq >= a || M('e.home.need', { n: MN(a), h: MN(liq) })",
      "rel": 2.5,
+     "bond": 10,
      "do": "go(a, 'trk.sib')"
     },
     {
@@ -588,9 +626,10 @@
      "sub": {"a": "MN(a / 2)"},
      "ok": "liq >= a / 2 || M('e.home.need', { n: MN(a / 2), h: MN(liq) })",
      "rel": 2,
+     "bond": 6,
      "do": "go(a / 2, 'trk.sibHalf')"
     },
-    {"id": "no", "rel": 0}
+    {"id": "no", "rel": 0, "bond": -6}
    ],
    "later": {
     "sib": "const u = roll('sib'); if (u < .45) { const v = .8 * x.a; cash += v; const t = trk.sib; if (t) { t.v += v; t.note = M('note.repay', { a: MN(x.a), b: MN(v) }); } log(M('log.sibBack', { a: MN(v) }), 'good'); } else if (!(u < .75 && refer('sibRef', 1.06, 'trk.sibRef', 'log.sibRef'))) { rl(2); log(M('log.sibThanks'), 'good'); }"
@@ -598,7 +637,7 @@
    "i18n": {
     "en": {
      ".t": "Your sibling's fees",
-     ".x": "Your younger sibling got into university, but the family is {a} short for the fees.",
+     ".x": "{p} got into university, but the family is {a} short for the fees.",
      ".all": "Pay all of it",
      ".all.s": "{a}.",
      ".half": "Pay half",
@@ -610,7 +649,7 @@
     },
     "zh": {
      ".t": "弟妹的学费",
-     ".x": "你的弟弟妹妹考上了大学，可是家里还差{a}的学费。",
+     ".x": "{p}考上了大学，可是家里还差{a}的学费。",
      ".all": "全部帮忙付",
      ".all.s": "{a}。",
      ".half": "付一半",
@@ -622,7 +661,7 @@
     },
     "zht": {
      ".t": "弟妹的學費",
-     ".x": "你的弟弟妹妹考上了大學，可是家裡還差{a}的學費。",
+     ".x": "{p}考上了大學，可是家裡還差{a}的學費。",
      ".all": "全部幫忙付",
      ".all.s": "{a}。",
      ".half": "付一半",
@@ -757,30 +796,39 @@
    "id": "fsick",
    "age": [40, 66],
    "weight": 0.5,
+   "who": {"role": "friend"},
    "def": "visit",
    "tarot": {"en": "Ace of Cups", "zh": "圣杯王牌", "zht": "聖杯王牌"},
    "art": "fsick",
    "let": {"a": ".15 * base"},
-   "vars": {"a": "MN(.15 * base)"},
+   "vars": {"p": "Who(p)", "a": "MN(.15 * base)"},
    "opts": [
     {
      "id": "give",
      "label": "M('.give', { a: MN(a) })",
      "rel": 2,
+     "bond": 6,
      "do": "spend('fsick', a, 'trk.fsickGift'); happy += 2"
     },
     {
      "id": "lend",
      "label": "M('.lend', { a: MN(a) })",
      "rel": 2.5,
+     "bond": 6,
      "do": "pay(a); T('fsick', { kind: 'custom', label: M('trk.fsickLend'), v: -a, note: M('note.lend0', { a: MN(a) }) }); later(age + 2 + Math.floor(roll('fsAt') * 3), 'repay', { a, id: 'fsick', fam: 1 })"
     },
-    {"id": "visit", "hint": "M('hx.hl', {n: '−1'})", "rel": 2, "do": "happy -= 1; rec('', 0, 2, -.5)"}
+    {
+     "id": "visit",
+     "hint": "M('hx.hl', {n: '−1'})",
+     "rel": 2,
+     "bond": 6,
+     "do": "happy -= 1; rec('', 0, 2, -.5)"
+    }
    ],
    "i18n": {
     "en": {
      ".t": "A friend in hospital",
-     ".x": "A close friend needs an operation and is about {a} short.",
+     ".x": "{p} needs an operation and is about {a} short.",
      ".give": "Give {a}",
      ".give.s": "A gift, not a loan. Happiness +2.",
      ".lend": "Lend {a}",
@@ -792,10 +840,10 @@
     },
     "zh": {
      ".t": "住院的朋友",
-     ".x": "一位好朋友要动手术，还差大约{a}。",
+     ".x": "{p}要动手术，还差大约{a}。",
      ".give": "送他{a}",
      ".give.s": "是送的，不是借的。幸福感 +2。",
-     ".lend": "借他{a}",
+     ".lend": "借给对方{a}",
      ".lend.s": "他答应会还你。",
      ".visit": "去探望，帮他做饭、载他去复诊",
      ".visit.s": "不花钱，但要花你的时间。幸福感 −1。",
@@ -804,10 +852,10 @@
     },
     "zht": {
      ".t": "住院的朋友",
-     ".x": "一位好朋友要動手術，還差大約{a}。",
+     ".x": "{p}要動手術，還差大約{a}。",
      ".give": "送他{a}",
      ".give.s": "是送的，不是借的。幸福感 +2。",
-     ".lend": "借他{a}",
+     ".lend": "借給對方{a}",
      ".lend.s": "他答應會還你。",
      ".visit": "去探望，幫他煮飯、載他去回診",
      ".visit.s": "不花錢，但要花你的時間。幸福感 −1。",
@@ -820,40 +868,42 @@
    "id": "carers",
    "age": [50, 66],
    "weight": 0.6,
+   "who": {"role": "parent"},
    "def": "share",
    "tarot": {"en": "Six of Cups", "zh": "圣杯六", "zht": "聖杯六"},
    "art": "carers",
    "let": {"a": ".25 * base", "b": ".08 * base"},
+   "vars": {"p": "Folks()"},
    "opts": [
     {
      "id": "quit",
      "ok": "working() || M('.nojob')",
      "rel": 8,
-     "do": "offUntil = age + 2; T('carers', { kind: 'custom', label: M('trk.carersQuit'), note: M('note.carers0') }); happy -= 2"
+     "do": "offUntil = age + 2; T('carers', { kind: 'custom', label: M('trk.carersQuit'), note: M('note.carers0') }); happy -= 2; bond('parent', 12)"
     },
     {
      "id": "pay",
      "sub": {"a": "MN(a)"},
      "rel": 2,
-     "do": "T('carers', { kind: 'custom', label: M('trk.carersPay') }); rec('carers', a, 5)"
+     "do": "T('carers', { kind: 'custom', label: M('trk.carersPay') }); rec('carers', a, 5); bond('parent', 4)"
     },
     {
      "id": "share",
      "sub": {"a": "MN(b)"},
      "rel": 1,
-     "do": "T('carers', { kind: 'custom', label: M('trk.carersShare') }); rec('carers', b, 5); happy -= 2"
+     "do": "T('carers', { kind: 'custom', label: M('trk.carersShare') }); rec('carers', b, 5); happy -= 2; bond('parent', 3)"
     }
    ],
    "i18n": {
     "en": {
-     ".t": "Your parents need care",
-     ".x": "Your parents can no longer manage on their own.",
+     ".t": "When care is needed",
+     ".x": "{p} can no longer manage alone.",
      ".quit": "Stop working for two years to care for them",
      ".quit.s": "No pay for two years. Happiness −2.",
      ".nojob": "You're not working right now.",
      ".pay": "Pay for a care home",
      ".pay.s": "{a} a year for five years.",
-     ".share": "Share the care with your siblings",
+     ".share": "Share the care with the rest of the family",
      ".share.s": "Your part is about {a} a year for five years, plus weekends. Happiness −2.",
      "trk.carersQuit": "Stopped work to care for parents",
      "trk.carersPay": "Care home for parents",
@@ -861,14 +911,14 @@
      "note.carers0": "No pay while caring."
     },
     "zh": {
-     ".t": "父母需要照顾",
-     ".x": "你的父母已经没办法自己照顾自己了。",
+     ".t": "需要照护",
+     ".x": "{p}已经没办法自己照顾自己了。",
      ".quit": "辞职两年照顾他们",
      ".quit.s": "两年没有收入。幸福感 −2。",
      ".nojob": "你现在没有工作。",
      ".pay": "送他们去养老院",
      ".pay.s": "每年{a}，共五年。",
-     ".share": "跟兄弟姐妹一起分担",
+     ".share": "跟其他家人一起分担",
      ".share.s": "你负担每年大约{a}，共五年，周末也要轮班。幸福感 −2。",
      "trk.carersQuit": "辞职照顾父母",
      "trk.carersPay": "父母的养老院",
@@ -876,14 +926,14 @@
      "note.carers0": "照顾期间没有收入。"
     },
     "zht": {
-     ".t": "父母需要照顧",
-     ".x": "你的父母已經沒辦法自己照顧自己了。",
+     ".t": "需要照護",
+     ".x": "{p}已經沒辦法自己照顧自己了。",
      ".quit": "辭職兩年照顧他們",
      ".quit.s": "兩年沒有收入。幸福感 −2。",
      ".nojob": "你現在沒有工作。",
      ".pay": "送他們去安養中心",
      ".pay.s": "每年{a}，共五年。",
-     ".share": "跟兄弟姊妹一起分擔",
+     ".share": "跟其他家人一起分擔",
      ".share.s": "你負擔每年大約{a}，共五年，週末也要輪班。幸福感 −2。",
      "trk.carersQuit": "辭職照顧父母",
      "trk.carersPay": "父母的安養中心",
@@ -897,25 +947,27 @@
    "age": [52, 70],
    "weight": 0.55,
    "if": {"family": ["poor", "working"]},
+   "who": {"role": "sib"},
    "def": "fair",
    "tarot": {"en": "Five of Wands", "zh": "权杖五", "zht": "權杖五"},
    "art": "inhfight",
-   "let": {"sh": ".5 * price() / 3"},
-   "vars": {"a": "MN(.5 * price())"},
+   "let": {"sh": ".5 * price() / (people('sib').length + 1)"},
+   "vars": {"a": "MN(.5 * price())", "s": "sibs()"},
+   "pre": "parentsPass()",
    "opts": [
     {
      "id": "fair",
      "label": "M('.fair', { a: MN(sh) })",
      "rel": -3,
-     "do": "cash += sh; T('inhfight', { kind: 'custom', label: M('trk.inhFair'), v: sh, note: M('note.got', { a: MN(sh) }) })"
+     "do": "bond('sib', -8); cash += sh; T('inhfight', { kind: 'custom', label: M('trk.inhFair'), v: sh, note: M('note.got', { a: MN(sh) }) })"
     },
-    {"id": "give", "rel": 4, "do": "happy += 2"},
+    {"id": "give", "rel": 4, "do": "bond('sib', 10); happy += 2"},
     {
      "id": "court",
      "sub": {"a": "MN(.1 * base)"},
      "hint": true,
      "rel": -5,
-     "do": "pay(.1 * base); T('inhfight', { kind: 'custom', label: M('trk.inhCourt'), v: -.1 * base, note: M('note.paid', { a: MN(.1 * base) }) }); later(age + 2, 'court', { a: sh })"
+     "do": "bond('sib', -14); pay(.1 * base); T('inhfight', { kind: 'custom', label: M('trk.inhCourt'), v: -.1 * base, note: M('note.paid', { a: MN(.1 * base) }) }); later(age + 2, 'court', { a: sh })"
     }
    ],
    "later": {
@@ -924,8 +976,8 @@
    "i18n": {
     "en": {
      ".t": "Your parents' flat",
-     ".x": "Your parents have passed away and left their flat, worth about {a}. You and your two siblings can't agree how to split it.",
-     ".fair": "Insist on an equal third: {a}",
+     ".x": "Your parents have passed away and left their flat, worth about {a}. You and {s} can't agree how to split it.",
+     ".fair": "Insist on an equal share: {a}",
      ".fair.s": "The arguments get bitter.",
      ".give": "Let your siblings have it",
      ".give.s": "Nothing for you. Happiness +2.",
@@ -937,8 +989,8 @@
     },
     "zh": {
      ".t": "父母留下的房子",
-     ".x": "你的父母过世了，留下一间大约值{a}的房子。你和两个兄弟姐妹谈不拢要怎么分。",
-     ".fair": "坚持平分，拿三分之一：{a}",
+     ".x": "你的父母过世了，留下一间大约值{a}的房子。你和{s}谈不拢要怎么分。",
+     ".fair": "坚持平分，拿你的那份：{a}",
      ".fair.s": "争吵变得很难看。",
      ".give": "让给兄弟姐妹",
      ".give.s": "你什么都不拿。幸福感 +2。",
@@ -950,8 +1002,8 @@
     },
     "zht": {
      ".t": "父母留下的房子",
-     ".x": "你的父母過世了，留下一間大約值{a}的房子。你和兩個兄弟姊妹談不攏要怎麼分。",
-     ".fair": "堅持平分，拿三分之一：{a}",
+     ".x": "你的父母過世了，留下一間大約值{a}的房子。你和{s}談不攏要怎麼分。",
+     ".fair": "堅持平分，拿你的那份：{a}",
      ".fair.s": "爭吵變得很難看。",
      ".give": "讓給兄弟姊妹",
      ".give.s": "你什麼都不拿。幸福感 +2。",
@@ -968,24 +1020,33 @@
    "age": [58, 76],
    "weight": 0.6,
    "when": {"kids": true},
+   "who": {"role": "kid", "age": [24, 70]},
    "def": "some",
    "tarot": {"en": "Ten of Cups", "zh": "圣杯十", "zht": "聖杯十"},
    "art": "grandsit",
+   "vars": {"p": "Who(p)"},
    "opts": [
     {
      "id": "yes",
      "sub": {"a": "MN(.04 * base)"},
      "hint": "M('hx.hl', { n: '−4' })",
      "rel": 3,
+     "bond": 9,
      "do": "T('grandsit', { kind: 'custom', label: M('trk.grandsit') }); rec('grandsit', -.04 * base, 5, -.8); happy += 3"
     },
-    {"id": "some", "rel": 2, "do": "happy += 1"},
-    {"id": "no", "hint": "M('hx.hl', {n: '+1.5'})", "rel": -1, "do": "happy += 2; rec('', 0, 5, .3)"}
+    {"id": "some", "rel": 2, "bond": 5, "do": "happy += 1"},
+    {
+     "id": "no",
+     "hint": "M('hx.hl', {n: '+1.5'})",
+     "rel": -1,
+     "bond": -3,
+     "do": "happy += 2; rec('', 0, 5, .3)"
+    }
    ],
    "i18n": {
     "en": {
      ".t": "The grandchildren",
-     ".x": "Your children ask if you could look after the grandchildren while they work.",
+     ".x": "{p} asks if you could look after the grandchildren while they work.",
      ".yes": "Three days a week",
      ".yes.s": "Tiring. Your children chip in {a} a year towards your bills. Happiness +3.",
      ".some": "Now and then",
@@ -996,7 +1057,7 @@
     },
     "zh": {
      ".t": "帮忙带孙子",
-     ".x": "你的孩子问你能不能在他们上班的时候帮忙带孙子。",
+     ".x": "{p}问你能不能在他们上班的时候帮忙带孙子。",
      ".yes": "每星期带三天",
      ".yes.s": "很累。孩子每年给你{a}贴补开销。幸福感 +3。",
      ".some": "偶尔帮忙",
@@ -1007,7 +1068,7 @@
     },
     "zht": {
      ".t": "幫忙帶孫子",
-     ".x": "你的孩子問你能不能在他們上班的時候幫忙帶孫子。",
+     ".x": "{p}問你能不能在他們上班的時候幫忙帶孫子。",
      ".yes": "每星期帶三天",
      ".yes.s": "很累。孩子每年給你{a}貼補開銷。幸福感 +3。",
      ".some": "偶爾幫忙",

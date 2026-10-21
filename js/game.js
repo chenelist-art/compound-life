@@ -62,7 +62,7 @@ function backToSetup(){closeReplay(true);closeMoment();G.moq=[];G.moThen=null;cl
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},lcArm:null,ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},lcArm:null,ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},ppl:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;G.t.auto=true;G.snapS=snap(s);
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -116,7 +116,8 @@ function choose(id){
   const o=applyOpt(s,ev,id);lifeMoments();
   /* kept for the life replay: what you chose, and the passbook lines that choice started */
   /* and every option's typical result from the 40 futures (relative to the default option), for the road not taken */
-  G.dec.push({id:ev.id,age,title:ev.title,label:o.label,pick:o.id,def:ev.def,trk:Object.keys(s.trk).filter(k=>!had.has(k)),tgt:P.tgt,
+  const wp=ev.whoOf&&ev.whoOf(s);
+  G.dec.push({who:wp?pplWho(s,wp,0):null,id:ev.id,age,title:ev.title,label:o.label,pick:o.id,def:ev.def,trk:Object.keys(s.trk).filter(k=>!had.has(k)),tgt:P.tgt,
     rows:os.filter(x=>P.res[x.id]).map(x=>{const r=P.res[x.id];return{id:x.id,label:x.label,med:r.base?0:r.med,alive:r.alive}})});
   addLog(M('log.chose',{x:o.label}),'choice');if(o.id!==ev.def)G.marks.push({a:s.age,t:ev.title});
   const h={id:ev.id,title:ev.title,age,tgt:P.tgt,pick:o.id,rows:os.filter(x=>P.res[x.id]).map(x=>Object.assign({id:x.id,label:x.label},P.res[x.id]))};
@@ -145,10 +146,10 @@ function endLife(){G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s
 /* diary lines that are big moments, and the card each one opens (the line under the title is the diary line itself) */
 const MOMENT={'log.laidOff':'fired','log.layVol':'package','log.car.auto':'auto','log.bizFail':'bizfail','log.car.fail':'bizfail','log.coinDown':'crypto','log.burst':'burst',
   'log.broke':'broke','log.divorce':'divorce','log.car.injEnd':'injury','log.promo':'promo','log.car.up':'careerup','log.grad':'grad','log.bizOk':'bizup','log.car.ok':'bizup',
-  'log.car.exit':'exit','log.child':'child','log.retire':'retired','log.rel.move':'together','log.rel.break':'breakup','log.rel.left':'left','log.rel.try':'trying'};
+  'log.car.exit':'exit','log.child':'child','log.retire':'retired','log.rel.move':'together','log.rel.break':'breakup','log.rel.left':'left','log.rel.try':'trying','log.ppl.dieP':'loss'};
 /* decision cards that open with a big moment: the moment shows first, then the decision */
 const MO_EV={crash:1,ill:1,inh:1};
-const MO_BAD=new Set(['fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury','breakup','left']);
+const MO_BAD=new Set(['loss','fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury','breakup','left']);
 /* moments that bring a partner or a child: hearts instead of sparkles, and the partner walks in */
 const LOVE=new Set(['married','child','dating','together']),PT_IN=new Set(['dating']),PT_OUT=new Set(['breakup','left','divorce']);
 /* smaller events stay as a toast, so the game isn't stopped every year */
@@ -246,6 +247,8 @@ function render(){
   $('#nwName').textContent=t(s.retired||s.dead?'tn.king':s.age<18?'tn.page':'tn.knight');
   /* the pixel character: this year's look, kept per age for the replay; it jumps at a wedding and other big moments */
   const ps=Pixel.stateOf(s);G.pix[age]=ps;Pixel.set($('#pix'),ps);
+  /* the people in your life beside it, kept per age for the replay */
+  G.ppl[age]=pplView(s);renderPpl(G.ppl[age]);
   const nk=s.kids.filter(b=>b<=s.age).length;if((s.married&&!G.wasM)||nk>G.nKids)G.cheer='love';G.wasM=s.married;G.nKids=nk;if(G.cheer&&!s.dead)Pixel.cheer($('#pix'),G.cheer);G.cheer=0
   const sk=skill(s);$('#skv').textContent=Math.round(sk);$('#skb').style.width=clamp(sk,0,100)+'%';$('#skx').textContent=t('g.skx',{p:Math.round(SK*sk*100)});
   $('#hev').textContent=Math.round(s.health);$('#heb').style.width=s.health+'%';$('#hav').textContent=Math.round(s.happy);$('#hab').style.width=s.happy+'%';$('#rev').textContent=Math.round(s.rel);$('#reb').style.width=s.rel+'%';
@@ -256,6 +259,15 @@ function render(){
   $('#play').textContent=t(G.playing?'g.pause':'g.play');$('#play').disabled=G.ended;$('#skip').disabled=G.ended||!!G.pending;
   renderSlot();updFocus();updLife();drawChart();renderLedger();renderLog();
 }
+/* the people strip: partner, children, parents, siblings, best friend, boss, mentor; the bar is how close you are */
+const PPL_MAX=9,pplGroup=rk=>rk==='pt'?'g-pt':rk.startsWith('kid')?'g-kid':rk==='mother'||rk==='father'?'g-par':'';
+function renderPpl(L){const el=$('#ppl');if(!el)return;el.setAttribute('aria-label',t('ppl.h'));
+  const li=L.slice(0,PPL_MAX).map(p=>{const r=t('ppl.c.'+p.rk),n=t(p.n),a=t('ppl.age',{a:p.x}),b=t('ppl.bond',{n:p.b}),aw=p.away?' · '+t('ppl.away'):'';
+    return `<li class="pp ${pplGroup(p.rk)}" aria-label="${esc(r+' '+n+', '+a+aw+', '+b)}"><span class="pp-r" aria-hidden="true">${esc(r)}</span><span class="pp-n" aria-hidden="true">${esc(n)}</span><span class="pp-a" aria-hidden="true">${esc(a+aw)}</span><span class="pp-b" aria-hidden="true"><i style="width:${p.b}%"></i></span></li>`}).join('');
+  el.innerHTML=li+(L.length>PPL_MAX?`<li class="pp-more">${esc(t('ppl.more',{n:L.length-PPL_MAX}))}</li>`:'')}
+/* "Mother Siti (58), Big sister Mei (30)…" for the replay */
+function pplItems(L,max){return L.slice(0,max).map(p=>t('ppl.item',{r:M('ppl.c.'+p.rk),n:M(p.n),a:p.x})).join(t('ppl.sep'))}
+function pplAt(a){let k=-1;for(const x in G.ppl)if(+x<=a&&+x>k)k=+x;return G.ppl[k]||[]}
 /* the career in the header: "Nurse · level 2", "Doctor, in training", or just the name where there are no levels */
 function jobTxt(s){const j=M('car.'+s.job.id);return s.job.train>s.age?t('g.train',{j}):CAR[s.job.id].gr>0?t('g.joblvl',{j,n:s.level}):t('g.job1',{j})}
 /* where you stand: world and country wealth ranks from the data in engine.js */
@@ -500,7 +512,7 @@ const RPY={};
 const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
 const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};
 function replayPages(){
-  const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),story:[M('rp.t.born',{x:M('sex.kid.'+s.sex),c:{k:'_c',ci:s.ci},fam:M('fam.'+s.fam)})]}];
+  const s=G.s,pg=[{st:'birth',age:0,title:M('rp.bornT',{c:{k:'_c',ci:s.ci}}),story:[M('rp.t.born',{x:M('sex.kid.'+s.sex),c:{k:'_c',ci:s.ci},fam:M('fam.'+s.fam)}),...pplBirth(s)]}];
   const page=(st,d)=>({st,age:d.age,title:d.title,d,story:decStory(d)}),big=d=>Math.abs(decVal(d)||0);
   const old=s.retired&&s.retireAge!=null?s.retireAge+1:65; // old age comes after retirement
   for(const[st,ids,anchor]of RP){const ds=G.dec.filter(d=>ids.includes(d.id)&&RPX[d.id]!==d.pick&&rpOk(d)&&(st!=='old'||d.age>=old));if(!ds.length)continue;
@@ -511,18 +523,23 @@ function replayPages(){
   G.dec.filter(d=>d.id==='job').slice(1).sort((a,b)=>big(b)-big(a)).slice(0,2).forEach(d=>pg.push(page('career',d)));
   if(s.retired&&s.retireAge!=null){const d=G.dec.find(x=>x.id==='fire'&&x.pick==='now')||G.dec.find(x=>x.id==='ret');
     pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),d,story:[M('rp.t.ret',{a:s.retireAge,nw:MN(nwAt(s.retireAge))})]})}
-  pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),story:[s.illDeath?M('rp.t.endIll',{a:s.deathAge,x:M('ill.'+s.illDeath)}):M('rp.t.end',{a:s.deathAge}),M('rp.t.endNw',{nw:MN(netWorth(s))})]});
+  const close=pplView(s).filter(p=>p.rk!=='boss'&&p.rk!=='mentor').sort((a,b)=>b.b-a.b).slice(0,3);
+  pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),story:[s.illDeath?M('rp.t.endIll',{a:s.deathAge,x:M('ill.'+s.illDeath)}):M('rp.t.end',{a:s.deathAge}),M('rp.t.endNw',{nw:MN(netWorth(s))}),...(close.length?[M('rp.t.close',{l:pplList(close)})]:[])]});
   return pg.sort((a,b)=>a.age-b.age);
 }
 /* a decision's passbook lines added up, year by year: [[age, value], ...] */
 function decHist(d){const ages=new Set();for(const id of d.trk)for(const p of G.th[id]||[])ages.add(p[0]);
   return [...ages].sort((a,b)=>a-b).map(a=>[a,d.trk.reduce((v,id)=>{let x=0;for(const p of G.th[id]||[])if(p[0]<=a)x=p[1];return v+x},0)])}
 /* what you did, then what it did to your money: "At 18 you chose … It cost $21k at first, then paid you back by 31." */
+/* the birth page: your parents, and the brothers and sisters already at home */
+function pplBirth(s){const P=s.ppl||[],out=[],m=P.find(p=>p.r==='mother'),f=P.find(p=>p.r==='father');if(m&&f)out.push(M('rp.t.parents',{a:M(m.n),b:M(f.n)}));
+  const old=P.filter(p=>p.r==='sib'&&p.d>0).map(p=>({rk:pplRk(Object.assign({},s,{age:0}),p),n:p.n,x:p.d}));if(old.length)out.push(M('rp.t.sibs',{l:pplItems(old,4)}));return out}
 function decStory(d){
   const s=G.s,B=s.base,small=.02*B,out=[];
   if(d.id==='ill'){out.push(M('rp.t.ill',{a:d.age,x:M('ill.'+(s.illDeath||s.illType)),l:d.label}));out.push(M(s.illDeath?'rp.t.illEnd':'rp.t.illOk'))}
   else if(d.id==='dep'){out.push(M('rp.t.dep',{a:d.age,l:d.label}));if(!depressed(s))out.push(M('rp.t.depOk'))}
   else out.push(M('rp.t.dec',{a:d.age,l:d.label}));
+  if(d.who)out.push(M('rp.t.who',{p:d.who}));
   /* a career: from when to when, and what it came to */
   const ck=d.id==='job'&&d.trk.find(k=>/^car\d/.test(k)),ct=ck&&s.trk[ck];
   if(ct){const v=ct.label.v||{};out.push(M('rp.m.career',{x:M('car.a.'+d.pick),a:v.a!=null?v.a:d.age,b:v.b!=null?v.b:s.deathAge,e:MS(ct.v)}));return out}
@@ -555,7 +572,7 @@ function roadHTML(d){
 /* a scene's words: stage, age, what you did, what came of it, and the road not taken */
 function sceneText(p){const age=p.st==='end'?G.s.deathAge:p.age;
   return `<div class="rp-hd"><div class="rp-hl"><span class="rp-chip" style="--c:var(${Art.stageBg(p.st)})">${esc(t('rp.s.'+p.st))}</span><span class="rp-age">${esc(t('rp.age',{a:age}))}</span></div><canvas class="pix pix-rp" data-age="${age}" width="48" height="48" aria-hidden="true"></canvas></div>
-  <h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${roadHTML(p.d)}`}
+  <h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${(()=>{const L=p.st==='birth'?[]:pplAt(age);return L.length?`<p class="rp-ppl">${esc(t('rp.ppl',{l:pplItems(L,6)}))}</p>`:''})()}${roadHTML(p.d)}`}
 /* each page's pixel character: the look recorded at that age (or the nearest year before it) */
 function pixAt(a){let k=-1;for(const x in G.pix)if(+x<=a&&+x>k)k=+x;return G.pix[k]||G.pix[0]}
 function rpPix(root){root.querySelectorAll('canvas.pix-rp').forEach(c=>Pixel.set(c,pixAt(+c.dataset.age)))}

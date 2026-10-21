@@ -102,5 +102,12 @@ Object.assign(LATER,{
  V.divorce=(c,by)=>divorce(c.s,by,c.L);
  V.splitUp=(c,by)=>splitUp(c.s,by,c.L);
  V.cLaid=c=>cLaid(c.s,c.L);
+ /* people (js/people.js): Who(p) "Your sister Mei", who(p) "your sister Mei", name(p) "Mei"; folks() your parents; sibs() your
+    brothers and sisters; people('sib') a list, person('friend') one or null; bond(p or a role, change); bondOf(id) */
+ V.Who=(c,p)=>pplWho(c.s,p,1);V.who=(c,p)=>pplWho(c.s,p,0);V.name=(c,p)=>M(p.n);
+ V.folks=c=>pplFolks(c.s,0);V.Folks=c=>pplFolks(c.s,1);V.sibs=c=>pplSibs(c.s);V.names=(c,ps)=>pplList(ps);
+ V.people=(c,r)=>pplOf(c.s,r);V.person=(c,r)=>pplOf(c.s,r)[0]||null;
+ V.bond=(c,x,d)=>pplBond(c.s,x,d);V.bondOf=(c,id)=>{const p=pplGet(c.s,id);return p?p.bond:null};
+ V.parentsPass=c=>pplParentsPass(c.s);V.kidFee=c=>pplKidFee(c.s);
  const K=ES.CONST;K.Math={min:Math.min,max:Math.max,floor:Math.floor,ceil:Math.ceil,round:Math.round,abs:Math.abs,exp:Math.exp,log:Math.log,sqrt:Math.sqrt,pow:Math.pow,PI:Math.PI};
  K.C=C;K.CAR=CAR;K.ILLT=ILLT;K.SCH=SCH;K.SK=SK;K.DENSITY=DENSITY;K.CDENS=CDENS}

@@ -401,6 +401,7 @@
    "age": [24, 42],
    "weight": 0.75,
    "when": {"stats": {"liquid": "> .15 * base"}},
+   "who": {"role": "friend"},
    "def": "no",
    "tarot": {"en": "Six of Coins", "zh": "钱币六", "zht": "錢幣六"},
    "art": "lend",
@@ -408,20 +409,20 @@
    "fn": {
     "go": {
      "args": ["x", "lk"],
-     "do": "pay(x); T('lend', { kind: 'custom', label: M(lk), v: -x, note: M('note.lend0', { a: MN(x) }) }); const r = roll('lendAt'); later(age + 2 + Math.floor(r * 4), 'repay', { a: x, id: 'lend' })"
+     "do": "pay(x); T('lend', { kind: 'custom', label: M(lk), v: -x, note: M('note.lend0', { a: MN(x) }) }); const r = roll('lendAt'); later(age + 2 + Math.floor(r * 4), 'repay', { a: x, id: 'lend', pid: p.id })"
     }
    },
-   "vars": {"a": "MN(Math.min(.3 * base, .5 * liquid()))"},
+   "vars": {"p": "Who(p)", "a": "MN(Math.min(.3 * base, .5 * liquid()))"},
    "hint": true,
    "opts": [
-    {"id": "all", "rel": 3, "do": "go(a, 'trk.lend')"},
-    {"id": "half", "sub": {"a": "MN(a / 2)"}, "rel": 2, "do": "go(a / 2, 'trk.lendHalf')"},
-    {"id": "no", "rel": 0, "do": "happy -= 1"}
+    {"id": "all", "rel": 3, "bond": 8, "do": "go(a, 'trk.lend')"},
+    {"id": "half", "sub": {"a": "MN(a / 2)"}, "rel": 2, "bond": 5, "do": "go(a / 2, 'trk.lendHalf')"},
+    {"id": "no", "rel": 0, "bond": -5, "do": "happy -= 1"}
    ],
    "i18n": {
     "en": {
      ".t": "A friend in need",
-     ".x": "A close friend asks to borrow {a} and promises to pay you back.",
+     ".x": "{p} asks to borrow {a} and promises to pay you back.",
      ".h": "About half of loans to friends are paid back in full.",
      ".all": "Lend the full amount",
      ".all.s": "Your friend is very grateful.",
@@ -434,7 +435,7 @@
     },
     "zh": {
      ".t": "朋友有难",
-     ".x": "一个好朋友想跟你借{a}，保证会还。",
+     ".x": "{p}想跟你借{a}，保证会还。",
      ".h": "借给朋友的钱，大约只有一半能全数还回来。",
      ".all": "全借给对方",
      ".all.s": "朋友非常感激。",
@@ -447,7 +448,7 @@
     },
     "zht": {
      ".t": "朋友有難",
-     ".x": "一個好朋友想跟你借{a}，保證會還。",
+     ".x": "{p}想跟你借{a}，保證會還。",
      ".h": "借給朋友的錢，大約只有一半能全數還回來。",
      ".all": "全借給對方",
      ".all.s": "朋友非常感激。",
@@ -1108,6 +1109,7 @@
    "art": "inh",
    "let": {"A": "inhAmt()"},
    "vars": {"a": "MN(inhAmt())"},
+   "pre": "parentsPass()",
    "opts": [
     {
      "id": "inv",
@@ -1505,6 +1507,7 @@
    "age": [30, 46],
    "weight": 0.5,
    "when": {"stats": {"liquid": "> .15 * base"}, "retired": false},
+   "who": {"role": "friend"},
    "def": "no",
    "tarot": {"en": "Three of Coins", "zh": "钱币三", "zht": "錢幣三"},
    "art": "bizpal",
@@ -1512,22 +1515,29 @@
    "fn": {
     "go": {
      "args": ["a", "lk"],
-     "do": "pay(a); T('bizpal', { kind: 'custom', label: M(lk), v: -a, note: M('note.bizpalIn', { a: MN(a) }) }); later(age + 3, 'bizpal', { a })"
+     "do": "pay(a); T('bizpal', { kind: 'custom', label: M(lk), v: -a, note: M('note.bizpalIn', { a: MN(a) }) }); later(age + 3, 'bizpal', { a, pid: p.id })"
     }
    },
+   "vars": {"p": "Who(p)"},
    "hint": true,
    "opts": [
-    {"id": "in", "label": "M('.in', {a: MN(big)})", "rel": 2, "do": "go(big, 'trk.bizpal')"},
-    {"id": "small", "label": "M('.small', {a: MN(sm)})", "rel": 2, "do": "go(sm, 'trk.bizpalS')"},
-    {"id": "no", "rel": -1}
+    {"id": "in", "label": "M('.in', {a: MN(big)})", "rel": 2, "bond": 6, "do": "go(big, 'trk.bizpal')"},
+    {
+     "id": "small",
+     "label": "M('.small', {a: MN(sm)})",
+     "rel": 2,
+     "bond": 4,
+     "do": "go(sm, 'trk.bizpalS')"
+    },
+    {"id": "no", "rel": -1, "bond": -3}
    ],
    "later": {
-    "bizpal": "const u = roll('bizpal'), f = u < .25 ? 3 : u < .55 ? 1 : 0, v = x.a * f; cash += v; const t = trk.bizpal; if (t) { t.v += v; t.note = M('note.bizpal', { a: MN(x.a), b: MN(v) }); } rl(f ? 4 : -6); log(M(f > 1 ? 'log.bizpalWin' : f ? 'log.bizpalBack' : 'log.bizpalFail', { a: MN(x.a), b: MN(v) }), f ? 'good' : 'bad')"
+    "bizpal": "const u = roll('bizpal'), f = u < .25 ? 3 : u < .55 ? 1 : 0, v = x.a * f; cash += v; const t = trk.bizpal; if (t) { t.v += v; t.note = M('note.bizpal', { a: MN(x.a), b: MN(v) }); } rl(f ? 4 : -6); log(M(f > 1 ? 'log.bizpalWin' : f ? 'log.bizpalBack' : 'log.bizpalFail', { a: MN(x.a), b: MN(v) }), f ? 'good' : 'bad'); if (x.pid) bond(x.pid, f > 1 ? 10 : f ? 4 : -12)"
    },
    "i18n": {
     "en": {
      ".t": "A friend's business",
-     ".x": "Your best friend is opening a small café and asks you to come in as a partner.",
+     ".x": "{p} is opening a small café and asks you to come in as a partner.",
      ".h": "About 1 in 4 do very well, about 3 in 10 just pay back what you put in, and the rest close.",
      ".in": "Go in as a partner: {a}",
      ".in.s": "Your money is tied up for a few years.",
@@ -1541,7 +1551,7 @@
     },
     "zh": {
      ".t": "朋友的生意",
-     ".x": "你最好的朋友要开一家小咖啡馆，想请你一起当合伙人。",
+     ".x": "{p}要开一家小咖啡馆，想请你一起当合伙人。",
      ".h": "大约四家有一家做得很好，十家有三家只能还你本钱，其他的会关门。",
      ".in": "当合伙人：{a}",
      ".in.s": "这笔钱会被绑住好几年。",
@@ -1555,7 +1565,7 @@
     },
     "zht": {
      ".t": "朋友的生意",
-     ".x": "你最好的朋友要開一家小咖啡店，想請你一起當合夥人。",
+     ".x": "{p}要開一家小咖啡店，想請你一起當合夥人。",
      ".h": "大約四家有一家做得很好，十家有三家只能還你本錢，其他的會收掉。",
      ".in": "當合夥人：{a}",
      ".in.s": "這筆錢會被綁住好幾年。",

@@ -17,7 +17,9 @@ edits: the site loads `gen/`, not these files.
 |---|---|
 | `childhood.json`, `career.json`, `money.json`, `home.json`, `family.json`, `health.json`, `later-life.json` | the general deck, by theme |
 | `country-MY.json` … `country-VN.json` | cards only for lives born in that country (`"country": "MY"` at the top) |
+| `people.json` | cards about the people in your life (a sibling's wedding, a child's university fees, a parent's funeral…) |
 | `_shared.json` | option sets several events share (`templates`) and consequences several events schedule (`later`) |
+| `_names.json` | given names by country and sex, in English, Simplified and Traditional Chinese |
 | `../i18n/en.json`, `zh.json`, `zht.json` | the rest of the game's text (buttons, passbook, diary lines…) |
 
 A new theme file works too: it is dealt after the themes above. When two cards are due in the same year, country cards
@@ -60,6 +62,7 @@ three options, and "mid" is the default (what the autopilot twin picks and what 
 | `if` | who can get it, checked at birth: country, family, sex (see Conditions) |
 | `when` | checked each year it could come up (see Conditions) |
 | `chain` | `true`: only comes as a follow-up another choice scheduled (see Follow-up cards) |
+| `who` | the person the card is about (see People); the card only comes if there is one |
 | `def` | id of the default option. It must always be clickable (no `ok`) |
 | `tarot` | its tarot name in the three languages, or the id of a card to borrow it from (`"tarot": "lend"`) |
 | `art` | a drawing in `js/art.js` by name (`"art": "phone"`), or a shared drawing with a window colour: `{"draw": "rosca", "bg": "mi"}` (`co`, `ya`, `mi`, `wa`, `wh`). A shared drawing takes the numeral and frame colour of the card whose tarot name it borrows |
@@ -85,6 +88,7 @@ three options, and "mid" is the default (what the autopilot twin picks and what 
 | `ok` | `true`, or a message saying why it can't be picked now: `"liquid() >= a || M('.need')"` |
 | `show` | leave the option out when this is false |
 | `rel` | moves Relationships by this much (the change shows in Easy) |
+| `bond` | changes how close you are to the card's person (`who`) by this much (closeness is 0–100) |
 | `do` | the script: what happens when it is picked |
 | `next` | a follow-up card: `{"event": "lend_back", "in": [2, 4], "p": 0.5, "data": {"a": "a"}}` |
 | `label` | only when the label isn't `e.<event>.<id>`: an expression |
@@ -157,6 +161,35 @@ so an event can carry its own. Traditional Chinese uses Taiwan wording.
 - `{a}` shows a value given in `vars`, `sub` or `M(…, {a: …})`; the validator checks every `{a}` gets a value.
 - `{n:a year|# years}` picks the first text when n is 1 and the second otherwise; `#` is the number.
 - Money is in PPP dollars of today (`MN(.3 * base)`): no currency symbols in the text.
+
+## People
+
+Every life has named people who age with you: a mother and father, brothers and sisters (more in some countries than
+others), a best friend from school, and later a partner, children, a boss for each job and a mentor. Their names come from
+`_names.json` for the country (so they change language with the game). Each year they live their own lives in
+`js/people.js`: siblings are born and marry, parents retire, people pass away, a friend moves abroad, bosses change. How
+close you are to each one (0–100) drifts with your Relationships and the People focus, and moves with your choices.
+
+A card about someone says so with `who`:
+
+```json
+"who": {"role": "sib", "age": [24, 40], "test": "p.eng", "pick": "oldest"}
+```
+
+| Field | Meaning |
+|---|---|
+| `role` | mother, father, parent (either), sib, friend, pt (partner), kid, boss, mentor |
+| `age` | their age, `[from, to]` |
+| `test` | an expression about them, as `p`: `p.wed` (married), `p.eng` (engaged), `p.ret` (retired), `p.away` (abroad), `p.d > 0` (older than you), `p.bond > 60` |
+| `pick` | if several fit: first (default), oldest, youngest or closest |
+| `dead` | `true` to choose among those who have passed away (`p.dead` is your age when they did) |
+
+The person is `p` in the card's text and scripts: `"vars": {"p": "Who(p)"}` with `".x": "{p} is getting married."` gives
+"Your big sister Mei is getting married." / "你的姐姐美玲要结婚了。". The helpers: `Who(p)` / `who(p)` ("Your sister Mei" /
+"your sister Mei"), `name(p)` ("Mei"), `folks()` / `Folks()` (your parents, or the one still living), `sibs()` (your brothers and
+sisters), `people('sib')` (a list), `person('friend')` (one, or null), `bond(p, 5)` or `bond('parent', 5)` (closeness), and a
+script can change what happened to them: `p.wed = true`. Put their name in passbook lines too:
+`T('sibwed', {kind: 'ghost', label: M('trk.sibWed', {p: name(p)})})`. Never use he or she for a partner.
 
 ## Follow-up cards ("three years later…")
 

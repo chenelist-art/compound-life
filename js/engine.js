@@ -163,7 +163,9 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
  s.hz=0;s.dieAt=-Math.log(1-mb(hsh(seed,'death'))());
  const k=c[1];s.sex=sex||(r()<SRB[k]/(1+SRB[k])?'m':'f');s.le=Math.round(c[4]+LE_SEX[k][s.sex==='f'?0:1]-LE_SEX[k][2]);
  s.dk=DF[dk]?dk:'easy';const rd=mb(hsh(seed,'diff')),d=D(s);s.crashM=inR(rd(),d.crash);s.lostAt=rd()<d.lost?(rd()<.6?s.crashAge+1:25+Math.floor(rd()*36)):-99;
- s.plan=planLife(s);return s}
+ s.plan=planLife(s);
+ /* parents and brothers and sisters (js/people.js) */
+ if(typeof pplBorn==='function')pplBorn(s);return s}
 
 /* Each life draws its own mix of decisions. Events with `win:[from,to]` get an age in that window
    (with chance `p`, and only if `only(s)` allows it at birth); fixed-age events are placed first and
@@ -221,7 +223,11 @@ const relP=(s,p)=>clamp(p+(s.rel-50)*.004,0,.95);
 /* money from family and friends when you're sick or short, tracked in one passbook line */
 function helped(s,h){const t=T(s,'help',{kind:'custom',label:M('trk.help')});t.v+=h;t.note=M('note.help',{a:MN(t.v)})}
 /* family and friends may chip in on a medical bill; the closer you are, the likelier and the more */
-function chipIn(s,you,k,L){if(s.rel>=40&&evR(s,k)()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(M('log.helpMed',{a:MN(h)}),'good')}}
+function chipIn(s,you,k,L){if(s.rel>=40&&evR(s,k)()<(s.rel-30)/100){const h=you*(.2+.3*s.rel/100);s.cash+=h;helped(s,h);L&&L(helpMsg(s,'log.helpMed',h),'good')}}
+/* the diary names the closest person who chipped in, if there is one (js/people.js) */
+function helpMsg(s,k,h){const p=typeof pplClosest==='function'&&pplClosest(s);return p?M(k+'P',{a:MN(h),p:pplWho(s,p,1)}):M(k,{a:MN(h)})}
+/* a child's name for the diary when they are born */
+function pplKidWho(s,b){const p=(s.ppl||[]).find(x=>x.r==='kid'&&x.b===b);return p?pplWho(s,p,1):M('ppl.baby')}
 const job=s=>!!s.job&&!s.study&&!s.retired;
 /* about 1 in 3 mentors turn out not to help much */
 const mentorFit=s=>evR(s,'mentorFit')()>=.33;
@@ -469,7 +475,7 @@ function relAct(s,id,L){const p=s.pt,a=s.age,x=relActs(s).find(o=>o.id===id);if(
  else if(id==='baby'){s.tryAt=a;L&&L(M('log.rel.try'),'good')}
  else if(id==='break')splitUp(s,'me',L);
  else if(id==='div')divorce(s,'me',L);
- return true}
+ if(typeof pplSync==='function')pplSync(s);return true}
 /* lives nobody steers (the autopilot twin, the simulated futures, the babies born with you, the balance bots) follow a
    typical path: marry after a couple of years together, and have a child or two before 40 */
 function autoRel(s,a){const p=s.pt;if(!p)return;const r=evR(s,'auto');
@@ -507,7 +513,7 @@ function dueEvents(s){if(s.dead)return[];const d=[];
    the bank will still lend is greyed out. The default never is, so every card can be answered */
 function canPay(s,ev,o){if(o.id===ev.def)return true;const c=clone(s),co=ev.opts(c).find(x=>x.id===o.id);co.go(c);return !((c.acc.gw||0)>(s.acc.gw||0)+1e-9)}
 function evOpts(s,ev){const os=ev.opts(s);for(const o of os)if((o.ok===undefined||o.ok===true)&&!canPay(s,ev,o))o.ok=M('g.cantPay');return os}
-function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true)||!canPay(s,ev,o))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.hist[ev.id+'@'+s.age]=o.id;s.lastDec=s.age;if(ev.again)ev.again(s);return o}
+function applyOpt(s,ev,id){if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1}const os=ev.opts(s);let o=os.find(x=>x.id===id);if(!o||(o.ok!==undefined&&o.ok!==true)||!canPay(s,ev,o))o=os.find(x=>x.id===ev.def)||os[os.length-1];o.go(s);s.done[ev.id]=o.id;s.hist[ev.id+'@'+s.age]=o.id;s.lastDec=s.age;if(ev.again)ev.again(s);if(typeof pplSync==='function')pplSync(s);return o}
 function resolveAuto(s){let g=0,ev;while((ev=dueEvents(s)[0])&&g++<30)applyOpt(s,ev,ev.def)}
 
 /* ---------- consequences that arrive years later ----------
@@ -569,7 +575,7 @@ function plans(s,a,work){let c=0;
  for(const d of s.dca||[]){if(a>=d.until||(d.noHouse&&s.house))continue;const x=d.p?d.p*work:d.amt;if(!(x>0))continue;c+=x;addLot(s,d.lot,x*(1+(d.bonus||0)))}
  if(s.scheme&&work>0){const x=s.scheme.p*work,l=s.lots[s.scheme.lot];c+=x;addLot(s,s.scheme.lot,x);if(l)l.v+=x*s.scheme.rel+Math.min(s.scheme.p,s.scheme.match)*work}
  return c}
-function kidFees(s,a,L){if(!s.kidEdu)return;for(const b of s.kids){if(a!==b+18)continue;
+function kidFees(s,a,L){if(!s.kidEdu)return;for(const b of s.kids){if(a!==b+18||(s.kidUni&&s.kidUni[b]))continue;
  if(s.kidEdu==='loan'){s.happy-=2;L&&L(M('log.kidLoan'),'');continue}
  let f=s.kidFee*(s.kidFeeM||1);const l=s.lots.kidedu;if(l&&l.v>0){const x=Math.min(l.v,f);l.v-=x;l.tout+=x;f-=x}
  if(f>0){pay(s,f);const t=T(s,'kidfees',{kind:'custom',label:M('trk.kidFees')});t.v-=f;t.note=M('note.paid',{a:MN(-t.v)})}
@@ -686,7 +692,7 @@ function tick(s,yr,L){
    need+=recCost(s,a)+plans(s,a,0);
    const d=inc+pt.net-need;
    if(d>=0){s.cash+=d;out.saved=d}else{const short=payRet(s,-d);out.saved=d;if(short>0){s.happy-=4;s.acc.bad++;if(!s.brokeLogged){s.brokeLogged=1;L&&L(M('log.broke'),'bad')}
-    if(s.rel>=40&&evR(s,'helpBroke')()<(s.rel-30)/100){const h=.5*short;s.cash+=h;helped(s,h);L&&L(M('log.helpBroke',{a:MN(h)}),'good')}}}
+    if(s.rel>=40&&evR(s,'helpBroke')()<(s.rel-30)/100){const h=.5*short;s.cash+=h;helped(s,h);L&&L(helpMsg(s,'log.helpBroke',h),'good')}}}
   }
   // body and mind
   if(a>=40)s.health-=.7;if(a>=65)s.health-=.6;
@@ -748,7 +754,7 @@ function tick(s,yr,L){
    if(fo==='learn'){addSkill(s,'learn',(a<50?3.5:2)*fk*learnLuck(s,'learnYr'),M('trk.learn'));const t=s.trk.sk_learn;if(t){t.years=(t.years||0)+1;t.label=M('trk.learnN',{n:t.years})}}
    if(s.cert&&a<s.cert.end)addSkill(s,'cert',7*(s.cert.eff||1),s.cert.label);
   }
-  for(const b of s.kids)if(b===a){s.happy=clamp(s.happy+KIDH[Math.min(2,s.kids.filter(x=>x<=a).length-1)],0,100);L&&L(M('log.child'),'good')}
+  for(const b of s.kids)if(b===a){s.happy=clamp(s.happy+KIDH[Math.min(2,s.kids.filter(x=>x<=a).length-1)],0,100);L&&L(M('log.child',{p:pplKidWho(s,b)}),'good')}
   if(s.ill&&!s.ill.over&&a+1>=s.ill.until){s.ill.over=1;s.health=clamp(s.health+6,3,100);L&&L(M('log.illRec'),'good')}
   if(s.dep&&!s.dep.over&&a+1>=s.dep.until){s.dep.over=1;s.happy=clamp(s.happy+8,0,100);L&&L(M('log.depEnd'),'good')}
   // lifespan: each year adds that year's risk of dying; you die once the total passes the luck drawn at birth (dieAt).
@@ -757,6 +763,8 @@ function tick(s,yr,L){
   if(!s.noDeath){const Mx=s.le+8,bg=.09;let mu=bg*Math.exp(bg*(a-Mx))*Math.exp((60-s.health)/40)+.0006;if(a>=104)mu=99;s.hz+=mu;if(s.hz>=s.dieAt){s.dead=true;s.deathAge=a;return out}}
  }else{/* children's moods and friendships settle back as well */
   s.happy=clamp(s.happy+(62-s.happy)*.25,0,100);s.rel=clamp(s.rel+(50-s.rel)*.15,0,100);s.health=clamp(s.health,3,100)}
+ /* the people in your life live their year too (js/people.js) */
+ if(typeof pplYear==='function')pplYear(s,a,L);
  /* the end grade adds up every year lived (see lifeScore) */
  const A=s.acc;A.n++;A.h+=s.happy;A.hl+=s.health;A.r+=s.rel;if(a>=18){A.an++;A.nw+=netWorth(s)/B;if(s.debt>.5*B)A.bad++}
  s.age++;

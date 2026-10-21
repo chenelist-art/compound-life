@@ -53,7 +53,7 @@ function make(e,ix){
  if(tp&&PV.id==null)PV.id=e.id;
  const lets=[...(tp?ent(tp.let).map(x=>[...x,tpre]):[]),...ent(e.let).map(x=>[...x,pre])];
  const fns=[...(tp?ent(tp.fn).map(x=>[...x,tpre]):[]),...ent(e.fn).map(x=>[...x,pre])];
- const vars=[...Object.keys(PV),...lets.map(l=>l[0]),'chain'],fnN=fns.map(f=>f[0]);
+ const vars=[...Object.keys(PV),...lets.map(l=>l[0]),'chain',...(e.who?['p']:[])],fnN=fns.map(f=>f[0]);
  const sc={vars,fns:fnN},csc={vars:[...Object.keys(PV),'chain']};
  const ev={id:e.id,ix,win:e.age||undefined,def:e.def,title:M(pre+'.t'),cc:e.country,chain:!!e.chain,art:e.art,tarot:e.tarot};
  if(e.dens!=null||e.country)ev.dens=e.dens!=null?e.dens:CDENS;
@@ -66,7 +66,9 @@ function make(e,ix){
  ev.p=e.weight==null?1:typeof e.weight==='number'?e.weight:lazy('p');
  /* who can get it: born in the file's country, plus the event's own "if" */
  if(e.country||e.if)ev.only=lazy('only');
- if(e.when!=null)ev.when=lazy('when');
+ if(e.when!=null||e.who)ev.when=lazy('when');
+ /* the person a card is about ("who"): game.js keeps their name with the decision */
+ if(e.who)ev.whoOf=lazy('whoOf');
  ev.opts=lazy('opts');ev.text=lazy('text');
  for(const k of['hint','preLog','again'])if(e[k]!=null)ev[k]=lazy(k);
  /* "pre" runs once before the card is shown; an event with only a "preLog" gets an empty one, so its diary line is written */
@@ -76,7 +78,7 @@ function make(e,ix){
 function compileEvent(e,tp,X){const{pre,tpre,PV,lets,fns,sc,csc}=X,out={};
  const L=[...lets.map(([n,src,p])=>[n,prefixed(ES.expr(src,sc),p)])];
  const F=fns.map(([n,f,p])=>[n,f.args||[],prefixed(ES.script(f.do,{vars:sc.vars,fns:sc.fns,args:f.args||[]}),p)]);
- const env=s=>{const v=Object.create(PV);if(e.chain)v.chain=s.chain&&s.chain[e.id]?s.chain[e.id].d:undefined;const c={s,v,L:null,p:pre};
+ const env=s=>{const v=Object.create(PV);if(e.chain)v.chain=s.chain&&s.chain[e.id]?s.chain[e.id].d:undefined;if(pick)v.p=pick(s);const c={s,v,L:null,p:pre};
   for(const[n,args,body]of F)v[n]=(c2,...a)=>{const v2=Object.create(v);for(let i=0;i<args.length;i++)v2[args[i]]=a[i];return body({s:c2.s,v:v2,L:c2.L,p:c2.p})};
   for(const[n,f]of L)v[n]=f(c);return c};
  const ex=src=>prefixed(ES.expr(src,sc),pre),sx=src=>prefixed(ES.script(src,sc),pre);
@@ -84,7 +86,11 @@ function compileEvent(e,tp,X){const{pre,tpre,PV,lets,fns,sc,csc}=X,out={};
  if(typeof e.weight==='string'){const f=ES.expr(e.weight,csc);out.p=s=>f({s,v:PV,p:pre})}
  const ifc=cond(e.if,csc,PV),cc=e.country?COND.country(e.country):null;
  out.only=ifc&&cc?s=>cc(s)&&ifc(s):ifc||cc;
- if(e.when!=null)out.when=cond(e.when,csc,PV,e.chain?e.id:null);
+ /* "who": the card needs someone of that role (their age, a test on p, how to choose among several); scripts and text see them as p */
+ let pick=null;if(e.who){const w=e.who,wt=w.test!=null?ES.expr(w.test,{vars:[...csc.vars,'p']}):null;
+  pick=s=>pplFind(s,w,wt?p=>!!wt({s,v:Object.assign(Object.create(PV),{p}),L:null,p:pre}):null);out.whoOf=pick}
+ const wc=e.when!=null?cond(e.when,csc,PV,e.chain?e.id:null):null;
+ out.when=pick?(wc?s=>wc(s)&&!!pick(s):s=>!!pick(s)):wc;
  /* the card's text: "text" (an expression), or the key e.<id>.x with "vars" */
  const tx=e.text!=null?ex(e.text):msg(e.vars||true,pre+'.x');out.text=s=>tx(env(s));
  if(e.hint!=null){const h=msg(e.hint,pre+'.h');out.hint=s=>h(env(s))}
@@ -104,7 +110,7 @@ function option(o,kp,sc){
  const vmsg=(spec,suffix)=>{if(spec==null||spec===false)return null;if(spec===true)return(c,key)=>M(key+suffix);if(typeof spec==='string'){const f=ex(spec);return c=>f(c)}
   const vs=ent(spec).map(([k,src])=>[k,ex(src)]);return(c,key)=>{const v={};for(const[k,f]of vs)v[k]=f(c);return M(key+suffix,v)}};
  const sub=o.sub===undefined?(c,key)=>M(key+'.s'):vmsg(o.sub,'.s'),hint=vmsg(o.hint,'.h');
- const run=o.do!=null?prefixed(ES.script(o.do,lsc),kp):null,rel=o.rel;
+ const run=o.do!=null?prefixed(ES.script(o.do,lsc),kp):null,rel=o.rel,bond=o.bond;
  const nexts=list(o.next||[]).map(n=>({id:n.event,yrs:n.in,p:n.p,data:ent(n.data).map(([k,src])=>[k,ex(src)])}));
  const one=(c,out)=>{let cc=c;if(lets.length){const v=Object.create(c.v);cc={s:c.s,v,L:null,p:c.p};for(const[n,f]of lets)v[n]=f(cc)}
   if(show&&!show(cc))return false;
@@ -114,7 +120,7 @@ function option(o,kp,sc){
   const h=hint?hint(cc,key):undefined;if(rel!==undefined)r.hint=RH(rel,h);else if(hint)r.hint=h;
   if(grp)r.grp=grp(cc);
   const v=cc.v,p=cc.p;
-  r.go=s=>{if(rel!==undefined)rl(s,rel);const c2={s,v,L:null,p};if(run)run(c2);
+  r.go=s=>{if(rel!==undefined)rl(s,rel);if(bond&&v.p)pplBond(s,v.p,bond);const c2={s,v,L:null,p};if(run)run(c2);
    for(const n of nexts){if(n.p!=null&&evR(s,'nextP'+n.id)()>=n.p)continue;const d={};for(const[k,f]of n.data)d[k]=f(c2);next(s,n.id,n.yrs,d)}};
   out.push(r);return true};
  const each=as?prefixed(ES.expr(o.each,sc),kp):null;
