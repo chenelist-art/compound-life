@@ -1,5 +1,5 @@
 {
- "about": "Childhood and school (ages 6 to 17).",
+ "about": "Childhood and school (birth to 17). Cards for ages 0 to 5 are your parents’ decisions; what they pay for you comes back through famPay (js/verbs.js).",
  "events": [
   {
    "id": "hobby",
@@ -674,6 +674,2771 @@
      ".work.s": "你賺到{a}，全部花在旅行上。幸福感 +1。",
      ".stay": "留在學校",
      ".stay.s": "不花錢。之後幾個星期大家都在聊這趟旅行。"
+    }
+   }
+  },
+  {
+   "id": "c_gifts",
+   "age": [0, 1],
+   "weight": 0.6,
+   "def": "home",
+   "tarot": "pocket",
+   "art": {"draw": "gift", "bg": "mi"},
+   "let": {"a": ".03 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "home", "do": "bond('parent', 2)"},
+    {"id": "bank", "sub": {"a": "MN(a)"}, "do": "mkLot('c_gifts', {rate: .005, lock: 18}, 'trk.c_gifts'); addLot('c_gifts', a); next('c_gifts18', 18 - age, {})"},
+    {"id": "fund", "sub": {"a": "MN(a)"}, "hint": true, "do": "mkLot('c_gifts', {lock: 18}, 'trk.c_giftsFund'); addLot('c_gifts', a); next('c_gifts18', 18 - age, {})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Gifts for the new baby",
+     ".x": "Relatives and family friends bring money for your first month: {a} in all. Your parents decide what to do with it.",
+     ".home": "Use it for the household",
+     ".home.s": "Nappies, a pram and the bills. Nothing is kept for you.",
+     ".bank": "Open a savings account for you",
+     ".bank.s": "{a} in an account in your name, locked until you are 18. It earns a little interest.",
+     ".fund": "Invest it in an index fund for you",
+     ".fund.s": "{a} in a fund in your name, locked until you are 18. It rises and falls with the stock market.",
+     ".fund.h": "Over 18 years, stocks have usually grown about 5% a year after inflation, with bad years along the way.",
+     "trk.c_gifts": "First-month gifts, saved",
+     "trk.c_giftsFund": "First-month gifts, invested"
+    },
+    "zh": {
+     ".t": "满月红包",
+     ".x": "亲戚和家里的朋友送来满月红包，一共{a}。爸妈要决定怎么用。",
+     ".home": "拿来贴补家用",
+     ".home.s": "尿布、婴儿车和各种账单。没有为你留下什么。",
+     ".bank": "给你开一个储蓄账户",
+     ".bank.s": "{a}存进你名下的账户，18岁前不能动，有一点利息。",
+     ".fund": "帮你投资指数基金",
+     ".fund.s": "{a}投进你名下的基金，18岁前不能动，跟着股市涨跌。",
+     ".fund.h": "长期来看，股票扣除通胀后平均每年约涨5%，中间也会有很差的年份。",
+     "trk.c_gifts": "满月红包（储蓄）",
+     "trk.c_giftsFund": "满月红包（投资）"
+    },
+    "zht": {
+     ".t": "滿月紅包",
+     ".x": "親戚和家裡的朋友送來滿月紅包，一共{a}。爸媽要決定怎麼用。",
+     ".home": "拿來貼補家用",
+     ".home.s": "尿布、嬰兒車和各種帳單。沒有為你留下什麼。",
+     ".bank": "幫你開一個存款帳戶",
+     ".bank.s": "{a}存進你名下的帳戶，18歲前不能動，有一點利息。",
+     ".fund": "幫你投資指數基金",
+     ".fund.s": "{a}投進你名下的基金，18歲前不能動，跟著股市漲跌。",
+     ".fund.h": "長期來看，股票扣除通膨後平均每年約漲5%，中間也會有很差的年份。",
+     "trk.c_gifts": "滿月紅包（存款）",
+     "trk.c_giftsFund": "滿月紅包（投資）"
+    }
+   }
+  },
+  {
+   "id": "c_gifts18",
+   "chain": true,
+   "when": {"test": "!!lots.c_gifts && lots.c_gifts.v > 0"},
+   "def": "keep",
+   "tarot": "pocket",
+   "art": {"draw": "cashout", "bg": "mi"},
+   "let": {"v": "lots.c_gifts.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "keep"},
+    {"id": "study", "show": "!!study || sloan > 0", "do": "lots.c_gifts.v = 0; lots.c_gifts.tout += v; const q = Math.min(v, sloan); sloan -= q; cash += v - q"},
+    {"id": "trip", "sub": {"a": "MN(v)"}, "hint": true, "rel": 2, "do": "lots.c_gifts.v = 0; lots.c_gifts.tout += v; cash += v; spend('c_gifts18', v, 'trk.c_giftsTrip'); happy += 4"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your baby money",
+     ".x": "The money your relatives gave when you were born is yours now: {a}.",
+     ".keep": "Leave it where it is",
+     ".keep.s": "It keeps growing in your name.",
+     ".study": "Put it toward your studies",
+     ".study.s": "It pays off student loan, or keeps you from taking more.",
+     ".trip": "Spend it on a big trip",
+     ".trip.s": "{a} on a few weeks of travel with friends.",
+     ".trip.h": "Happiness +4.",
+     "trk.c_giftsTrip": "Spent your baby money on a trip"
+    },
+    "zh": {
+     ".t": "你的满月钱",
+     ".x": "你出生时亲戚给的那笔钱，现在归你了：{a}。",
+     ".keep": "继续放着",
+     ".keep.s": "它会继续在你名下增长。",
+     ".study": "拿来付学费",
+     ".study.s": "用来还助学贷款，或者少借一些。",
+     ".trip": "拿去来一趟大旅行",
+     ".trip.s": "花{a}跟朋友出去玩几个星期。",
+     ".trip.h": "幸福感 +4。",
+     "trk.c_giftsTrip": "把满月钱花在旅行上"
+    },
+    "zht": {
+     ".t": "你的滿月錢",
+     ".x": "你出生時親戚給的那筆錢，現在歸你了：{a}。",
+     ".keep": "繼續放著",
+     ".keep.s": "它會繼續在你名下增長。",
+     ".study": "拿來付學費",
+     ".study.s": "用來還就學貸款，或者少借一些。",
+     ".trip": "拿去來一趟大旅行",
+     ".trip.s": "花{a}跟朋友出去玩幾個星期。",
+     ".trip.h": "幸福感 +4。",
+     "trk.c_giftsTrip": "把滿月錢花在旅行上"
+    }
+   }
+  },
+  {
+   "id": "c_carer",
+   "src": "ESTIMATE: game rule. A parent who stays home for some years builds a smaller pension, and adult children often help (OECD, Pensions at a Glance 2023: career breaks lower pensions)",
+   "age": [0, 2],
+   "weight": 0.6,
+   "def": "gran",
+   "tarot": "friends",
+   "art": {"draw": "baby", "bg": "ya"},
+   "opts": [
+    {"id": "home", "hint": true, "rel": 2, "do": "bond('parent', 5); later(Math.max(40, age + 1), 'c_carer', {})"},
+    {"id": "gran", "rel": 3, "do": "happy += 1"},
+    {"id": "nursery", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); famPay('c_carer', .24)"}
+   ],
+   "later": {
+    "c_carer": "T('c_carer', {kind: 'custom', label: M('trk.c_carer')}); rec('c_carer', .03 * base, 10); log(M('log.c_carer', {a: MN(.03 * base)}), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Who looks after you",
+     ".x": "Both your parents worked before you were born. Now someone has to look after you in the day.",
+     ".home": "One parent stays home",
+     ".home.s": "The family lives on one income for a few years.",
+     ".home.h": "Years out of work mean a smaller pension for that parent. Later you will help them out.",
+     ".gran": "Your grandparents look after you",
+     ".gran.s": "Free, and they love it.",
+     ".nursery": "A paid nursery",
+     ".nursery.s": "About {a} a year for two years, paid by your family.{b}",
+     ".nursery.h": "Skill +1.",
+     "trk.c_carer": "Helping the parent who stayed home",
+     "log.c_carer": "The years your parent stayed home with you left them a smaller pension. You send them {a} a year."
+    },
+    "zh": {
+     ".t": "谁来带你",
+     ".x": "你出生前爸妈都在上班。现在白天得有人带你。",
+     ".home": "爸妈其中一个辞职带你",
+     ".home.s": "家里几年只靠一份收入。",
+     ".home.h": "几年没工作，那位家长的养老金会少一些。以后你要帮补他们。",
+     ".gran": "爷爷奶奶或外公外婆带",
+     ".gran.s": "不花钱，他们也乐意。",
+     ".nursery": "送去托儿所",
+     ".nursery.s": "两年，每年约{a}，由家里出。{b}",
+     ".nursery.h": "技能 +1。",
+     "trk.c_carer": "帮补当年在家带你的家长",
+     "log.c_carer": "当年在家带你的家长，养老金少了一截。你每年寄{a}给他们。"
+    },
+    "zht": {
+     ".t": "誰來帶你",
+     ".x": "你出生前爸媽都在上班。現在白天得有人帶你。",
+     ".home": "爸媽其中一個辭職帶你",
+     ".home.s": "家裡幾年只靠一份收入。",
+     ".home.h": "幾年沒工作，那位家長的退休金會少一些。以後你要幫忙貼補。",
+     ".gran": "阿公阿嬤或外公外婆帶",
+     ".gran.s": "不花錢，他們也樂意。",
+     ".nursery": "送去托嬰中心",
+     ".nursery.s": "兩年，每年約{a}，由家裡出。{b}",
+     ".nursery.h": "技能 +1。",
+     "trk.c_carer": "貼補當年在家帶你的家長",
+     "log.c_carer": "當年在家帶你的家長，退休金少了一截。你每年寄{a}給他們。"
+    }
+   }
+  },
+  {
+   "id": "c_kidins",
+   "src": "ESTIMATE: game rule (about one child in five needing a hospital stay before 18, and its cost)",
+   "age": [0, 3],
+   "weight": 0.45,
+   "def": "skip",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "mi"},
+   "vars": {"a": "MN(.015 * base)"},
+   "opts": [
+    {"id": "buy", "sub": {"b": "famNote()"}, "hint": true, "do": "famPay('c_kidins', .05); later(age + 2 + Math.floor(roll('c_kidinsAt') * 5), 'c_kidins', {ins: 1})"},
+    {"id": "skip", "hint": true, "do": "later(age + 2 + Math.floor(roll('c_kidinsAt') * 5), 'c_kidins', {ins: 0})"}
+   ],
+   "later": {
+    "c_kidins": "if (roll('c_kidins') < .2) { health -= 3; if (x.ins) log(M('log.c_kidinsOk'), 'good'); else { famPay('c_kidins', .15); log(M('log.c_kidinsBill', {a: MN(.15 * base)}), 'bad') } }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A health plan for you",
+     ".x": "An insurance agent offers your parents a health plan for you. It costs {a} a year.",
+     ".buy": "Buy it",
+     ".buy.s": "Your hospital bills are covered until you are 18.{b}",
+     ".buy.h": "About one child in five needs a hospital stay before 18.",
+     ".skip": "Do without",
+     ".skip.s": "Free. If you ever need a hospital, your family pays.",
+     ".skip.h": "About one child in five needs a hospital stay before 18.",
+     "log.c_kidinsOk": "You spend a week in hospital. The health plan pays the bill.",
+     "log.c_kidinsBill": "You spend a week in hospital. The bill comes to {a}, and your family has to find it."
+    },
+    "zh": {
+     ".t": "给你买医疗险",
+     ".x": "保险经纪向你爸妈推荐一份儿童医疗险，每年{a}。",
+     ".buy": "买",
+     ".buy.s": "18岁前你的住院费都有保险。{b}",
+     ".buy.h": "大约每五个孩子就有一个在18岁前要住院。",
+     ".skip": "不买",
+     ".skip.s": "不花钱。万一要住院，家里自己付。",
+     ".skip.h": "大约每五个孩子就有一个在18岁前要住院。",
+     "log.c_kidinsOk": "你住院一个星期，医疗险付了账单。",
+     "log.c_kidinsBill": "你住院一个星期，账单是{a}，家里得自己想办法。"
+    },
+    "zht": {
+     ".t": "幫你買醫療險",
+     ".x": "保險業務員向你爸媽推薦一份兒童醫療險，每年{a}。",
+     ".buy": "買",
+     ".buy.s": "18歲前你的住院費都有保險。{b}",
+     ".buy.h": "大約每五個孩子就有一個在18歲前要住院。",
+     ".skip": "不買",
+     ".skip.s": "不花錢。萬一要住院，家裡自己付。",
+     ".skip.h": "大約每五個孩子就有一個在18歲前要住院。",
+     "log.c_kidinsOk": "你住院一個星期，醫療險付了帳單。",
+     "log.c_kidinsBill": "你住院一個星期，帳單是{a}，家裡得自己想辦法。"
+    }
+   }
+  },
+  {
+   "id": "c_gold",
+   "age": [0, 3],
+   "weight": 0.35,
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "gold", "bg": "wa"},
+   "let": {"a": ".03 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "mkLot('c_gold', {t: 'gold', lock: 18}, 'trk.c_gold'); addLot('c_gold', a)"},
+    {"id": "bank", "sub": {"b": "MN(.9 * a)"}, "do": "mkLot('c_goldB', {rate: .005, lock: 18}, 'trk.c_goldB'); addLot('c_goldB', .9 * a)"},
+    {"id": "fund", "sub": {"b": "MN(.9 * a)"}, "hint": true, "do": "mkLot('c_goldF', {lock: 18}, 'trk.c_goldF'); addLot('c_goldF', .9 * a)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A gold bracelet",
+     ".x": "Your grandparents give you a small gold bracelet worth about {a}, to keep for when you grow up.",
+     ".keep": "Keep the gold",
+     ".keep.s": "It stays in a drawer until you are 18.",
+     ".keep.h": "Gold has grown a little faster than inflation over the long run, with big swings.",
+     ".bank": "Sell it and save the money",
+     ".bank.s": "The jeweller pays {b}, into an account in your name until you are 18.",
+     ".fund": "Sell it and invest the money",
+     ".fund.s": "The jeweller pays {b}, into an index fund in your name until you are 18.",
+     ".fund.h": "Stocks have usually grown about 5% a year after inflation, with bad years along the way.",
+     "trk.c_gold": "Your grandparents’ gold bracelet",
+     "trk.c_goldB": "The bracelet money, saved",
+     "trk.c_goldF": "The bracelet money, invested"
+    },
+    "zh": {
+     ".t": "一只金手镯",
+     ".x": "爷爷奶奶送你一只小金手镯，大约值{a}，留着等你长大。",
+     ".keep": "留着金子",
+     ".keep.s": "放在抽屉里，等你18岁。",
+     ".keep.h": "长期来看金价比通胀涨得快一点，但起伏很大。",
+     ".bank": "卖掉，钱存银行",
+     ".bank.s": "金店给{b}，存进你名下的账户，18岁前不动。",
+     ".fund": "卖掉，钱拿去投资",
+     ".fund.s": "金店给{b}，投进你名下的指数基金，18岁前不动。",
+     ".fund.h": "股票扣除通胀后平均每年约涨5%，中间也会有很差的年份。",
+     "trk.c_gold": "爷爷奶奶给的金手镯",
+     "trk.c_goldB": "金手镯换的钱（储蓄）",
+     "trk.c_goldF": "金手镯换的钱（投资）"
+    },
+    "zht": {
+     ".t": "一只金手鐲",
+     ".x": "阿公阿嬤送你一只小金手鐲，大約值{a}，留著等你長大。",
+     ".keep": "留著金子",
+     ".keep.s": "放在抽屜裡，等你18歲。",
+     ".keep.h": "長期來看金價比通膨漲得快一點，但起伏很大。",
+     ".bank": "賣掉，錢存銀行",
+     ".bank.s": "銀樓給{b}，存進你名下的帳戶，18歲前不動。",
+     ".fund": "賣掉，錢拿去投資",
+     ".fund.s": "銀樓給{b}，投進你名下的指數基金，18歲前不動。",
+     ".fund.h": "股票扣除通膨後平均每年約漲5%，中間也會有很差的年份。",
+     "trk.c_gold": "阿公阿嬤給的金手鐲",
+     "trk.c_goldB": "金手鐲換的錢（存款）",
+     "trk.c_goldF": "金手鐲換的錢（投資）"
+    }
+   }
+  },
+  {
+   "id": "c_stock",
+   "src": "ESTIMATE: game rule. Most single stocks do worse than the market over 20 years while a few do far better (Bessembinder, Do stocks outperform Treasury bills?, Journal of Financial Economics 2018)",
+   "age": [1, 4],
+   "weight": 0.35,
+   "def": "bank",
+   "tarot": "allow",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": ".04 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "one", "hint": true, "do": "const u = roll('c_stock'); mkLot('c_stock', {rate: u < .2 ? .12 : u < .55 ? .03 : -.05, lock: 21}, 'trk.c_stock'); addLot('c_stock', a); next('c_stock21', 21 - age, {})"},
+    {"id": "idx", "hint": true, "do": "mkLot('c_idx', {lock: 18}, 'trk.c_idx'); addLot('c_idx', a)"},
+    {"id": "bank", "do": "mkLot('c_sbank', {rate: .005, lock: 18}, 'trk.c_sbank'); addLot('c_sbank', a)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Shares for a toddler",
+     ".x": "Your parents want to put {a} aside for you, for when you are grown up.",
+     ".one": "Shares in one famous company",
+     ".one.s": "A company everyone knows. Locked until you are 21.",
+     ".one.h": "One company can soar or sink. Most single shares do worse than the whole market, and a few do far better.",
+     ".idx": "An index fund",
+     ".idx.s": "A little of every big company. Locked until you are 18.",
+     ".idx.h": "Stocks have usually grown about 5% a year after inflation, with bad years along the way.",
+     ".bank": "A savings account",
+     ".bank.s": "Safe, with a little interest. Locked until you are 18.",
+     "trk.c_stock": "Shares in one company, bought for you",
+     "trk.c_idx": "Index fund, bought for you",
+     "trk.c_sbank": "Savings account from your parents"
+    },
+    "zh": {
+     ".t": "给小孩买股票",
+     ".x": "爸妈想为你存下{a}，等你长大再用。",
+     ".one": "买一家知名公司的股票",
+     ".one.s": "人人都知道的大公司。21岁前不动。",
+     ".one.h": "一家公司可能大涨，也可能一蹶不振。大部分个股输给大盘，少数会赢很多。",
+     ".idx": "指数基金",
+     ".idx.s": "每家大公司都买一点。18岁前不动。",
+     ".idx.h": "股票扣除通胀后平均每年约涨5%，中间也会有很差的年份。",
+     ".bank": "储蓄账户",
+     ".bank.s": "安全，有一点利息。18岁前不动。",
+     "trk.c_stock": "爸妈为你买的个股",
+     "trk.c_idx": "爸妈为你买的指数基金",
+     "trk.c_sbank": "爸妈为你开的储蓄账户"
+    },
+    "zht": {
+     ".t": "幫小孩買股票",
+     ".x": "爸媽想為你存下{a}，等你長大再用。",
+     ".one": "買一家知名公司的股票",
+     ".one.s": "人人都知道的大公司。21歲前不動。",
+     ".one.h": "一家公司可能大漲，也可能一蹶不振。大部分個股輸給大盤，少數會贏很多。",
+     ".idx": "指數基金",
+     ".idx.s": "每家大公司都買一點。18歲前不動。",
+     ".idx.h": "股票扣除通膨後平均每年約漲5%，中間也會有很差的年份。",
+     ".bank": "存款帳戶",
+     ".bank.s": "安全，有一點利息。18歲前不動。",
+     "trk.c_stock": "爸媽幫你買的個股",
+     "trk.c_idx": "爸媽幫你買的指數基金",
+     "trk.c_sbank": "爸媽幫你開的存款帳戶"
+    }
+   }
+  },
+  {
+   "id": "c_stock21",
+   "chain": true,
+   "when": {"test": "!!lots.c_stock && lots.c_stock.v > 0"},
+   "def": "hold",
+   "tarot": "allow",
+   "art": {"draw": "shares", "bg": "ya"},
+   "let": {"v": "lots.c_stock.v"},
+   "vars": {"a": "MN(v)", "b": "MN(lots.c_stock.tin)"},
+   "opts": [
+    {"id": "hold"},
+    {"id": "spread", "do": "lots.c_stock.v = 0; lots.c_stock.tout += v; mkLot('c_idx', {}, 'trk.c_idx'); addLot('c_idx', v)"},
+    {"id": "sell", "sub": {"a": "MN(v)"}, "do": "lots.c_stock.v = 0; lots.c_stock.tout += v; cash += v"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your company shares",
+     ".x": "The shares your parents bought you as a toddler are yours now. They cost {b}; today they are worth {a}.",
+     ".hold": "Keep them",
+     ".hold.s": "Still one company.",
+     ".spread": "Sell and buy an index fund",
+     ".spread.s": "The same money, spread over every big company.",
+     ".sell": "Sell and keep the cash",
+     ".sell.s": "{a} in your bank account."
+    },
+    "zh": {
+     ".t": "你的那些股票",
+     ".x": "爸妈在你小时候为你买的股票，现在归你了。当年花了{b}，现在值{a}。",
+     ".hold": "继续持有",
+     ".hold.s": "还是只有一家公司。",
+     ".spread": "卖掉，换成指数基金",
+     ".spread.s": "同样的钱，分散到每家大公司。",
+     ".sell": "卖掉，拿现金",
+     ".sell.s": "{a}进你的银行账户。"
+    },
+    "zht": {
+     ".t": "你的那些股票",
+     ".x": "爸媽在你小時候幫你買的股票，現在歸你了。當年花了{b}，現在值{a}。",
+     ".hold": "繼續持有",
+     ".hold.s": "還是只有一家公司。",
+     ".spread": "賣掉，換成指數基金",
+     ".spread.s": "同樣的錢，分散到每家大公司。",
+     ".sell": "賣掉，拿現金",
+     ".sell.s": "{a}進你的銀行帳戶。"
+    }
+   }
+  },
+  {
+   "id": "c_plot",
+   "src": "ESTIMATE: game rule (farmland has risen a little faster than inflation over long periods; rent around 3% of its value a year)",
+   "age": [1, 5],
+   "weight": 0.25,
+   "def": "keep",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "let": {"a": ".2 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "mkLot('c_plot', {rate: .015, lock: 25}, 'trk.c_plot'); addLot('c_plot', a); next('c_plot25', 25 - age, {})"},
+    {"id": "share", "sub": {"b": "MN(.4 * a)"}, "do": "mkLot('c_plotS', {rate: .005, lock: 18}, 'trk.c_plotS'); addLot('c_plotS', .4 * a)"},
+    {"id": "give", "rel": 3, "do": "bond('parent', 3)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A plot of land",
+     ".x": "Your grandfather wants to put his small plot of land, worth about {a}, in your name.",
+     ".keep": "Take the land",
+     ".keep.s": "It is yours, but it can’t be sold until you are 25.",
+     ".keep.h": "Land has usually risen a little faster than inflation.",
+     ".share": "Sell it and share the money",
+     ".share.s": "Your share is {b}, saved in your name until you are 18.",
+     ".give": "Let your cousins’ family have it",
+     ".give.s": "They farm it already. The family is grateful.",
+     "trk.c_plot": "Your grandfather’s land",
+     "trk.c_plotS": "Your share of the land money"
+    },
+    "zh": {
+     ".t": "一块地",
+     ".x": "爷爷想把他那块小地过户到你名下，大约值{a}。",
+     ".keep": "收下这块地",
+     ".keep.s": "地归你，但25岁前不能卖。",
+     ".keep.h": "地价通常比通胀涨得快一点。",
+     ".share": "卖掉，钱大家分",
+     ".share.s": "你分到{b}，存在你名下，18岁前不动。",
+     ".give": "让给堂表兄弟姐妹家",
+     ".give.s": "他们本来就在种这块地。家里人都很感激。",
+     "trk.c_plot": "爷爷留给你的地",
+     "trk.c_plotS": "卖地分到的钱"
+    },
+    "zht": {
+     ".t": "一塊地",
+     ".x": "阿公想把他那塊小地過戶到你名下，大約值{a}。",
+     ".keep": "收下這塊地",
+     ".keep.s": "地歸你，但25歲前不能賣。",
+     ".keep.h": "地價通常比通膨漲得快一點。",
+     ".share": "賣掉，錢大家分",
+     ".share.s": "你分到{b}，存在你名下，18歲前不動。",
+     ".give": "讓給堂表兄弟姊妹家",
+     ".give.s": "他們本來就在種這塊地。家裡人都很感激。",
+     "trk.c_plot": "阿公留給你的地",
+     "trk.c_plotS": "賣地分到的錢"
+    }
+   }
+  },
+  {
+   "id": "c_plot25",
+   "chain": true,
+   "when": {"test": "!!lots.c_plot && lots.c_plot.v > 0"},
+   "def": "keep",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"v": "lots.c_plot.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "keep", "rel": 1, "do": "bond('parent', 2)"},
+    {"id": "lease", "sub": {"a": "MN(.03 * v)"}, "do": "T('c_plotL', {kind: 'custom', label: M('trk.c_plotL')}); rec('c_plotL', -.03 * v, 30)"},
+    {"id": "sell", "sub": {"a": "MN(v)"}, "do": "lots.c_plot.v = 0; lots.c_plot.tout += v; cash += v"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Grandfather’s land",
+     ".x": "The plot your grandfather gave you is yours to sell now. It is worth about {a}.",
+     ".keep": "Keep it as it is",
+     ".keep.s": "Your relatives keep growing vegetables on it.",
+     ".lease": "Rent it to a farmer",
+     ".lease.s": "About {a} a year in rent, and the land stays yours.",
+     ".sell": "Sell it",
+     ".sell.s": "About {a} in your bank account.",
+     "trk.c_plotL": "Rent from the land"
+    },
+    "zh": {
+     ".t": "爷爷的地",
+     ".x": "爷爷给你的那块地，现在可以卖了，大约值{a}。",
+     ".keep": "就这样留着",
+     ".keep.s": "亲戚继续在上面种菜。",
+     ".lease": "租给农民",
+     ".lease.s": "每年大约收{a}租金，地还是你的。",
+     ".sell": "卖掉",
+     ".sell.s": "大约{a}进你的银行账户。",
+     "trk.c_plotL": "地的租金"
+    },
+    "zht": {
+     ".t": "阿公的地",
+     ".x": "阿公給你的那塊地，現在可以賣了，大約值{a}。",
+     ".keep": "就這樣留著",
+     ".keep.s": "親戚繼續在上面種菜。",
+     ".lease": "租給農民",
+     ".lease.s": "每年大約收{a}租金，地還是你的。",
+     ".sell": "賣掉",
+     ".sell.s": "大約{a}進你的銀行帳戶。",
+     "trk.c_plotL": "土地租金"
+    }
+   }
+  },
+  {
+   "id": "c_lang",
+   "src": "Speaking a second language well is linked to about 2–3% higher pay (Saiz and Zoido, The Returns to Speaking a Second Language, Review of Economics and Statistics 2005); the size used here is an ESTIMATE",
+   "age": [2, 5],
+   "weight": 0.4,
+   "def": "none",
+   "tarot": "tuition",
+   "art": {"draw": "blocks", "bg": "mi"},
+   "opts": [
+    {"id": "class", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "bump('c_lang', 1.03, M('trk.c_lang')); famPay('c_lang', .1)"},
+    {"id": "home", "hint": true, "rel": 1, "do": "bump('c_lang', 1.015, M('trk.c_langH')); bond('parent', 4)"},
+    {"id": "none", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A second language",
+     ".x": "Children pick up languages easily. Your parents wonder whether you should learn a second one.",
+     ".class": "Weekend language classes",
+     ".class.s": "About {a} a year for a few years, paid by your family.{b}",
+     ".class.h": "A second language raises your pay by about 3% for life.",
+     ".home": "Speak your grandparents’ language at home",
+     ".home.s": "Free. Your grandparents are delighted.",
+     ".home.h": "Pay about 1.5% higher for life.",
+     ".none": "One language is plenty",
+     ".none.s": "More time to play.",
+     "trk.c_lang": "A second language from childhood",
+     "trk.c_langH": "Your grandparents’ language"
+    },
+    "zh": {
+     ".t": "学第二种语言",
+     ".x": "小孩子学语言很快。爸妈在想要不要让你多学一种语言。",
+     ".class": "周末上语言班",
+     ".class.s": "几年里每年约{a}，由家里出。{b}",
+     ".class.h": "会第二种语言，一辈子的工资大约高3%。",
+     ".home": "在家说祖辈的方言或母语",
+     ".home.s": "不花钱，爷爷奶奶很开心。",
+     ".home.h": "一辈子的工资大约高1.5%。",
+     ".none": "一种语言就够了",
+     ".none.s": "多点时间玩。",
+     "trk.c_lang": "从小学的第二种语言",
+     "trk.c_langH": "祖辈的语言"
+    },
+    "zht": {
+     ".t": "學第二種語言",
+     ".x": "小孩子學語言很快。爸媽在想要不要讓你多學一種語言。",
+     ".class": "週末上語言班",
+     ".class.s": "幾年裡每年約{a}，由家裡出。{b}",
+     ".class.h": "會第二種語言，一輩子的薪水大約高3%。",
+     ".home": "在家說祖父母的母語",
+     ".home.s": "不花錢，阿公阿嬤很開心。",
+     ".home.h": "一輩子的薪水大約高1.5%。",
+     ".none": "一種語言就夠了",
+     ".none.s": "多點時間玩。",
+     "trk.c_lang": "從小學的第二種語言",
+     "trk.c_langH": "祖父母的母語"
+    }
+   }
+  },
+  {
+   "id": "c_ad",
+   "src": "Many places require part of a child performer’s pay to be kept in a trust until 18 (e.g. California Family Code §6752, the Coogan law); amounts are an ESTIMATE",
+   "age": [3, 5],
+   "weight": 0.25,
+   "def": "no",
+   "tarot": "summer",
+   "art": {"draw": "baby", "bg": "co"},
+   "let": {"a": ".03 * base"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(a)"}, "hint": true, "do": "mkLot('c_ad', {rate: .005, lock: 18}, 'trk.c_ad'); addLot('c_ad', a); happy -= 1", "next": {"event": "c_ad8", "in": [3, 4], "p": 0.4}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A photo shoot",
+     ".x": "At the shopping centre a photographer asks if you could be in an advert for children’s clothes.",
+     ".yes": "Say yes",
+     ".yes.s": "A long day under hot lights. You are paid {a}, kept in an account in your name until you are 18.",
+     ".yes.h": "Happiness −1. Some children get asked back.",
+     ".no": "Say no",
+     ".no.s": "You go and get an ice cream instead.",
+     "trk.c_ad": "What you earned as a child model"
+    },
+    "zh": {
+     ".t": "拍广告",
+     ".x": "在商场里，一个摄影师问你能不能拍童装广告。",
+     ".yes": "答应",
+     ".yes.s": "在热烘烘的灯下拍一整天。酬劳{a}，存在你名下的账户，18岁前不动。",
+     ".yes.h": "幸福感 −1。有些孩子会再被找去拍。",
+     ".no": "不答应",
+     ".no.s": "你们去吃冰淇淋了。",
+     "trk.c_ad": "童星时期的酬劳"
+    },
+    "zht": {
+     ".t": "拍廣告",
+     ".x": "在百貨公司裡，一個攝影師問你能不能拍童裝廣告。",
+     ".yes": "答應",
+     ".yes.s": "在熱烘烘的燈下拍一整天。酬勞{a}，存在你名下的帳戶，18歲前不動。",
+     ".yes.h": "幸福感 −1。有些孩子會再被找去拍。",
+     ".no": "不答應",
+     ".no.s": "你們去吃冰淇淋了。",
+     "trk.c_ad": "童星時期的酬勞"
+    }
+   }
+  },
+  {
+   "id": "c_ad8",
+   "chain": true,
+   "def": "no",
+   "tarot": "summer",
+   "art": {"draw": "lantern", "bg": "ya"},
+   "opts": [
+    {"id": "role", "sub": {"a": "MN(.3 * base)"}, "hint": true, "rel": -2, "do": "mkLot('c_ad', {rate: .005, lock: 18}, 'trk.c_ad'); addLot('c_ad', .3 * base); skillSrc.base = Math.max(0, skillSrc.base - 2); happy += 1"},
+    {"id": "ad", "sub": {"a": "MN(.05 * base)"}, "do": "mkLot('c_ad', {rate: .005, lock: 18}, 'trk.c_ad'); addLot('c_ad', .05 * base)"},
+    {"id": "no", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A part on television",
+     ".x": "The agency from your photo shoot calls again: a television series wants you for a year of filming.",
+     ".role": "Take the part",
+     ".role.s": "You are paid {a}, kept for you until you are 18. You miss a lot of school.",
+     ".role.h": "Skill −2, Happiness +1.",
+     ".ad": "Just one more advert",
+     ".ad.s": "A day’s work for {a}.",
+     ".no": "Stay a normal kid",
+     ".no.s": "School, friends and the playground."
+    },
+    "zh": {
+     ".t": "演电视剧",
+     ".x": "之前拍广告的经纪公司又打电话来：有部电视剧想找你，要拍一年。",
+     ".role": "接下这个角色",
+     ".role.s": "酬劳{a}，帮你存到18岁。会缺很多课。",
+     ".role.h": "技能 −2，幸福感 +1。",
+     ".ad": "只再拍一支广告",
+     ".ad.s": "拍一天，酬劳{a}。",
+     ".no": "做个普通小孩",
+     ".no.s": "上学、交朋友、去游乐场。"
+    },
+    "zht": {
+     ".t": "演電視劇",
+     ".x": "之前拍廣告的經紀公司又打電話來：有部電視劇想找你，要拍一年。",
+     ".role": "接下這個角色",
+     ".role.s": "酬勞{a}，幫你存到18歲。會缺很多課。",
+     ".role.h": "技能 −2，幸福感 +1。",
+     ".ad": "只再拍一支廣告",
+     ".ad.s": "拍一天，酬勞{a}。",
+     ".no": "當個普通小孩",
+     ".no.s": "上學、交朋友、去遊樂場。"
+    }
+   }
+  },
+  {
+   "id": "c_preschool",
+   "age": [3, 5],
+   "weight": 0.55,
+   "def": "public",
+   "tarot": "hobby",
+   "art": {"draw": "blocks", "bg": "ya"},
+   "opts": [
+    {"id": "public", "hint": true, "do": "addSkill('child', 1.5, M('trk.child'))"},
+    {"id": "private", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2.5, M('trk.child')); famPay('c_preschool', .24)"},
+    {"id": "home", "rel": 2, "do": "bond('parent', 3); happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Kindergarten",
+     ".x": "You are old enough for kindergarten. There is a free one nearby and a bilingual private one across town.",
+     ".public": "The free kindergarten nearby",
+     ".public.s": "Free, and close to home.",
+     ".public.h": "Skill +1.5.",
+     ".private": "The private bilingual one",
+     ".private.s": "About {a} a year for two years, paid by your family.{b}",
+     ".private.h": "Skill +2.5.",
+     ".home": "Stay home a while longer",
+     ".home.s": "Free. Days at home with family."
+    },
+    "zh": {
+     ".t": "上幼儿园",
+     ".x": "你到了上幼儿园的年纪。附近有一家公立的，城另一头有一家私立双语的。",
+     ".public": "附近的公立幼儿园",
+     ".public.s": "免费，离家近。",
+     ".public.h": "技能 +1.5。",
+     ".private": "私立双语幼儿园",
+     ".private.s": "两年，每年约{a}，由家里出。{b}",
+     ".private.h": "技能 +2.5。",
+     ".home": "在家多待一阵子",
+     ".home.s": "不花钱，跟家人待在家里。"
+    },
+    "zht": {
+     ".t": "上幼兒園",
+     ".x": "你到了上幼兒園的年紀。附近有一家公立的，城另一頭有一家私立雙語的。",
+     ".public": "附近的公立幼兒園",
+     ".public.s": "免費，離家近。",
+     ".public.h": "技能 +1.5。",
+     ".private": "私立雙語幼兒園",
+     ".private.s": "兩年，每年約{a}，由家裡出。{b}",
+     ".private.h": "技能 +2.5。",
+     ".home": "在家多待一陣子",
+     ".home.s": "不花錢，跟家人待在家裡。"
+    }
+   }
+  },
+  {
+   "id": "c_swim",
+   "age": [4, 6],
+   "weight": 0.5,
+   "def": "none",
+   "tarot": "gym",
+   "art": {"draw": "bridge", "bg": "mi"},
+   "opts": [
+    {"id": "lessons", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "health += 2; famPay('c_swim', .02)", "next": {"event": "c_squad", "in": [4, 5], "p": 0.5}},
+    {"id": "parent", "hint": true, "rel": 1, "do": "health += 1; bond('parent', 2)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Learning to swim",
+     ".x": "The local pool runs swimming lessons for children.",
+     ".lessons": "Swimming lessons",
+     ".lessons.s": "About {a} for a year of lessons, paid by your family.{b}",
+     ".lessons.h": "Health +2. Some children are picked for the club squad.",
+     ".parent": "A parent teaches you at weekends",
+     ".parent.s": "Free, and a lot of splashing.",
+     ".parent.h": "Health +1.",
+     ".none": "Not this year",
+     ".none.s": "Maybe later."
+    },
+    "zh": {
+     ".t": "学游泳",
+     ".x": "附近的泳池开了儿童游泳班。",
+     ".lessons": "报游泳班",
+     ".lessons.s": "一年的课大约{a}，由家里出。{b}",
+     ".lessons.h": "健康 +2。有些孩子会被选进泳队。",
+     ".parent": "爸妈周末自己教",
+     ".parent.s": "不花钱，玩得水花四溅。",
+     ".parent.h": "健康 +1。",
+     ".none": "今年先不学",
+     ".none.s": "以后再说。"
+    },
+    "zht": {
+     ".t": "學游泳",
+     ".x": "附近的游泳池開了兒童游泳班。",
+     ".lessons": "報游泳班",
+     ".lessons.s": "一年的課大約{a}，由家裡出。{b}",
+     ".lessons.h": "健康 +2。有些孩子會被選進泳隊。",
+     ".parent": "爸媽週末自己教",
+     ".parent.s": "不花錢，玩得水花四濺。",
+     ".parent.h": "健康 +1。",
+     ".none": "今年先不學",
+     ".none.s": "以後再說。"
+    }
+   }
+  },
+  {
+   "id": "c_squad",
+   "src": "ESTIMATE: game rule (only a few young athletes win sports scholarships; NCAA, Estimated probability of competing in college athletics, 2023)",
+   "chain": true,
+   "def": "quit",
+   "tarot": "gym",
+   "art": {"draw": "bridge", "bg": "ya"},
+   "opts": [
+    {"id": "train", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "health += 4; skillSrc.base = Math.max(0, skillSrc.base - 1); happy += 1; famPay('c_squad', .15); later(18, 'c_squad', {})"},
+    {"id": "quit", "do": "happy += 1"}
+   ],
+   "later": {
+    "c_squad": "if (roll('c_squad') < .06 + health / 1000) { cash += .2 * base; T('c_squad', {kind: 'custom', label: M('trk.c_squad'), v: .2 * base}); log(M('log.c_squad', {a: MN(.2 * base)}), 'good') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The swimming squad",
+     ".x": "Your coach wants you in the club squad: training before school five mornings a week.",
+     ".train": "Join the squad",
+     ".train.s": "About {a} a year in fees and travel to meets, paid by your family.{b}",
+     ".train.h": "Health +4, Skill −1. A few squad swimmers win a sports scholarship at 18.",
+     ".quit": "Swim just for fun",
+     ".quit.s": "Lie-ins and Saturday mornings back.",
+     "trk.c_squad": "A sports scholarship",
+     "log.c_squad": "All those early mornings paid off: a swimming scholarship worth {a}."
+    },
+    "zh": {
+     ".t": "游泳队",
+     ".x": "教练想让你进泳队：每周五天，上学前训练。",
+     ".train": "进泳队",
+     ".train.s": "每年大约{a}的费用和比赛车费，由家里出。{b}",
+     ".train.h": "健康 +4，技能 −1。少数队员18岁时能拿到体育奖学金。",
+     ".quit": "游着玩就好",
+     ".quit.s": "可以睡懒觉了，周六早上也空出来了。",
+     "trk.c_squad": "体育奖学金",
+     "log.c_squad": "那么多个早起没有白费：你拿到{a}的游泳奖学金。"
+    },
+    "zht": {
+     ".t": "游泳隊",
+     ".x": "教練想讓你進泳隊：每週五天，上學前訓練。",
+     ".train": "進泳隊",
+     ".train.s": "每年大約{a}的費用和比賽車費，由家裡出。{b}",
+     ".train.h": "健康 +4，技能 −1。少數隊員18歲時能拿到體育獎學金。",
+     ".quit": "游著玩就好",
+     ".quit.s": "可以睡懶覺了，週六早上也空出來了。",
+     "trk.c_squad": "體育獎學金",
+     "log.c_squad": "那麼多個早起沒有白費：你拿到{a}的游泳獎學金。"
+    }
+   }
+  },
+  {
+   "id": "c_piano",
+   "age": [4, 7],
+   "weight": 0.45,
+   "def": "none",
+   "tarot": "hobby",
+   "art": "hobby",
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1.5, M('trk.child')); happy += 1; famPay('c_piano', .15); next('c_piano13', 13 - age, {})"},
+    {"id": "keys", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); famPay('c_piano', .05); if (roll('c_piano') < .5) next('c_piano13', 13 - age, {})"},
+    {"id": "none", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Piano lessons",
+     ".x": "You keep pressing the keys of the piano at your aunt’s house. Your parents wonder about lessons.",
+     ".buy": "Buy a piano and start lessons",
+     ".buy.s": "About {a} for a second-hand piano, plus lessons, paid by your family.{b}",
+     ".buy.h": "Skill +1.5.",
+     ".keys": "A keyboard and group lessons",
+     ".keys.s": "About {a} for the keyboard, plus cheaper lessons.{b}",
+     ".keys.h": "Skill +1.",
+     ".none": "No lessons",
+     ".none.s": "Free. You still play at your aunt’s."
+    },
+    "zh": {
+     ".t": "学钢琴",
+     ".x": "你在阿姨家一直按钢琴。爸妈在想要不要让你学琴。",
+     ".buy": "买钢琴，开始上课",
+     ".buy.s": "二手钢琴大约{a}，再加学费，由家里出。{b}",
+     ".buy.h": "技能 +1.5。",
+     ".keys": "买电子琴，上团体课",
+     ".keys.s": "电子琴大约{a}，学费也便宜些。{b}",
+     ".keys.h": "技能 +1。",
+     ".none": "不学",
+     ".none.s": "不花钱，去阿姨家还是可以弹。"
+    },
+    "zht": {
+     ".t": "學鋼琴",
+     ".x": "你在阿姨家一直按鋼琴。爸媽在想要不要讓你學琴。",
+     ".buy": "買鋼琴，開始上課",
+     ".buy.s": "二手鋼琴大約{a}，再加學費，由家裡出。{b}",
+     ".buy.h": "技能 +1.5。",
+     ".keys": "買電子琴，上團體課",
+     ".keys.s": "電子琴大約{a}，學費也便宜些。{b}",
+     ".keys.h": "技能 +1。",
+     ".none": "不學",
+     ".none.s": "不花錢，去阿姨家還是可以彈。"
+    }
+   }
+  },
+  {
+   "id": "c_piano13",
+   "chain": true,
+   "def": "fun",
+   "tarot": "hobby",
+   "art": "hobby",
+   "opts": [
+    {"id": "exam", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); happy -= 1; famPay('c_piano13', .06); later(16, 'c_piano', {})"},
+    {"id": "sell", "show": "done.c_piano === 'buy'", "sub": {"a": "MN(.05 * base)"}, "do": "cash += .05 * base; T('c_pianoS', {kind: 'custom', label: M('trk.c_pianoS'), v: .05 * base})"},
+    {"id": "fun", "do": "happy += 2"}
+   ],
+   "later": {
+    "c_piano": "if (roll('c_pianoT') < .7) { cash += .06 * base; earned += .06 * base; T('c_pianoT', {kind: 'custom', label: M('trk.c_pianoT'), v: .06 * base}); log(M('log.c_piano', {a: MN(.06 * base)}), 'good') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Grade exams",
+     ".x": "You have played the piano for years. Your teacher says you could go for the top grade.",
+     ".exam": "Practise for the top grade",
+     ".exam.s": "An hour a day, and about {a} a year in lessons and exam fees.{b}",
+     ".exam.h": "Skill +1, Happiness −1. With the top grade you could teach younger children for money at 16.",
+     ".sell": "Stop and sell the piano",
+     ".sell.s": "Your parents let you keep the {a} it sells for.",
+     ".fun": "Keep playing for fun",
+     ".fun.s": "No exams, just the songs you like.",
+     "trk.c_pianoT": "Teaching piano",
+     "trk.c_pianoS": "Sold the piano",
+     "log.c_piano": "You start teaching piano to younger children and earn {a} this year."
+    },
+    "zh": {
+     ".t": "钢琴考级",
+     ".x": "你学琴好几年了。老师说你可以冲最高级。",
+     ".exam": "冲最高级",
+     ".exam.s": "每天练一个小时，每年学费和考试费大约{a}。{b}",
+     ".exam.h": "技能 +1，幸福感 −1。考到最高级，16岁就能教小朋友赚钱。",
+     ".sell": "不学了，把钢琴卖掉",
+     ".sell.s": "卖了{a}，爸妈让你留着。",
+     ".fun": "弹着玩就好",
+     ".fun.s": "不考级，只弹喜欢的曲子。",
+     "trk.c_pianoT": "教钢琴",
+     "trk.c_pianoS": "卖了钢琴",
+     "log.c_piano": "你开始教小朋友弹琴，今年赚了{a}。"
+    },
+    "zht": {
+     ".t": "鋼琴檢定",
+     ".x": "你學琴好幾年了。老師說你可以衝最高級。",
+     ".exam": "衝最高級",
+     ".exam.s": "每天練一個小時，每年學費和檢定費大約{a}。{b}",
+     ".exam.h": "技能 +1，幸福感 −1。考到最高級，16歲就能教小朋友賺錢。",
+     ".sell": "不學了，把鋼琴賣掉",
+     ".sell.s": "賣了{a}，爸媽讓你留著。",
+     ".fun": "彈著玩就好",
+     ".fun.s": "不考級，只彈喜歡的曲子。",
+     "trk.c_pianoT": "教鋼琴",
+     "trk.c_pianoS": "賣了鋼琴",
+     "log.c_piano": "你開始教小朋友彈琴，今年賺了{a}。"
+    }
+   }
+  },
+  {
+   "id": "c_school",
+   "src": "ESTIMATE: game rule (private-school alumni networks and pay; fees as a share of a typical wage)",
+   "age": [5, 6],
+   "weight": 0.6,
+   "def": "local",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "mi"},
+   "opts": [
+    {"id": "local", "do": "happy += 1"},
+    {"id": "far", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2, M('trk.child')); happy -= 1; famPay('c_school', .12)"},
+    {"id": "private", "sub": {"a": "MN(.15 * base)", "b": "famNote()"}, "hint": true, "ok": "fam !== 'poor' || M('.no')", "rel": 2, "do": "addSkill('child', 3, M('trk.child')); bump('c_school', 1.02, M('trk.c_school')); famPay('c_school', .9)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Choosing a primary school",
+     ".x": "It is time for primary school. Your parents look at three.",
+     ".local": "The school down the road",
+     ".local.s": "Free, and your friends from the street go there too.",
+     ".far": "A better state school across town",
+     ".far.s": "Free, but about {a} a year in bus fares and an early start.{b}",
+     ".far.h": "Skill +2, Happiness −1.",
+     ".private": "A private school",
+     ".private.s": "About {a} a year for six years, paid by your family.{b}",
+     ".private.h": "Skill +3, and old school friends who later open doors: pay about 2% higher.",
+     ".no": "Your family cannot afford the fees.",
+     "trk.c_school": "Friends from a private school"
+    },
+    "zh": {
+     ".t": "选小学",
+     ".x": "要上小学了。爸妈看了三所学校。",
+     ".local": "家门口的小学",
+     ".local.s": "免费，街坊的小朋友也在那里。",
+     ".far": "城另一头更好的公立小学",
+     ".far.s": "免学费，但每年大约{a}的车费，还得早起。{b}",
+     ".far.h": "技能 +2，幸福感 −1。",
+     ".private": "私立小学",
+     ".private.s": "六年，每年约{a}，由家里出。{b}",
+     ".private.h": "技能 +3，校友以后能帮你牵线：工资大约高2%。",
+     ".no": "家里付不起学费。",
+     "trk.c_school": "私立小学的同学人脉"
+    },
+    "zht": {
+     ".t": "選小學",
+     ".x": "要上小學了。爸媽看了三所學校。",
+     ".local": "家門口的小學",
+     ".local.s": "免費，鄰居的小朋友也在那裡。",
+     ".far": "城另一頭更好的公立小學",
+     ".far.s": "免學費，但每年大約{a}的車費，還得早起。{b}",
+     ".far.h": "技能 +2，幸福感 −1。",
+     ".private": "私立小學",
+     ".private.s": "六年，每年約{a}，由家裡出。{b}",
+     ".private.h": "技能 +3，校友以後能幫你牽線：薪水大約高2%。",
+     ".no": "家裡付不起學費。",
+     "trk.c_school": "私立小學的同學人脈"
+    }
+   }
+  },
+  {
+   "id": "c_sick",
+   "age": [4, 8],
+   "weight": 0.35,
+   "def": "meds",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.05 * base)", "b": "famNote()"}, "hint": true, "do": "health += 3; famPay('c_sick', .05)"},
+    {"id": "wait", "hint": true, "do": "health += 1; skillSrc.base = Math.max(0, skillSrc.base - 1); happy -= 1"},
+    {"id": "meds", "hint": true, "do": "health -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sore throats all winter",
+     ".x": "Your tonsils keep getting infected. The doctor says an operation would help.",
+     ".private": "Have it done privately now",
+     ".private.s": "About {a}, paid by your family.{b}",
+     ".private.h": "Health +3.",
+     ".wait": "Wait for the free operation",
+     ".wait.s": "Free, after a year on the waiting list.",
+     ".wait.h": "Health +1, but you miss school while you wait: Skill −1, Happiness −1.",
+     ".meds": "Keep treating it with medicine",
+     ".meds.s": "Cheap, and the doctor is patient.",
+     ".meds.h": "Health −2."
+    },
+    "zh": {
+     ".t": "整个冬天都在喉咙痛",
+     ".x": "你的扁桃体一直发炎。医生说开刀会好些。",
+     ".private": "马上去私立医院做",
+     ".private.s": "大约{a}，由家里出。{b}",
+     ".private.h": "健康 +3。",
+     ".wait": "排队等免费手术",
+     ".wait.s": "免费，要排一年。",
+     ".wait.h": "健康 +1，但等的这一年常缺课：技能 −1，幸福感 −1。",
+     ".meds": "继续吃药",
+     ".meds.s": "便宜，医生也很耐心。",
+     ".meds.h": "健康 −2。"
+    },
+    "zht": {
+     ".t": "整個冬天都在喉嚨痛",
+     ".x": "你的扁桃腺一直發炎。醫生說開刀會好些。",
+     ".private": "馬上去私立醫院做",
+     ".private.s": "大約{a}，由家裡出。{b}",
+     ".private.h": "健康 +3。",
+     ".wait": "排隊等免費手術",
+     ".wait.s": "免費，要排一年。",
+     ".wait.h": "健康 +1，但等的這一年常缺課：技能 −1，幸福感 −1。",
+     ".meds": "繼續吃藥",
+     ".meds.s": "便宜，醫生也很有耐心。",
+     ".meds.h": "健康 −2。"
+    }
+   }
+  },
+  {
+   "id": "c_chore",
+   "age": [6, 8],
+   "weight": 0.55,
+   "def": "family",
+   "tarot": "allow",
+   "art": {"draw": "tools", "bg": "mi"},
+   "opts": [
+    {"id": "paid", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "cash += .01 * base; habit -= .01; T('habit', {kind: 'custom', label: M('trk.habitSave')})"},
+    {"id": "family", "rel": 2, "do": "bond('parent', 3)"},
+    {"id": "none", "hint": true, "do": "happy += 1; habit += .01; T('habit', {kind: 'custom', label: M('trk.habitSpend')})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Chores",
+     ".x": "Your parents want you to help around the house. They have a few ideas about how.",
+     ".paid": "Get paid for each chore",
+     ".paid.s": "Washing the car, sweeping, folding laundry: about {a} by the end of the year.",
+     ".paid.h": "You learn that money comes from work: as an adult you save a little more.",
+     ".family": "Chores are part of being a family",
+     ".family.s": "No money, but everyone pitches in.",
+     ".none": "No chores",
+     ".none.s": "More time to play.",
+     ".none.h": "Happiness +1. As an adult you spend a little more of what you earn."
+    },
+    "zh": {
+     ".t": "做家务",
+     ".x": "爸妈想让你在家帮忙做家务，他们有几个想法。",
+     ".paid": "做一件家务给一点钱",
+     ".paid.s": "洗车、扫地、叠衣服：一年下来大约{a}。",
+     ".paid.h": "你学到钱是做事换来的：长大后会多存一点。",
+     ".family": "家务是一家人的事",
+     ".family.s": "没有钱，但大家一起做。",
+     ".none": "不做家务",
+     ".none.s": "多点时间玩。",
+     ".none.h": "幸福感 +1。长大后会把赚的钱多花掉一点。"
+    },
+    "zht": {
+     ".t": "做家事",
+     ".x": "爸媽想讓你在家幫忙做家事，他們有幾個想法。",
+     ".paid": "做一件家事給一點錢",
+     ".paid.s": "洗車、掃地、摺衣服：一年下來大約{a}。",
+     ".paid.h": "你學到錢是做事換來的：長大後會多存一點。",
+     ".family": "家事是一家人的事",
+     ".family.s": "沒有錢，但大家一起做。",
+     ".none": "不做家事",
+     ".none.s": "多點時間玩。",
+     ".none.h": "幸福感 +1。長大後會把賺的錢多花掉一點。"
+    }
+   }
+  },
+  {
+   "id": "c_lunch",
+   "age": [6, 9],
+   "weight": 0.45,
+   "def": "eat",
+   "tarot": "allow",
+   "art": {"draw": "feast", "bg": "mi"},
+   "vars": {"a": "MN(.015 * base)"},
+   "opts": [
+    {"id": "eat", "hint": true, "do": "health += 1"},
+    {"id": "pack", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "cash += .015 * base; health += 1"},
+    {"id": "skip", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "cash += .03 * base; health -= 3; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Lunch money",
+     ".x": "Your parents give you lunch money every school day, about {a} a year.",
+     ".eat": "Eat the school lunch",
+     ".eat.s": "A hot meal with your friends.",
+     ".eat.h": "Health +1.",
+     ".pack": "Bring lunch from home and keep half",
+     ".pack.s": "Your parents agree. You keep about {a} over two years.",
+     ".pack.h": "Health +1.",
+     ".skip": "Skip lunch and keep it all",
+     ".skip.s": "About {a} over two years, and a rumbling stomach.",
+     ".skip.h": "Health −3, Happiness −1."
+    },
+    "zh": {
+     ".t": "午餐钱",
+     ".x": "爸妈每个上学日都给你午餐钱，一年大约{a}。",
+     ".eat": "吃学校的午餐",
+     ".eat.s": "和朋友一起吃热饭。",
+     ".eat.h": "健康 +1。",
+     ".pack": "带饭，留下一半的钱",
+     ".pack.s": "爸妈同意了。两年下来你留下大约{a}。",
+     ".pack.h": "健康 +1。",
+     ".skip": "不吃午餐，钱全留着",
+     ".skip.s": "两年下来大约{a}，还有咕咕叫的肚子。",
+     ".skip.h": "健康 −3，幸福感 −1。"
+    },
+    "zht": {
+     ".t": "午餐錢",
+     ".x": "爸媽每個上學日都給你午餐錢，一年大約{a}。",
+     ".eat": "吃學校的午餐",
+     ".eat.s": "和朋友一起吃熱飯。",
+     ".eat.h": "健康 +1。",
+     ".pack": "帶便當，留下一半的錢",
+     ".pack.s": "爸媽同意了。兩年下來你留下大約{a}。",
+     ".pack.h": "健康 +1。",
+     ".skip": "不吃午餐，錢全留著",
+     ".skip.s": "兩年下來大約{a}，還有咕咕叫的肚子。",
+     ".skip.h": "健康 −3，幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "c_teeth",
+   "src": "ESTIMATE: game rule (orthodontic fees as a share of a typical wage; adult braces cost more)",
+   "age": [7, 10],
+   "weight": 0.5,
+   "def": "wait",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "now", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "health += 1; happy -= 1; famPay('c_teeth', .12)"},
+    {"id": "wait", "hint": true, "do": "if (roll('c_teeth') < .6) next('c_teeth20', 20 - age, {})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Crooked teeth",
+     ".x": "The dentist says your teeth are coming in crooked. Braces work best now.",
+     ".now": "Braces now",
+     ".now.s": "About {a}, paid by your family. Two years of wires.{b}",
+     ".now.h": "Health +1, Happiness −1 for now.",
+     ".wait": "Wait and see",
+     ".wait.s": "Free for now.",
+     ".wait.h": "Often it doesn’t fix itself, and braces cost you more as an adult."
+    },
+    "zh": {
+     ".t": "牙齿不整齐",
+     ".x": "牙医说你的牙齿长歪了，现在戴牙套效果最好。",
+     ".now": "现在戴牙套",
+     ".now.s": "大约{a}，由家里出，要戴两年。{b}",
+     ".now.h": "健康 +1，眼下幸福感 −1。",
+     ".wait": "先看看再说",
+     ".wait.s": "暂时不花钱。",
+     ".wait.h": "常常不会自己变好，长大后戴牙套更贵，还得自己付。"
+    },
+    "zht": {
+     ".t": "牙齒不整齊",
+     ".x": "牙醫說你的牙齒長歪了，現在戴牙套效果最好。",
+     ".now": "現在戴牙套",
+     ".now.s": "大約{a}，由家裡出，要戴兩年。{b}",
+     ".now.h": "健康 +1，眼下幸福感 −1。",
+     ".wait": "先看看再說",
+     ".wait.s": "暫時不花錢。",
+     ".wait.h": "常常不會自己變好，長大後戴牙套更貴，還得自己付。"
+    }
+   }
+  },
+  {
+   "id": "c_teeth20",
+   "chain": true,
+   "def": "live",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "fix", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "spend('c_teeth20', .08 * base, 'trk.c_teeth20'); happy += 3"},
+    {"id": "live", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your teeth, again",
+     ".x": "You never had braces, and you have started hiding your smile in photos.",
+     ".fix": "Get adult braces",
+     ".fix.s": "About {a}, from your own pocket.",
+     ".fix.h": "Happiness +3.",
+     ".live": "Live with it",
+     ".live.s": "Free.",
+     ".live.h": "Happiness −1.",
+     "trk.c_teeth20": "Adult braces"
+    },
+    "zh": {
+     ".t": "又是牙齿",
+     ".x": "你小时候没戴牙套，现在拍照都不太敢笑。",
+     ".fix": "现在去矫正",
+     ".fix.s": "大约{a}，自己付。",
+     ".fix.h": "幸福感 +3。",
+     ".live": "算了",
+     ".live.s": "不花钱。",
+     ".live.h": "幸福感 −1。",
+     "trk.c_teeth20": "成人牙齿矫正"
+    },
+    "zht": {
+     ".t": "又是牙齒",
+     ".x": "你小時候沒戴牙套，現在拍照都不太敢笑。",
+     ".fix": "現在去矯正",
+     ".fix.s": "大約{a}，自己付。",
+     ".fix.h": "幸福感 +3。",
+     ".live": "算了",
+     ".live.s": "不花錢。",
+     ".live.h": "幸福感 −1。",
+     "trk.c_teeth20": "成人牙齒矯正"
+    }
+   }
+  },
+  {
+   "id": "c_lemon",
+   "age": [7, 9],
+   "weight": 0.5,
+   "def": "fair",
+   "tarot": "teen",
+   "art": {"draw": "stall", "bg": "ya"},
+   "opts": [
+    {"id": "stall", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "later(age + 1, 'c_lemon', {p: .55, a: .02})"},
+    {"id": "bake", "hint": true, "rel": 1, "do": "later(age + 1, 'c_lemon', {p: .8, a: .008})"},
+    {"id": "fair", "do": "happy += 2"}
+   ],
+   "later": {
+    "c_lemon": "if (roll('c_lemon') < x.p) { cash += x.a * base; earned += x.a * base; log(M('log.c_lemonOk', {a: MN(x.a * base)}), 'good'); next('c_lemon2', [3, 4], {}) } else log(M('log.c_lemonNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The school fair",
+     ".x": "Children can run a stall at the school fair and keep what they make.",
+     ".stall": "Sell lemonade",
+     ".stall.s": "Your parents lend you {a} for lemons, sugar and cups. You pay them back from the takings.",
+     ".stall.h": "A bit more than half of first stalls make a profit. You find out next year.",
+     ".bake": "Bake biscuits with your grandmother",
+     ".bake.s": "Her flour and her recipe. Smaller sales, but almost sure to sell out.",
+     ".bake.h": "Most bake sales make a small profit.",
+     ".fair": "Just enjoy the fair",
+     ".fair.s": "Candy floss and the bouncy castle.",
+     "log.c_lemonOk": "Your stall at the fair sold out. After paying your parents back you keep {a}.",
+     "log.c_lemonNo": "It rained on the fair day. You only just paid your parents back."
+    },
+    "zh": {
+     ".t": "学校园游会",
+     ".x": "学校园游会上，小朋友可以摆摊，赚的钱归自己。",
+     ".stall": "卖柠檬水",
+     ".stall.s": "爸妈借你{a}买柠檬、糖和杯子，赚了钱再还。",
+     ".stall.h": "第一次摆摊，一半多一点能赚钱。明年就知道。",
+     ".bake": "跟奶奶一起烤饼干卖",
+     ".bake.s": "面粉和配方都是奶奶的。赚得少，但几乎一定卖得完。",
+     ".bake.h": "大部分饼干摊都能赚一点。",
+     ".fair": "好好逛园游会",
+     ".fair.s": "棉花糖和充气城堡。",
+     "log.c_lemonOk": "你的摊位卖光了。还完爸妈的钱，你还剩{a}。",
+     "log.c_lemonNo": "园游会那天下雨，你勉强还了爸妈的钱。"
+    },
+    "zht": {
+     ".t": "學校園遊會",
+     ".x": "學校園遊會上，小朋友可以擺攤，賺的錢歸自己。",
+     ".stall": "賣檸檬水",
+     ".stall.s": "爸媽借你{a}買檸檬、糖和杯子，賺了錢再還。",
+     ".stall.h": "第一次擺攤，一半多一點能賺錢。明年就知道。",
+     ".bake": "跟阿嬤一起烤餅乾賣",
+     ".bake.s": "麵粉和配方都是阿嬤的。賺得少，但幾乎一定賣得完。",
+     ".bake.h": "大部分餅乾攤都能賺一點。",
+     ".fair": "好好逛園遊會",
+     ".fair.s": "棉花糖和充氣城堡。",
+     "log.c_lemonOk": "你的攤位賣光了。還完爸媽的錢，你還剩{a}。",
+     "log.c_lemonNo": "園遊會那天下雨，你勉強還了爸媽的錢。"
+    }
+   }
+  },
+  {
+   "id": "c_lemon2",
+   "chain": true,
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "sidejob", "bg": "mi"},
+   "let": {"a": ".02 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "in", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "pay(a); later(age + 1, 'c_lemon2', {a})"},
+    {"id": "no"}
+   ],
+   "later": {
+    "c_lemon2": "const u = roll('c_lemon2'), v = u < .45 ? 3 * x.a : u < .75 ? x.a : 0; cash += v; earned += v; log(M(v > x.a ? 'log.c_lemon2Ok' : v > 0 ? 'log.c_lemon2Even' : 'log.c_lemon2No', {a: MN(v)}), v > x.a ? 'good' : v > 0 ? '' : 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A bigger idea",
+     ".x": "After your fair stall, a friend wants to sell snacks to classmates every week with you. You would each put in {a}.",
+     ".in": "Go into business",
+     ".in.s": "{a} of your savings for the first boxes of snacks.",
+     ".in.h": "Almost half triple their money; a quarter lose it when the school steps in.",
+     ".no": "Keep your savings",
+     ".no.s": "Your friend finds someone else.",
+     "log.c_lemon2Ok": "Your snack business with your friend made {a} this year.",
+     "log.c_lemon2Even": "Your snack business only got your money back: {a}.",
+     "log.c_lemon2No": "The school banned selling snacks, and your stock went stale."
+    },
+    "zh": {
+     ".t": "更大的生意",
+     ".x": "园游会之后，有个朋友想跟你每周卖零食给同学，一人出{a}。",
+     ".in": "一起做",
+     ".in.s": "拿你存的{a}去进货。",
+     ".in.h": "将近一半能赚到三倍；四分之一会被学校叫停，钱也没了。",
+     ".no": "钱留着",
+     ".no.s": "朋友去找别人了。",
+     "log.c_lemon2Ok": "你和朋友的零食生意今年赚了{a}。",
+     "log.c_lemon2Even": "零食生意只拿回了本钱：{a}。",
+     "log.c_lemon2No": "学校禁止卖零食，你的货全过期了。"
+    },
+    "zht": {
+     ".t": "更大的生意",
+     ".x": "園遊會之後，有個朋友想跟你每週賣零食給同學，一人出{a}。",
+     ".in": "一起做",
+     ".in.s": "拿你存的{a}去進貨。",
+     ".in.h": "將近一半能賺到三倍；四分之一會被學校叫停，錢也沒了。",
+     ".no": "錢留著",
+     ".no.s": "朋友去找別人了。",
+     "log.c_lemon2Ok": "你和朋友的零食生意今年賺了{a}。",
+     "log.c_lemon2Even": "零食生意只拿回了本錢：{a}。",
+     "log.c_lemon2No": "學校禁止賣零食，你的貨全過期了。"
+    }
+   }
+  },
+  {
+   "id": "c_wallet",
+   "age": [7, 11],
+   "weight": 0.4,
+   "def": "hand",
+   "tarot": "tip",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "vars": {"a": "MN(.01 * base)"},
+   "opts": [
+    {"id": "hand", "hint": true, "rel": 1, "do": "later(age + 1, 'c_wallet', {})"},
+    {"id": "keep", "sub": {"a": "MN(.01 * base)"}, "rel": -2, "do": "cash += .01 * base; happy += 1"},
+    {"id": "post", "sub": {"a": "MN(.01 * base)"}, "rel": -1, "do": "cash += .01 * base"}
+   ],
+   "later": {
+    "c_wallet": "if (roll('c_wallet') < .3) { cash += .005 * base; log(M('log.c_wallet', {a: MN(.005 * base)}), 'good') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A wallet on the pavement",
+     ".x": "On the way home you find a wallet with {a} in it and a card with a name.",
+     ".hand": "Hand it in at the police station",
+     ".hand.s": "All of it, cash and all.",
+     ".hand.h": "Some owners send a thank-you reward.",
+     ".keep": "Keep the cash",
+     ".keep.s": "{a}, and nobody saw.",
+     ".post": "Keep the cash, post the wallet back",
+     ".post.s": "{a}, and at least they get their cards back.",
+     "log.c_wallet": "The owner of the wallet you handed in sent a card and {a} to thank you."
+    },
+    "zh": {
+     ".t": "路边的钱包",
+     ".x": "放学路上你捡到一个钱包，里面有{a}，还有一张写着名字的卡。",
+     ".hand": "交给警察",
+     ".hand.s": "原封不动地交出去。",
+     ".hand.h": "有些失主会送点谢礼。",
+     ".keep": "把钱留下",
+     ".keep.s": "{a}，没人看见。",
+     ".post": "钱留下，钱包寄回去",
+     ".post.s": "{a}，至少失主拿回了证件。",
+     "log.c_wallet": "你交还的那个钱包，失主寄来一张卡片和{a}道谢。"
+    },
+    "zht": {
+     ".t": "路邊的皮夾",
+     ".x": "放學路上你撿到一個皮夾，裡面有{a}，還有一張寫著名字的卡。",
+     ".hand": "交給警察",
+     ".hand.s": "原封不動地交出去。",
+     ".hand.h": "有些失主會送點謝禮。",
+     ".keep": "把錢留下",
+     ".keep.s": "{a}，沒人看見。",
+     ".post": "錢留下，皮夾寄回去",
+     ".post.s": "{a}，至少失主拿回了證件。",
+     "log.c_wallet": "你交還的那個皮夾，失主寄來一張卡片和{a}道謝。"
+    }
+   }
+  },
+  {
+   "id": "c_chess",
+   "age": [7, 10],
+   "weight": 0.4,
+   "def": "none",
+   "tarot": "tuition",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "chess", "sub": {"a": "MN(.01 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2, M('trk.child')); famPay('c_chess', .02)", "next": {"event": "c_olymp", "in": [2, 3], "p": 0.4}},
+    {"id": "maths", "hint": true, "do": "addSkill('child', 1.5, M('trk.child'))", "next": {"event": "c_olymp", "in": [2, 3], "p": 0.3}},
+    {"id": "none", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Clubs after school",
+     ".x": "Your teacher thinks you might enjoy a thinking club after school.",
+     ".chess": "The chess club",
+     ".chess.s": "About {a} a year for the club and a board, paid by your family.{b}",
+     ".chess.h": "Skill +2. Good players get picked for competitions.",
+     ".maths": "The free maths club",
+     ".maths.s": "Free, run by a teacher at lunchtime.",
+     ".maths.h": "Skill +1.5. Good pupils get picked for competitions.",
+     ".none": "No club",
+     ".none.s": "Home straight after school."
+    },
+    "zh": {
+     ".t": "课后社团",
+     ".x": "老师觉得你可能会喜欢动脑筋的课后社团。",
+     ".chess": "国际象棋社",
+     ".chess.s": "社费加一副棋，每年大约{a}，由家里出。{b}",
+     ".chess.h": "技能 +2。下得好会被选去比赛。",
+     ".maths": "免费的数学社",
+     ".maths.s": "免费，老师午休时带。",
+     ".maths.h": "技能 +1.5。学得好会被选去比赛。",
+     ".none": "不参加",
+     ".none.s": "放学直接回家。"
+    },
+    "zht": {
+     ".t": "課後社團",
+     ".x": "老師覺得你可能會喜歡動腦筋的課後社團。",
+     ".chess": "西洋棋社",
+     ".chess.s": "社費加一副棋，每年大約{a}，由家裡出。{b}",
+     ".chess.h": "技能 +2。下得好會被選去比賽。",
+     ".maths": "免費的數學社",
+     ".maths.s": "免費，老師午休時帶。",
+     ".maths.h": "技能 +1.5。學得好會被選去比賽。",
+     ".none": "不參加",
+     ".none.s": "放學直接回家。"
+    }
+   }
+  },
+  {
+   "id": "c_olymp",
+   "chain": true,
+   "def": "stay",
+   "tarot": "tuition",
+   "art": {"draw": "exam", "bg": "wa"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "famPay('c_olymp', .03); later(age + 1, 'c_olymp', {})"},
+    {"id": "stay", "do": "happy += 1"}
+   ],
+   "later": {
+    "c_olymp": "addSkill('child', 1, M('trk.child')); if (roll('c_olymp') < clamp((skill() - 12) / 40, .05, .5)) { cash += .05 * base; T('c_olymp', {kind: 'custom', label: M('trk.c_olymp'), v: .05 * base}); log(M('log.c_olympOk', {a: MN(.05 * base)}), 'good') } else log(M('log.c_olympNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The national competition",
+     ".x": "You have been picked for the national round of a competition, in a city far away.",
+     ".go": "Go",
+     ".go.s": "About {a} for the train, a hotel and the entry fee, paid by your family.{b}",
+     ".go.h": "Skill +1. The better your Skill, the better your chance of a cash prize.",
+     ".stay": "Stay home",
+     ".stay.s": "Free. A weekend with friends instead.",
+     "trk.c_olymp": "Competition prize money",
+     "log.c_olympOk": "You won a prize at the national competition: {a}.",
+     "log.c_olympNo": "No prize at the national competition, but you made friends from all over the country."
+    },
+    "zh": {
+     ".t": "全国比赛",
+     ".x": "你被选进全国赛了，比赛在很远的城市。",
+     ".go": "去参加",
+     ".go.s": "车票、住宿加报名费大约{a}，由家里出。{b}",
+     ".go.h": "技能 +1。技能越高，越有机会拿奖金。",
+     ".stay": "不去了",
+     ".stay.s": "不花钱，周末跟朋友玩。",
+     "trk.c_olymp": "比赛奖金",
+     "log.c_olympOk": "你在全国赛得奖了：奖金{a}。",
+     "log.c_olympNo": "全国赛没得奖，但交到了各地的朋友。"
+    },
+    "zht": {
+     ".t": "全國比賽",
+     ".x": "你被選進全國賽了，比賽在很遠的城市。",
+     ".go": "去參加",
+     ".go.s": "車票、住宿加報名費大約{a}，由家裡出。{b}",
+     ".go.h": "技能 +1。技能越高，越有機會拿獎金。",
+     ".stay": "不去了",
+     ".stay.s": "不花錢，週末跟朋友玩。",
+     "trk.c_olymp": "比賽獎金",
+     "log.c_olympOk": "你在全國賽得獎了：獎金{a}。",
+     "log.c_olympNo": "全國賽沒得獎，但交到了各地的朋友。"
+    }
+   }
+  },
+  {
+   "id": "c_cards",
+   "age": [8, 10],
+   "weight": 0.45,
+   "def": "play",
+   "tarot": "loot",
+   "art": "loot",
+   "let": {"a": ".02 * base"},
+   "opts": [
+    {"id": "play", "sub": {"a": "MN(a)"}, "hint": true, "do": "happy += 2; const t = T('c_cards', {kind: 'ghost', label: M('trk.c_cards')}); t.spent += a; t.g += a"},
+    {"id": "seal", "sub": {"a": "MN(a)"}, "hint": true, "do": "happy += 1; const t = T('c_cards', {kind: 'ghost', label: M('trk.c_cards')}); t.spent += a; t.g += a", "next": {"event": "c_cards30", "in": [20, 24], "p": 0.7}},
+    {"id": "save", "sub": {"a": "MN(a)"}, "do": "cash += a; habit -= .01; T('habit', {kind: 'custom', label: M('trk.habitSave')})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Trading cards",
+     ".x": "Everyone at school collects the same trading cards. A pack costs a week’s pocket money.",
+     ".play": "Collect and swap them",
+     ".play.s": "About {a} of pocket money this year.",
+     ".play.h": "Happiness +2.",
+     ".seal": "Keep the rare ones in sleeves",
+     ".seal.s": "About {a} this year, and no swapping the shiny ones.",
+     ".seal.h": "Once in a while, old cards become worth real money.",
+     ".save": "Save your pocket money instead",
+     ".save.s": "About {a} saved by the end of the year.",
+     "trk.c_cards": "Trading cards"
+    },
+    "zh": {
+     ".t": "集换卡",
+     ".x": "学校里人人都在集同一种卡，一包要花一个星期的零花钱。",
+     ".play": "买来交换着玩",
+     ".play.s": "今年大约花{a}的零花钱。",
+     ".play.h": "幸福感 +2。",
+     ".seal": "稀有卡装进卡套收好",
+     ".seal.s": "今年大约花{a}，闪卡不拿出来换。",
+     ".seal.h": "偶尔，旧卡会变得很值钱。",
+     ".save": "零花钱存起来",
+     ".save.s": "年底存下大约{a}。",
+     "trk.c_cards": "集换卡"
+    },
+    "zht": {
+     ".t": "集換式卡片",
+     ".x": "學校裡人人都在集同一種卡，一包要花一個星期的零用錢。",
+     ".play": "買來交換著玩",
+     ".play.s": "今年大約花{a}的零用錢。",
+     ".play.h": "幸福感 +2。",
+     ".seal": "稀有卡裝進卡套收好",
+     ".seal.s": "今年大約花{a}，閃卡不拿出來換。",
+     ".seal.h": "偶爾，舊卡會變得很值錢。",
+     ".save": "零用錢存起來",
+     ".save.s": "年底存下大約{a}。",
+     "trk.c_cards": "集換式卡片"
+    }
+   }
+  },
+  {
+   "id": "c_cards30",
+   "src": "ESTIMATE: game rule (a few old trading cards sell for a lot; most for little)",
+   "chain": true,
+   "def": "keep",
+   "tarot": "loot",
+   "art": "loot",
+   "let": {"o": "(roll('c_cards30') < .12 ? .25 : roll('c_cardsB') < .35 ? .03 : .006) * base"},
+   "vars": {"a": "MN(o)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(o)"}, "do": "cash += o; T('c_cards30', {kind: 'custom', label: M('trk.c_cards30'), v: o})"},
+    {"id": "keep", "hint": true, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The old card collection",
+     ".x": "Clearing out your parents’ cupboard, you find your childhood cards. A collector offers {a} for them.",
+     ".sell": "Sell them",
+     ".sell.s": "{a} in your bank account.",
+     ".keep": "Keep them",
+     ".keep.s": "Some things are worth more as memories.",
+     ".keep.h": "Happiness +1.",
+     "trk.c_cards30": "Sold your childhood cards"
+    },
+    "zh": {
+     ".t": "小时候的卡",
+     ".x": "帮爸妈整理柜子时，你翻出小时候的卡。有个收藏家出价{a}。",
+     ".sell": "卖掉",
+     ".sell.s": "{a}进你的银行账户。",
+     ".keep": "留着",
+     ".keep.s": "有些东西留作回忆更值得。",
+     ".keep.h": "幸福感 +1。",
+     "trk.c_cards30": "卖了小时候的卡"
+    },
+    "zht": {
+     ".t": "小時候的卡片",
+     ".x": "幫爸媽整理櫃子時，你翻出小時候的卡片。有個收藏家出價{a}。",
+     ".sell": "賣掉",
+     ".sell.s": "{a}進你的銀行帳戶。",
+     ".keep": "留著",
+     ".keep.s": "有些東西留作回憶更值得。",
+     ".keep.h": "幸福感 +1。",
+     "trk.c_cards30": "賣了小時候的卡片"
+    }
+   }
+  },
+  {
+   "id": "c_match",
+   "age": [8, 10],
+   "weight": 0.45,
+   "def": "spend",
+   "tarot": "allow",
+   "art": "allow",
+   "opts": [
+    {"id": "most", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "cash += .03 * base; habit -= .02; happy -= 1; T('habit', {kind: 'custom', label: M('trk.habitSave')})"},
+    {"id": "some", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "cash += .015 * base; habit -= .01; T('habit', {kind: 'custom', label: M('trk.habitSave')})"},
+    {"id": "spend", "hint": true, "do": "happy += 2; habit += .01; T('habit', {kind: 'custom', label: M('trk.habitSpend')})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Double your savings",
+     ".x": "Your parents make an offer: for every coin you save this year, they will add one.",
+     ".most": "Save nearly all your pocket money",
+     ".most.s": "About {a} by the end of the year, with their half.",
+     ".most.h": "Happiness −1. As an adult you save more of what you earn.",
+     ".some": "Save about half",
+     ".some.s": "About {a} by the end of the year, with their half.",
+     ".some.h": "As an adult you save a little more of what you earn.",
+     ".spend": "Spend it as usual",
+     ".spend.s": "Sweets and comics.",
+     ".spend.h": "Happiness +2. As an adult you spend a little more of what you earn."
+    },
+    "zh": {
+     ".t": "存一块，爸妈加一块",
+     ".x": "爸妈提议：今年你存多少，他们就加多少。",
+     ".most": "零花钱几乎全存",
+     ".most.s": "加上爸妈那一半，年底大约{a}。",
+     ".most.h": "幸福感 −1。长大后会存得更多。",
+     ".some": "存一半左右",
+     ".some.s": "加上爸妈那一半，年底大约{a}。",
+     ".some.h": "长大后会多存一点。",
+     ".spend": "照样花",
+     ".spend.s": "糖果和漫画。",
+     ".spend.h": "幸福感 +2。长大后会把赚的钱多花掉一点。"
+    },
+    "zht": {
+     ".t": "存一塊，爸媽加一塊",
+     ".x": "爸媽提議：今年你存多少，他們就加多少。",
+     ".most": "零用錢幾乎全存",
+     ".most.s": "加上爸媽那一半，年底大約{a}。",
+     ".most.h": "幸福感 −1。長大後會存得更多。",
+     ".some": "存一半左右",
+     ".some.s": "加上爸媽那一半，年底大約{a}。",
+     ".some.h": "長大後會多存一點。",
+     ".spend": "照樣花",
+     ".spend.s": "糖果和漫畫。",
+     ".spend.h": "幸福感 +2。長大後會把賺的錢多花掉一點。"
+    }
+   }
+  },
+  {
+   "id": "c_lend",
+   "age": [8, 11],
+   "weight": 0.45,
+   "who": {"role": "friend"},
+   "def": "no",
+   "tarot": "lend",
+   "art": "lend",
+   "let": {"a": ".005 * base"},
+   "vars": {"p": "Who(p)", "a": "MN(a)"},
+   "opts": [
+    {"id": "lend", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "bond": 3, "do": "pay(a)", "next": {"event": "c_lend2", "in": 1, "data": {"a": "a"}}},
+    {"id": "gift", "sub": {"a": "MN(a / 2)"}, "ok": "cash >= a / 2 || M('kid.cash', {a: MN(Math.max(0, cash))})", "bond": 5, "rel": 1, "do": "pay(a / 2)"},
+    {"id": "no", "bond": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Can I borrow some money?",
+     ".x": "{p} wants to borrow {a} to buy a game, and promises to pay you back next month.",
+     ".lend": "Lend it",
+     ".lend.s": "{a} of your savings.",
+     ".gift": "Give half, no need to pay it back",
+     ".gift.s": "{a}, as a present.",
+     ".no": "Say no",
+     ".no.s": "Your savings stay put."
+    },
+    "zh": {
+     ".t": "能借我点钱吗？",
+     ".x": "{p}想跟你借{a}买游戏，说下个月就还。",
+     ".lend": "借给他们",
+     ".lend.s": "从你的存款拿{a}。",
+     ".gift": "给一半，不用还",
+     ".gift.s": "{a}，当作礼物。",
+     ".no": "不借",
+     ".no.s": "你的钱还在。"
+    },
+    "zht": {
+     ".t": "可以借我一點錢嗎？",
+     ".x": "{p}想跟你借{a}買遊戲，說下個月就還。",
+     ".lend": "借給他們",
+     ".lend.s": "從你的存款拿{a}。",
+     ".gift": "給一半，不用還",
+     ".gift.s": "{a}，當作禮物。",
+     ".no": "不借",
+     ".no.s": "你的錢還在。"
+    }
+   }
+  },
+  {
+   "id": "c_lend2",
+   "chain": true,
+   "who": {"role": "friend"},
+   "def": "forget",
+   "tarot": "lend",
+   "art": "lend",
+   "vars": {"p": "Who(p)", "a": "MN(chain.a)"},
+   "opts": [
+    {"id": "ask", "hint": true, "bond": -1, "do": "if (roll('c_lend2') < .7) cash += chain.a; else bond(p, -3)"},
+    {"id": "forget", "bond": 2, "rel": 1},
+    {"id": "tell", "sub": {"a": "MN(chain.a)"}, "bond": -8, "do": "cash += chain.a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Still waiting",
+     ".x": "A year later, {p} still hasn’t paid back the {a}.",
+     ".ask": "Ask for it back",
+     ".ask.s": "A slightly awkward conversation.",
+     ".ask.h": "Most friends pay up when asked.",
+     ".forget": "Let it go",
+     ".forget.s": "Friendship is worth more.",
+     ".tell": "Tell their parents",
+     ".tell.s": "You get your {a} back the next day."
+    },
+    "zh": {
+     ".t": "钱还没还",
+     ".x": "一年过去了，{p}还没还那{a}。",
+     ".ask": "开口要",
+     ".ask.s": "有点尴尬的一次谈话。",
+     ".ask.h": "大部分朋友被问就会还。",
+     ".forget": "算了",
+     ".forget.s": "友情更重要。",
+     ".tell": "告诉对方爸妈",
+     ".tell.s": "第二天你就拿回了{a}。"
+    },
+    "zht": {
+     ".t": "錢還沒還",
+     ".x": "一年過去了，{p}還沒還那{a}。",
+     ".ask": "開口要",
+     ".ask.s": "有點尷尬的一次談話。",
+     ".ask.h": "大部分朋友被問就會還。",
+     ".forget": "算了",
+     ".forget.s": "友情更重要。",
+     ".tell": "告訴對方爸媽",
+     ".tell.s": "第二天你就拿回了{a}。"
+    }
+   }
+  },
+  {
+   "id": "c_bike",
+   "age": [8, 11],
+   "weight": 0.45,
+   "def": "none",
+   "tarot": "trip",
+   "art": {"draw": "moto", "bg": "mi"},
+   "let": {"a": ".01 * base"},
+   "opts": [
+    {"id": "new", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "health += 2; happy += 2; famPay('c_bike', .03)"},
+    {"id": "used", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "spend('c_bike', a, 'trk.c_bike'); health += 2; happy += 1"},
+    {"id": "none", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A bike of your own",
+     ".x": "Your friends ride their bikes to the park every afternoon.",
+     ".new": "Ask for a new one",
+     ".new.s": "About {a}, paid by your family.{b}",
+     ".new.h": "Health +2, Happiness +2.",
+     ".used": "Buy a second-hand one with your savings",
+     ".used.s": "About {a} of your own money.",
+     ".used.h": "Health +2, Happiness +1.",
+     ".none": "Walk",
+     ".none.s": "Free. You run to keep up.",
+     "trk.c_bike": "A second-hand bike"
+    },
+    "zh": {
+     ".t": "自己的脚踏车",
+     ".x": "朋友们每天下午都骑车去公园。",
+     ".new": "要一辆新的",
+     ".new.s": "大约{a}，由家里出。{b}",
+     ".new.h": "健康 +2，幸福感 +2。",
+     ".used": "用自己的钱买二手车",
+     ".used.s": "花自己大约{a}。",
+     ".used.h": "健康 +2，幸福感 +1。",
+     ".none": "走路就好",
+     ".none.s": "不花钱，跑着跟上大家。",
+     "trk.c_bike": "二手脚踏车"
+    },
+    "zht": {
+     ".t": "自己的腳踏車",
+     ".x": "朋友們每天下午都騎車去公園。",
+     ".new": "要一台新的",
+     ".new.s": "大約{a}，由家裡出。{b}",
+     ".new.h": "健康 +2，幸福感 +2。",
+     ".used": "用自己的錢買二手車",
+     ".used.s": "花自己大約{a}。",
+     ".used.h": "健康 +2，幸福感 +1。",
+     ".none": "走路就好",
+     ".none.s": "不花錢，跑著跟上大家。",
+     "trk.c_bike": "二手腳踏車"
+    }
+   }
+  },
+  {
+   "id": "c_console",
+   "age": [8, 11],
+   "weight": 0.5,
+   "def": "no",
+   "tarot": "phone1",
+   "art": "phone1",
+   "let": {"a": ".03 * base"},
+   "opts": [
+    {"id": "ask", "sub": {"a": "MN(a)", "b": "famNote()"}, "hint": true, "do": "happy += 3; skillSrc.base = Math.max(0, skillSrc.base - 1.5); famPay('c_console', .03)"},
+    {"id": "save", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "spend('c_console', a, 'trk.c_console'); happy += 2; skillSrc.base = Math.max(0, skillSrc.base - 1)"},
+    {"id": "no", "hint": true, "do": "addSkill('child', .5, M('trk.child'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A games console",
+     ".x": "A new games console is out, and it is all anyone at school talks about.",
+     ".ask": "Ask your parents for it",
+     ".ask.s": "About {a}, paid by your family.{b}",
+     ".ask.h": "Happiness +3, Skill −1.5.",
+     ".save": "Buy it with your own savings",
+     ".save.s": "About {a} of your own money.",
+     ".save.h": "Happiness +2, Skill −1.",
+     ".no": "Play at a friend’s house",
+     ".no.s": "Free, now and then.",
+     ".no.h": "Skill +0.5.",
+     "trk.c_console": "A games console"
+    },
+    "zh": {
+     ".t": "游戏机",
+     ".x": "新游戏机出了，学校里大家都在聊。",
+     ".ask": "求爸妈买",
+     ".ask.s": "大约{a}，由家里出。{b}",
+     ".ask.h": "幸福感 +3，技能 −1.5。",
+     ".save": "用自己的钱买",
+     ".save.s": "花自己大约{a}。",
+     ".save.h": "幸福感 +2，技能 −1。",
+     ".no": "去朋友家玩",
+     ".no.s": "不花钱，偶尔玩一下。",
+     ".no.h": "技能 +0.5。",
+     "trk.c_console": "游戏机"
+    },
+    "zht": {
+     ".t": "遊戲機",
+     ".x": "新遊戲機出了，學校裡大家都在聊。",
+     ".ask": "求爸媽買",
+     ".ask.s": "大約{a}，由家裡出。{b}",
+     ".ask.h": "幸福感 +3，技能 −1.5。",
+     ".save": "用自己的錢買",
+     ".save.s": "花自己大約{a}。",
+     ".save.h": "幸福感 +2，技能 −1。",
+     ".no": "去朋友家玩",
+     ".no.s": "不花錢，偶爾玩一下。",
+     ".no.h": "技能 +0.5。",
+     "trk.c_console": "遊戲機"
+    }
+   }
+  },
+  {
+   "id": "c_parjob",
+   "age": [6, 12],
+   "weight": 0.3,
+   "def": "stay",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "mi"},
+   "opts": [
+    {"id": "move", "hint": true, "rel": -3, "do": "addSkill('child', 1, M('trk.child')); happy -= 2; bond('friend', -15); later(18, 'c_parjob', {})"},
+    {"id": "stay", "do": "happy += 1"}
+   ],
+   "later": {
+    "c_parjob": "cash += .1 * base; T('c_parjob', {kind: 'custom', label: M('trk.c_parjob'), v: .1 * base}); log(M('log.c_parjob', {a: MN(.1 * base)}), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A job in another city",
+     ".x": "One of your parents is offered a better-paid job in a big city. The whole family would move.",
+     ".move": "Move to the city",
+     ".move.s": "A new school, a small flat, and you leave your friends behind.",
+     ".move.h": "Skill +1, Happiness −2. Your parents save some of the higher pay for you.",
+     ".stay": "Stay where you are",
+     ".stay.s": "Same school, same friends.",
+     "trk.c_parjob": "Saved from your parent’s city job",
+     "log.c_parjob": "Your parents give you {a} they saved from the city job, for your start in life."
+    },
+    "zh": {
+     ".t": "外地的工作",
+     ".x": "爸妈其中一个在大城市找到薪水更高的工作，全家得搬过去。",
+     ".move": "搬去大城市",
+     ".move.s": "新学校、小公寓，还得离开好朋友。",
+     ".move.h": "技能 +1，幸福感 −2。爸妈会把多赚的钱存一些给你。",
+     ".stay": "留在原地",
+     ".stay.s": "同一所学校，同一群朋友。",
+     "trk.c_parjob": "爸妈在大城市工作存给你的钱",
+     "log.c_parjob": "爸妈把在大城市工作存下的{a}给你，当作起步的钱。"
+    },
+    "zht": {
+     ".t": "外地的工作",
+     ".x": "爸媽其中一個在大城市找到薪水更高的工作，全家得搬過去。",
+     ".move": "搬去大城市",
+     ".move.s": "新學校、小公寓，還得離開好朋友。",
+     ".move.h": "技能 +1，幸福感 −2。爸媽會把多賺的錢存一些給你。",
+     ".stay": "留在原地",
+     ".stay.s": "同一所學校，同一群朋友。",
+     "trk.c_parjob": "爸媽在大城市工作存給你的錢",
+     "log.c_parjob": "爸媽把在大城市工作存下的{a}給你，當作起步的錢。"
+    }
+   }
+  },
+  {
+   "id": "c_sibcare",
+   "age": [9, 12],
+   "weight": 0.5,
+   "who": {"role": "sib", "age": [0, 5], "test": "p.d < 0"},
+   "def": "help",
+   "tarot": "friends",
+   "art": {"draw": "baby", "bg": "mi"},
+   "vars": {"p": "who(p)"},
+   "opts": [
+    {"id": "paid", "sub": {"a": "MN(.02 * base)"}, "bond": 2, "do": "cash += .02 * base; earned += .02 * base"},
+    {"id": "help", "bond": 6, "rel": 2},
+    {"id": "no", "sub": {"a": "MN(.04 * base)", "b": "famNote()"}, "bond": -3, "do": "happy += 1; famPay('c_sibcare', .04)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Looking after the little one",
+     ".x": "Your parents ask you to look after {p} after school, instead of paying a sitter.",
+     ".paid": "Do it, for pay",
+     ".paid.s": "They pay you about {a} this year.",
+     ".help": "Do it for free",
+     ".help.s": "Afternoons of building blocks and snacks.",
+     ".no": "Say you would rather not",
+     ".no.s": "A sitter costs your family about {a} this year.{b}"
+    },
+    "zh": {
+     ".t": "照顾弟弟妹妹",
+     ".x": "爸妈请你放学后照顾{p}，这样就不用请保姆。",
+     ".paid": "照顾，但要收钱",
+     ".paid.s": "今年他们大约给你{a}。",
+     ".help": "免费照顾",
+     ".help.s": "下午一起堆积木、吃点心。",
+     ".no": "说你不想",
+     ".no.s": "请保姆今年要花家里大约{a}。{b}"
+    },
+    "zht": {
+     ".t": "照顧弟弟妹妹",
+     ".x": "爸媽請你放學後照顧{p}，這樣就不用請保母。",
+     ".paid": "照顧，但要收錢",
+     ".paid.s": "今年他們大約給你{a}。",
+     ".help": "免費照顧",
+     ".help.s": "下午一起堆積木、吃點心。",
+     ".no": "說你不想",
+     ".no.s": "請保母今年要花家裡大約{a}。{b}"
+    }
+   }
+  },
+  {
+   "id": "c_academy",
+   "age": [9, 12],
+   "weight": 0.4,
+   "def": "club",
+   "tarot": "gym",
+   "art": "gym",
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(.06 * base)", "b": "famNote()"}, "hint": true, "do": "health += 3; skillSrc.base = Math.max(0, skillSrc.base - 1); famPay('c_academy', .12); if (roll('c_academy') < .3) next('c_academy15', 15 - age, {})"},
+    {"id": "club", "hint": true, "do": "health += 1; happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The football academy",
+     ".x": "A scout from a youth football academy saw you play and invites you to join.",
+     ".join": "Join the academy",
+     ".join.s": "About {a} a year in fees, kit and travel, paid by your family. Training most evenings.{b}",
+     ".join.h": "Health +3, Skill −1. A few academy players are offered a youth contract at 15.",
+     ".club": "Keep playing for the local club",
+     ".club.s": "Saturday matches with your friends.",
+     ".club.h": "Health +1, Happiness +1."
+    },
+    "zh": {
+     ".t": "足球学院",
+     ".x": "青训足球学院的球探看过你踢球，邀请你加入。",
+     ".join": "加入足球学院",
+     ".join.s": "学费、装备和车费每年约{a}，由家里出。几乎每晚都要训练。{b}",
+     ".join.h": "健康 +3，技能 −1。少数学员15岁时能签青年合约。",
+     ".club": "继续在社区球队踢",
+     ".club.s": "周六跟朋友踢比赛。",
+     ".club.h": "健康 +1，幸福感 +1。"
+    },
+    "zht": {
+     ".t": "足球學院",
+     ".x": "青訓足球學院的球探看過你踢球，邀請你加入。",
+     ".join": "加入足球學院",
+     ".join.s": "學費、裝備和車費每年約{a}，由家裡出。幾乎每晚都要訓練。{b}",
+     ".join.h": "健康 +3，技能 −1。少數學員15歲時能簽青年合約。",
+     ".club": "繼續在社區球隊踢",
+     ".club.s": "週六跟朋友踢比賽。",
+     ".club.h": "健康 +1，幸福感 +1。"
+    }
+   }
+  },
+  {
+   "id": "c_academy15",
+   "chain": true,
+   "def": "school",
+   "tarot": "gym",
+   "art": "gym",
+   "opts": [
+    {"id": "sign", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "cash += .15 * base; earned += .15 * base; T('c_academy15', {kind: 'custom', label: M('trk.c_academy15'), v: .15 * base}); skillSrc.base = Math.max(0, skillSrc.base - 2); health += 2; happy += 2"},
+    {"id": "school", "hint": true, "do": "addSkill('child', 1, M('trk.child'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A youth contract",
+     ".x": "The academy offers you a youth contract. You would train full-time and do school on the side.",
+     ".sign": "Sign it",
+     ".sign.s": "About {a} over the contract.",
+     ".sign.h": "Skill −2, Health +2, Happiness +2. Few youth players go on to a professional career.",
+     ".school": "Stay in school",
+     ".school.s": "Football at weekends.",
+     ".school.h": "Skill +1.",
+     "trk.c_academy15": "Youth football contract"
+    },
+    "zh": {
+     ".t": "青年合约",
+     ".x": "足球学院要跟你签青年合约。你要全职训练，课业只能兼顾。",
+     ".sign": "签",
+     ".sign.s": "合约期间大约{a}。",
+     ".sign.h": "技能 −2，健康 +2，幸福感 +2。青年球员里能踢职业的很少。",
+     ".school": "继续读书",
+     ".school.s": "周末再踢球。",
+     ".school.h": "技能 +1。",
+     "trk.c_academy15": "青年足球合约"
+    },
+    "zht": {
+     ".t": "青年合約",
+     ".x": "足球學院要跟你簽青年合約。你要全職訓練，課業只能兼顧。",
+     ".sign": "簽",
+     ".sign.s": "合約期間大約{a}。",
+     ".sign.h": "技能 −2，健康 +2，幸福感 +2。青年球員裡能踢職業的很少。",
+     ".school": "繼續讀書",
+     ".school.s": "週末再踢球。",
+     ".school.h": "技能 +1。",
+     "trk.c_academy15": "青年足球合約"
+    }
+   }
+  },
+  {
+   "id": "c_camp",
+   "age": [9, 12],
+   "weight": 0.45,
+   "def": "day",
+   "tarot": "summer",
+   "art": {"draw": "tent", "bg": "mi"},
+   "opts": [
+    {"id": "away", "sub": {"a": "MN(.04 * base)", "b": "famNote()"}, "hint": true, "rel": 2, "do": "happy += 3; famPay('c_camp', .04)"},
+    {"id": "day", "sub": {"a": "MN(.01 * base)", "b": "famNote()"}, "hint": true, "do": "happy += 1; famPay('c_camp', .01)"},
+    {"id": "jobs", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "cash += .015 * base; earned += .015 * base; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The summer holidays",
+     ".x": "Six weeks of summer holidays stretch ahead.",
+     ".away": "Two weeks at a summer camp",
+     ".away.s": "About {a}, paid by your family.{b}",
+     ".away.h": "Happiness +3.",
+     ".day": "A day camp nearby",
+     ".day.s": "About {a}, paid by your family.{b}",
+     ".day.h": "Happiness +1.",
+     ".jobs": "Wash cars and walk dogs for the neighbours",
+     ".jobs.s": "You earn about {a}.",
+     ".jobs.h": "Happiness −1."
+    },
+    "zh": {
+     ".t": "暑假",
+     ".x": "六个星期的暑假就在眼前。",
+     ".away": "参加两周的夏令营",
+     ".away.s": "大约{a}，由家里出。{b}",
+     ".away.h": "幸福感 +3。",
+     ".day": "附近的日间营",
+     ".day.s": "大约{a}，由家里出。{b}",
+     ".day.h": "幸福感 +1。",
+     ".jobs": "帮邻居洗车遛狗",
+     ".jobs.s": "你大约赚{a}。",
+     ".jobs.h": "幸福感 −1。"
+    },
+    "zht": {
+     ".t": "暑假",
+     ".x": "六個星期的暑假就在眼前。",
+     ".away": "參加兩週的夏令營",
+     ".away.s": "大約{a}，由家裡出。{b}",
+     ".away.h": "幸福感 +3。",
+     ".day": "附近的日間營",
+     ".day.s": "大約{a}，由家裡出。{b}",
+     ".day.h": "幸福感 +1。",
+     ".jobs": "幫鄰居洗車遛狗",
+     ".jobs.s": "你大約賺{a}。",
+     ".jobs.h": "幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "c_famloan",
+   "age": [10, 12],
+   "weight": 0.3,
+   "if": {"family": ["poor", "working"]},
+   "when": {"stats": {"cash": "> .005 * base"}},
+   "who": {"role": "parent"},
+   "def": "no",
+   "tarot": "lend",
+   "art": {"draw": "wallet", "bg": "wa"},
+   "let": {"a": "cash"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "all", "bond": 6, "rel": 2, "do": "cash -= a", "next": {"event": "c_famrepay", "in": [8, 11], "data": {"a": "a"}}},
+    {"id": "half", "sub": {"a": "MN(a / 2)"}, "bond": 3, "rel": 1, "do": "cash -= a / 2", "next": {"event": "c_famrepay", "in": [8, 11], "data": {"a": "a / 2"}}},
+    {"id": "no", "bond": -4}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Money is tight at home",
+     ".x": "The rent is due and money is short. Your parents ask, a little embarrassed, if they can borrow the {a} you have saved.",
+     ".all": "Give them all of it",
+     ".all.s": "They promise to pay you back one day.",
+     ".half": "Lend them half",
+     ".half.s": "{a}, and you keep the rest.",
+     ".no": "Keep your savings",
+     ".no.s": "They find the money somewhere else."
+    },
+    "zh": {
+     ".t": "家里手头紧",
+     ".x": "房租要交了，钱不够。爸妈有点不好意思地问，能不能借你存的{a}。",
+     ".all": "全部给他们",
+     ".all.s": "他们说以后一定还你。",
+     ".half": "借一半",
+     ".half.s": "借{a}，剩下的留着。",
+     ".no": "钱留着",
+     ".no.s": "他们去别处想办法了。"
+    },
+    "zht": {
+     ".t": "家裡手頭緊",
+     ".x": "房租要交了，錢不夠。爸媽有點不好意思地問，能不能借你存的{a}。",
+     ".all": "全部給他們",
+     ".all.s": "他們說以後一定還你。",
+     ".half": "借一半",
+     ".half.s": "借{a}，剩下的留著。",
+     ".no": "錢留著",
+     ".no.s": "他們去別處想辦法了。"
+    }
+   }
+  },
+  {
+   "id": "c_famrepay",
+   "chain": true,
+   "who": {"role": "parent"},
+   "def": "take",
+   "tarot": "lend",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "vars": {"a": "MN(chain.a)", "b": "MN(1.5 * chain.a)"},
+   "opts": [
+    {"id": "take", "sub": {"b": "MN(1.5 * chain.a)"}, "do": "cash += 1.5 * chain.a; T('c_famrepay', {kind: 'custom', label: M('trk.c_famrepay'), v: 1.5 * chain.a})"},
+    {"id": "keep", "bond": 5, "rel": 2, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Paying you back",
+     ".x": "Your parents never forgot the {a} you lent them as a child. They want to give you back {b}.",
+     ".take": "Accept it",
+     ".take.s": "{b} in your bank account.",
+     ".keep": "Tell them to keep it",
+     ".keep.s": "It was always theirs.",
+     "trk.c_famrepay": "Your parents paid you back"
+    },
+    "zh": {
+     ".t": "还你钱",
+     ".x": "爸妈一直记得你小时候借给他们的{a}。他们想还你{b}。",
+     ".take": "收下",
+     ".take.s": "{b}进你的银行账户。",
+     ".keep": "叫他们留着",
+     ".keep.s": "那本来就是一家人的钱。",
+     "trk.c_famrepay": "爸妈还你的钱"
+    },
+    "zht": {
+     ".t": "還你錢",
+     ".x": "爸媽一直記得你小時候借給他們的{a}。他們想還你{b}。",
+     ".take": "收下",
+     ".take.s": "{b}進你的銀行帳戶。",
+     ".keep": "叫他們留著",
+     ".keep.s": "那本來就是一家人的錢。",
+     "trk.c_famrepay": "爸媽還你的錢"
+    }
+   }
+  },
+  {
+   "id": "c_scam",
+   "age": [10, 12],
+   "weight": 0.4,
+   "def": "ask",
+   "tarot": "scam",
+   "art": "scam",
+   "opts": [
+    {"id": "ask", "rel": 1, "do": "happy -= 1"},
+    {"id": "try", "hint": true, "do": "if (roll('c_scam') < .7) { famPay('c_scam', .02); happy -= 3 }"},
+    {"id": "ignore", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Free game coins",
+     ".x": "A website promises thousands of free coins for your favourite game. It just needs a parent’s card number to “check your age”.",
+     ".ask": "Ask a parent first",
+     ".ask.s": "They tell you it is a scam. No coins.",
+     ".try": "Borrow the card and try it",
+     ".try.s": "Nobody will know.",
+     ".try.h": "Most of these sites are scams that charge the card.",
+     ".ignore": "Close the page",
+     ".ignore.s": "Too good to be true."
+    },
+    "zh": {
+     ".t": "免费游戏币",
+     ".x": "有个网站说能送你最爱的游戏几千个免费币，只要输入爸妈的信用卡号“验证年龄”。",
+     ".ask": "先问爸妈",
+     ".ask.s": "他们说这是诈骗。没有游戏币。",
+     ".try": "偷偷拿卡来试",
+     ".try.s": "没人会知道。",
+     ".try.h": "这种网站大多是诈骗，会盗刷信用卡。",
+     ".ignore": "关掉网页",
+     ".ignore.s": "好得不像真的。"
+    },
+    "zht": {
+     ".t": "免費遊戲幣",
+     ".x": "有個網站說能送你最愛的遊戲幾千個免費幣，只要輸入爸媽的信用卡號「驗證年齡」。",
+     ".ask": "先問爸媽",
+     ".ask.s": "他們說這是詐騙。沒有遊戲幣。",
+     ".try": "偷偷拿卡來試",
+     ".try.s": "沒人會知道。",
+     ".try.h": "這種網站大多是詐騙，會盜刷信用卡。",
+     ".ignore": "關掉網頁",
+     ".ignore.s": "好得不像真的。"
+    }
+   }
+  },
+  {
+   "id": "c_sell",
+   "age": [10, 12],
+   "weight": 0.45,
+   "def": "keep",
+   "tarot": "teen",
+   "art": {"draw": "stall", "bg": "mi"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.012 * base)"}, "do": "cash += .012 * base; earned += .012 * base"},
+    {"id": "give", "rel": 2, "do": "happy += 1"},
+    {"id": "keep", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Old toys",
+     ".x": "Your room is full of toys you have outgrown.",
+     ".sell": "Sell them online with a parent’s help",
+     ".sell.s": "About {a} by the time it all goes.",
+     ".give": "Give them to a children’s charity",
+     ".give.s": "Someone younger gets to play with them.",
+     ".keep": "Keep them",
+     ".keep.s": "Just in case."
+    },
+    "zh": {
+     ".t": "旧玩具",
+     ".x": "你房间里堆满了玩不上的玩具。",
+     ".sell": "请爸妈帮忙放到网上卖",
+     ".sell.s": "全卖掉大约有{a}。",
+     ".give": "捐给儿童慈善机构",
+     ".give.s": "让更小的孩子有玩具玩。",
+     ".keep": "留着",
+     ".keep.s": "以防万一。"
+    },
+    "zht": {
+     ".t": "舊玩具",
+     ".x": "你房間裡堆滿了玩不到的玩具。",
+     ".sell": "請爸媽幫忙放到網路上賣",
+     ".sell.s": "全賣掉大約有{a}。",
+     ".give": "捐給兒童慈善機構",
+     ".give.s": "讓更小的孩子有玩具玩。",
+     ".keep": "留著",
+     ".keep.s": "以防萬一。"
+    }
+   }
+  },
+  {
+   "id": "c_laptop",
+   "age": [10, 12],
+   "weight": 0.45,
+   "def": "lib",
+   "tarot": "tuition",
+   "art": "phone1",
+   "opts": [
+    {"id": "new", "sub": {"a": "MN(.05 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2, M('trk.child')); famPay('c_laptop', .05)"},
+    {"id": "used", "sub": {"a": "MN(.015 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1.5, M('trk.child')); famPay('c_laptop', .015)"},
+    {"id": "lib", "hint": true, "do": "addSkill('child', .5, M('trk.child'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A computer at home",
+     ".x": "Your homework is moving online. Your parents think about a computer.",
+     ".new": "A new laptop",
+     ".new.s": "About {a}, paid by your family.{b}",
+     ".new.h": "Skill +2.",
+     ".used": "A refurbished one",
+     ".used.s": "About {a}, paid by your family.{b}",
+     ".used.h": "Skill +1.5.",
+     ".lib": "Use the library computers",
+     ".lib.s": "Free, an hour at a time.",
+     ".lib.h": "Skill +0.5."
+    },
+    "zh": {
+     ".t": "家里的电脑",
+     ".x": "功课越来越多要上网做。爸妈在考虑买电脑。",
+     ".new": "买新笔记本电脑",
+     ".new.s": "大约{a}，由家里出。{b}",
+     ".new.h": "技能 +2。",
+     ".used": "买翻新机",
+     ".used.s": "大约{a}，由家里出。{b}",
+     ".used.h": "技能 +1.5。",
+     ".lib": "用图书馆的电脑",
+     ".lib.s": "免费，一次一小时。",
+     ".lib.h": "技能 +0.5。"
+    },
+    "zht": {
+     ".t": "家裡的電腦",
+     ".x": "功課越來越多要上網做。爸媽在考慮買電腦。",
+     ".new": "買新筆電",
+     ".new.s": "大約{a}，由家裡出。{b}",
+     ".new.h": "技能 +2。",
+     ".used": "買整新機",
+     ".used.s": "大約{a}，由家裡出。{b}",
+     ".used.h": "技能 +1.5。",
+     ".lib": "用圖書館的電腦",
+     ".lib.s": "免費，一次一小時。",
+     ".lib.h": "技能 +0.5。"
+    }
+   }
+  },
+  {
+   "id": "c_entrance",
+   "age": [10, 12],
+   "weight": 0.45,
+   "def": "no",
+   "tarot": "tuition",
+   "art": {"draw": "exam", "bg": "mi"},
+   "opts": [
+    {"id": "prep", "sub": {"a": "MN(.06 * base)", "b": "famNote()"}, "hint": true, "do": "happy -= 2; famPay('c_entrance', .06); later(age + 1, 'c_entr', {b: .15})"},
+    {"id": "self", "hint": true, "do": "happy -= 1; later(age + 1, 'c_entr', {b: .05})"},
+    {"id": "no", "do": "happy += 1"}
+   ],
+   "later": {
+    "c_entr": "if (roll('c_entr') < clamp((skill() - 8) / 30 + x.b, .05, .8)) { addSkill('school', 2.5, M('trk.c_entr')); log(M('log.c_entrOk'), 'good') } else log(M('log.c_entrNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "An entrance exam",
+     ".x": "A selective secondary school is holding its entrance exam. Places are few.",
+     ".prep": "Exam prep classes",
+     ".prep.s": "About {a} for a year of classes, paid by your family.{b}",
+     ".prep.h": "Happiness −2. Raises your chance of a place. You find out next year.",
+     ".self": "Practise with old papers",
+     ".self.s": "Free, at the kitchen table.",
+     ".self.h": "Happiness −1. Your chance depends mostly on your Skill.",
+     ".no": "Don’t sit it",
+     ".no.s": "You go to the school your friends go to.",
+     "trk.c_entr": "A selective school",
+     "log.c_entrOk": "You got a place at the selective school.",
+     "log.c_entrNo": "You didn’t get a place at the selective school. You go with your friends instead."
+    },
+    "zh": {
+     ".t": "升学考试",
+     ".x": "一所重点中学要举办入学考试，名额很少。",
+     ".prep": "上考前补习班",
+     ".prep.s": "一年的补习费大约{a}，由家里出。{b}",
+     ".prep.h": "幸福感 −2。考上的机会更大。明年就知道。",
+     ".self": "自己做历年考题",
+     ".self.s": "不花钱，在饭桌上练。",
+     ".self.h": "幸福感 −1。考不考得上主要看技能。",
+     ".no": "不考",
+     ".no.s": "跟朋友去同一所学校。",
+     "trk.c_entr": "重点中学",
+     "log.c_entrOk": "你考上了重点中学。",
+     "log.c_entrNo": "你没考上重点中学，跟朋友去了同一所学校。"
+    },
+    "zht": {
+     ".t": "升學考試",
+     ".x": "一所明星國中要舉辦入學考試，名額很少。",
+     ".prep": "上考前補習班",
+     ".prep.s": "一年的補習費大約{a}，由家裡出。{b}",
+     ".prep.h": "幸福感 −2。考上的機會更大。明年就知道。",
+     ".self": "自己做歷屆考題",
+     ".self.s": "不花錢，在餐桌上練。",
+     ".self.h": "幸福感 −1。考不考得上主要看技能。",
+     ".no": "不考",
+     ".no.s": "跟朋友去同一所學校。",
+     "trk.c_entr": "明星國中",
+     "log.c_entrOk": "你考上了明星國中。",
+     "log.c_entrNo": "你沒考上明星國中，跟朋友去了同一所學校。"
+    }
+   }
+  },
+  {
+   "id": "c_famshop",
+   "age": [8, 12],
+   "weight": 0.4,
+   "if": {"family": ["poor", "working"]},
+   "who": {"role": "parent"},
+   "def": "study",
+   "tarot": "teen",
+   "art": {"draw": "stall", "bg": "wa"},
+   "opts": [
+    {"id": "help", "sub": {"a": "MN(.02 * base)"}, "hint": true, "bond": 4, "rel": 1, "do": "cash += .02 * base; earned += .02 * base; skillSrc.base = Math.max(0, skillSrc.base - 1)"},
+    {"id": "study", "hint": true, "do": "addSkill('child', 1, M('trk.child'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Weekends at the family stall",
+     ".x": "Your family sells vegetables at the market. Your parents could use an extra pair of hands at weekends.",
+     ".help": "Help at the stall",
+     ".help.s": "They give you about {a} over the year.",
+     ".help.h": "Skill −1: less time for homework.",
+     ".study": "Do your homework",
+     ".study.s": "They manage without you.",
+     ".study.h": "Skill +1."
+    },
+    "zh": {
+     ".t": "周末在家里的摊子帮忙",
+     ".x": "家里在市场卖菜。周末爸妈很需要人手。",
+     ".help": "去摊子帮忙",
+     ".help.s": "一年下来他们大约给你{a}。",
+     ".help.h": "技能 −1：写功课的时间少了。",
+     ".study": "在家写功课",
+     ".study.s": "他们自己忙得过来。",
+     ".study.h": "技能 +1。"
+    },
+    "zht": {
+     ".t": "週末在家裡的攤子幫忙",
+     ".x": "家裡在市場賣菜。週末爸媽很需要人手。",
+     ".help": "去攤子幫忙",
+     ".help.s": "一年下來他們大約給你{a}。",
+     ".help.h": "技能 −1：寫功課的時間少了。",
+     ".study": "在家寫功課",
+     ".study.s": "他們自己忙得過來。",
+     ".study.h": "技能 +1。"
+    }
+   }
+  },
+  {
+   "id": "c_party",
+   "age": [6, 10],
+   "weight": 0.4,
+   "def": "small",
+   "tarot": "friends",
+   "art": {"draw": "feast", "bg": "ya"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "rel": 2, "do": "happy += 2; famPay('c_party', .03)"},
+    {"id": "small", "do": "happy += 1"},
+    {"id": "money", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "cash += .015 * base; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your birthday party",
+     ".x": "Your birthday is coming. Your friends are having bigger and bigger parties.",
+     ".big": "A big party with the whole class",
+     ".big.s": "About {a} for the hall, the cake and the party bags, paid by your family.{b}",
+     ".big.h": "Happiness +2.",
+     ".small": "Cake at home with family",
+     ".small.s": "Free, and your favourite dinner.",
+     ".money": "Ask for money instead of presents",
+     ".money.s": "About {a} from relatives, for your savings.",
+     ".money.h": "Happiness −1."
+    },
+    "zh": {
+     ".t": "你的生日会",
+     ".x": "你的生日快到了。朋友们的生日会一个比一个大。",
+     ".big": "请全班来开大派对",
+     ".big.s": "场地、蛋糕和回礼大约{a}，由家里出。{b}",
+     ".big.h": "幸福感 +2。",
+     ".small": "在家跟家人吃蛋糕",
+     ".small.s": "不花钱，还有你最爱吃的晚饭。",
+     ".money": "不要礼物，改要红包",
+     ".money.s": "亲戚给大约{a}，存起来。",
+     ".money.h": "幸福感 −1。"
+    },
+    "zht": {
+     ".t": "你的生日派對",
+     ".x": "你的生日快到了。朋友們的生日派對一個比一個大。",
+     ".big": "請全班來開大派對",
+     ".big.s": "場地、蛋糕和回禮大約{a}，由家裡出。{b}",
+     ".big.h": "幸福感 +2。",
+     ".small": "在家跟家人吃蛋糕",
+     ".small.s": "不花錢，還有你最愛吃的晚餐。",
+     ".money": "不要禮物，改包紅包",
+     ".money.s": "親戚給大約{a}，存起來。",
+     ".money.h": "幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "c_round",
+   "age": [11, 12],
+   "weight": 0.45,
+   "when": {"test": "!leftAt || leftAt > age"},
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "bond", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "cash += .03 * base; earned += .03 * base; health += 1; skillSrc.base = Math.max(0, skillSrc.base - .5)"},
+    {"id": "no", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A delivery round",
+     ".x": "The local shop needs someone to deliver leaflets and the free paper before school.",
+     ".yes": "Take the round",
+     ".yes.s": "Early mornings, about {a} over the year.",
+     ".yes.h": "Health +1, Skill −0.5 (tired in class).",
+     ".no": "Keep your lie-ins",
+     ".no.s": "Plenty of time for that later."
+    },
+    "zh": {
+     ".t": "派送传单",
+     ".x": "附近的商店要找人在上学前派送传单和免费报纸。",
+     ".yes": "接下这份工",
+     ".yes.s": "要早起，一年大约{a}。",
+     ".yes.h": "健康 +1，技能 −0.5（上课会累）。",
+     ".no": "继续睡懒觉",
+     ".no.s": "以后有的是机会。"
+    },
+    "zht": {
+     ".t": "發傳單",
+     ".x": "附近的商店要找人在上學前發傳單和免費報紙。",
+     ".yes": "接下這份工",
+     ".yes.s": "要早起，一年大約{a}。",
+     ".yes.h": "健康 +1，技能 −0.5（上課會累）。",
+     ".no": "繼續睡懶覺",
+     ".no.s": "以後有的是機會。"
+    }
+   }
+  },
+  {
+   "id": "c_bully",
+   "age": [8, 12],
+   "weight": 0.3,
+   "def": "tell",
+   "tarot": "peer",
+   "art": "peer",
+   "let": {"a": ".01 * base"},
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(a)"}, "hint": true, "do": "happy -= 3; const t = T('c_bully', {kind: 'ghost', label: M('trk.c_bully')}); t.spent += a; t.g += a"},
+    {"id": "tell", "hint": true, "rel": 1, "do": "happy -= 1"},
+    {"id": "stand", "hint": true, "do": "happy += 1; health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Older kids at the gate",
+     ".x": "Some older kids wait at the school gate and ask you for your lunch money every week.",
+     ".pay": "Keep handing it over",
+     ".pay.s": "About {a} over the year.",
+     ".pay.h": "Happiness −3.",
+     ".tell": "Tell a teacher",
+     ".tell.s": "An uncomfortable week, then it stops.",
+     ".tell.h": "Happiness −1 for now.",
+     ".stand": "Stand up to them with your friends",
+     ".stand.s": "A bit of pushing and shouting, then they leave you alone.",
+     ".stand.h": "Happiness +1, Health −1.",
+     "trk.c_bully": "Lunch money handed over"
+    },
+    "zh": {
+     ".t": "校门口的高年级生",
+     ".x": "有几个高年级的学生每周都在校门口跟你要午餐钱。",
+     ".pay": "继续给他们",
+     ".pay.s": "一年大约{a}。",
+     ".pay.h": "幸福感 −3。",
+     ".tell": "告诉老师",
+     ".tell.s": "难受一个星期，然后就没事了。",
+     ".tell.h": "眼下幸福感 −1。",
+     ".stand": "跟朋友一起顶回去",
+     ".stand.s": "推推搡搡、吵了几句，之后就不来烦你了。",
+     ".stand.h": "幸福感 +1，健康 −1。",
+     "trk.c_bully": "被要走的午餐钱"
+    },
+    "zht": {
+     ".t": "校門口的高年級生",
+     ".x": "有幾個高年級的學生每週都在校門口跟你要午餐錢。",
+     ".pay": "繼續給他們",
+     ".pay.s": "一年大約{a}。",
+     ".pay.h": "幸福感 −3。",
+     ".tell": "告訴老師",
+     ".tell.s": "難受一個星期，然後就沒事了。",
+     ".tell.h": "眼下幸福感 −1。",
+     ".stand": "跟朋友一起頂回去",
+     ".stand.s": "推推擠擠、吵了幾句，之後就不來煩你了。",
+     ".stand.h": "幸福感 +1，健康 −1。",
+     "trk.c_bully": "被要走的午餐錢"
+    }
+   }
+  },
+  {
+   "id": "c_contest",
+   "age": [9, 12],
+   "weight": 0.35,
+   "def": "practise",
+   "tarot": "summer",
+   "art": {"draw": "bonus", "bg": "mi"},
+   "opts": [
+    {"id": "enter", "hint": true, "do": "later(age + 1, 'c_contest', {})"},
+    {"id": "practise", "hint": true, "do": "addSkill('child', 1, M('trk.child'))"}
+   ],
+   "later": {
+    "c_contest": "if (roll('c_contest') < clamp((skill() - 10) / 50, .04, .3)) { cash += .03 * base; T('c_contest', {kind: 'custom', label: M('trk.c_contest'), v: .03 * base}); log(M('log.c_contestOk', {a: MN(.03 * base)}), 'good') } else log(M('log.c_contestNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A writing competition",
+     ".x": "A national writing competition for children has a prize for the winners. Entry is free.",
+     ".enter": "Send in a story",
+     ".enter.s": "A weekend of writing. Results next year.",
+     ".enter.h": "The better your Skill, the better your chance of a prize.",
+     ".practise": "Just write for fun",
+     ".practise.s": "A notebook of stories nobody else reads.",
+     ".practise.h": "Skill +1.",
+     "trk.c_contest": "Writing competition prize",
+     "log.c_contestOk": "Your story won a prize in the national competition: {a}.",
+     "log.c_contestNo": "Your story didn’t win, but the judges sent a kind note."
+    },
+    "zh": {
+     ".t": "征文比赛",
+     ".x": "全国儿童征文比赛有奖金，免费报名。",
+     ".enter": "投一篇故事",
+     ".enter.s": "花一个周末写。明年公布结果。",
+     ".enter.h": "技能越高，越有机会得奖。",
+     ".practise": "写着玩就好",
+     ".practise.s": "一本只有自己看的故事本。",
+     ".practise.h": "技能 +1。",
+     "trk.c_contest": "征文比赛奖金",
+     "log.c_contestOk": "你的故事在全国征文比赛得奖了：奖金{a}。",
+     "log.c_contestNo": "你的故事没得奖，但评审写了一张鼓励的字条。"
+    },
+    "zht": {
+     ".t": "作文比賽",
+     ".x": "全國兒童作文比賽有獎金，免費報名。",
+     ".enter": "投一篇故事",
+     ".enter.s": "花一個週末寫。明年公布結果。",
+     ".enter.h": "技能越高，越有機會得獎。",
+     ".practise": "寫著玩就好",
+     ".practise.s": "一本只有自己看的故事本。",
+     ".practise.h": "技能 +1。",
+     "trk.c_contest": "作文比賽獎金",
+     "log.c_contestOk": "你的故事在全國作文比賽得獎了：獎金{a}。",
+     "log.c_contestNo": "你的故事沒得獎，但評審寫了一張鼓勵的紙條。"
+    }
+   }
+  },
+  {
+   "id": "c_granny",
+   "age": [6, 12],
+   "weight": 0.4,
+   "def": "spend",
+   "tarot": "pocket",
+   "art": {"draw": "gift", "bg": "ya"},
+   "let": {"a": ".02 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "spend", "hint": true, "do": "happy += 2; const t = T('c_granny', {kind: 'ghost', label: M('trk.c_granny')}); t.spent += a; t.g += a"},
+    {"id": "bank", "sub": {"a": "MN(a)"}, "do": "mkLot('c_granny', {rate: .005}, 'trk.c_grannyB'); addLot('c_granny', a)"},
+    {"id": "box", "sub": {"a": "MN(a)"}, "do": "cash += a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Money from your grandmother",
+     ".x": "Every time you visit, your grandmother slips a note into your hand. This year it adds up to {a}.",
+     ".spend": "Spend it",
+     ".spend.s": "Comics, sweets and a toy you wanted.",
+     ".spend.h": "Happiness +2.",
+     ".bank": "Ask your parents to bank it",
+     ".bank.s": "{a} in a savings account, earning a little interest.",
+     ".box": "Hide it in a box under the bed",
+     ".box.s": "{a}, safe from everyone but inflation.",
+     "trk.c_granny": "Grandmother’s money, spent",
+     "trk.c_grannyB": "Grandmother’s money, saved"
+    },
+    "zh": {
+     ".t": "奶奶给的零用钱",
+     ".x": "每次去看奶奶，她都偷偷塞钱给你。今年加起来有{a}。",
+     ".spend": "花掉",
+     ".spend.s": "漫画、糖果和想要很久的玩具。",
+     ".spend.h": "幸福感 +2。",
+     ".bank": "请爸妈存进银行",
+     ".bank.s": "{a}存进储蓄账户，有一点利息。",
+     ".box": "藏在床底的盒子里",
+     ".box.s": "{a}，谁也拿不走，除了通胀。",
+     "trk.c_granny": "奶奶给的钱（花掉）",
+     "trk.c_grannyB": "奶奶给的钱（存起来）"
+    },
+    "zht": {
+     ".t": "阿嬤給的零用錢",
+     ".x": "每次去看阿嬤，她都偷偷塞錢給你。今年加起來有{a}。",
+     ".spend": "花掉",
+     ".spend.s": "漫畫、糖果和想要很久的玩具。",
+     ".spend.h": "幸福感 +2。",
+     ".bank": "請爸媽存進銀行",
+     ".bank.s": "{a}存進存款帳戶，有一點利息。",
+     ".box": "藏在床底的盒子裡",
+     ".box.s": "{a}，誰也拿不走，除了通膨。",
+     "trk.c_granny": "阿嬤給的錢（花掉）",
+     "trk.c_grannyB": "阿嬤給的錢（存起來）"
+    }
+   }
+  },
+  {
+   "id": "c_bank",
+   "age": [9, 12],
+   "weight": 0.4,
+   "when": {"stats": {"cash": "> .01 * base"}},
+   "def": "home",
+   "tarot": "save",
+   "art": "save",
+   "let": {"a": "cash"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "saver", "hint": true, "do": "cash -= a; mkLot('c_bank', {rate: .015}, 'trk.c_bank'); addLot('c_bank', a)"},
+    {"id": "home", "hint": true, "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A young saver’s account",
+     ".x": "Your bank offers children a savings account with a higher interest rate. You have {a} saved at home.",
+     ".saver": "Move it into the account",
+     ".saver.s": "Your money earns interest, and you get a passbook.",
+     ".saver.h": "About 1.5% a year above inflation.",
+     ".home": "Keep it at home",
+     ".home.s": "Easy to reach.",
+     ".home.h": "Cash at home loses about 1% a year to rising prices.",
+     "trk.c_bank": "Young saver’s account"
+    },
+    "zh": {
+     ".t": "少儿储蓄账户",
+     ".x": "银行推出少儿储蓄账户，利率比较高。你在家存了{a}。",
+     ".saver": "存进这个账户",
+     ".saver.s": "钱会生利息，你还会有一本存折。",
+     ".saver.h": "扣除通胀后每年约1.5%。",
+     ".home": "放在家里",
+     ".home.s": "随时拿得到。",
+     ".home.h": "放在家里的现金每年会被物价吃掉约1%。",
+     "trk.c_bank": "少儿储蓄账户"
+    },
+    "zht": {
+     ".t": "兒童存款帳戶",
+     ".x": "銀行推出兒童存款帳戶，利率比較高。你在家存了{a}。",
+     ".saver": "存進這個帳戶",
+     ".saver.s": "錢會生利息，你還會有一本存摺。",
+     ".saver.h": "扣除通膨後每年約1.5%。",
+     ".home": "放在家裡",
+     ".home.s": "隨時拿得到。",
+     ".home.h": "放在家裡的現金每年會被物價吃掉約1%。",
+     "trk.c_bank": "兒童存款帳戶"
     }
    }
   }
