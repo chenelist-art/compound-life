@@ -1746,6 +1746,538 @@
      "trk.m_annexe": "幫爸媽蓋的小屋"
     }
    }
+  },
+  {
+   "id": "l_carsell",
+   "age": [75, 90],
+   "weight": 0.45,
+   "when": {"car": true},
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.05 * base)", "b": "MN(.02 * base)"}, "hint": true, "do": "cash += .05 * base; const tq = T('l_carS', {kind: 'custom', label: M('trk.l_carS')}); tq.v += .05 * base; car = null; T('l_taxi', {kind: 'ghost', label: M('trk.l_taxi')}); rec('l_taxi', .02 * base, 20); happy -= 1"},
+    {"id": "keep", "hint": true, "do": "", "next": {"event": "l_licence", "in": [2, 4], "p": 0.5}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Giving up the car?",
+     ".x": "Your eyesight isn’t what it was, and you scraped the car on the gatepost last month.",
+     ".sell": "Sell the car",
+     ".sell.s": "About {a} for it; taxis and buses cost about {b} a year.",
+     ".sell.h": "Happiness −1: less freedom.",
+     ".keep": "Keep driving",
+     ".keep.s": "Carefully.",
+     ".keep.h": "Older drivers have more accidents.",
+     "trk.l_carS": "Sold the car",
+     "trk.l_taxi": "Taxis and buses"
+    },
+    "zh": {
+     ".t": "还要开车吗？",
+     ".x": "你的视力大不如前，上个月还把车擦到门柱。",
+     ".sell": "把车卖了",
+     ".sell.s": "车卖大约{a}；出租车和公交每年大约{b}。",
+     ".sell.h": "幸福感 −1：少了自由。",
+     ".keep": "继续开",
+     ".keep.s": "小心开。",
+     ".keep.h": "年纪大的驾驶比较容易出车祸。",
+     "trk.l_carS": "卖掉车",
+     "trk.l_taxi": "出租车和公交"
+    },
+    "zht": {
+     ".t": "還要開車嗎？",
+     ".x": "你的視力大不如前，上個月還把車擦到門柱。",
+     ".sell": "把車賣了",
+     ".sell.s": "車賣大約{a}；計程車和公車每年大約{b}。",
+     ".sell.h": "幸福感 −1：少了自由。",
+     ".keep": "繼續開",
+     ".keep.s": "小心開。",
+     ".keep.h": "年紀大的駕駛比較容易出車禍。",
+     "trk.l_carS": "賣掉車",
+     "trk.l_taxi": "計程車和公車"
+    }
+   }
+  },
+  {
+   "id": "l_licence",
+   "chain": true,
+   "when": {"car": true},
+   "def": "test",
+   "tarot": "car2",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "test", "sub": {"a": "MN(.005 * base)"}, "hint": true, "do": "spend('l_lic', .005 * base, 'trk.l_lic'); if (roll('l_licence') < .3) { car = null; cash += .04 * base; happy -= 2 }"},
+    {"id": "give", "sub": {"a": "MN(.04 * base)"}, "do": "cash += .04 * base; const tq = T('l_carS', {kind: 'custom', label: M('trk.l_carS')}); tq.v += .04 * base; car = null; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A driving test at your age",
+     ".x": "Your licence is up for renewal, and at your age that means a medical and a driving test.",
+     ".test": "Take the test",
+     ".test.s": "About {a} for the medical.",
+     ".test.h": "About three in ten fail and have to give up driving.",
+     ".give": "Hand in your licence",
+     ".give.s": "Sell the car for about {a}.",
+     "trk.l_lic": "Driving medical"
+    },
+    "zh": {
+     ".t": "高龄驾照考试",
+     ".x": "你的驾照要换了，到了这个年纪要体检加路考。",
+     ".test": "去考",
+     ".test.s": "体检大约{a}。",
+     ".test.h": "大约三成会没过，只好不开车。",
+     ".give": "交回驾照",
+     ".give.s": "车卖大约{a}。",
+     "trk.l_lic": "驾照体检"
+    },
+    "zht": {
+     ".t": "高齡駕照考試",
+     ".x": "你的駕照要換了，到了這個年紀要體檢加路考。",
+     ".test": "去考",
+     ".test.s": "體檢大約{a}。",
+     ".test.h": "大約三成會沒過，只好不開車。",
+     ".give": "繳回駕照",
+     ".give.s": "車賣大約{a}。",
+     "trk.l_lic": "駕照體檢"
+    }
+   }
+  },
+  {
+   "id": "l_stairs",
+   "age": [70, 88],
+   "weight": 0.35,
+   "when": {"house": true},
+   "def": "none",
+   "tarot": "roof",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "lift", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('l_stairs', .05 * base, 'trk.l_stairs'); health += 1"},
+    {"id": "down", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "spend('l_stairs', .02 * base, 'trk.l_stairs')"},
+    {"id": "none", "hint": true, "do": "if (roll('l_stairs') < .15) health -= 6"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The stairs",
+     ".x": "The stairs to your bedroom have become hard work.",
+     ".lift": "Fit a stairlift",
+     ".lift.s": "About {a}.",
+     ".lift.h": "Health +1: fewer falls.",
+     ".down": "Move your bedroom downstairs",
+     ".down.s": "About {a} for a little building work.",
+     ".down.h": "Fewer falls.",
+     ".none": "Take them slowly",
+     ".none.s": "Free.",
+     ".none.h": "Falls on stairs are common at your age.",
+     "trk.l_stairs": "Making the stairs safe"
+    },
+    "zh": {
+     ".t": "楼梯",
+     ".x": "上楼回卧室越来越吃力了。",
+     ".lift": "装楼梯升降椅",
+     ".lift.s": "大约{a}。",
+     ".lift.h": "健康 +1：少跌倒。",
+     ".down": "把卧室搬到楼下",
+     ".down.s": "小工程大约{a}。",
+     ".down.h": "少跌倒。",
+     ".none": "慢慢爬",
+     ".none.s": "不花钱。",
+     ".none.h": "你这个年纪在楼梯跌倒很常见。",
+     "trk.l_stairs": "楼梯安全改造"
+    },
+    "zht": {
+     ".t": "樓梯",
+     ".x": "上樓回臥室越來越吃力了。",
+     ".lift": "裝樓梯升降椅",
+     ".lift.s": "大約{a}。",
+     ".lift.h": "健康 +1：少跌倒。",
+     ".down": "把臥室搬到樓下",
+     ".down.s": "小工程大約{a}。",
+     ".down.h": "少跌倒。",
+     ".none": "慢慢爬",
+     ".none.s": "不花錢。",
+     ".none.h": "你這個年紀在樓梯跌倒很常見。",
+     "trk.l_stairs": "樓梯安全改造"
+    }
+   }
+  },
+  {
+   "id": "l_abroad",
+   "age": [60, 70],
+   "weight": 0.3,
+   "when": {"retired": true, "abroad": false},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "mi"},
+   "opts": [
+    {"id": "go", "hint": true, "rel": -4, "do": "costMul = (costMul || 1) * .6; happy += 3", "next": {"event": "l_abroad2", "in": [5, 8], "p": 0.5}},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Retire somewhere sunny?",
+     ".x": "Friends have retired to a warm country where their pension goes much further.",
+     ".go": "Move abroad",
+     ".go.s": "Living costs about 40% lower.",
+     ".go.h": "Happiness +3, far from family. Health care can be harder later.",
+     ".stay": "Stay at home",
+     ".stay.s": "Near family and your doctor."
+    },
+    "zh": {
+     ".t": "去阳光国度养老？",
+     ".x": "朋友退休后搬去温暖的国家，退休金在那里很好用。",
+     ".go": "搬到国外",
+     ".go.s": "生活费低大约40%。",
+     ".go.h": "幸福感 +3，离家人远。以后就医可能比较麻烦。",
+     ".stay": "留在国内",
+     ".stay.s": "离家人和医生都近。"
+    },
+    "zht": {
+     ".t": "去陽光國度養老？",
+     ".x": "朋友退休後搬去溫暖的國家，退休金在那裡很好用。",
+     ".go": "搬到國外",
+     ".go.s": "生活費低大約40%。",
+     ".go.h": "幸福感 +3，離家人遠。以後就醫可能比較麻煩。",
+     ".stay": "留在國內",
+     ".stay.s": "離家人和醫生都近。"
+    }
+   }
+  },
+  {
+   "id": "l_abroad2",
+   "chain": true,
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "co"},
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('l_back', .1 * base, 'trk.l_back'); costMul = (costMul || 1) / .6; rl(4); happy += 1"},
+    {"id": "stay", "hint": true, "do": "health -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Time to come home?",
+     ".x": "Your health needs more care now, and the hospital is far away and speaks another language.",
+     ".back": "Move back home",
+     ".back.s": "About {a} to move; living costs go back up.",
+     ".back.h": "Happiness +1, closer to family.",
+     ".stay": "Stay in the sun",
+     ".stay.s": "You manage.",
+     ".stay.h": "Health −2.",
+     "trk.l_back": "Moving back home"
+    },
+    "zh": {
+     ".t": "该回国了吗？",
+     ".x": "你的身体需要更多照顾，但医院很远，语言也不通。",
+     ".back": "搬回国",
+     ".back.s": "搬家大约{a}；生活费又变高了。",
+     ".back.h": "幸福感 +1，离家人近了。",
+     ".stay": "留在阳光下",
+     ".stay.s": "还过得去。",
+     ".stay.h": "健康 −2。",
+     "trk.l_back": "搬回国"
+    },
+    "zht": {
+     ".t": "該回國了嗎？",
+     ".x": "你的身體需要更多照顧，但醫院很遠，語言也不通。",
+     ".back": "搬回國",
+     ".back.s": "搬家大約{a}；生活費又變高了。",
+     ".back.h": "幸福感 +1，離家人近了。",
+     ".stay": "留在陽光下",
+     ".stay.s": "還過得去。",
+     ".stay.h": "健康 −2。",
+     "trk.l_back": "搬回國"
+    }
+   }
+  },
+  {
+   "id": "l_rv",
+   "age": [62, 72],
+   "weight": 0.3,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.25 * base)"}, "hint": true, "do": "spend('l_rv', .25 * base, 'trk.l_rv'); happy += 5", "next": {"event": "l_rv2", "in": [3, 5]}},
+    {"id": "rent", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('l_rvR', .03 * base, 'trk.l_rvR'); happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Life on the road",
+     ".x": "You have always dreamed of touring the country in a camper van.",
+     ".buy": "Buy a camper van",
+     ".buy.s": "About {a}.",
+     ".buy.h": "Happiness +5.",
+     ".rent": "Rent one for a month",
+     ".rent.s": "About {a}.",
+     ".rent.h": "Happiness +2.",
+     ".no": "Stay put",
+     ".no.s": "Day trips are enough.",
+     "trk.l_rv": "A camper van",
+     "trk.l_rvR": "A month in a rented camper van"
+    },
+    "zh": {
+     ".t": "开露营车上路",
+     ".x": "你一直梦想开露营车环游全国。",
+     ".buy": "买辆露营车",
+     ".buy.s": "大约{a}。",
+     ".buy.h": "幸福感 +5。",
+     ".rent": "租一个月试试",
+     ".rent.s": "大约{a}。",
+     ".rent.h": "幸福感 +2。",
+     ".no": "留在家",
+     ".no.s": "一日游就够了。",
+     "trk.l_rv": "露营车",
+     "trk.l_rvR": "租露营车一个月"
+    },
+    "zht": {
+     ".t": "開露營車上路",
+     ".x": "你一直夢想開露營車環遊全國。",
+     ".buy": "買台露營車",
+     ".buy.s": "大約{a}。",
+     ".buy.h": "幸福感 +5。",
+     ".rent": "租一個月試試",
+     ".rent.s": "大約{a}。",
+     ".rent.h": "幸福感 +2。",
+     ".no": "留在家",
+     ".no.s": "一日遊就夠了。",
+     "trk.l_rv": "露營車",
+     "trk.l_rvR": "租露營車一個月"
+    }
+   }
+  },
+  {
+   "id": "l_rv2",
+   "chain": true,
+   "def": "sell",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.12 * base)"}, "do": "cash += .12 * base; const tq = T('l_rvS', {kind: 'custom', label: M('trk.l_rvS')}); tq.v += .12 * base"},
+    {"id": "keep", "hint": true, "do": "happy += 2; T('l_rvK', {kind: 'ghost', label: M('trk.l_rvK')}); rec('l_rvK', .02 * base, 5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The camper van, a few years on",
+     ".x": "You have had wonderful trips, but long drives are getting tiring.",
+     ".sell": "Sell it",
+     ".sell.s": "About {a}.",
+     ".keep": "One more season",
+     ".keep.s": "Insurance and repairs go on.",
+     ".keep.h": "Happiness +2.",
+     "trk.l_rvS": "Sold the camper van",
+     "trk.l_rvK": "Keeping the camper van"
+    },
+    "zh": {
+     ".t": "几年后的露营车",
+     ".x": "你们玩得很开心，但长途开车越来越累了。",
+     ".sell": "卖掉",
+     ".sell.s": "大约{a}。",
+     ".keep": "再玩一季",
+     ".keep.s": "保险和维修费照付。",
+     ".keep.h": "幸福感 +2。",
+     "trk.l_rvS": "卖掉露营车",
+     "trk.l_rvK": "养露营车"
+    },
+    "zht": {
+     ".t": "幾年後的露營車",
+     ".x": "你們玩得很開心，但長途開車越來越累了。",
+     ".sell": "賣掉",
+     ".sell.s": "大約{a}。",
+     ".keep": "再玩一季",
+     ".keep.s": "保險和維修費照付。",
+     ".keep.h": "幸福感 +2。",
+     "trk.l_rvS": "賣掉露營車",
+     "trk.l_rvK": "養露營車"
+    }
+   }
+  },
+  {
+   "id": "l_movekids",
+   "age": [65, 80],
+   "weight": 0.3,
+   "when": {"kids": true},
+   "def": "stay",
+   "tarot": "move2",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "opts": [
+    {"id": "move", "sub": {"a": "MN(.1 * base)"}, "hint": true, "rel": 3, "do": "spend('l_movekids', .1 * base, 'trk.l_movekids'); bond('kid', 6); happy += 2"},
+    {"id": "stay", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Closer to the children",
+     ".x": "Your children live far away. A small place near them has come up.",
+     ".move": "Move near them",
+     ".move.s": "About {a} in moving costs and fees.",
+     ".move.h": "Happiness +2, closer to your children; you leave old friends.",
+     ".stay": "Stay among your friends",
+     ".stay.s": "They visit when they can.",
+     "trk.l_movekids": "Moving near your children"
+    },
+    "zh": {
+     ".t": "搬去孩子附近",
+     ".x": "孩子们住得很远。他们附近刚好有间小房子。",
+     ".move": "搬过去",
+     ".move.s": "搬家和各种费用大约{a}。",
+     ".move.h": "幸福感 +2，跟孩子更亲；但要离开老朋友。",
+     ".stay": "留在老朋友身边",
+     ".stay.s": "他们有空就回来。",
+     "trk.l_movekids": "搬去孩子附近"
+    },
+    "zht": {
+     ".t": "搬去孩子附近",
+     ".x": "孩子們住得很遠。他們附近剛好有間小房子。",
+     ".move": "搬過去",
+     ".move.s": "搬家和各種費用大約{a}。",
+     ".move.h": "幸福感 +2，跟孩子更親；但要離開老朋友。",
+     ".stay": "留在老朋友身邊",
+     ".stay.s": "他們有空就回來。",
+     "trk.l_movekids": "搬去孩子附近"
+    }
+   }
+  },
+  {
+   "id": "l_garden",
+   "age": [62, 80],
+   "weight": 0.3,
+   "when": {"house": true},
+   "def": "no",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "cash += .3 * base; const tq = T('l_garden', {kind: 'custom', label: M('trk.l_garden')}); tq.v += .3 * base; house.value -= .1 * base; happy -= 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your big garden",
+     ".x": "A builder offers to buy the far end of your garden to build a small house.",
+     ".sell": "Sell the plot",
+     ".sell.s": "{a} for it.",
+     ".sell.h": "Happiness −2: a building site, then neighbours. Your house is worth a little less.",
+     ".no": "Keep the garden",
+     ".no.s": "Your roses stay.",
+     "trk.l_garden": "Sold part of the garden"
+    },
+    "zh": {
+     ".t": "你的大花园",
+     ".x": "有个建商想买你花园最里面那块地盖小房子。",
+     ".sell": "卖那块地",
+     ".sell.s": "卖{a}。",
+     ".sell.h": "幸福感 −2：先是工地，然后有了邻居。你的房子会贬值一点。",
+     ".no": "留着花园",
+     ".no.s": "玫瑰花还在。",
+     "trk.l_garden": "卖掉部分花园"
+    },
+    "zht": {
+     ".t": "你的大花園",
+     ".x": "有個建商想買你花園最裡面那塊地蓋小房子。",
+     ".sell": "賣那塊地",
+     ".sell.s": "賣{a}。",
+     ".sell.h": "幸福感 −2：先是工地，然後有了鄰居。你的房子會貶值一點。",
+     ".no": "留著花園",
+     ".no.s": "玫瑰花還在。",
+     "trk.l_garden": "賣掉部分花園"
+    }
+   }
+  },
+  {
+   "id": "l_repairs",
+   "age": [65, 85],
+   "weight": 0.35,
+   "when": {"house": true},
+   "def": "pro",
+   "tarot": "roof",
+   "art": {"draw": "tools", "bg": "mi"},
+   "opts": [
+    {"id": "pro", "sub": {"a": "MN(.05 * base)"}, "do": "spend('l_repairs', .05 * base, 'trk.l_repairs')"},
+    {"id": "cheap", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "spend('l_repairs', .015 * base, 'trk.l_repairs'); if (roll('l_repairs') < .3) spend('l_repairs', .06 * base, 'trk.l_repairs')"},
+    {"id": "leave", "hint": true, "do": "house.value -= .04 * base; happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Jobs around the house",
+     ".x": "Gutters, a leaking tap, a rotten window frame: jobs you used to do yourself.",
+     ".pro": "A trusted tradesman",
+     ".pro.s": "About {a}.",
+     ".cheap": "The man who knocked on the door",
+     ".cheap.s": "About {a}, cash.",
+     ".cheap.h": "Doorstep traders often do poor work that costs more to put right.",
+     ".leave": "Leave it",
+     ".leave.s": "Free for now.",
+     ".leave.h": "The house loses a little value. Happiness −1.",
+     "trk.l_repairs": "House repairs"
+    },
+    "zh": {
+     ".t": "家里的修缮",
+     ".x": "排水沟、漏水的龙头、烂掉的窗框：以前都是你自己修的。",
+     ".pro": "找信得过的师傅",
+     ".pro.s": "大约{a}。",
+     ".cheap": "上门推销的工人",
+     ".cheap.s": "大约{a}，付现金。",
+     ".cheap.h": "上门的工人常做得很差，之后要花更多钱补救。",
+     ".leave": "先不管",
+     ".leave.s": "暂时不花钱。",
+     ".leave.h": "房子会贬值一点。幸福感 −1。",
+     "trk.l_repairs": "房屋修缮"
+    },
+    "zht": {
+     ".t": "家裡的修繕",
+     ".x": "排水溝、漏水的水龍頭、爛掉的窗框：以前都是你自己修的。",
+     ".pro": "找信得過的師傅",
+     ".pro.s": "大約{a}。",
+     ".cheap": "上門推銷的工人",
+     ".cheap.s": "大約{a}，付現金。",
+     ".cheap.h": "上門的工人常做得很差，之後要花更多錢補救。",
+     ".leave": "先不管",
+     ".leave.s": "暫時不花錢。",
+     ".leave.h": "房子會貶值一點。幸福感 −1。",
+     "trk.l_repairs": "房屋修繕"
+    }
+   }
+  },
+  {
+   "id": "l_cohouse",
+   "age": [68, 85],
+   "weight": 0.3,
+   "when": {"house": false, "partner": ["single"]},
+   "def": "no",
+   "tarot": "friends",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "hint": true, "rel": 3, "do": "rentMul = .5; rentUntil = age + 20; happy += 3"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sharing a house with friends",
+     ".x": "Two old friends, both on their own now, suggest renting a house together.",
+     ".yes": "Move in together",
+     ".yes.s": "Your rent halves.",
+     ".yes.h": "Happiness +3: company every day.",
+     ".no": "Keep your own place",
+     ".no.s": "Your own space."
+    },
+    "zh": {
+     ".t": "跟朋友合住",
+     ".x": "两个老朋友现在也都是一个人，提议一起租房子住。",
+     ".yes": "一起住",
+     ".yes.s": "房租减半。",
+     ".yes.h": "幸福感 +3：天天有人作伴。",
+     ".no": "自己住",
+     ".no.s": "自己的空间。"
+    },
+    "zht": {
+     ".t": "跟朋友合住",
+     ".x": "兩個老朋友現在也都是一個人，提議一起租房子住。",
+     ".yes": "一起住",
+     ".yes.s": "房租減半。",
+     ".yes.h": "幸福感 +3：天天有人作伴。",
+     ".no": "自己住",
+     ".no.s": "自己的空間。"
+    }
+   }
   }
  ]
 }

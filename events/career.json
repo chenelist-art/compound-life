@@ -3427,6 +3427,536 @@
      "trk.m_studyP": "中年讀學位"
     }
    }
+  },
+  {
+   "id": "l_bridge",
+   "age": [60, 66],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "full",
+   "tarot": "ret2",
+   "art": {"draw": "penclock", "bg": "mi"},
+   "opts": [
+    {"id": "three", "hint": true, "do": "bump('l_bridge', .6, M('trk.l_bridge')); happy += 3; health += 1", "next": {"event": "l_bridge2", "in": [1, 3], "p": 0.4}},
+    {"id": "full"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Easing off",
+     ".x": "Your employer lets older staff drop to three days a week before they retire.",
+     ".three": "Work three days a week",
+     ".three.s": "60% of your pay.",
+     ".three.h": "Happiness +3, Health +1.",
+     ".full": "Keep working full-time",
+     ".full.s": "Full pay until you stop.",
+     "trk.l_bridge": "Three days a week before retiring"
+    },
+    "zh": {
+     ".t": "慢慢退下来",
+     ".x": "公司让快退休的员工改成每周上三天班。",
+     ".three": "改成每周三天",
+     ".three.s": "拿六成工资。",
+     ".three.h": "幸福感 +3，健康 +1。",
+     ".full": "继续全职",
+     ".full.s": "全薪做到退休。",
+     "trk.l_bridge": "退休前每周三天班"
+    },
+    "zht": {
+     ".t": "慢慢退下來",
+     ".x": "公司讓快退休的員工改成每週上三天班。",
+     ".three": "改成每週三天",
+     ".three.s": "領六成薪水。",
+     ".three.h": "幸福感 +3，健康 +1。",
+     ".full": "繼續全職",
+     ".full.s": "全薪做到退休。",
+     "trk.l_bridge": "退休前每週三天班"
+    }
+   }
+  },
+  {
+   "id": "l_bridge2",
+   "chain": true,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "ret2",
+   "art": {"draw": "suit", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "hint": true, "do": "bump.l_bridge = 1; happy -= 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Needed again",
+     ".x": "A colleague has left and your manager asks if you could go back to full-time for a while.",
+     ".yes": "Go back full-time",
+     ".yes.s": "Full pay again.",
+     ".yes.h": "Happiness −2.",
+     ".no": "Keep your three days",
+     ".no.s": "They will manage."
+    },
+    "zh": {
+     ".t": "又需要你了",
+     ".x": "有同事离职了，主管问你能不能先回来做全职。",
+     ".yes": "回去做全职",
+     ".yes.s": "恢复全薪。",
+     ".yes.h": "幸福感 −2。",
+     ".no": "维持每周三天",
+     ".no.s": "他们会想办法。"
+    },
+    "zht": {
+     ".t": "又需要你了",
+     ".x": "有同事離職了，主管問你能不能先回來做全職。",
+     ".yes": "回去做全職",
+     ".yes.s": "恢復全薪。",
+     ".yes.h": "幸福感 −2。",
+     ".no": "維持每週三天",
+     ".no.s": "他們會想辦法。"
+    }
+   }
+  },
+  {
+   "id": "l_earlyret",
+   "age": [60, 64],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "ret",
+   "art": {"draw": "cashout", "bg": "ya"},
+   "let": {"a": ".8 * salary()"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "take", "sub": {"a": "MN(a)"}, "hint": true, "do": "cash += a; const tq = T('l_early', {kind: 'custom', label: M('trk.l_early')}); tq.v += a; retireAge = age + 1; happy += 2"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An early retirement offer",
+     ".x": "Your employer offers {a} to anyone over 60 who retires at the end of the year.",
+     ".take": "Take it and retire",
+     ".take.s": "{a}, and no more pay after this year.",
+     ".take.h": "Happiness +2. Your savings have to last longer.",
+     ".stay": "Keep working",
+     ".stay.s": "Retire when you planned.",
+     "trk.l_early": "Early retirement payment"
+    },
+    "zh": {
+     ".t": "提前退休方案",
+     ".x": "公司给60岁以上、年底退休的员工{a}。",
+     ".take": "拿钱退休",
+     ".take.s": "{a}，明年起就没有工资了。",
+     ".take.h": "幸福感 +2。存款要撑得更久。",
+     ".stay": "继续工作",
+     ".stay.s": "按原计划退休。",
+     "trk.l_early": "提前退休补偿"
+    },
+    "zht": {
+     ".t": "提前退休方案",
+     ".x": "公司給60歲以上、年底退休的員工{a}。",
+     ".take": "拿錢退休",
+     ".take.s": "{a}，明年起就沒有薪水了。",
+     ".take.h": "幸福感 +2。存款要撐得更久。",
+     ".stay": "繼續工作",
+     ".stay.s": "按原計畫退休。",
+     "trk.l_early": "提前退休補償"
+    }
+   }
+  },
+  {
+   "id": "l_mentor",
+   "age": [62, 75],
+   "weight": 0.3,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "mentor",
+   "art": {"draw": "suit", "bg": "mi"},
+   "opts": [
+    {"id": "fees", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "T('l_mentor', {kind: 'custom', label: M('trk.l_mentor')}); rec('l_mentor', -.06 * base, 4); happy += 2", "next": {"event": "l_mentor2", "in": [2, 3], "p": 0.35}},
+    {"id": "free", "hint": true, "rel": 3, "do": "happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Advising young businesses",
+     ".x": "A local start-up network asks experienced retirees to advise young founders.",
+     ".fees": "Advise for a fee",
+     ".fees.s": "About {a} a year.",
+     ".fees.h": "Happiness +2. Some founders offer shares instead.",
+     ".free": "Volunteer as a mentor",
+     ".free.s": "Unpaid.",
+     ".free.h": "Happiness +2.",
+     ".no": "Enjoy your retirement",
+     ".no.s": "You have earned it.",
+     "trk.l_mentor": "Advising start-ups"
+    },
+    "zh": {
+     ".t": "辅导年轻创业者",
+     ".x": "本地创业圈在找有经验的退休人士辅导年轻创业者。",
+     ".fees": "收费当顾问",
+     ".fees.s": "每年大约{a}。",
+     ".fees.h": "幸福感 +2。有些创业者会改给股份。",
+     ".free": "义务当导师",
+     ".free.s": "没有报酬。",
+     ".free.h": "幸福感 +2。",
+     ".no": "享受退休生活",
+     ".no.s": "这是你应得的。",
+     "trk.l_mentor": "创业顾问费"
+    },
+    "zht": {
+     ".t": "輔導年輕創業者",
+     ".x": "本地創業圈在找有經驗的退休人士輔導年輕創業者。",
+     ".fees": "收費當顧問",
+     ".fees.s": "每年大約{a}。",
+     ".fees.h": "幸福感 +2。有些創業者會改給股份。",
+     ".free": "義務當導師",
+     ".free.s": "沒有報酬。",
+     ".free.h": "幸福感 +2。",
+     ".no": "享受退休生活",
+     ".no.s": "這是你應得的。",
+     "trk.l_mentor": "創業顧問費"
+    }
+   }
+  },
+  {
+   "id": "l_mentor2",
+   "src": "ESTIMATE: game rule (most young companies fail; a few are sold)",
+   "chain": true,
+   "def": "cash",
+   "tarot": "mentor",
+   "art": {"draw": "shares", "bg": "ya"},
+   "opts": [
+    {"id": "cash", "do": "happy += 1"},
+    {"id": "shares", "hint": true, "do": "stopRec('l_mentor'); later(age + 4, 'l_mentor2', {})"}
+   ],
+   "later": {
+    "l_mentor2": "if (roll('l_mentor2') < .12) { cash += .8 * base; log(M('log.l_mentor2Ok', {a: MN(.8 * base)}), 'good') } else log(M('log.l_mentor2No'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Shares instead of fees",
+     ".x": "The company you advise is short of cash and offers you a small share of it instead of your fees.",
+     ".cash": "Keep taking fees",
+     ".cash.s": "Steady and small.",
+     ".shares": "Take the shares",
+     ".shares.s": "No more fees from them.",
+     ".shares.h": "About one in eight such companies is sold for a good price.",
+     "log.l_mentor2Ok": "The start-up you advised was bought. Your shares are worth {a}.",
+     "log.l_mentor2No": "The start-up you advised has closed. Your shares are worth nothing."
+    },
+    "zh": {
+     ".t": "股份代替顾问费",
+     ".x": "你辅导的公司缺现金，提出用一点股份代替顾问费。",
+     ".cash": "继续收顾问费",
+     ".cash.s": "少，但稳定。",
+     ".shares": "改拿股份",
+     ".shares.s": "以后不收他们的费用了。",
+     ".shares.h": "这种公司大约八家有一家能卖出好价钱。",
+     "log.l_mentor2Ok": "你辅导的新创公司被收购了，你的股份值{a}。",
+     "log.l_mentor2No": "你辅导的新创公司收掉了，股份一文不值。"
+    },
+    "zht": {
+     ".t": "股份代替顧問費",
+     ".x": "你輔導的公司缺現金，提出用一點股份代替顧問費。",
+     ".cash": "繼續收顧問費",
+     ".cash.s": "少，但穩定。",
+     ".shares": "改拿股份",
+     ".shares.s": "以後不收他們的費用了。",
+     ".shares.h": "這種公司大約八家有一家能賣出好價錢。",
+     "log.l_mentor2Ok": "你輔導的新創公司被收購了，你的股份值{a}。",
+     "log.l_mentor2No": "你輔導的新創公司收掉了，股份一文不值。"
+    }
+   }
+  },
+  {
+   "id": "l_volunteer",
+   "age": [62, 80],
+   "weight": 0.35,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "charity",
+   "art": "charity",
+   "opts": [
+    {"id": "yes", "hint": true, "rel": 3, "do": "happy += 2; health += 1", "next": {"event": "l_volunteer2", "in": [2, 4], "p": 0.3}},
+    {"id": "paid", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "T('l_care', {kind: 'custom', label: M('trk.l_care')}); rec('l_care', -.1 * base, 3); health -= 1"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Giving your time",
+     ".x": "The hospice nearby is looking for volunteers. A care agency is also hiring part-time.",
+     ".yes": "Volunteer at the hospice",
+     ".yes.s": "Two mornings a week, unpaid.",
+     ".yes.h": "Happiness +2, Health +1.",
+     ".paid": "Work part-time as a carer",
+     ".paid.s": "About {a} a year.",
+     ".paid.h": "Health −1: it is physical work.",
+     ".no": "Not for you",
+     ".no.s": "Your time is your own.",
+     "trk.l_care": "Part-time care work"
+    },
+    "zh": {
+     ".t": "付出时间",
+     ".x": "附近的安宁病房在找志愿者，照护机构也在招兼职。",
+     ".yes": "去安宁病房当志愿者",
+     ".yes.s": "每周两个上午，没有报酬。",
+     ".yes.h": "幸福感 +2，健康 +1。",
+     ".paid": "做兼职照护员",
+     ".paid.s": "每年大约{a}。",
+     ".paid.h": "健康 −1：这是体力活。",
+     ".no": "不了",
+     ".no.s": "时间是你自己的。",
+     "trk.l_care": "兼职照护工作"
+    },
+    "zht": {
+     ".t": "付出時間",
+     ".x": "附近的安寧病房在找志工，照護機構也在招兼職。",
+     ".yes": "去安寧病房當志工",
+     ".yes.s": "每週兩個上午，沒有報酬。",
+     ".yes.h": "幸福感 +2，健康 +1。",
+     ".paid": "做兼職照護員",
+     ".paid.s": "每年大約{a}。",
+     ".paid.h": "健康 −1：這是體力活。",
+     ".no": "不了",
+     ".no.s": "時間是你自己的。",
+     "trk.l_care": "兼職照護工作"
+    }
+   }
+  },
+  {
+   "id": "l_volunteer2",
+   "chain": true,
+   "def": "stay",
+   "tarot": "charity",
+   "art": {"draw": "carer", "bg": "ya"},
+   "opts": [
+    {"id": "job", "sub": {"a": "MN(.12 * base)"}, "hint": true, "do": "T('l_vol2', {kind: 'custom', label: M('trk.l_vol2')}); rec('l_vol2', -.12 * base, 3); happy += 1"},
+    {"id": "stay", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job offer from the hospice",
+     ".x": "The hospice manager asks if you would run their volunteers, part-time and paid.",
+     ".job": "Accept",
+     ".job.s": "About {a} a year for three years.",
+     ".job.h": "Happiness +1.",
+     ".stay": "Stay a volunteer",
+     ".stay.s": "No pressure.",
+     "trk.l_vol2": "Running the volunteers"
+    },
+    "zh": {
+     ".t": "安宁病房请你工作",
+     ".x": "安宁病房主任问你愿不愿意兼职有薪地管理志愿者。",
+     ".job": "接受",
+     ".job.s": "三年里每年大约{a}。",
+     ".job.h": "幸福感 +1。",
+     ".stay": "继续当志愿者",
+     ".stay.s": "没有压力。",
+     "trk.l_vol2": "管理志愿者"
+    },
+    "zht": {
+     ".t": "安寧病房請你工作",
+     ".x": "安寧病房主任問你願不願意兼職有薪地管理志工。",
+     ".job": "接受",
+     ".job.s": "三年裡每年大約{a}。",
+     ".job.h": "幸福感 +1。",
+     ".stay": "繼續當志工",
+     ".stay.s": "沒有壓力。",
+     "trk.l_vol2": "管理志工"
+    }
+   }
+  },
+  {
+   "id": "l_book",
+   "src": "ESTIMATE: game rule (most self-published books sell a few hundred copies)",
+   "age": [62, 85],
+   "weight": 0.3,
+   "def": "no",
+   "tarot": "mentor",
+   "art": {"draw": "bond", "bg": "wa"},
+   "opts": [
+    {"id": "self", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('l_book', .03 * base, 'trk.l_book'); happy += 3", "next": {"event": "l_book2", "in": [1, 2], "p": 0.08}},
+    {"id": "family", "hint": true, "rel": 2, "do": "happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your life story",
+     ".x": "Your grandchildren love your stories. You could write them down.",
+     ".self": "Write and publish a book",
+     ".self.s": "About {a} for editing, a cover and printing.",
+     ".self.h": "Happiness +3. Now and then a book finds a publisher.",
+     ".family": "Write it just for the family",
+     ".family.s": "A few printed copies.",
+     ".family.h": "Happiness +2.",
+     ".no": "Keep telling them out loud",
+     ".no.s": "At family dinners.",
+     "trk.l_book": "Publishing your memoir"
+    },
+    "zh": {
+     ".t": "写回忆录",
+     ".x": "孙辈很爱听你讲故事。你可以把它们写下来。",
+     ".self": "写书出版",
+     ".self.s": "编辑、封面和印刷大约{a}。",
+     ".self.h": "幸福感 +3。偶尔会有出版社看上。",
+     ".family": "写给家人看就好",
+     ".family.s": "印几本就好。",
+     ".family.h": "幸福感 +2。",
+     ".no": "继续口头讲",
+     ".no.s": "在家庭聚餐时。",
+     "trk.l_book": "出版回忆录"
+    },
+    "zht": {
+     ".t": "寫回憶錄",
+     ".x": "孫輩很愛聽你講故事。你可以把它們寫下來。",
+     ".self": "寫書出版",
+     ".self.s": "編輯、封面和印刷大約{a}。",
+     ".self.h": "幸福感 +3。偶爾會有出版社看上。",
+     ".family": "寫給家人看就好",
+     ".family.s": "印幾本就好。",
+     ".family.h": "幸福感 +2。",
+     ".no": "繼續口頭講",
+     ".no.s": "在家庭聚餐時。",
+     "trk.l_book": "出版回憶錄"
+    }
+   }
+  },
+  {
+   "id": "l_book2",
+   "chain": true,
+   "def": "deal",
+   "tarot": "mentor",
+   "art": {"draw": "bonus", "bg": "wa"},
+   "opts": [
+    {"id": "deal", "sub": {"a": "MN(.15 * base)"}, "do": "cash += .15 * base; const tq = T('l_book2', {kind: 'custom', label: M('trk.l_book2')}); tq.v += .15 * base; happy += 3"},
+    {"id": "no", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A publisher calls",
+     ".x": "A publisher read your memoir and wants to bring out a new edition.",
+     ".deal": "Sign the deal",
+     ".deal.s": "An advance of {a}.",
+     ".no": "Keep it small",
+     ".no.s": "It was for the family.",
+     "trk.l_book2": "Book advance"
+    },
+    "zh": {
+     ".t": "出版社来电",
+     ".x": "有家出版社读了你的回忆录，想出新版。",
+     ".deal": "签约",
+     ".deal.s": "预付版税{a}。",
+     ".no": "保持小规模",
+     ".no.s": "本来就是写给家人的。",
+     "trk.l_book2": "预付版税"
+    },
+    "zht": {
+     ".t": "出版社來電",
+     ".x": "有家出版社讀了你的回憶錄，想出新版。",
+     ".deal": "簽約",
+     ".deal.s": "預付版稅{a}。",
+     ".no": "保持小規模",
+     ".no.s": "本來就是寫給家人的。",
+     "trk.l_book2": "預付版稅"
+    }
+   }
+  },
+  {
+   "id": "l_bizsell",
+   "age": [60, 72],
+   "weight": 0.6,
+   "when": {"test": "!!biz && biz.ok && !biz.sold"},
+   "def": "keep",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "let": {"a": "3 * biz.inc"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(a)"}, "do": "cash += a; const tq = T('l_bizsell', {kind: 'custom', label: M('trk.l_bizsell')}); tq.v += a; biz.sold = true"},
+    {"id": "kid", "show": "kids.length > 0", "sub": {"b": "MN(a / 2)"}, "hint": true, "rel": 2, "do": "cash += a / 2; const tq = T('l_bizsell', {kind: 'custom', label: M('trk.l_bizsell')}); tq.v += a / 2; biz.sold = true; bond('kid', 6)"},
+    {"id": "keep"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Selling your business",
+     ".x": "A buyer offers {a} for your business.",
+     ".sell": "Sell it",
+     ".sell.s": "{a}, and no more income from it.",
+     ".kid": "Sell it to your child, cheaply",
+     ".kid.s": "{b}, and it stays in the family.",
+     ".kid.h": "You grow closer.",
+     ".keep": "Keep it",
+     ".keep.s": "The income keeps coming.",
+     "trk.l_bizsell": "Sold your business"
+    },
+    "zh": {
+     ".t": "卖掉你的生意",
+     ".x": "有买家出价{a}买你的生意。",
+     ".sell": "卖",
+     ".sell.s": "拿{a}，以后就没有这份收入了。",
+     ".kid": "便宜卖给孩子",
+     ".kid.s": "拿{b}，生意留在家里。",
+     ".kid.h": "亲子关系更好。",
+     ".keep": "留着",
+     ".keep.s": "收入继续进来。",
+     "trk.l_bizsell": "卖掉生意"
+    },
+    "zht": {
+     ".t": "賣掉你的生意",
+     ".x": "有買家出價{a}買你的生意。",
+     ".sell": "賣",
+     ".sell.s": "拿{a}，以後就沒有這份收入了。",
+     ".kid": "便宜賣給孩子",
+     ".kid.s": "拿{b}，生意留在家裡。",
+     ".kid.h": "親子關係更好。",
+     ".keep": "留著",
+     ".keep.s": "收入繼續進來。",
+     "trk.l_bizsell": "賣掉生意"
+    }
+   }
+  },
+  {
+   "id": "l_unretire",
+   "age": [63, 72],
+   "weight": 0.3,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "ret2",
+   "art": {"draw": "suit", "bg": "co"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "cash += .2 * base; const tq = T('l_unret', {kind: 'custom', label: M('trk.l_unret')}); tq.v += .2 * base; happy -= 1"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "One last project",
+     ".x": "Your old employer has a six-month project nobody else knows how to do.",
+     ".yes": "Do it, as a contractor",
+     ".yes.s": "{a} for six months.",
+     ".yes.h": "Happiness −1: early alarms again.",
+     ".no": "Say no",
+     ".no.s": "They will have to learn.",
+     "trk.l_unret": "A project after retiring"
+    },
+    "zh": {
+     ".t": "最后一个项目",
+     ".x": "老东家有个半年的项目，只有你懂得怎么做。",
+     ".yes": "以约聘身份接",
+     ".yes.s": "半年{a}。",
+     ".yes.h": "幸福感 −1：又要早起了。",
+     ".no": "拒绝",
+     ".no.s": "他们得自己学。",
+     "trk.l_unret": "退休后接的项目"
+    },
+    "zht": {
+     ".t": "最後一個專案",
+     ".x": "老東家有個半年的專案，只有你懂得怎麼做。",
+     ".yes": "以約聘身分接",
+     ".yes.s": "半年{a}。",
+     ".yes.h": "幸福感 −1：又要早起了。",
+     ".no": "拒絕",
+     ".no.s": "他們得自己學。",
+     "trk.l_unret": "退休後接的專案"
+    }
+   }
   }
  ]
 }

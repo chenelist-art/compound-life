@@ -2742,6 +2742,430 @@
      "trk.m_gap": "孩子的空檔年"
     }
    }
+  },
+  {
+   "id": "l_pet",
+   "age": [62, 80],
+   "weight": 0.35,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "pet",
+   "art": "pet",
+   "opts": [
+    {"id": "dog", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('l_dog', {kind: 'ghost', label: M('trk.l_dog')}); rec('l_dog', .02 * base, 12, .3); happy += 3", "next": {"event": "l_pet2", "in": [4, 8], "p": 0.45}},
+    {"id": "cat", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "T('l_dog', {kind: 'ghost', label: M('trk.l_cat')}); rec('l_dog', .01 * base, 14); happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A companion",
+     ".x": "The house feels quiet. The animal shelter has an older dog that needs a home.",
+     ".dog": "Adopt the dog",
+     ".dog.s": "About {a} a year for food and the vet.",
+     ".dog.h": "Happiness +3; daily walks help your Health.",
+     ".cat": "Adopt a cat instead",
+     ".cat.s": "About {a} a year.",
+     ".cat.h": "Happiness +2.",
+     ".no": "Enjoy the quiet",
+     ".no.s": "No vet bills.",
+     "trk.l_dog": "A dog in retirement",
+     "trk.l_cat": "A cat in retirement"
+    },
+    "zh": {
+     ".t": "找个伴",
+     ".x": "家里好安静。动物收容所有只老狗需要一个家。",
+     ".dog": "领养那只狗",
+     ".dog.s": "食物和兽医每年大约{a}。",
+     ".dog.h": "幸福感 +3；天天散步对健康好。",
+     ".cat": "改领养猫",
+     ".cat.s": "每年大约{a}。",
+     ".cat.h": "幸福感 +2。",
+     ".no": "享受安静",
+     ".no.s": "没有兽医账单。",
+     "trk.l_dog": "退休后养的狗",
+     "trk.l_cat": "退休后养的猫"
+    },
+    "zht": {
+     ".t": "找個伴",
+     ".x": "家裡好安靜。動物收容所有隻老狗需要一個家。",
+     ".dog": "領養那隻狗",
+     ".dog.s": "食物和獸醫每年大約{a}。",
+     ".dog.h": "幸福感 +3；天天散步對健康好。",
+     ".cat": "改領養貓",
+     ".cat.s": "每年大約{a}。",
+     ".cat.h": "幸福感 +2。",
+     ".no": "享受安靜",
+     ".no.s": "沒有獸醫帳單。",
+     "trk.l_dog": "退休後養的狗",
+     "trk.l_cat": "退休後養的貓"
+    }
+   }
+  },
+  {
+   "id": "l_pet2",
+   "chain": true,
+   "def": "treat",
+   "tarot": "pet",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "treat", "sub": {"a": "MN(.05 * base)"}, "do": "spend('l_vet', .05 * base, 'trk.l_vet'); happy += 1"},
+    {"id": "goodbye", "hint": true, "do": "stopRec('l_dog'); happy -= 4"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your dog is ill",
+     ".x": "Your dog needs an operation. The vet says it should give them a few more good years.",
+     ".treat": "Go ahead with the operation",
+     ".treat.s": "About {a}.",
+     ".goodbye": "Let them go peacefully",
+     ".goodbye.s": "A sad day.",
+     ".goodbye.h": "Happiness −4.",
+     "trk.l_vet": "Your dog’s operation"
+    },
+    "zh": {
+     ".t": "狗狗生病了",
+     ".x": "你的狗要动手术。兽医说做了还能有几年好日子。",
+     ".treat": "做手术",
+     ".treat.s": "大约{a}。",
+     ".goodbye": "让它安详离开",
+     ".goodbye.s": "很难过的一天。",
+     ".goodbye.h": "幸福感 −4。",
+     "trk.l_vet": "狗狗的手术"
+    },
+    "zht": {
+     ".t": "狗狗生病了",
+     ".x": "你的狗要動手術。獸醫說做了還能有幾年好日子。",
+     ".treat": "做手術",
+     ".treat.s": "大約{a}。",
+     ".goodbye": "讓牠安詳離開",
+     ".goodbye.s": "很難過的一天。",
+     ".goodbye.h": "幸福感 −4。",
+     "trk.l_vet": "狗狗的手術"
+    }
+   }
+  },
+  {
+   "id": "l_grandkiduni",
+   "age": [65, 85],
+   "weight": 0.3,
+   "when": {"kids": true},
+   "def": "some",
+   "tarot": "edufund",
+   "art": {"draw": "gradloan", "bg": "wa"},
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(.2 * base)"}, "hint": true, "rel": 2, "do": "spend('l_gkuni', .2 * base, 'trk.l_gkuni'); happy += 3; bond('kid', 4)"},
+    {"id": "some", "sub": {"a": "MN(.05 * base)"}, "rel": 1, "do": "spend('l_gkuni', .05 * base, 'trk.l_gkuni'); happy += 1; bond('kid', 2)"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A grandchild off to university",
+     ".x": "Your eldest grandchild has a university place, and money is tight for their parents.",
+     ".all": "Pay the first year’s fees",
+     ".all.s": "About {a}.",
+     ".all.h": "Happiness +3.",
+     ".some": "Help with books and a laptop",
+     ".some.s": "About {a}.",
+     ".no": "A card and your best wishes",
+     ".no.s": "Your savings stay put.",
+     "trk.l_gkuni": "Helping a grandchild at university"
+    },
+    "zh": {
+     ".t": "孙辈要上大学了",
+     ".x": "你的长孙考上大学了，他们爸妈手头很紧。",
+     ".all": "付第一年学费",
+     ".all.s": "大约{a}。",
+     ".all.h": "幸福感 +3。",
+     ".some": "帮忙买书和电脑",
+     ".some.s": "大约{a}。",
+     ".no": "送张卡片祝福",
+     ".no.s": "存款不动。",
+     "trk.l_gkuni": "资助孙辈读大学"
+    },
+    "zht": {
+     ".t": "孫輩要上大學了",
+     ".x": "你的長孫考上大學了，他們爸媽手頭很緊。",
+     ".all": "付第一年學費",
+     ".all.s": "大約{a}。",
+     ".all.h": "幸福感 +3。",
+     ".some": "幫忙買書和電腦",
+     ".some.s": "大約{a}。",
+     ".no": "送張卡片祝福",
+     ".no.s": "存款不動。",
+     "trk.l_gkuni": "資助孫輩讀大學"
+    }
+   }
+  },
+  {
+   "id": "l_guardian",
+   "age": [62, 78],
+   "weight": 0.2,
+   "when": {"kids": true},
+   "def": "help",
+   "tarot": "grandsit",
+   "art": {"draw": "baby", "bg": "co"},
+   "opts": [
+    {"id": "take", "sub": {"a": "MN(.06 * base)"}, "hint": true, "rel": 3, "do": "T('l_gk', {kind: 'ghost', label: M('trk.l_gk')}); rec('l_gk', .06 * base, 5); happy -= 1; health -= 1; bond('kid', 8)"},
+    {"id": "help", "sub": {"a": "MN(.02 * base)"}, "rel": 1, "do": "T('l_gk', {kind: 'ghost', label: M('trk.l_gk')}); rec('l_gk', .02 * base, 3); bond('kid', 3)"},
+    {"id": "no", "hint": true, "do": "bond('kid', -6)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Raising the grandchildren",
+     ".x": "Your child’s marriage has broken down and they are struggling. The grandchildren need somewhere stable to live.",
+     ".take": "Have the grandchildren live with you",
+     ".take.s": "About {a} a year for five years.",
+     ".take.h": "Happiness −1, Health −1: tiring, but you are their rock.",
+     ".help": "Help out at weekends",
+     ".help.s": "About {a} a year.",
+     ".no": "You are not up to it",
+     ".no.s": "They find another way.",
+     ".no.h": "Your child feels let down.",
+     "trk.l_gk": "Caring for your grandchildren"
+    },
+    "zh": {
+     ".t": "带大孙辈",
+     ".x": "孩子的婚姻破裂了，日子很难过。孙辈需要一个安稳的住处。",
+     ".take": "让孙辈跟你住",
+     ".take.s": "五年里每年大约{a}。",
+     ".take.h": "幸福感 −1，健康 −1：很累，但你是他们的依靠。",
+     ".help": "周末帮忙带",
+     ".help.s": "每年大约{a}。",
+     ".no": "你体力不行了",
+     ".no.s": "他们另想办法。",
+     ".no.h": "孩子会觉得失望。",
+     "trk.l_gk": "照顾孙辈"
+    },
+    "zht": {
+     ".t": "帶大孫輩",
+     ".x": "孩子的婚姻破裂了，日子很難過。孫輩需要一個安穩的住處。",
+     ".take": "讓孫輩跟你住",
+     ".take.s": "五年裡每年大約{a}。",
+     ".take.h": "幸福感 −1，健康 −1：很累，但你是他們的依靠。",
+     ".help": "週末幫忙帶",
+     ".help.s": "每年大約{a}。",
+     ".no": "你體力不行了",
+     ".no.s": "他們另想辦法。",
+     ".no.h": "孩子會覺得失望。",
+     "trk.l_gk": "照顧孫輩"
+    }
+   }
+  },
+  {
+   "id": "l_sibcare",
+   "age": [65, 85],
+   "weight": 0.3,
+   "who": {"role": "sib", "age": [60, 100]},
+   "def": "visit",
+   "tarot": "carers",
+   "art": {"draw": "carer", "bg": "wa"},
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(.03 * base)"}, "bond": 6, "rel": 1, "do": "T('l_sibcare', {kind: 'custom', label: M('trk.l_sibcare')}); rec('l_sibcare', .03 * base, 5)"},
+    {"id": "visit", "bond": 3, "do": "health -= 1"},
+    {"id": "no", "bond": -4}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An ageing sibling",
+     ".x": "{p} lives alone and is struggling to cope.",
+     ".pay": "Pay for a carer to visit",
+     ".pay.s": "About {a} a year.",
+     ".visit": "Visit and help yourself",
+     ".visit.s": "Twice a week.",
+     ".no": "Leave it to their children",
+     ".no.s": "You phone now and then.",
+     "trk.l_sibcare": "Care for your sibling"
+    },
+    "zh": {
+     ".t": "年迈的兄弟姐妹",
+     ".x": "{p}一个人住，越来越照顾不了自己。",
+     ".pay": "出钱请看护上门",
+     ".pay.s": "每年大约{a}。",
+     ".visit": "自己常去帮忙",
+     ".visit.s": "一周两次。",
+     ".no": "交给他们的孩子",
+     ".no.s": "偶尔打个电话。",
+     "trk.l_sibcare": "照顾兄弟姐妹"
+    },
+    "zht": {
+     ".t": "年邁的兄弟姊妹",
+     ".x": "{p}一個人住，越來越照顧不了自己。",
+     ".pay": "出錢請看護到府",
+     ".pay.s": "每年大約{a}。",
+     ".visit": "自己常去幫忙",
+     ".visit.s": "一週兩次。",
+     ".no": "交給他們的孩子",
+     ".no.s": "偶爾打個電話。",
+     "trk.l_sibcare": "照顧兄弟姊妹"
+    }
+   }
+  },
+  {
+   "id": "l_gather",
+   "age": [65, 85],
+   "weight": 0.35,
+   "when": {"kids": true},
+   "def": "potluck",
+   "tarot": "reunion",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "host", "sub": {"a": "MN(.06 * base)"}, "hint": true, "rel": 3, "do": "spend('l_gather', .06 * base, 'trk.l_gather'); happy += 3; bond('kid', 4)"},
+    {"id": "potluck", "rel": 1, "do": "happy += 1; bond('kid', 1)"},
+    {"id": "no", "do": ""}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The whole family together",
+     ".x": "You would love to have everyone together: children, grandchildren, cousins.",
+     ".host": "Rent a big house for a long weekend",
+     ".host.s": "About {a}, your treat.",
+     ".host.h": "Happiness +3.",
+     ".potluck": "A big lunch where everyone brings a dish",
+     ".potluck.s": "Free.",
+     ".no": "Maybe next year",
+     ".no.s": "Everyone is busy.",
+     "trk.l_gather": "A family gathering"
+    },
+    "zh": {
+     ".t": "全家团聚",
+     ".x": "你很想把全家人聚在一起：孩子、孙辈、表亲。",
+     ".host": "租间大房子过长周末",
+     ".host.s": "大约{a}，你请客。",
+     ".host.h": "幸福感 +3。",
+     ".potluck": "每人带一道菜的大午餐",
+     ".potluck.s": "不花钱。",
+     ".no": "明年再说",
+     ".no.s": "大家都很忙。",
+     "trk.l_gather": "家族聚会"
+    },
+    "zht": {
+     ".t": "全家團聚",
+     ".x": "你很想把全家人聚在一起：孩子、孫輩、表親。",
+     ".host": "租間大房子過長週末",
+     ".host.s": "大約{a}，你請客。",
+     ".host.h": "幸福感 +3。",
+     ".potluck": "每人帶一道菜的大午餐",
+     ".potluck.s": "不花錢。",
+     ".no": "明年再說",
+     ".no.s": "大家都很忙。",
+     "trk.l_gather": "家族聚會"
+    }
+   }
+  },
+  {
+   "id": "l_ptcare",
+   "src": "ESTIMATE: game rule (home care and care-home fees as shares of a typical wage; long-term care insurance pays most of it)",
+   "age": [70, 90],
+   "weight": 0.3,
+   "when": {"partner": ["living", "married"]},
+   "who": {"role": "pt"},
+   "def": "you",
+   "tarot": "fsick",
+   "art": {"draw": "carer", "bg": "ya"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "help", "sub": {"a": "MN(.15 * base)"}, "hint": true, "bond": 3, "do": "T('l_ptcare', {kind: 'custom', label: M('trk.l_ptcare')}); rec('l_ptcare', (ltc ? .3 : 1) * .15 * base, 5)"},
+    {"id": "you", "hint": true, "bond": 6, "do": "happy -= 3; health -= 2"},
+    {"id": "home", "sub": {"a": "MN(.4 * base)"}, "hint": true, "bond": -2, "do": "T('l_ptcare', {kind: 'custom', label: M('trk.l_ptcare')}); rec('l_ptcare', (ltc ? .3 : 1) * .4 * base, 5); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Caring for your partner",
+     ".x": "{p} needs help with washing, dressing and getting about.",
+     ".help": "Carers at home twice a day",
+     ".help.s": "About {a} a year.",
+     ".help.h": "Long-term care insurance, if you have it, pays most of this.",
+     ".you": "Care for them yourself",
+     ".you.s": "Free, and exhausting.",
+     ".you.h": "Happiness −3, Health −2.",
+     ".home": "A care home",
+     ".home.s": "About {a} a year.",
+     ".home.h": "Happiness −2. Long-term care insurance, if you have it, pays most of this.",
+     "trk.l_ptcare": "Care for your partner"
+    },
+    "zh": {
+     ".t": "照顾伴侣",
+     ".x": "{p}洗澡、穿衣、走动都需要人帮忙。",
+     ".help": "请看护每天来两次",
+     ".help.s": "每年大约{a}。",
+     ".help.h": "如果有长期照护险，大部分由保险付。",
+     ".you": "自己照顾",
+     ".you.s": "不花钱，但很累。",
+     ".you.h": "幸福感 −3，健康 −2。",
+     ".home": "送去安养院",
+     ".home.s": "每年大约{a}。",
+     ".home.h": "幸福感 −2。如果有长期照护险，大部分由保险付。",
+     "trk.l_ptcare": "伴侣的照护"
+    },
+    "zht": {
+     ".t": "照顧伴侶",
+     ".x": "{p}洗澡、穿衣、走動都需要人幫忙。",
+     ".help": "請看護每天來兩次",
+     ".help.s": "每年大約{a}。",
+     ".help.h": "如果有長照險，大部分由保險付。",
+     ".you": "自己照顧",
+     ".you.s": "不花錢，但很累。",
+     ".you.h": "幸福感 −3，健康 −2。",
+     ".home": "送去安養院",
+     ".home.s": "每年大約{a}。",
+     ".home.h": "幸福感 −2。如果有長照險，大部分由保險付。",
+     "trk.l_ptcare": "伴侶的照護"
+    }
+   }
+  },
+  {
+   "id": "l_reconcile",
+   "age": [62, 85],
+   "weight": 0.3,
+   "who": {"role": "sib", "age": [55, 100], "test": "p.bond < 40"},
+   "def": "no",
+   "tarot": "reunion",
+   "art": {"draw": "passport", "bg": "wa"},
+   "vars": {"p": "Who(p)"},
+   "opts": [
+    {"id": "visit", "sub": {"a": "MN(.03 * base)"}, "hint": true, "bond": 20, "rel": 2, "do": "spend('l_reconcile', .03 * base, 'trk.l_reconcile'); happy += 3"},
+    {"id": "call", "bond": 8, "do": "happy += 1"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Making peace",
+     ".x": "You and {p} have hardly spoken in years. Time is getting on for both of you.",
+     ".visit": "Travel to see them",
+     ".visit.s": "About {a} for the trip.",
+     ".visit.h": "Happiness +3.",
+     ".call": "Pick up the phone",
+     ".call.s": "Free, and a little awkward.",
+     ".no": "Leave it be",
+     ".no.s": "Some things can’t be fixed.",
+     "trk.l_reconcile": "A trip to make peace"
+    },
+    "zh": {
+     ".t": "和好",
+     ".x": "你和{p}好多年几乎没说过话了。你们都不年轻了。",
+     ".visit": "去探望他们",
+     ".visit.s": "路费大约{a}。",
+     ".visit.h": "幸福感 +3。",
+     ".call": "打个电话",
+     ".call.s": "不花钱，有点尴尬。",
+     ".no": "就这样吧",
+     ".no.s": "有些事挽回不了。",
+     "trk.l_reconcile": "和好之旅"
+    },
+    "zht": {
+     ".t": "和好",
+     ".x": "你和{p}好多年幾乎沒說過話了。你們都不年輕了。",
+     ".visit": "去探望他們",
+     ".visit.s": "路費大約{a}。",
+     ".visit.h": "幸福感 +3。",
+     ".call": "打個電話",
+     ".call.s": "不花錢，有點尷尬。",
+     ".no": "就這樣吧",
+     ".no.s": "有些事挽回不了。",
+     "trk.l_reconcile": "和好之旅"
+    }
+   }
   }
  ]
 }

@@ -1565,6 +1565,503 @@
      "trk.m_eyes": "白內障手術"
     }
    }
+  },
+  {
+   "id": "l_fall",
+   "age": [70, 90],
+   "weight": 0.4,
+   "def": "alarm",
+   "tarot": "health2",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "alarm", "sub": {"a": "MN(.005 * base)"}, "hint": true, "do": "T('l_alarm', {kind: 'custom', label: M('trk.l_alarm')}); rec('l_alarm', .005 * base, 20)", "next": {"event": "l_fall2", "in": [2, 5], "p": 0.3}},
+    {"id": "help", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "T('l_help', {kind: 'custom', label: M('trk.l_help')}); rec('l_help', .05 * base, 5); health += 2"},
+    {"id": "none", "hint": true, "do": "", "next": {"event": "l_fall2", "in": [2, 5], "p": 0.45}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A fall at home",
+     ".x": "You slipped in the kitchen and lay on the floor for an hour before you could get up.",
+     ".alarm": "Wear an alarm pendant",
+     ".alarm.s": "About {a} a year.",
+     ".alarm.h": "Help comes fast if it happens again.",
+     ".help": "A home help a few hours a week",
+     ".help.s": "About {a} a year.",
+     ".help.h": "Health +2: fewer falls.",
+     ".none": "Be more careful",
+     ".none.s": "Free.",
+     ".none.h": "A first fall often leads to another.",
+     "trk.l_alarm": "Alarm pendant",
+     "trk.l_help": "Home help"
+    },
+    "zh": {
+     ".t": "在家跌倒",
+     ".x": "你在厨房滑倒，在地上躺了一个小时才爬起来。",
+     ".alarm": "戴紧急呼叫器",
+     ".alarm.s": "每年大约{a}。",
+     ".alarm.h": "万一再跌倒，很快就有人来。",
+     ".help": "请居家帮手每周几小时",
+     ".help.s": "每年大约{a}。",
+     ".help.h": "健康 +2：少跌倒。",
+     ".none": "多小心一点",
+     ".none.s": "不花钱。",
+     ".none.h": "跌倒一次，常常还会再跌。",
+     "trk.l_alarm": "紧急呼叫器",
+     "trk.l_help": "居家帮手"
+    },
+    "zht": {
+     ".t": "在家跌倒",
+     ".x": "你在廚房滑倒，在地上躺了一個小時才爬起來。",
+     ".alarm": "戴緊急呼叫器",
+     ".alarm.s": "每年大約{a}。",
+     ".alarm.h": "萬一再跌倒，很快就有人來。",
+     ".help": "請居家幫手每週幾小時",
+     ".help.s": "每年大約{a}。",
+     ".help.h": "健康 +2：少跌倒。",
+     ".none": "多小心一點",
+     ".none.s": "不花錢。",
+     ".none.h": "跌倒一次，常常還會再跌。",
+     "trk.l_alarm": "緊急呼叫器",
+     "trk.l_help": "居家幫手"
+    }
+   }
+  },
+  {
+   "id": "l_fall2",
+   "src": "ESTIMATE: game rule (home care and care-home fees as shares of a typical wage; long-term care insurance pays most of it)",
+   "chain": true,
+   "def": "home",
+   "tarot": "health2",
+   "art": {"draw": "carer", "bg": "co"},
+   "opts": [
+    {"id": "home", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "health -= 4; T('l_care2', {kind: 'custom', label: M('trk.l_care2')}); rec('l_care2', (ltc ? .3 : 1) * .15 * base, 5)"},
+    {"id": "village", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "health -= 2; happy += 1; T('l_care2', {kind: 'custom', label: M('trk.l_care2')}); rec('l_care2', (ltc ? .3 : 1) * .3 * base, 8)"},
+    {"id": "kids", "show": "kids.length > 0", "hint": true, "rel": 2, "do": "health -= 4; bond('kid', 5); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Another fall",
+     ".x": "A second fall has broken your wrist. Living alone has become hard.",
+     ".home": "Carers at home every day",
+     ".home.s": "About {a} a year.",
+     ".home.h": "Health −4 from the fall. Long-term care insurance pays most of this, if you have it.",
+     ".village": "Move to a care home",
+     ".village.s": "About {a} a year.",
+     ".village.h": "Health −2, Happiness +1: help on hand. Insurance helps if you have it.",
+     ".kids": "Move in with your children",
+     ".kids.s": "Free, and crowded.",
+     ".kids.h": "Health −4. Closer to your family.",
+     "trk.l_care2": "Care after a fall"
+    },
+    "zh": {
+     ".t": "又跌倒了",
+     ".x": "第二次跌倒摔断了手腕。一个人住越来越难了。",
+     ".home": "请看护每天上门",
+     ".home.s": "每年大约{a}。",
+     ".home.h": "跌倒让健康 −4。如果有长期照护险，大部分由保险付。",
+     ".village": "搬进安养院",
+     ".village.s": "每年大约{a}。",
+     ".village.h": "健康 −2，幸福感 +1：随时有人帮忙。有保险的话会帮你付。",
+     ".kids": "搬去跟孩子住",
+     ".kids.s": "不花钱，但很挤。",
+     ".kids.h": "健康 −4。跟家人更亲。",
+     "trk.l_care2": "跌倒后的照护"
+    },
+    "zht": {
+     ".t": "又跌倒了",
+     ".x": "第二次跌倒摔斷了手腕。一個人住越來越難了。",
+     ".home": "請看護每天到府",
+     ".home.s": "每年大約{a}。",
+     ".home.h": "跌倒讓健康 −4。如果有長照險，大部分由保險付。",
+     ".village": "搬進安養院",
+     ".village.s": "每年大約{a}。",
+     ".village.h": "健康 −2，幸福感 +1：隨時有人幫忙。有保險的話會幫你付。",
+     ".kids": "搬去跟孩子住",
+     ".kids.s": "不花錢，但很擠。",
+     ".kids.h": "健康 −4。跟家人更親。",
+     "trk.l_care2": "跌倒後的照護"
+    }
+   }
+  },
+  {
+   "id": "l_vaccine",
+   "src": "Flu and pneumonia vaccines cut serious illness in older people (WHO, Vaccines for older adults, 2023)",
+   "age": [65, 90],
+   "weight": 0.35,
+   "def": "yes",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.002 * base)"}, "hint": true, "do": "spend('l_jab', .002 * base, 'trk.l_jab'); health += 1"},
+    {"id": "no", "hint": true, "do": "if (roll('l_vaccine') < .12) { health -= 5; pay(.03 * base); log(M('log.l_flu', {a: MN(.03 * base)}), 'bad') }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Winter jabs",
+     ".x": "The clinic offers flu and pneumonia vaccines to over-65s.",
+     ".yes": "Get them",
+     ".yes.s": "About {a}.",
+     ".yes.h": "Health +1.",
+     ".no": "Skip them",
+     ".no.s": "You never get ill.",
+     ".no.h": "About one in eight unvaccinated older people ends up in hospital with flu or pneumonia in a bad winter.",
+     "trk.l_jab": "Winter vaccines",
+     "log.l_flu": "You spent a week in hospital with pneumonia. It cost {a}."
+    },
+    "zh": {
+     ".t": "冬季疫苗",
+     ".x": "诊所给65岁以上的人打流感和肺炎疫苗。",
+     ".yes": "去打",
+     ".yes.s": "大约{a}。",
+     ".yes.h": "健康 +1。",
+     ".no": "不打",
+     ".no.s": "你从来不生病。",
+     ".no.h": "坏的冬天里，没打疫苗的老人大约八个有一个会因流感或肺炎住院。",
+     "trk.l_jab": "冬季疫苗",
+     "log.l_flu": "你得肺炎住院一星期，花了{a}。"
+    },
+    "zht": {
+     ".t": "冬季疫苗",
+     ".x": "診所給65歲以上的人打流感和肺炎疫苗。",
+     ".yes": "去打",
+     ".yes.s": "大約{a}。",
+     ".yes.h": "健康 +1。",
+     ".no": "不打",
+     ".no.s": "你從來不生病。",
+     ".no.h": "壞的冬天裡，沒打疫苗的老人大約八個有一個會因流感或肺炎住院。",
+     "trk.l_jab": "冬季疫苗",
+     "log.l_flu": "你得肺炎住院一星期，花了{a}。"
+    }
+   }
+  },
+  {
+   "id": "l_exercise",
+   "age": [65, 85],
+   "weight": 0.35,
+   "def": "none",
+   "tarot": "gym",
+   "art": "gym",
+   "opts": [
+    {"id": "class", "sub": {"a": "MN(.01 * base)"}, "hint": true, "rel": 2, "do": "T('l_ex', {kind: 'ghost', label: M('trk.l_ex')}); rec('l_ex', .01 * base, 10, .5)"},
+    {"id": "walk", "hint": true, "do": "rec('', 0, 10, .3)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Keeping moving",
+     ".x": "The community centre runs gentle exercise classes: tai chi, swimming, chair yoga.",
+     ".class": "Join a class",
+     ".class.s": "About {a} a year.",
+     ".class.h": "Health a little better every year, and new friends.",
+     ".walk": "A daily walk",
+     ".walk.s": "Free.",
+     ".walk.h": "Health a little better every year.",
+     ".none": "Your armchair is comfy",
+     ".none.s": "Rest is good too.",
+     "trk.l_ex": "Exercise classes"
+    },
+    "zh": {
+     ".t": "保持活动",
+     ".x": "社区中心有温和的运动课：太极、游泳、椅子瑜伽。",
+     ".class": "报名上课",
+     ".class.s": "每年大约{a}。",
+     ".class.h": "健康每年好一点，还能交新朋友。",
+     ".walk": "每天散步",
+     ".walk.s": "不花钱。",
+     ".walk.h": "健康每年好一点。",
+     ".none": "扶手椅太舒服了",
+     ".none.s": "休息也很好。",
+     "trk.l_ex": "运动课"
+    },
+    "zht": {
+     ".t": "保持活動",
+     ".x": "社區中心有溫和的運動課：太極、游泳、椅子瑜伽。",
+     ".class": "報名上課",
+     ".class.s": "每年大約{a}。",
+     ".class.h": "健康每年好一點，還能交新朋友。",
+     ".walk": "每天散步",
+     ".walk.s": "不花錢。",
+     ".walk.h": "健康每年好一點。",
+     ".none": "扶手椅太舒服了",
+     ".none.s": "休息也很好。",
+     "trk.l_ex": "運動課"
+    }
+   }
+  },
+  {
+   "id": "l_scooter",
+   "age": [75, 92],
+   "weight": 0.3,
+   "def": "frame",
+   "tarot": "car",
+   "art": {"draw": "moto", "bg": "mi"},
+   "opts": [
+    {"id": "scooter", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "spend('l_scooter', .03 * base, 'trk.l_scooter'); happy += 3"},
+    {"id": "frame", "sub": {"a": "MN(.005 * base)"}, "do": "spend('l_scooter', .005 * base, 'trk.l_scooter')"},
+    {"id": "none", "hint": true, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Getting about",
+     ".x": "The walk to the shops has become too far for you.",
+     ".scooter": "A mobility scooter",
+     ".scooter.s": "About {a}.",
+     ".scooter.h": "Happiness +3: your independence back.",
+     ".frame": "A walking frame",
+     ".frame.s": "About {a}.",
+     ".none": "Ask neighbours to shop for you",
+     ".none.s": "Free.",
+     ".none.h": "Happiness −2.",
+     "trk.l_scooter": "Mobility aid"
+    },
+    "zh": {
+     ".t": "出门代步",
+     ".x": "走到商店对你来说已经太远了。",
+     ".scooter": "买电动代步车",
+     ".scooter.s": "大约{a}。",
+     ".scooter.h": "幸福感 +3：重拾独立。",
+     ".frame": "买助行器",
+     ".frame.s": "大约{a}。",
+     ".none": "请邻居帮忙买东西",
+     ".none.s": "不花钱。",
+     ".none.h": "幸福感 −2。",
+     "trk.l_scooter": "代步辅具"
+    },
+    "zht": {
+     ".t": "出門代步",
+     ".x": "走到商店對你來說已經太遠了。",
+     ".scooter": "買電動代步車",
+     ".scooter.s": "大約{a}。",
+     ".scooter.h": "幸福感 +3：重拾獨立。",
+     ".frame": "買助行器",
+     ".frame.s": "大約{a}。",
+     ".none": "請鄰居幫忙買東西",
+     ".none.s": "不花錢。",
+     ".none.h": "幸福感 −2。",
+     "trk.l_scooter": "代步輔具"
+    }
+   }
+  },
+  {
+   "id": "l_carehome",
+   "src": "ESTIMATE: game rule (home care and care-home fees as shares of a typical wage; long-term care insurance pays most of it)",
+   "age": [82, 98],
+   "weight": 0.35,
+   "when": {"partner": ["single"]},
+   "def": "home",
+   "tarot": "carers",
+   "art": {"draw": "carer", "bg": "mi"},
+   "opts": [
+    {"id": "home", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "T('l_ch', {kind: 'custom', label: M('trk.l_ch')}); rec('l_ch', (ltc ? .3 : 1) * .2 * base, 10); health += 1"},
+    {"id": "care", "sub": {"a": "MN(.45 * base)"}, "hint": true, "rel": 1, "do": "T('l_ch', {kind: 'custom', label: M('trk.l_ch')}); rec('l_ch', (ltc ? .3 : 1) * .45 * base, 10); health += 3; happy -= 1"},
+    {"id": "alone", "hint": true, "do": "health -= 4; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Help every day",
+     ".x": "You can no longer manage alone. Your doctor talks you through the options.",
+     ".home": "Carers at home",
+     ".home.s": "About {a} a year.",
+     ".home.h": "Health +1. Long-term care insurance pays most of this, if you have it.",
+     ".care": "A good care home",
+     ".care.s": "About {a} a year.",
+     ".care.h": "Health +3, Happiness −1. Long-term care insurance pays most of this, if you have it.",
+     ".alone": "Struggle on alone",
+     ".alone.s": "Free.",
+     ".alone.h": "Health −4, Happiness −2.",
+     "trk.l_ch": "Care in old age"
+    },
+    "zh": {
+     ".t": "每天都需要帮助",
+     ".x": "你已经没办法独自生活了。医生跟你说明有哪些选择。",
+     ".home": "请看护上门",
+     ".home.s": "每年大约{a}。",
+     ".home.h": "健康 +1。如果有长期照护险，大部分由保险付。",
+     ".care": "好一点的安养院",
+     ".care.s": "每年大约{a}。",
+     ".care.h": "健康 +3，幸福感 −1。如果有长期照护险，大部分由保险付。",
+     ".alone": "自己硬撑",
+     ".alone.s": "不花钱。",
+     ".alone.h": "健康 −4，幸福感 −2。",
+     "trk.l_ch": "晚年的照护"
+    },
+    "zht": {
+     ".t": "每天都需要幫助",
+     ".x": "你已經沒辦法獨自生活了。醫生跟你說明有哪些選擇。",
+     ".home": "請看護到府",
+     ".home.s": "每年大約{a}。",
+     ".home.h": "健康 +1。如果有長照險，大部分由保險付。",
+     ".care": "好一點的安養院",
+     ".care.s": "每年大約{a}。",
+     ".care.h": "健康 +3，幸福感 −1。如果有長照險，大部分由保險付。",
+     ".alone": "自己硬撐",
+     ".alone.s": "不花錢。",
+     ".alone.h": "健康 −4，幸福感 −2。",
+     "trk.l_ch": "晚年的照護"
+    }
+   }
+  },
+  {
+   "id": "l_memory",
+   "age": [70, 90],
+   "weight": 0.3,
+   "def": "gp",
+   "tarot": "mentor",
+   "art": {"draw": "health", "bg": "ya"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "spend('l_memory', .02 * base, 'trk.l_memory'); happy += 1"},
+    {"id": "gp", "hint": true, "do": "happy -= 1"},
+    {"id": "puzzles", "hint": true, "do": "health += 1"}
+   ],
+   "care": ".care",
+   "i18n": {
+    "en": {
+     ".t": "Forgetting things",
+     ".x": "You keep losing your keys and forgetting names. It worries you.",
+     ".care": "Talking to a doctor early helps, whatever the cause.",
+     ".private": "A private memory assessment",
+     ".private.s": "About {a}, within weeks.",
+     ".private.h": "Happiness +1: you know where you stand sooner.",
+     ".gp": "Ask your family doctor",
+     ".gp.s": "Free, with a wait.",
+     ".gp.h": "Happiness −1 while you wait.",
+     ".puzzles": "Crosswords and walks",
+     ".puzzles.s": "Free.",
+     ".puzzles.h": "Health +1.",
+     "trk.l_memory": "Memory assessment"
+    },
+    "zh": {
+     ".t": "记性变差",
+     ".x": "你老是找不到钥匙、记不住名字，这让你担心。",
+     ".care": "不管原因是什么，早点跟医生谈都有帮助。",
+     ".private": "自费做记忆评估",
+     ".private.s": "大约{a}，几个星期内就能做。",
+     ".private.h": "幸福感 +1：早点知道情况。",
+     ".gp": "问家庭医生",
+     ".gp.s": "免费，要等。",
+     ".gp.h": "等待期间幸福感 −1。",
+     ".puzzles": "玩填字游戏、多散步",
+     ".puzzles.s": "不花钱。",
+     ".puzzles.h": "健康 +1。",
+     "trk.l_memory": "记忆评估"
+    },
+    "zht": {
+     ".t": "記性變差",
+     ".x": "你老是找不到鑰匙、記不住名字，這讓你擔心。",
+     ".care": "不管原因是什麼，早點跟醫生談都有幫助。",
+     ".private": "自費做記憶評估",
+     ".private.s": "大約{a}，幾個星期內就能做。",
+     ".private.h": "幸福感 +1：早點知道情況。",
+     ".gp": "問家庭醫師",
+     ".gp.s": "免費，要等。",
+     ".gp.h": "等待期間幸福感 −1。",
+     ".puzzles": "玩填字遊戲、多散步",
+     ".puzzles.s": "不花錢。",
+     ".puzzles.h": "健康 +1。",
+     "trk.l_memory": "記憶評估"
+    }
+   }
+  },
+  {
+   "id": "l_meals",
+   "age": [80, 95],
+   "weight": 0.3,
+   "def": "cook",
+   "tarot": "health2",
+   "art": {"draw": "feast", "bg": "mi"},
+   "opts": [
+    {"id": "deliver", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "T('l_meals', {kind: 'ghost', label: M('trk.l_meals')}); rec('l_meals', .02 * base, 5, .4)"},
+    {"id": "cook", "hint": true, "do": "health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Meals on wheels",
+     ".x": "Cooking for one has become a chore, and you often skip meals.",
+     ".deliver": "Have hot meals delivered",
+     ".deliver.s": "About {a} a year.",
+     ".deliver.h": "Health a little better each year.",
+     ".cook": "Keep cooking for yourself",
+     ".cook.s": "Free.",
+     ".cook.h": "Health −1.",
+     "trk.l_meals": "Meals on wheels"
+    },
+    "zh": {
+     ".t": "送餐服务",
+     ".x": "一个人煮饭越来越麻烦，你常常干脆不吃。",
+     ".deliver": "订热餐送到家",
+     ".deliver.s": "每年大约{a}。",
+     ".deliver.h": "健康每年好一点。",
+     ".cook": "继续自己煮",
+     ".cook.s": "不花钱。",
+     ".cook.h": "健康 −1。",
+     "trk.l_meals": "送餐服务"
+    },
+    "zht": {
+     ".t": "送餐服務",
+     ".x": "一個人煮飯越來越麻煩，你常常乾脆不吃。",
+     ".deliver": "訂熱餐送到家",
+     ".deliver.s": "每年大約{a}。",
+     ".deliver.h": "健康每年好一點。",
+     ".cook": "繼續自己煮",
+     ".cook.s": "不花錢。",
+     ".cook.h": "健康 −1。",
+     "trk.l_meals": "送餐服務"
+    }
+   }
+  },
+  {
+   "id": "l_dentures",
+   "age": [65, 85],
+   "weight": 0.3,
+   "def": "denture",
+   "tarot": "health2",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "implant", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('l_teeth', .1 * base, 'trk.l_teeth'); happy += 2; health += 1"},
+    {"id": "denture", "sub": {"a": "MN(.02 * base)"}, "do": "spend('l_teeth', .02 * base, 'trk.l_teeth')"},
+    {"id": "none", "hint": true, "do": "happy -= 2; health -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "New teeth",
+     ".x": "Your old dentures no longer fit, and eating has become a struggle.",
+     ".implant": "Implant-fixed teeth",
+     ".implant.s": "About {a}.",
+     ".implant.h": "Happiness +2, Health +1: you eat properly again.",
+     ".denture": "A new set of dentures",
+     ".denture.s": "About {a}.",
+     ".none": "Make do with soft food",
+     ".none.s": "Free.",
+     ".none.h": "Happiness −2, Health −2.",
+     "trk.l_teeth": "New teeth"
+    },
+    "zh": {
+     ".t": "换牙",
+     ".x": "旧假牙已经不合了，吃东西很辛苦。",
+     ".implant": "做植牙固定假牙",
+     ".implant.s": "大约{a}。",
+     ".implant.h": "幸福感 +2，健康 +1：又能好好吃东西了。",
+     ".denture": "重做一副假牙",
+     ".denture.s": "大约{a}。",
+     ".none": "将就吃软的",
+     ".none.s": "不花钱。",
+     ".none.h": "幸福感 −2，健康 −2。",
+     "trk.l_teeth": "换牙"
+    },
+    "zht": {
+     ".t": "換牙",
+     ".x": "舊假牙已經不合了，吃東西很辛苦。",
+     ".implant": "做植牙固定假牙",
+     ".implant.s": "大約{a}。",
+     ".implant.h": "幸福感 +2，健康 +1：又能好好吃東西了。",
+     ".denture": "重做一副假牙",
+     ".denture.s": "大約{a}。",
+     ".none": "將就吃軟的",
+     ".none.s": "不花錢。",
+     ".none.h": "幸福感 −2，健康 −2。",
+     "trk.l_teeth": "換牙"
+    }
+   }
   }
  ]
 }

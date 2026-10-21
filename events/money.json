@@ -3351,6 +3351,542 @@
      "log.m_offplanNo": "你那間海外公寓的建商倒了，只拿回一小部分。"
     }
    }
+  },
+  {
+   "id": "l_lump",
+   "src": "Many pension schemes let you swap part of your pension for a tax-free lump sum, often at about 12 times the pension given up (UK Pension Schemes Act commutation, 2024); the factor here is an ESTIMATE",
+   "age": [60, 68],
+   "weight": 0.5,
+   "when": {"retired": true, "stats": {"pension": "> .05 * base"}},
+   "def": "income",
+   "tarot": "annuity",
+   "art": {"draw": "penjar", "bg": "wa"},
+   "let": {"a": "3 * pension"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "lump", "sub": {"a": "MN(a)"}, "hint": true, "do": "cash += a; const tq = T('l_lump', {kind: 'custom', label: M('trk.l_lump')}); tq.v += a; pension = pension * .75; happy += 1"},
+    {"id": "income"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A lump sum or a pension?",
+     ".x": "Your pension scheme lets you take {a} now, in exchange for a quarter of your yearly pension.",
+     ".lump": "Take the lump sum",
+     ".lump.s": "{a} now; a smaller pension for life.",
+     ".lump.h": "Happiness +1. If you live long, the full pension pays more in the end.",
+     ".income": "Keep the full pension",
+     ".income.s": "Steady for life.",
+     "trk.l_lump": "Pension lump sum"
+    },
+    "zh": {
+     ".t": "一次领还是按月领？",
+     ".x": "你的退休金计划可以让你现在领{a}，代价是每年的退休金少四分之一。",
+     ".lump": "一次领",
+     ".lump.s": "现在拿{a}；以后每年退休金少一些。",
+     ".lump.h": "幸福感 +1。如果你很长寿，按月领最后拿得更多。",
+     ".income": "照常按月领",
+     ".income.s": "一辈子稳定。",
+     "trk.l_lump": "退休金一次领"
+    },
+    "zht": {
+     ".t": "一次領還是按月領？",
+     ".x": "你的退休金計畫可以讓你現在領{a}，代價是每年的退休金少四分之一。",
+     ".lump": "一次領",
+     ".lump.s": "現在拿{a}；以後每年退休金少一些。",
+     ".lump.h": "幸福感 +1。如果你很長壽，按月領最後拿得更多。",
+     ".income": "照常按月領",
+     ".income.s": "一輩子穩定。",
+     "trk.l_lump": "退休金一次領"
+    }
+   }
+  },
+  {
+   "id": "l_bonds",
+   "age": [66, 78],
+   "weight": 0.35,
+   "when": {"retired": true, "stats": {"liquid": "> 1 * base"}},
+   "def": "stay",
+   "tarot": "glide",
+   "art": {"draw": "bond", "bg": "mi"},
+   "let": {"a": ".4 * liquid()"},
+   "opts": [
+    {"id": "bonds", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); mkLot('l_bonds', {t: 'bond'}, 'trk.l_bonds'); addLot('l_bonds', a)"},
+    {"id": "stay", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Playing it safer",
+     ".x": "A market fall would hurt more now you live off your savings. An adviser suggests moving some into government bonds.",
+     ".bonds": "Move part into bonds",
+     ".bonds.s": "{a} out of shares and savings, into bonds.",
+     ".bonds.h": "Bonds grow more slowly but fall much less in a crash.",
+     ".stay": "Stay as you are",
+     ".stay.s": "Keep it all where it is.",
+     ".stay.h": "Shares grow more on average, with big falls along the way.",
+     "trk.l_bonds": "Government bonds"
+    },
+    "zh": {
+     ".t": "保守一点",
+     ".x": "靠存款过活，股市一跌伤得更重。理财顾问建议把一部分转进政府债券。",
+     ".bonds": "把一部分转进债券",
+     ".bonds.s": "{a}从股票和存款转进债券。",
+     ".bonds.h": "债券涨得慢，但股灾时跌得少很多。",
+     ".stay": "维持现状",
+     ".stay.s": "都不动。",
+     ".stay.h": "股票平均涨得多，但中间会大跌。",
+     "trk.l_bonds": "政府债券"
+    },
+    "zht": {
+     ".t": "保守一點",
+     ".x": "靠存款過活，股市一跌傷得更重。理財顧問建議把一部分轉進政府債券。",
+     ".bonds": "把一部分轉進債券",
+     ".bonds.s": "{a}從股票和存款轉進債券。",
+     ".bonds.h": "債券漲得慢，但股災時跌得少很多。",
+     ".stay": "維持現狀",
+     ".stay.s": "都不動。",
+     ".stay.h": "股票平均漲得多，但中間會大跌。",
+     "trk.l_bonds": "政府債券"
+    }
+   }
+  },
+  {
+   "id": "l_trust",
+   "age": [68, 85],
+   "weight": 0.3,
+   "when": {"kids": true, "stats": {"liquid": "> .5 * base"}},
+   "def": "no",
+   "tarot": "will",
+   "art": {"draw": "gift", "bg": "ya"},
+   "opts": [
+    {"id": "trust", "sub": {"a": "MN(.3 * base)", "b": "MN(.02 * base)"}, "hint": true, "rel": 2, "do": "spend('l_trust', .32 * base, 'trk.l_trust'); happy += 3; bond('kid', 3)"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Something for the grandchildren",
+     ".x": "You would like to put money aside for your grandchildren’s futures.",
+     ".trust": "Set up a trust",
+     ".trust.s": "{a} into a trust, plus {b} in legal fees.",
+     ".trust.h": "Happiness +3. The money is theirs now, not yours.",
+     ".no": "Leave it in your will",
+     ".no.s": "You might need it yourself.",
+     "trk.l_trust": "A trust for your grandchildren"
+    },
+    "zh": {
+     ".t": "给孙辈留点东西",
+     ".x": "你想为孙辈的将来存一笔钱。",
+     ".trust": "设立信托",
+     ".trust.s": "{a}放进信托，另加{b}律师费。",
+     ".trust.h": "幸福感 +3。这笔钱现在是他们的了，不是你的。",
+     ".no": "写进遗嘱就好",
+     ".no.s": "你自己也可能用得到。",
+     "trk.l_trust": "给孙辈的信托"
+    },
+    "zht": {
+     ".t": "給孫輩留點東西",
+     ".x": "你想為孫輩的將來存一筆錢。",
+     ".trust": "設立信託",
+     ".trust.s": "{a}放進信託，另加{b}律師費。",
+     ".trust.h": "幸福感 +3。這筆錢現在是他們的了，不是你的。",
+     ".no": "寫進遺囑就好",
+     ".no.s": "你自己也可能用得到。",
+     "trk.l_trust": "給孫輩的信託"
+    }
+   }
+  },
+  {
+   "id": "l_kidhouse",
+   "age": [62, 75],
+   "weight": 0.3,
+   "when": {"house": true, "test": "house.mort < 1"},
+   "who": {"role": "kid", "age": [28, 50]},
+   "def": "no",
+   "tarot": "grandkid",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"a": ".5 * base"},
+   "vars": {"p": "name(p)", "a": "MN(a)"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(a)"}, "hint": true, "bond": 6, "do": "house.mort += a; house.end = age + 15; setRate(house, .05, age); spend('l_kidhouse', a, 'trk.l_kidhouse')", "next": {"event": "l_kidhouse2", "in": [2, 4], "p": 0.3}},
+    {"id": "no", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Borrowing to help your child",
+     ".x": "{p} needs {a} for a home of their own. You could borrow it against your paid-off house.",
+     ".yes": "Borrow and give it to them",
+     ".yes.s": "{a} on a new mortgage at 5%.",
+     ".yes.h": "The repayments come out of your pension.",
+     ".no": "Say you can’t",
+     ".no.s": "Your house stays debt-free.",
+     "trk.l_kidhouse": "Money for your child’s home"
+    },
+    "zh": {
+     ".t": "为孩子借钱",
+     ".x": "{p}买房还差{a}。你可以拿已经还清的房子去贷款。",
+     ".yes": "贷款给他们",
+     ".yes.s": "{a}新房贷，利率5%。",
+     ".yes.h": "还款要从退休金里出。",
+     ".no": "说你没办法",
+     ".no.s": "房子保持无贷。",
+     "trk.l_kidhouse": "给孩子买房的钱"
+    },
+    "zht": {
+     ".t": "為孩子借錢",
+     ".x": "{p}買房還差{a}。你可以拿已經還清的房子去貸款。",
+     ".yes": "貸款給他們",
+     ".yes.s": "{a}新房貸，利率5%。",
+     ".yes.h": "還款要從退休金裡出。",
+     ".no": "說你沒辦法",
+     ".no.s": "房子保持無貸。",
+     "trk.l_kidhouse": "給孩子買房的錢"
+    }
+   }
+  },
+  {
+   "id": "l_kidhouse2",
+   "chain": true,
+   "who": {"role": "kid", "age": [28, 55]},
+   "def": "no",
+   "tarot": "grandkid",
+   "art": {"draw": "bill", "bg": "co"},
+   "vars": {"p": "name(p)"},
+   "opts": [
+    {"id": "help", "sub": {"a": "MN(.1 * base)"}, "bond": 4, "do": "spend('l_kidhouse2', .1 * base, 'trk.l_kidhouse2')"},
+    {"id": "no", "bond": -4, "do": "happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Behind on payments",
+     ".x": "{p} has lost their job and is behind on the mortgage you helped with.",
+     ".help": "Cover the payments for a while",
+     ".help.s": "About {a}.",
+     ".no": "They must sort it out",
+     ".no.s": "A worrying year.",
+     "trk.l_kidhouse2": "Covering your child’s mortgage"
+    },
+    "zh": {
+     ".t": "还不出房贷",
+     ".x": "{p}失业了，你帮忙的那套房子房贷缴不出来。",
+     ".help": "先帮忙缴一阵子",
+     ".help.s": "大约{a}。",
+     ".no": "让他们自己解决",
+     ".no.s": "令人担心的一年。",
+     "trk.l_kidhouse2": "帮孩子缴房贷"
+    },
+    "zht": {
+     ".t": "繳不出房貸",
+     ".x": "{p}失業了，你幫忙的那間房子房貸繳不出來。",
+     ".help": "先幫忙繳一陣子",
+     ".help.s": "大約{a}。",
+     ".no": "讓他們自己解決",
+     ".no.s": "令人擔心的一年。",
+     "trk.l_kidhouse2": "幫孩子繳房貸"
+    }
+   }
+  },
+  {
+   "id": "l_sellcoll",
+   "age": [65, 85],
+   "weight": 0.3,
+   "def": "keep",
+   "tarot": "loot",
+   "art": "loot",
+   "let": {"o": "(roll('l_sellcoll') < .15 ? .2 : roll('l_sellcollB') < .5 ? .04 : .01) * base"},
+   "vars": {"a": "MN(o)"},
+   "opts": [
+    {"id": "sell", "sub": {"a": "MN(o)"}, "do": "cash += o; const tq = T('l_coll', {kind: 'custom', label: M('trk.l_coll')}); tq.v += o"},
+    {"id": "keep", "hint": true, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A lifetime’s collection",
+     ".x": "A dealer looks over the stamps and coins you have collected all your life and offers {a}.",
+     ".sell": "Sell",
+     ".sell.s": "{a}.",
+     ".keep": "Keep it for the grandchildren",
+     ".keep.s": "Some things are not for sale.",
+     ".keep.h": "Happiness +1.",
+     "trk.l_coll": "Sold your collection"
+    },
+    "zh": {
+     ".t": "一辈子的收藏",
+     ".x": "有个商人看了你收集一辈子的邮票和硬币，出价{a}。",
+     ".sell": "卖",
+     ".sell.s": "{a}。",
+     ".keep": "留给孙辈",
+     ".keep.s": "有些东西不卖。",
+     ".keep.h": "幸福感 +1。",
+     "trk.l_coll": "卖掉收藏"
+    },
+    "zht": {
+     ".t": "一輩子的收藏",
+     ".x": "有個商人看了你收集一輩子的郵票和硬幣，出價{a}。",
+     ".sell": "賣",
+     ".sell.s": "{a}。",
+     ".keep": "留給孫輩",
+     ".keep.s": "有些東西不賣。",
+     ".keep.h": "幸福感 +1。",
+     "trk.l_coll": "賣掉收藏"
+    }
+   }
+  },
+  {
+   "id": "l_poa",
+   "src": "ESTIMATE: game rule (without a power of attorney, families may need a court order to manage your money if you cannot)",
+   "age": [68, 85],
+   "weight": 0.35,
+   "def": "no",
+   "tarot": "will",
+   "art": {"draw": "bond", "bg": "ya"},
+   "opts": [
+    {"id": "yes", "sub": {"a": "MN(.01 * base)"}, "hint": true, "rel": 1, "do": "spend('l_poa', .01 * base, 'trk.l_poa')"},
+    {"id": "no", "hint": true, "do": "later(age + 5, 'l_poa', {})"}
+   ],
+   "later": {
+    "l_poa": "if (roll('l_poa') < .25) { pay(.05 * base); log(M('log.l_poa', {a: MN(.05 * base)}), 'bad') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A power of attorney",
+     ".x": "A friend’s family struggled to pay her bills after a stroke because nobody had the legal right to.",
+     ".yes": "Sign one now",
+     ".yes.s": "About {a} in legal fees.",
+     ".yes.h": "If you ever can’t manage, someone you trust can.",
+     ".no": "It won’t happen to you",
+     ".no.s": "Free.",
+     ".no.h": "Sometimes the court process costs a lot later.",
+     "trk.l_poa": "Power of attorney",
+     "log.l_poa": "After a spell in hospital, your family needed a court order to manage your money. It cost {a}."
+    },
+    "zh": {
+     ".t": "授权委托书",
+     ".x": "朋友中风后，家人没有法律授权，连帮她付账单都很麻烦。",
+     ".yes": "现在就签",
+     ".yes.s": "律师费大约{a}。",
+     ".yes.h": "万一你没办法处理，你信任的人可以帮你。",
+     ".no": "你不会有事的",
+     ".no.s": "不花钱。",
+     ".no.h": "有时以后要走法院程序，花费不小。",
+     "trk.l_poa": "授权委托书",
+     "log.l_poa": "你住院后，家人得申请法院命令才能帮你管钱，花了{a}。"
+    },
+    "zht": {
+     ".t": "意定監護",
+     ".x": "朋友中風後，家人沒有法律授權，連幫她付帳單都很麻煩。",
+     ".yes": "現在就簽",
+     ".yes.s": "律師費大約{a}。",
+     ".yes.h": "萬一你沒辦法處理，你信任的人可以幫你。",
+     ".no": "你不會有事的",
+     ".no.s": "不花錢。",
+     ".no.h": "有時以後要走法院程序，花費不小。",
+     "trk.l_poa": "意定監護",
+     "log.l_poa": "你住院後，家人得聲請法院裁定才能幫你管錢，花了{a}。"
+    }
+   }
+  },
+  {
+   "id": "l_cruise",
+   "age": [70, 85],
+   "weight": 0.3,
+   "when": {"retired": true},
+   "def": "no",
+   "tarot": "travel",
+   "art": {"draw": "bridge", "bg": "ya"},
+   "opts": [
+    {"id": "world", "sub": {"a": "MN(.25 * base)"}, "hint": true, "do": "spend('l_cruise', .25 * base, 'trk.l_cruise'); happy += 5"},
+    {"id": "short", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('l_cruise', .05 * base, 'trk.l_cruise'); happy += 2"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A cruise",
+     ".x": "Friends have just come back from a long cruise and cannot stop talking about it.",
+     ".world": "Three months around the world",
+     ".world.s": "About {a}.",
+     ".world.h": "Happiness +5.",
+     ".short": "A week along the coast",
+     ".short.s": "About {a}.",
+     ".short.h": "Happiness +2.",
+     ".no": "Seasickness, no thanks",
+     ".no.s": "Stay on dry land.",
+     "trk.l_cruise": "A cruise"
+    },
+    "zh": {
+     ".t": "游轮之旅",
+     ".x": "朋友刚坐完长途游轮回来，聊个不停。",
+     ".world": "环游世界三个月",
+     ".world.s": "大约{a}。",
+     ".world.h": "幸福感 +5。",
+     ".short": "沿海一周",
+     ".short.s": "大约{a}。",
+     ".short.h": "幸福感 +2。",
+     ".no": "会晕船，不了",
+     ".no.s": "留在陆地上。",
+     "trk.l_cruise": "游轮之旅"
+    },
+    "zht": {
+     ".t": "郵輪之旅",
+     ".x": "朋友剛坐完長途郵輪回來，聊個不停。",
+     ".world": "環遊世界三個月",
+     ".world.s": "大約{a}。",
+     ".world.h": "幸福感 +5。",
+     ".short": "沿海一週",
+     ".short.s": "大約{a}。",
+     ".short.h": "幸福感 +2。",
+     ".no": "會暈船，不了",
+     ".no.s": "留在陸地上。",
+     "trk.l_cruise": "郵輪之旅"
+    }
+   }
+  },
+  {
+   "id": "l_heat",
+   "age": [70, 90],
+   "weight": 0.35,
+   "def": "warm",
+   "tarot": "roof",
+   "art": {"draw": "bill", "bg": "mi"},
+   "opts": [
+    {"id": "warm", "sub": {"a": "MN(.015 * base)"}, "do": "T('l_heat', {kind: 'ghost', label: M('trk.l_heat')}); rec('l_heat', .015 * base, 10)"},
+    {"id": "save", "hint": true, "do": "health -= 1; if (roll('l_heat') < .15) { health -= 5; pay(.03 * base) }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A cold winter",
+     ".x": "Energy prices have jumped, and the house is cold.",
+     ".warm": "Keep the heating on",
+     ".warm.s": "About {a} a year more.",
+     ".save": "Wrap up and save",
+     ".save.s": "Blankets and hot water bottles.",
+     ".save.h": "Health −1. Cold homes make older people ill more often.",
+     "trk.l_heat": "Higher heating bills"
+    },
+    "zh": {
+     ".t": "寒冷的冬天",
+     ".x": "能源价格大涨，家里很冷。",
+     ".warm": "照样开暖气",
+     ".warm.s": "每年多大约{a}。",
+     ".save": "多穿点，省电费",
+     ".save.s": "盖毯子、抱热水袋。",
+     ".save.h": "健康 −1。房子太冷，老人比较容易生病。",
+     "trk.l_heat": "更高的暖气费"
+    },
+    "zht": {
+     ".t": "寒冷的冬天",
+     ".x": "能源價格大漲，家裡很冷。",
+     ".warm": "照樣開暖氣",
+     ".warm.s": "每年多大約{a}。",
+     ".save": "多穿點，省電費",
+     ".save.s": "蓋毯子、抱熱水袋。",
+     ".save.h": "健康 −1。房子太冷，老人比較容易生病。",
+     "trk.l_heat": "更高的暖氣費"
+    }
+   }
+  },
+  {
+   "id": "l_annuity75",
+   "src": "Annuity rates rise with age at purchase (e.g. UK annuity rate tables 2024); the 9% used here is an ESTIMATE",
+   "age": [74, 82],
+   "weight": 0.3,
+   "when": {"retired": true, "stats": {"liquid": "> 1 * base"}},
+   "def": "no",
+   "tarot": "annuity",
+   "art": {"draw": "penclock", "bg": "ya"},
+   "let": {"a": ".4 * liquid()"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)", "b": "MN(.09 * a)"}, "hint": true, "do": "pay(a); T('l_annu', {kind: 'custom', label: M('trk.l_annu')}); rec('l_annu', -.09 * a, 40)"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An income for life",
+     ".x": "At your age, an insurer will pay a high yearly income for life in exchange for a lump sum.",
+     ".buy": "Buy an annuity",
+     ".buy.s": "{a} now for {b} a year for life.",
+     ".buy.h": "Pays off if you live past about 86; the money is gone if you don’t.",
+     ".no": "Keep your savings",
+     ".no.s": "Flexible.",
+     "trk.l_annu": "Annuity bought in your seventies"
+    },
+    "zh": {
+     ".t": "终身年金",
+     ".x": "到了你这个年纪，保险公司愿意用一笔钱换给你高额的终身年金。",
+     ".buy": "买年金",
+     ".buy.s": "现在付{a}，每年领{b}直到终老。",
+     ".buy.h": "活过大约86岁就划算；活不到，钱就没了。",
+     ".no": "存款留着",
+     ".no.s": "比较灵活。",
+     "trk.l_annu": "七十几岁买的年金"
+    },
+    "zht": {
+     ".t": "終身年金",
+     ".x": "到了你這個年紀，保險公司願意用一筆錢換給你高額的終身年金。",
+     ".buy": "買年金",
+     ".buy.s": "現在付{a}，每年領{b}直到終老。",
+     ".buy.h": "活過大約86歲就划算；活不到，錢就沒了。",
+     ".no": "存款留著",
+     ".no.s": "比較靈活。",
+     "trk.l_annu": "七十幾歲買的年金"
+    }
+   }
+  },
+  {
+   "id": "l_inflation",
+   "age": [65, 85],
+   "weight": 0.35,
+   "when": {"retired": true},
+   "def": "draw",
+   "tarot": "save",
+   "art": {"draw": "infl", "bg": "wa"},
+   "opts": [
+    {"id": "cut", "hint": true, "do": "habit -= .03; happy -= 2; T('habit', {kind: 'custom', label: M('trk.habitSave')})"},
+    {"id": "draw", "hint": true},
+    {"id": "work", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "T('l_odd', {kind: 'custom', label: M('trk.l_odd')}); rec('l_odd', -.04 * base, 3); health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Prices keep rising",
+     ".x": "Food and bills cost more every month, and your pension is not keeping up.",
+     ".cut": "Cut back",
+     ".cut.s": "Fewer treats.",
+     ".cut.h": "You spend less every year from now on. Happiness −2.",
+     ".draw": "Draw more from savings",
+     ".draw.s": "Keep living as you do.",
+     ".draw.h": "Your savings run down faster.",
+     ".work": "Take a little paid work",
+     ".work.s": "About {a} a year for three years.",
+     ".work.h": "Health −1.",
+     "trk.l_odd": "Odd jobs in retirement"
+    },
+    "zh": {
+     ".t": "物价一直涨",
+     ".x": "吃的用的每个月都在涨，退休金跟不上。",
+     ".cut": "省着点用",
+     ".cut.s": "少点享受。",
+     ".cut.h": "以后每年都花得比较少。幸福感 −2。",
+     ".draw": "多动用存款",
+     ".draw.s": "生活照旧。",
+     ".draw.h": "存款会用得更快。",
+     ".work": "打点零工",
+     ".work.s": "三年里每年大约{a}。",
+     ".work.h": "健康 −1。",
+     "trk.l_odd": "退休后打零工"
+    },
+    "zht": {
+     ".t": "物價一直漲",
+     ".x": "吃的用的每個月都在漲，退休金跟不上。",
+     ".cut": "省著點用",
+     ".cut.s": "少點享受。",
+     ".cut.h": "以後每年都花得比較少。幸福感 −2。",
+     ".draw": "多動用存款",
+     ".draw.s": "生活照舊。",
+     ".draw.h": "存款會用得更快。",
+     ".work": "打點零工",
+     ".work.s": "三年裡每年大約{a}。",
+     ".work.h": "健康 −1。",
+     "trk.l_odd": "退休後打零工"
+    }
+   }
   }
  ]
 }
