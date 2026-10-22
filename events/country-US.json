@@ -422,6 +422,1010 @@
      "trk.hsa": "健康儲蓄帳戶"
     }
    }
+  },
+  {
+   "id": "us_trade",
+   "src": "Trading in a car: in Q4 2025, 29.3% of trade-ins toward new cars were worth less than the loan on them, by a record $7,214 on average, and 40.7% of new-car purchases with negative equity were financed over 84 months (Edmunds, via AP and Jalopnik); in Q1 2026, 30.9% and $7,183 (Edmunds, via KOLD). The price of a new SUV ($49,000 ≈ 1.4) and the loan’s interest are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    28,
+    52
+   ],
+   "weight": 0.4,
+   "when": {
+    "car": true,
+    "working": true
+   },
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car2",
+   "opts": [
+    {
+     "id": "trade",
+     "sub": {
+      "a": "MN(amort(1.6 * base, .06, 7))"
+     },
+     "hint": true,
+     "do": "const old = car.bal || 0; car = { type: 'new', bal: 1.6 * base + old, pay: amort(1.6 * base + old, .06, 7), trk: 'us_trade' }; happy += 3; T('us_trade', { kind: 'ghost', label: M('trk.us_trade') })",
+     "next": {
+      "event": "us_trade2",
+      "in": [
+       3,
+       5
+      ],
+      "p": 0.6
+     }
+    },
+    {
+     "id": "used",
+     "sub": {
+      "a": "MN(.5 * base)"
+     },
+     "hint": true,
+     "do": "spend('us_used', .5 * base, 'trk.us_used'); car.trk = 'us_used'; happy += 1"
+    },
+    {
+     "id": "keep",
+     "sub": {
+      "a": "MN(.04 * base)"
+     },
+     "do": "T('us_keep', { kind: 'ghost', label: M('trk.us_keep') }); rec('us_keep', .04 * base, 4)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Trading in your car",
+     ".x": "The dealer will take your car in part-exchange for a new SUV. You still owe about $7,000 more on your old car than it is worth, and the dealer offers to roll that into a new 84-month loan.",
+     ".trade": "Take the SUV on an 84-month loan",
+     ".trade.s": "Payments of about {a} a year for seven years, with what you still owe on the old car added in.",
+     ".trade.h": "Happiness +3. A new car loses about a fifth of its value in the first year, so you will owe more than it is worth for years.",
+     ".used": "A reliable used car, paid in cash",
+     ".used.s": "About {a} after your trade-in.",
+     ".used.h": "Happiness +1.",
+     ".keep": "Keep driving the old one",
+     ".keep.s": "Repairs of about {a} a year.",
+     "trk.us_trade": "A new SUV on an 84-month loan",
+     "trk.us_used": "A used car, paid in cash",
+     "trk.us_keep": "Repairs on the old car"
+    },
+    "zh": {
+     ".t": "以旧换新",
+     ".x": "车行愿意收你的车，折价换一辆新的SUV。你的旧车还欠着贷款，比车本身值的钱多出大约7,000美元；车行说可以把这笔钱一起并进一笔新的84个月贷款。",
+     ".trade": "用84个月贷款买下SUV",
+     ".trade.s": "每年还款约{a}，还七年，旧车欠的钱也算在里面。",
+     ".trade.h": "幸福感 +3。新车第一年大约贬值五分之一，所以好几年里你欠的都会比车值的多。",
+     ".used": "付现金买一辆可靠的二手车",
+     ".used.s": "扣掉旧车折价后大约{a}。",
+     ".used.h": "幸福感 +1。",
+     ".keep": "继续开旧车",
+     ".keep.s": "每年修车费大约{a}。",
+     "trk.us_trade": "84个月贷款买的SUV",
+     "trk.us_used": "现金买的二手车",
+     "trk.us_keep": "旧车的修理费"
+    },
+    "zht": {
+     ".t": "舊車換新車",
+     ".x": "車商願意收你的車，折價換一輛新的SUV。你的舊車還欠著貸款，比車子本身的價值多出大約7,000美元；車商說可以把這筆錢一起併進一筆新的84期貸款。",
+     ".trade": "用84期貸款買下SUV",
+     ".trade.s": "每年還款約{a}，還七年，舊車欠的錢也算在裡面。",
+     ".trade.h": "幸福感 +3。新車第一年大約貶值五分之一，所以好幾年裡你欠的都會比車子值的多。",
+     ".used": "付現金買一輛可靠的二手車",
+     ".used.s": "扣掉舊車折價後大約{a}。",
+     ".used.h": "幸福感 +1。",
+     ".keep": "繼續開舊車",
+     ".keep.s": "每年修車費大約{a}。",
+     "trk.us_trade": "84期貸款買的SUV",
+     "trk.us_used": "現金買的二手車",
+     "trk.us_keep": "舊車的修理費"
+    }
+   }
+  },
+  {
+   "id": "us_trade2",
+   "src": "Long car loans: with 84-month loans the balance stays above the car’s value for years (Edmunds). Amounts are an ESTIMATE.",
+   "when": {
+    "test": "!!car && car.bal > .3 * base"
+   },
+   "chain": true,
+   "def": "pay",
+   "tarot": "debt",
+   "art": "car2",
+   "vars": {
+    "a": "MN(car.bal)"
+   },
+   "opts": [
+    {
+     "id": "pay",
+     "hint": true
+    },
+    {
+     "id": "off",
+     "sub": {
+      "a": "MN(car.bal)"
+     },
+     "hint": true,
+     "do": "pay(car.bal); car.bal = 0; car.pay = 0; happy += 2"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Upside down on the car loan",
+     ".x": "A few years in, you still owe {a} on the SUV, more than it would sell for. The interest keeps adding up.",
+     ".pay": "Keep making the payments",
+     ".pay.s": "The same payments until the loan ends.",
+     ".pay.h": "Interest runs on for the rest of the loan.",
+     ".off": "Pay it off now",
+     ".off.s": "{a} from your savings.",
+     ".off.h": "Happiness +2; no more interest."
+    },
+    "zh": {
+     ".t": "车贷比车还贵",
+     ".x": "过了几年，那辆SUV还欠着{a}，比卖掉能拿到的钱还多。利息还在一直累积。",
+     ".pay": "继续按月还款",
+     ".pay.s": "同样的金额，一直还到贷款结束。",
+     ".pay.h": "剩下的贷款期间都还要付利息。",
+     ".off": "现在一次还清",
+     ".off.s": "从存款拿出{a}。",
+     ".off.h": "幸福感 +2；不用再付利息。"
+    },
+    "zht": {
+     ".t": "車貸比車還貴",
+     ".x": "過了幾年，那輛SUV還欠著{a}，比賣掉能拿到的錢還多。利息還在一直累積。",
+     ".pay": "繼續按月還款",
+     ".pay.s": "同樣的金額，一直還到貸款結束。",
+     ".pay.h": "剩下的貸款期間都還要付利息。",
+     ".off": "現在一次還清",
+     ".off.s": "從存款拿出{a}。",
+     ".off.h": "幸福感 +2；不用再付利息。"
+    }
+   }
+  },
+  {
+   "id": "us_medicare",
+   "src": "Medicare at 65: the standard Part B premium is $202.90 a month in 2026, up from $185 in 2025 (CMS, Nov 2025). Original Medicare leaves about 20% of most bills to you with no yearly cap; a Medigap policy covers most of that, while Medicare Advantage plans often charge no extra premium but use networks and prior authorisation (Medicare.gov). Medigap premiums (about $2,500 a year) and the share of bills each option pays are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    65,
+    66
+   ],
+   "weight": 0.8,
+   "def": "adv",
+   "tarot": "medcover",
+   "art": {
+    "draw": "health",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "gap",
+     "sub": {
+      "a": "MN(.14 * base)"
+     },
+     "hint": true,
+     "do": "medPlan('us_gap', .15, .14 * base)"
+    },
+    {
+     "id": "adv",
+     "sub": {
+      "a": "MN(.07 * base)"
+     },
+     "hint": true,
+     "do": "medPlan('us_adv', .4, .07 * base)"
+    },
+    {
+     "id": "orig",
+     "sub": {
+      "a": "MN(.07 * base)"
+     },
+     "hint": true,
+     "do": "medPlan('us_orig', .55, .07 * base)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Choosing Medicare",
+     ".x": "You are turning 65 and can join Medicare. Part B costs $202.90 a month in 2026. You can add a Medigap policy to Original Medicare, or pick a Medicare Advantage plan run by an insurer.",
+     ".gap": "Original Medicare with Medigap",
+     ".gap.s": "About {a} a year in premiums. Any doctor who takes Medicare.",
+     ".gap.h": "Pays about 85% of your medical bills.",
+     ".adv": "A Medicare Advantage plan",
+     ".adv.s": "About {a} a year, often no extra premium; you stay in the plan’s network.",
+     ".adv.h": "Pays about 60% of your bills; some treatments need the insurer’s approval first.",
+     ".orig": "Original Medicare alone",
+     ".orig.s": "About {a} a year.",
+     ".orig.h": "Pays about 45%; your 20% share of each bill has no cap.",
+     "trk.us_gap": "Medicare with Medigap",
+     "trk.us_adv": "Medicare Advantage",
+     "trk.us_orig": "Original Medicare"
+    },
+    "zh": {
+     ".t": "选Medicare方案",
+     ".x": "你快65岁了，可以加入联邦医疗保险Medicare。2026年B部分每月保费202.90美元。你可以在传统Medicare之外加买Medigap补充保险，也可以选保险公司经营的Medicare Advantage方案。",
+     ".gap": "传统Medicare加Medigap",
+     ".gap.s": "保费每年约{a}。接受Medicare的医生都能看。",
+     ".gap.h": "大约支付你85%的医疗费用。",
+     ".adv": "Medicare Advantage方案",
+     ".adv.s": "每年约{a}，通常不用多付保费；只能在方案的网络内看病。",
+     ".adv.h": "大约支付60%的费用；有些治疗要先经保险公司批准。",
+     ".orig": "只用传统Medicare",
+     ".orig.s": "每年约{a}。",
+     ".orig.h": "大约支付45%；你自付的两成没有上限。",
+     "trk.us_gap": "Medicare加Medigap",
+     "trk.us_adv": "Medicare Advantage",
+     "trk.us_orig": "传统Medicare"
+    },
+    "zht": {
+     ".t": "選Medicare方案",
+     ".x": "你快65歲了，可以加入聯邦醫療保險Medicare。2026年B部分每月保費202.90美元。你可以在傳統Medicare之外加買Medigap補充保險，也可以選保險公司經營的Medicare Advantage方案。",
+     ".gap": "傳統Medicare加Medigap",
+     ".gap.s": "保費每年約{a}。接受Medicare的醫生都能看。",
+     ".gap.h": "大約支付你85%的醫療費用。",
+     ".adv": "Medicare Advantage方案",
+     ".adv.s": "每年約{a}，通常不用多付保費；只能在方案的網絡內看病。",
+     ".adv.h": "大約支付60%的費用；有些治療要先經保險公司核准。",
+     ".orig": "只用傳統Medicare",
+     ".orig.s": "每年約{a}。",
+     ".orig.h": "大約支付45%；你自付的兩成沒有上限。",
+     "trk.us_gap": "Medicare加Medigap",
+     "trk.us_adv": "Medicare Advantage",
+     "trk.us_orig": "傳統Medicare"
+    }
+   }
+  },
+  {
+   "id": "us_cobra",
+   "src": "Health cover after a layoff: COBRA lets you keep your employer’s plan for up to 18 months, paying the full premium plus 2% (US Department of Labor); job-based cover for one person cost $9,325 a year on average in 2025 (KFF Employer Health Benefits Survey 2025). Losing job-based cover opens a special enrolment period on the ACA Marketplace, with subsidies that depend on income (HealthCare.gov). Marketplace costs and the chance of a big bill while uninsured are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    23,
+    62
+   ],
+   "weight": 0.5,
+   "when": {
+    "test": "swWhy === 'lay' && swAt === age"
+   },
+   "def": "aca",
+   "tarot": "insure",
+   "art": {
+    "draw": "health",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "cobra",
+     "sub": {
+      "a": "MN(.27 * base)"
+     },
+     "hint": true,
+     "do": "spend('us_cobra', .27 * base, 'trk.us_cobra')"
+    },
+    {
+     "id": "aca",
+     "sub": {
+      "a": "MN(.08 * base)"
+     },
+     "hint": true,
+     "do": "spend('us_aca', .08 * base, 'trk.us_aca')"
+    },
+    {
+     "id": "none",
+     "hint": true,
+     "do": "const t = T('us_unins', { kind: 'custom', label: M('trk.us_unins') }); if (roll('us_unins') < .12) { pay(.4 * base); t.v -= .4 * base; t.note = M('note.us_unins', { a: MN(.4 * base) }); happy -= 3 }"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Health cover between jobs",
+     ".x": "You have been laid off, and your health insurance ends with the job. You can keep the same plan through COBRA if you pay the whole premium yourself, or buy a plan on the ACA Marketplace.",
+     ".cobra": "Keep your plan through COBRA",
+     ".cobra.s": "About {a} for a year.",
+     ".cobra.h": "The same doctors and full cover.",
+     ".aca": "A Marketplace plan",
+     ".aca.s": "About {a} for a year, with a subsidy while your income is low.",
+     ".aca.h": "Cover nearly as good; you may need new doctors.",
+     ".none": "Go without for now",
+     ".none.s": "Nothing to pay.",
+     ".none.h": "About one in eight people runs up a large medical bill before the next job.",
+     "trk.us_cobra": "COBRA premiums",
+     "trk.us_aca": "A Marketplace plan",
+     "trk.us_unins": "Months without health insurance",
+     "note.us_unins": "A {a} hospital bill"
+    },
+    "zh": {
+     ".t": "失业期间的医疗保险",
+     ".x": "你被裁员了，医疗保险也跟着工作一起没了。你可以自己付全额保费，通过COBRA继续保原来的方案，或是在ACA保险市场买一份新的。",
+     ".cobra": "通过COBRA保留原方案",
+     ".cobra.s": "一年大约{a}。",
+     ".cobra.h": "医生不变，保障完整。",
+     ".aca": "保险市场的方案",
+     ".aca.s": "一年大约{a}，收入低的时候有补贴。",
+     ".aca.h": "保障差不多，但可能要换医生。",
+     ".none": "暂时不保",
+     ".none.s": "不用付钱。",
+     ".none.h": "大约八个人里有一个会在找到下份工作前碰上一大笔医疗账单。",
+     "trk.us_cobra": "COBRA保费",
+     "trk.us_aca": "保险市场的方案",
+     "trk.us_unins": "没有医疗保险的几个月",
+     "note.us_unins": "一笔{a}的医院账单"
+    },
+    "zht": {
+     ".t": "失業期間的醫療保險",
+     ".x": "你被裁員了，醫療保險也跟著工作一起沒了。你可以自己付全額保費，透過COBRA繼續保原本的方案，或是在ACA保險市場買一份新的。",
+     ".cobra": "透過COBRA保留原方案",
+     ".cobra.s": "一年大約{a}。",
+     ".cobra.h": "醫生不變，保障完整。",
+     ".aca": "保險市場的方案",
+     ".aca.s": "一年大約{a}，收入低的時候有補貼。",
+     ".aca.h": "保障差不多，但可能要換醫生。",
+     ".none": "暫時不保",
+     ".none.s": "不用付錢。",
+     ".none.h": "大約八個人裡有一個會在找到下份工作前碰上一大筆醫療帳單。",
+     "trk.us_cobra": "COBRA保費",
+     "trk.us_aca": "保險市場的方案",
+     "trk.us_unins": "沒有醫療保險的幾個月",
+     "note.us_unins": "一筆{a}的醫院帳單"
+    }
+   }
+  },
+  {
+   "id": "us_move",
+   "src": "Moving somewhere cheaper: nine states have no income tax on wages (Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington and Wyoming; Tax Foundation, 2025), and home prices differ several times over between the dearest and cheapest metro areas (NAR metro home prices, 2025). Pay, living costs and home prices after the move are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    28,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "house": false
+   },
+   "def": "stay",
+   "tarot": "move",
+   "art": {
+    "draw": "city",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "go",
+     "sub": {
+      "a": "MN(.1 * base)"
+     },
+     "hint": true,
+     "do": "cityMove('us_move', .93, .85, .6, -4); spend('us_movefee', .1 * base, 'trk.us_movefee')",
+     "next": {
+      "event": "us_move2",
+      "in": [
+       2,
+       4
+      ],
+      "p": 0.4
+     }
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Move somewhere cheaper?",
+     ".x": "Your employer will let you keep your job working remotely, on a lower pay scale for cheaper places. Friends who moved to Texas say a house there costs half of what it does here.",
+     ".go": "Move to a cheaper state",
+     ".go.s": "About {a} to move, and pay a little lower. Far from family and friends.",
+     ".go.h": "Pay about 7% lower, living costs about 15% lower, homes about 40% cheaper; Relationships −4.",
+     ".stay": "Stay where you are",
+     ".stay.s": "Near the people you know.",
+     "trk.us_move": "Working remotely from a cheaper state",
+     "trk.us_movefee": "Moving across the country"
+    },
+    "zh": {
+     ".t": "搬去生活费低的地方？",
+     ".x": "公司同意你远程工作、保住饭碗，只是生活费低的地方工资标准也低一些。搬去得州的朋友说，那里的房子只要这边的一半。",
+     ".go": "搬到生活费低的州",
+     ".go.s": "搬家大约{a}，工资低一点，离家人朋友也远了。",
+     ".go.h": "工资低约7%，生活费低约15%，房价便宜约40%；人际关系 −4。",
+     ".stay": "留在原地",
+     ".stay.s": "离熟悉的人近。",
+     "trk.us_move": "在生活费低的州远程工作",
+     "trk.us_movefee": "跨州搬家"
+    },
+    "zht": {
+     ".t": "搬到生活費低的地方？",
+     ".x": "公司同意你遠端工作、保住飯碗，只是生活費低的地方薪資標準也低一些。搬去德州的朋友說，那裡的房子只要這邊的一半。",
+     ".go": "搬到生活費低的州",
+     ".go.s": "搬家大約{a}，薪水低一點，離家人朋友也遠了。",
+     ".go.h": "薪水低約7%，生活費低約15%，房價便宜約40%；人際關係 −4。",
+     ".stay": "留在原地",
+     ".stay.s": "離熟悉的人近。",
+     "trk.us_move": "在生活費低的州遠端工作",
+     "trk.us_movefee": "跨州搬家"
+    }
+   }
+  },
+  {
+   "id": "us_move2",
+   "src": "Game rule: a move far from family can be reversed later. Costs are an ESTIMATE.",
+   "chain": true,
+   "who": {
+    "role": "parent"
+   },
+   "def": "stay",
+   "tarot": "move2",
+   "art": {
+    "draw": "keyhome",
+    "bg": "mi"
+   },
+   "vars": {
+    "p": "who(p)"
+   },
+   "opts": [
+    {
+     "id": "back",
+     "sub": {
+      "a": "MN(.1 * base)"
+     },
+     "hint": true,
+     "bond": 6,
+     "do": "cityMove('us_back', 1 / .93, 1 / .85, 1 / .6, 5); spend('us_movefee2', .1 * base, 'trk.us_movefee2')"
+    },
+    {
+     "id": "fly",
+     "sub": {
+      "a": "MN(.04 * base)"
+     },
+     "bond": 3,
+     "do": "T('us_fly', { kind: 'ghost', label: M('trk.us_fly') }); rec('us_fly', .04 * base, 10)"
+    },
+    {
+     "id": "stay",
+     "hint": true,
+     "bond": -3,
+     "do": "happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "So far from home",
+     ".x": "You have settled in, but {p} is getting older and you only visit twice a year.",
+     ".back": "Move back",
+     ".back.s": "About {a} to move again, and the old prices.",
+     ".back.h": "Pay, living costs and home prices go back to what they were; Relationships +5.",
+     ".fly": "Fly home every couple of months",
+     ".fly.s": "About {a} a year in flights.",
+     ".stay": "Stay put",
+     ".stay.s": "Video calls on Sundays.",
+     ".stay.h": "Happiness −1.",
+     "trk.us_back": "Moving back home",
+     "trk.us_movefee2": "Moving back",
+     "trk.us_fly": "Flights home"
+    },
+    "zh": {
+     ".t": "离家太远",
+     ".x": "你已经安顿下来了，可是{p}年纪越来越大，你一年只回去两次。",
+     ".back": "搬回去",
+     ".back.s": "再搬一次大约{a}，物价也回到以前。",
+     ".back.h": "工资、生活费和房价都回到以前的水平；人际关系 +5。",
+     ".fly": "每两三个月飞回去一次",
+     ".fly.s": "机票每年大约{a}。",
+     ".stay": "留在这里",
+     ".stay.s": "每个星期天视频通话。",
+     ".stay.h": "幸福感 −1。",
+     "trk.us_back": "搬回家乡",
+     "trk.us_movefee2": "搬回去的费用",
+     "trk.us_fly": "回家的机票"
+    },
+    "zht": {
+     ".t": "離家太遠",
+     ".x": "你已經安頓下來了，可是{p}年紀越來越大，你一年只回去兩次。",
+     ".back": "搬回去",
+     ".back.s": "再搬一次大約{a}，物價也回到以前。",
+     ".back.h": "薪水、生活費和房價都回到以前的水準；人際關係 +5。",
+     ".fly": "每兩三個月飛回去一次",
+     ".fly.s": "機票每年大約{a}。",
+     ".stay": "留在這裡",
+     ".stay.s": "每個星期天視訊通話。",
+     ".stay.h": "幸福感 −1。",
+     "trk.us_back": "搬回家鄉",
+     "trk.us_movefee2": "搬回去的費用",
+     "trk.us_fly": "回家的機票"
+    }
+   }
+  },
+  {
+   "id": "us_sports",
+   "src": "Youth sports: families spent an average of $1,016 on a child’s main sport in 2024, 46% more than in 2019 (Aspen Institute Project Play, via ConsumerAffairs); travel teams cost several times more. About 2% of high-school athletes win an athletic scholarship (NCAA). Travel-team costs and the scholarship odds used are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    30,
+    55
+   ],
+   "weight": 0.45,
+   "who": {
+    "role": "kid",
+    "age": [
+     8,
+     13
+    ],
+    "pick": "oldest"
+   },
+   "def": "rec",
+   "tarot": "hobby",
+   "art": {
+    "draw": "schoolbag",
+    "bg": "mi"
+   },
+   "vars": {
+    "p": "Who(p)"
+   },
+   "opts": [
+    {
+     "id": "travel",
+     "sub": {
+      "a": "MN(.12 * base)"
+     },
+     "hint": true,
+     "bond": 6,
+     "do": "T('us_travel', { kind: 'ghost', label: M('trk.us_travel') }); rec('us_travel', .12 * base, 5); kidWin(.04, .5); happy -= 1"
+    },
+    {
+     "id": "rec",
+     "sub": {
+      "a": "MN(.03 * base)"
+     },
+     "bond": 3,
+     "do": "T('us_recl', { kind: 'ghost', label: M('trk.us_recl') }); rec('us_recl', .03 * base, 5)"
+    },
+    {
+     "id": "none",
+     "bond": -2
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A travel team",
+     ".x": "{p} has been picked for a travel soccer team: tournaments in other states most weekends, coaching fees, uniforms and hotels.",
+     ".travel": "Sign them up",
+     ".travel.s": "About {a} a year, and most of your weekends.",
+     ".travel.h": "Happiness −1 from all the driving; a small chance of a college sports scholarship one day.",
+     ".rec": "Keep them in the local league",
+     ".rec.s": "About {a} a year.",
+     ".none": "Take a break from sports",
+     ".none.s": "Free weekends.",
+     "trk.us_travel": "Travel team",
+     "trk.us_recl": "The local league"
+    },
+    "zh": {
+     ".t": "巡回赛球队",
+     ".x": "{p}被选进一支巡回赛足球队：几乎每个周末都要去外州比赛，还有教练费、球衣和住宿费。",
+     ".travel": "让孩子参加",
+     ".travel.s": "每年大约{a}，周末也大多泡在球场。",
+     ".travel.h": "开车奔波让幸福感 −1；将来有一点机会拿到大学体育奖学金。",
+     ".rec": "留在本地联赛",
+     ".rec.s": "每年大约{a}。",
+     ".none": "先不练球了",
+     ".none.s": "周末空出来了。",
+     "trk.us_travel": "巡回赛球队",
+     "trk.us_recl": "本地联赛"
+    },
+    "zht": {
+     ".t": "巡迴賽球隊",
+     ".x": "{p}被選進一支巡迴賽足球隊：幾乎每個週末都要去外州比賽，還有教練費、球衣和住宿費。",
+     ".travel": "讓孩子參加",
+     ".travel.s": "每年大約{a}，週末也大多泡在球場。",
+     ".travel.h": "開車奔波讓幸福感 −1；將來有一點機會拿到大學體育獎學金。",
+     ".rec": "留在本地聯賽",
+     ".rec.s": "每年大約{a}。",
+     ".none": "先不練球了",
+     ".none.s": "週末空出來了。",
+     "trk.us_travel": "巡迴賽球隊",
+     "trk.us_recl": "本地聯賽"
+    }
+   }
+  },
+  {
+   "id": "us_529",
+   "src": "529 plans: savings grow free of federal tax when spent on education, and many states let you deduct contributions from state income tax (IRS Publication 970; state plans). Average published tuition and fees at a public four-year college were $11,610 a year in-state in 2024-25 (College Board, Trends in College Pricing 2024). The yearly amounts and the tax saving (about 5%) are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    24,
+    50
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true
+   },
+   "who": {
+    "role": "kid",
+    "age": [
+     0,
+     4
+    ],
+    "pick": "youngest"
+   },
+   "def": "no",
+   "tarot": "edufund",
+   "art": {
+    "draw": "gradloan",
+    "bg": "co"
+   },
+   "vars": {
+    "p": "who(p)"
+   },
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "yearly('us_529', { amt: .05 * base, until: age + 16, bonus: .05 }, {}, 'trk.us_529')"
+    },
+    {
+     "id": "big",
+     "sub": {
+      "a": "MN(.1 * base)"
+     },
+     "hint": true,
+     "do": "yearly('us_529', { amt: .1 * base, until: age + 16, bonus: .05 }, {}, 'trk.us_529')"
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A 529 plan",
+     ".x": "Your bank suggests opening a 529 plan for {p}: invested savings that grow tax-free if they are spent on education. Tuition alone at an in-state public college is about $11,610 a year.",
+     ".yes": "Put in a little each year",
+     ".yes.s": "About {a} a year until they are 18.",
+     ".yes.h": "Invested in stocks; your state’s tax deduction adds about 5%.",
+     ".big": "Put in more",
+     ".big.s": "About {a} a year until they are 18.",
+     ".big.h": "Invested in stocks; your state’s tax deduction adds about 5%.",
+     ".no": "Not now",
+     ".no.s": "Keep the money flexible.",
+     "trk.us_529": "529 college savings"
+    },
+    "zh": {
+     ".t": "529教育储蓄计划",
+     ".x": "银行建议你替{p}开一个529计划：这笔钱拿去投资，只要用在教育上，增值部分就免税。州内公立大学光学费一年就要大约11,610美元。",
+     ".yes": "每年存一点",
+     ".yes.s": "每年大约{a}，存到孩子18岁。",
+     ".yes.h": "投资股票；州税抵扣大约多给5%。",
+     ".big": "多存一些",
+     ".big.s": "每年大约{a}，存到孩子18岁。",
+     ".big.h": "投资股票；州税抵扣大约多给5%。",
+     ".no": "先不开",
+     ".no.s": "钱留着比较灵活。",
+     "trk.us_529": "529大学储蓄"
+    },
+    "zht": {
+     ".t": "529教育儲蓄計畫",
+     ".x": "銀行建議你替{p}開一個529計畫：這筆錢拿去投資，只要用在教育上，增值部分就免稅。州內公立大學光學費一年就要大約11,610美元。",
+     ".yes": "每年存一點",
+     ".yes.s": "每年大約{a}，存到孩子18歲。",
+     ".yes.h": "投資股票；州稅抵扣大約多給5%。",
+     ".big": "多存一些",
+     ".big.s": "每年大約{a}，存到孩子18歲。",
+     ".big.h": "投資股票；州稅抵扣大約多給5%。",
+     ".no": "先不開",
+     ".no.s": "錢留著比較靈活。",
+     "trk.us_529": "529大學儲蓄"
+    }
+   }
+  },
+  {
+   "id": "us_reserve",
+   "src": "Army Reserve: one weekend a month and two weeks a year; drill pay for a junior soldier is a few thousand dollars a year (DFAS pay tables), and Tuition Assistance pays up to $4,500 a year for courses (U.S. Army). USERRA protects your civilian job while you serve (US Department of Labor). Pay, the skill gained and the chance of being deployed are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    20,
+    32
+   ],
+   "weight": 0.3,
+   "when": {
+    "working": true,
+    "stats": {
+     "health": "> 55"
+    }
+   },
+   "def": "no",
+   "tarot": "gym",
+   "art": {
+    "draw": "service",
+    "bg": "mi"
+   },
+   "opts": [
+    {
+     "id": "join",
+     "hint": true,
+     "do": "T('us_res', { kind: 'custom', label: M('trk.us_res') }); rec('us_res', -.12 * base, 6); addSkill('us_res', 3, M('trk.us_ressk')); rl(-1); happy -= 1",
+     "next": {
+      "event": "us_reserve2",
+      "in": [
+       1,
+       5
+      ],
+      "p": 0.3
+     }
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Army Reserve",
+     ".x": "A recruiter at a job fair says the Army Reserve would pay you for one weekend a month and two weeks a year, and help pay for courses.",
+     ".join": "Sign up for six years",
+     ".join.s": "Drill pay on top of your job; your employer must keep your job for you if you are called up.",
+     ".join.h": "Extra pay of about an eighth of a typical wage a year; Skill +3; Happiness and Relationships −1; you could be deployed.",
+     ".no": "Not for you",
+     ".no.s": "Your weekends stay your own.",
+     "trk.us_res": "Army Reserve pay",
+     "trk.us_ressk": "Army Reserve training"
+    },
+    "zh": {
+     ".t": "陆军预备役",
+     ".x": "招募人员在招聘会上说，参加陆军预备役每个月一个周末、每年两个星期，都有薪水可拿，还能补助上课的学费。",
+     ".join": "签六年",
+     ".join.s": "正职之外多一份训练薪水；如果被征召，雇主必须替你保留职位。",
+     ".join.h": "每年多赚大约八分之一个一般工资；能力 +3；幸福感和人际关系 −1；有可能被派去海外。",
+     ".no": "不适合你",
+     ".no.s": "周末还是你自己的。",
+     "trk.us_res": "预备役薪水",
+     "trk.us_ressk": "预备役训练"
+    },
+    "zht": {
+     ".t": "陸軍後備部隊",
+     ".x": "招募人員在就業博覽會上說，參加陸軍後備部隊每個月一個週末、每年兩個星期，都有薪水可拿，還能補助上課的學費。",
+     ".join": "簽六年",
+     ".join.s": "正職之外多一份訓練薪水；如果被徵召，雇主必須替你保留職位。",
+     ".join.h": "每年多賺大約八分之一個一般薪資；能力 +3；幸福感和人際關係 −1；有可能被派去海外。",
+     ".no": "不適合你",
+     ".no.s": "週末還是你自己的。",
+     "trk.us_res": "後備部隊薪水",
+     "trk.us_ressk": "後備部隊訓練"
+    }
+   }
+  },
+  {
+   "id": "us_reserve2",
+   "src": "Reserve units are mobilised for deployments of up to a year, and employers must rehire returning service members (USERRA, US Department of Labor). Effects are an ESTIMATE.",
+   "chain": true,
+   "def": "go",
+   "tarot": "abroad",
+   "art": {
+    "draw": "passport",
+    "bg": "wh"
+   },
+   "opts": [
+    {
+     "id": "go",
+     "hint": true,
+     "do": "happy -= 6; rl(-5); health -= 2; if (roll('us_dep') < .1) health -= 8"
+    },
+    {
+     "id": "plan",
+     "sub": {
+      "a": "MN(.04 * base)"
+     },
+     "hint": true,
+     "do": "pay(.04 * base); happy -= 4; rl(-2); health -= 2; if (roll('us_dep') < .1) health -= 8"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Called up",
+     ".x": "Your Reserve unit is being sent overseas for nine months. Your job will be waiting when you come back.",
+     ".go": "Go, and hope all is well at home",
+     ".go.s": "Nine months away.",
+     ".go.h": "Happiness −6, Relationships −5, Health −2; a small chance of an injury.",
+     ".plan": "Go, after arranging help at home",
+     ".plan.s": "About {a} for someone to look after the bills, the house and the people you leave behind.",
+     ".plan.h": "Happiness −4, Relationships −2, Health −2."
+    },
+    "zh": {
+     ".t": "被征召",
+     ".x": "你所在的预备役部队要派驻海外九个月。等你回来，工作还会在。",
+     ".go": "出发，希望家里一切都好",
+     ".go.s": "离开九个月。",
+     ".go.h": "幸福感 −6，人际关系 −5，健康 −2；有一点受伤的风险。",
+     ".plan": "安排好家里再出发",
+     ".plan.s": "花大约{a}请人帮忙照顾账单、房子和家人。",
+     ".plan.h": "幸福感 −4，人际关系 −2，健康 −2。"
+    },
+    "zht": {
+     ".t": "接到動員令",
+     ".x": "你所在的後備部隊要派駐海外九個月。等你回來，工作還會在。",
+     ".go": "出發，希望家裡一切都好",
+     ".go.s": "離開九個月。",
+     ".go.h": "幸福感 −6，人際關係 −5，健康 −2；有一點受傷的風險。",
+     ".plan": "安排好家裡再出發",
+     ".plan.s": "花大約{a}請人幫忙照顧帳單、房子和家人。",
+     ".plan.h": "幸福感 −4，人際關係 −2，健康 −2。"
+    }
+   }
+  },
+  {
+   "id": "us_flood",
+   "src": "Flood insurance: standard homeowners policies don’t cover flood damage; cover comes from FEMA’s National Flood Insurance Program or private insurers, usually after a 30-day wait (FEMA). Only a small share of homeowners have it, about 4% nationally (FEMA estimates, widely reported after Hurricane Helene in 2024). Premiums and the cost of preparing are an ESTIMATE; how often a flood or storm reaches you comes from EM-DAT (js/data.js). Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    28,
+    70
+   ],
+   "weight": 0.4,
+   "when": {
+    "house": true
+   },
+   "def": "none",
+   "tarot": "crash",
+   "art": {
+    "draw": "flood",
+    "bg": "wh"
+   },
+   "use": "flood",
+   "with": {
+    "aid": 0.05,
+    "prem": 0.03,
+    "prep": 0.05
+   },
+   "i18n": {
+    "en": {
+     ".t": "Flood insurance",
+     ".x": "Your homeowners policy, you discover, doesn’t cover flood damage. After Hurricane Helene in 2024, most flooded homes in the mountains of North Carolina had no flood cover."
+    },
+    "zh": {
+     ".t": "洪水保险",
+     ".x": "你这才发现，房屋保险并不赔洪水造成的损失。2024年飓风海伦过后，北卡罗来纳州山区被淹的房子大多没有洪水保险。"
+    },
+    "zht": {
+     ".t": "洪水保險",
+     ".x": "你這才發現，房屋保險並不賠洪水造成的損失。2024年颶風海倫過後，北卡羅來納州山區被淹的房子大多沒有洪水保險。"
+    }
+   }
+  },
+  {
+   "id": "us_cc",
+   "src": "Community college: average published tuition and fees were $4,050 a year at public two-year colleges and $11,610 in-state at public four-year colleges in 2024-25 (College Board, Trends in College Pricing 2024). Of students who start at a community college, about one in six earns a bachelor’s degree within six years (Community College Research Center, Tracking Transfer, 2024). The fees saved and the chance of not finishing are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    18,
+    19
+   ],
+   "weight": 0.45,
+   "when": {
+    "studying": true,
+    "test": "study.k === 'uni'"
+   },
+   "def": "four",
+   "tarot": "tuition",
+   "art": {
+    "draw": "gradloan",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "cc",
+     "hint": true,
+     "do": "const c = trk.sk_edu ? trk.sk_edu.cost : 0, x = Math.min(.35 * c, .45 * base), y = Math.min(sloan, x); sloan -= y; cash += x - y; if (roll('us_cc') < .3) bump('us_cc', .9, M('trk.us_cc'))"
+    },
+    {
+     "id": "four"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Community college first?",
+     ".x": "You have a place at the state university. A counsellor suggests two years at the community college first, at about a third of the tuition, then transferring to finish the degree.",
+     ".cc": "Start at community college",
+     ".cc.s": "About a third of the tuition for the first two years.",
+     ".cc.h": "Saves on fees and loans, but some credits don’t transfer and some students never finish the degree.",
+     ".four": "Go straight to the university",
+     ".four.s": "Four years on campus.",
+     "trk.us_cc": "A degree that stalled after community college"
+    },
+    "zh": {
+     ".t": "先读社区大学？",
+     ".x": "你考上了州立大学。辅导老师建议你先在社区大学读两年，学费只要三分之一左右，再转学完成学位。",
+     ".cc": "先读社区大学",
+     ".cc.s": "前两年学费大约三分之一。",
+     ".cc.h": "省下学费和贷款，但有些学分转不过去，也有人一直没读完学位。",
+     ".four": "直接上大学",
+     ".four.s": "在校园里读四年。",
+     "trk.us_cc": "社区大学之后没读完的学位"
+    },
+    "zht": {
+     ".t": "先讀社區大學？",
+     ".x": "你考上了州立大學。輔導老師建議你先在社區大學讀兩年，學費只要三分之一左右，再轉學完成學位。",
+     ".cc": "先讀社區大學",
+     ".cc.s": "前兩年學費大約三分之一。",
+     ".cc.h": "省下學費和貸款，但有些學分轉不過去，也有人一直沒讀完學位。",
+     ".four": "直接上大學",
+     ".four.s": "在校園裡讀四年。",
+     "trk.us_cc": "社區大學之後沒讀完的學位"
+    }
+   }
+  },
+  {
+   "id": "us_401kl",
+   "src": "401(k) loans: most plans let you borrow up to half your balance, at most $50,000, repaid with interest into your own account through payroll within five years; if you leave the job, what is left soon falls due or is taxed as a withdrawal, with a 10% penalty before 59½ (IRS). Credit card interest averaged over 20% a year in 2025 (Federal Reserve G.19). The repair bill and the chance of losing the job meanwhile are an ESTIMATE. Amounts are compared with the game’s typical wage in the United States, $35,000 a year.",
+   "age": [
+    30,
+    55
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "test": "!!lots.k401 && lots.k401.v > .6 * base && cash < .1 * base"
+   },
+   "def": "card",
+   "tarot": "idle",
+   "art": {
+    "draw": "cashout",
+    "bg": "ya"
+   },
+   "let": {
+    "x": "Math.min(.5 * lots.k401.v, .3 * base)"
+   },
+   "vars": {
+    "a": "MN(x)"
+   },
+   "opts": [
+    {
+     "id": "borrow",
+     "sub": {
+      "b": "MN(.22 * x)"
+     },
+     "hint": true,
+     "do": "const l = lots.k401; l.v -= x; l.tout += x; yearly('k401', { amt: .22 * x, until: age + 5 }, {}); T('us_kloan', { kind: 'custom', label: M('trk.us_kloan'), note: M('note.us_kloan', { a: MN(x) }) }); later(age + 2, 'us_kl', { x: x })"
+    },
+    {
+     "id": "card",
+     "sub": {
+      "a": "MN(x)"
+     },
+     "hint": true,
+     "do": "pay(x)"
+    }
+   ],
+   "later": {
+    "us_kl": "if (!working()) { pay(.2 * x.x); log(M('log.us_kl', { a: MN(.2 * x.x) }), 'bad') }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Borrow from your 401(k)?",
+     ".x": "The roof needs fixing now, about {a}, and your savings are thin. Your 401(k) lets you borrow from yourself and pay it back from your paycheck.",
+     ".borrow": "Take a 401(k) loan",
+     ".borrow.s": "Repay about {b} a year for five years, into your own account.",
+     ".borrow.h": "No credit check and the interest goes to you, but the money misses the market meanwhile; if you lose your job, the rest falls due.",
+     ".card": "Put it on a credit card",
+     ".card.s": "{a} on the card.",
+     ".card.h": "Card interest runs at over 20% a year until it is paid.",
+     "trk.us_kloan": "401(k) loan",
+     "note.us_kloan": "Borrowed {a} from yourself",
+     "log.us_kl": "You lost your job with a 401(k) loan still open; tax and a penalty on the rest cost {a}."
+    },
+    "zh": {
+     ".t": "向自己的401(k)借钱？",
+     ".x": "屋顶现在就得修，大约要{a}，可你的存款不多。401(k)可以让你向自己借钱，再从薪水里慢慢还。",
+     ".borrow": "用401(k)贷款",
+     ".borrow.s": "五年内每年还大约{b}，还进你自己的账户。",
+     ".borrow.h": "不查信用，利息也付给自己，但这段时间钱不在股市里；要是丢了工作，剩下的要马上还。",
+     ".card": "刷信用卡",
+     ".card.s": "刷{a}。",
+     ".card.h": "还清之前，信用卡利息一年超过20%。",
+     "trk.us_kloan": "401(k)贷款",
+     "note.us_kloan": "向自己借了{a}",
+     "log.us_kl": "你丢了工作，401(k)贷款还没还完；剩下的部分被课税加罚款，花掉{a}。"
+    },
+    "zht": {
+     ".t": "向自己的401(k)借錢？",
+     ".x": "屋頂現在就得修，大約要{a}，可是你的存款不多。401(k)可以讓你向自己借錢，再從薪水裡慢慢還。",
+     ".borrow": "用401(k)貸款",
+     ".borrow.s": "五年內每年還大約{b}，還進你自己的帳戶。",
+     ".borrow.h": "不查信用，利息也付給自己，但這段時間錢不在股市裡；要是丟了工作，剩下的要馬上還。",
+     ".card": "刷信用卡",
+     ".card.s": "刷{a}。",
+     ".card.h": "還清之前，信用卡利息一年超過20%。",
+     "trk.us_kloan": "401(k)貸款",
+     "note.us_kloan": "向自己借了{a}",
+     "log.us_kl": "你丟了工作，401(k)貸款還沒還完；剩下的部分被課稅加罰款，花掉{a}。"
+    }
+   }
   }
  ]
 }

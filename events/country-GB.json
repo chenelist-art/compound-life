@@ -440,6 +440,960 @@
      "trk.pbond": "有獎債券"
     }
    }
+  },
+  {
+   "id": "gb_salsac",
+   "src": "Higher-rate pension saving: income tax is 40% on pay above £50,270 in 2025-26, a threshold frozen until 2031 (HMRC; Autumn Budget, Nov 2025). Salary sacrifice also saves employee National Insurance; from April 2029 only the first £2,000 a year sacrificed stays free of National Insurance (Autumn Budget 2025). Pensions can be drawn from 57 from 2028 (HMRC). The tax relief after the tax paid on drawing it (about 50% on top) is an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    30,
+    55
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "stats": {
+     "salary": "> 2.9 * base"
+    }
+   },
+   "def": "no",
+   "tarot": "scheme",
+   "art": {
+    "draw": "penjar",
+    "bg": "mi"
+   },
+   "let": {
+    "w": "salary()"
+   },
+   "opts": [
+    {
+     "id": "ss",
+     "sub": {
+      "a": "MN(.08 * w)"
+     },
+     "hint": true,
+     "do": "yearly('gb_ss', { p: .08, until: 67, bonus: .5 }, { lock: 57 }, 'trk.gb_ss')"
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Salary sacrifice",
+     ".x": "Your pay is now in the 40% tax band. HR explains that if you give up part of your salary, the company pays it straight into your pension, so you save the income tax and National Insurance on it.",
+     ".ss": "Sacrifice 8% of your pay",
+     ".ss.s": "About {a} a year of your pay goes into the pension instead. Locked until 57.",
+     ".ss.h": "Tax relief adds about 50% on top, after the tax you pay when you draw it.",
+     ".no": "Keep your pay as it is",
+     ".no.s": "You pay tax on all of it now.",
+     "trk.gb_ss": "Salary sacrifice into your pension"
+    },
+    "zh": {
+     ".t": "以薪换养老金",
+     ".x": "你的薪水已经进了40%的税率档。人事部说，只要放弃一部分薪水，公司就把这笔钱直接存进你的养老金，你就能省下这部分的所得税和国民保险。",
+     ".ss": "拿8%的薪水换养老金",
+     ".ss.s": "每年大约{a}的薪水改存进养老金。57岁前不能动用。",
+     ".ss.h": "扣掉将来领取时要缴的税，税务减免大约再多给50%。",
+     ".no": "薪水照旧",
+     ".no.s": "现在全部照常缴税。",
+     "trk.gb_ss": "以薪换来的养老金"
+    },
+    "zht": {
+     ".t": "以薪資換退休金",
+     ".x": "你的薪水已經進了40%的稅率級距。人資部說，只要放棄一部分薪水，公司就把這筆錢直接存進你的退休金，你就能省下這部分的所得稅和國民保險。",
+     ".ss": "拿8%的薪水換退休金",
+     ".ss.s": "每年大約{a}的薪水改存進退休金。57歲前不能動用。",
+     ".ss.h": "扣掉將來領取時要繳的稅，稅務減免大約再多給50%。",
+     ".no": "薪水照舊",
+     ".no.s": "現在全部照常繳稅。",
+     "trk.gb_ss": "以薪資換來的退休金"
+    }
+   }
+  },
+  {
+   "id": "gb_contract",
+   "src": "Contracting: since April 2021, medium and large private-sector clients decide whether a contract falls inside IR35, in which case the contractor is taxed like an employee (HMRC off-payroll working rules). Day rates, gaps between contracts and the pay effects are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    27,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "careerType": [
+     "office"
+    ],
+    "stats": {
+     "skill": "> 30"
+    }
+   },
+   "def": "stay",
+   "tarot": "biz",
+   "art": {
+    "draw": "suit",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "go",
+     "hint": true,
+     "do": "tmpPay('gb_ltd', 1.35, 5, 'trk.gb_ltd'); layM = (layM || 1) * 1.6; happy += 1",
+     "next": {
+      "event": "gb_ir35",
+      "in": [
+       1,
+       3
+      ],
+      "p": 0.45
+     }
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Go contracting?",
+     ".x": "A recruiter offers you a six-month contract through your own limited company, at a day rate worth far more than your salary. No sick pay, no holiday pay, no employer pension.",
+     ".go": "Set up a company and go",
+     ".go.s": "A day rate instead of a salary; you find the next contract yourself.",
+     ".go.h": "Pay about 35% higher for five years, but more gaps between jobs; Happiness +1.",
+     ".stay": "Stay employed",
+     ".stay.s": "A salary, sick pay and a pension.",
+     "trk.gb_ltd": "Contracting through your own company"
+    },
+    "zh": {
+     ".t": "去当合约顾问？",
+     ".x": "猎头给你一份为期六个月的合约，要你开一家自己的有限公司来接，日薪比你现在的薪水高很多。没有病假工资、没有带薪假，也没有雇主养老金。",
+     ".go": "开公司去接合约",
+     ".go.s": "领日薪而不是月薪；下一份合约得自己找。",
+     ".go.h": "五年内收入高约35%，但空窗期更多；幸福感 +1。",
+     ".stay": "继续当员工",
+     ".stay.s": "有月薪、病假工资和养老金。",
+     "trk.gb_ltd": "开公司接合约"
+    },
+    "zht": {
+     ".t": "去當約聘顧問？",
+     ".x": "獵頭給你一份為期六個月的合約，要你開一家自己的有限公司來接，日薪比你現在的薪水高很多。沒有病假薪資、沒有特休，也沒有雇主提撥的退休金。",
+     ".go": "開公司去接合約",
+     ".go.s": "領日薪而不是月薪；下一份合約得自己找。",
+     ".go.h": "五年內收入高約35%，但空窗期更多；幸福感 +1。",
+     ".stay": "繼續當員工",
+     ".stay.s": "有月薪、病假薪資和退休金。",
+     "trk.gb_ltd": "開公司接合約"
+    }
+   }
+  },
+  {
+   "id": "gb_ir35",
+   "src": "IR35: inside IR35, tax and National Insurance are taken as if you were an employee, without employee rights (HMRC). Effects are an ESTIMATE.",
+   "chain": true,
+   "def": "accept",
+   "tarot": "save2",
+   "art": {
+    "draw": "tax",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "accept",
+     "hint": true,
+     "do": "tmpPay('gb_ir35', .8, 2, 'trk.gb_ir35'); happy -= 1"
+    },
+    {
+     "id": "hunt",
+     "hint": true,
+     "do": "if (roll('gb_ir35') < .5) tmpPay('gb_gap', .6, 1, 'trk.gb_gap'); happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Inside IR35",
+     ".x": "Your client has decided your contract falls inside IR35. From next month, tax and National Insurance come off your day rate as if you were an employee, but you still get no holiday or sick pay.",
+     ".accept": "Accept it and carry on",
+     ".accept.s": "The same work, less take-home pay.",
+     ".accept.h": "Pay about 20% lower for two years; Happiness −1.",
+     ".hunt": "Look for a client outside IR35",
+     ".hunt.s": "Some agencies still offer them.",
+     ".hunt.h": "Half the time it takes months to find one; Happiness −1.",
+     "trk.gb_ir35": "A contract inside IR35",
+     "trk.gb_gap": "Months between contracts"
+    },
+    "zh": {
+     ".t": "被判定适用IR35",
+     ".x": "客户判定你的合约适用IR35。从下个月起，你的日薪要像员工一样扣所得税和国民保险，可你还是没有带薪假和病假工资。",
+     ".accept": "接受，继续做",
+     ".accept.s": "工作一样，到手的钱变少。",
+     ".accept.h": "两年内收入低约20%；幸福感 −1。",
+     ".hunt": "找不适用IR35的客户",
+     ".hunt.s": "有些中介还有这种合约。",
+     ".hunt.h": "有一半的机会要找上好几个月；幸福感 −1。",
+     "trk.gb_ir35": "适用IR35的合约",
+     "trk.gb_gap": "合约之间的空窗"
+    },
+    "zht": {
+     ".t": "被認定適用IR35",
+     ".x": "客戶認定你的合約適用IR35。從下個月起，你的日薪要像員工一樣扣所得稅和國民保險，可是你還是沒有特休和病假薪資。",
+     ".accept": "接受，繼續做",
+     ".accept.s": "工作一樣，到手的錢變少。",
+     ".accept.h": "兩年內收入低約20%；幸福感 −1。",
+     ".hunt": "找不適用IR35的客戶",
+     ".hunt.s": "有些仲介還有這種合約。",
+     ".hunt.h": "有一半的機會要找上好幾個月；幸福感 −1。",
+     "trk.gb_ir35": "適用IR35的合約",
+     "trk.gb_gap": "合約之間的空窗"
+    }
+   }
+  },
+  {
+   "id": "gb_pcp",
+   "src": "Car finance: about nine in ten private new-car purchases in the UK are financed, mostly through Personal Contract Purchase (Finance & Leasing Association). PCP payments (about £350 a month ≈ 0.24 a year) and used-car prices are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    22,
+    45
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true
+   },
+   "def": "none",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {
+     "id": "pcp",
+     "sub": {
+      "a": "MN(.24 * base)"
+     },
+     "hint": true,
+     "do": "T('gb_pcp', { kind: 'ghost', label: M('trk.gb_pcp') }); rec('gb_pcp', .24 * base, 4); happy += 3",
+     "next": {
+      "event": "gb_pcp2",
+      "in": [
+       3,
+       8
+      ],
+      "p": 0.5
+     }
+    },
+    {
+     "id": "used",
+     "sub": {
+      "a": "MN(.35 * base)"
+     },
+     "hint": true,
+     "do": "spend('gb_used', .35 * base, 'trk.gb_used'); happy += 1"
+    },
+    {
+     "id": "none"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new car on PCP",
+     ".x": "The dealer’s offer: a new hatchback for a small deposit and a monthly payment. After four years you can hand it back, pay the final balloon payment, or swap it for another new car.",
+     ".pcp": "Sign the PCP deal",
+     ".pcp.s": "About {a} a year for four years, then hand it back or pay the balloon.",
+     ".pcp.h": "Happiness +3; at the end you own nothing unless you pay the balloon.",
+     ".used": "A used car, paid in cash",
+     ".used.s": "About {a}.",
+     ".used.h": "Happiness +1.",
+     ".none": "Manage without a car",
+     ".none.s": "A bus pass and the odd taxi.",
+     "trk.gb_pcp": "A car on PCP",
+     "trk.gb_used": "A used car"
+    },
+    "zh": {
+     ".t": "用PCP方案买新车",
+     ".x": "车行的方案：付一点订金再按月付款，就能开走一辆新的掀背车。四年后可以还车、付最后一笔尾款买下，或是换一辆新车。",
+     ".pcp": "签PCP方案",
+     ".pcp.s": "四年内每年大约{a}，之后还车或付尾款。",
+     ".pcp.h": "幸福感 +3；最后不付尾款的话，车就不是你的。",
+     ".used": "付现金买二手车",
+     ".used.s": "大约{a}。",
+     ".used.h": "幸福感 +1。",
+     ".none": "不买车",
+     ".none.s": "靠公交月票，偶尔打车。",
+     "trk.gb_pcp": "PCP方案的车",
+     "trk.gb_used": "二手车"
+    },
+    "zht": {
+     ".t": "用PCP方案買新車",
+     ".x": "車商的方案：付一點訂金再按月付款，就能開走一輛新的掀背車。四年後可以還車、付最後一筆尾款買下，或是換一輛新車。",
+     ".pcp": "簽PCP方案",
+     ".pcp.s": "四年內每年大約{a}，之後還車或付尾款。",
+     ".pcp.h": "幸福感 +3；最後不付尾款的話，車子就不是你的。",
+     ".used": "付現金買二手車",
+     ".used.s": "大約{a}。",
+     ".used.h": "幸福感 +1。",
+     ".none": "不買車",
+     ".none.s": "靠公車月票，偶爾搭計程車。",
+     "trk.gb_pcp": "PCP方案的車",
+     "trk.gb_used": "二手車"
+    }
+   }
+  },
+  {
+   "id": "gb_pcp2",
+   "src": "Motor finance redress: after finding that commission paid to dealers was not properly disclosed, the FCA set up a redress scheme in March 2026 for agreements from 2007 to 2024: about 12.1 million eligible agreements and an average payment of about £829 (≈ 0.047) (FCA PS26/3, via Slaughter and May and Mayer Brown). Claiming is free; the FCA has warned that claims firms can take a large share, up to about 30% (FCA). The fee used is an ESTIMATE.",
+   "chain": true,
+   "def": "self",
+   "tarot": "save2",
+   "art": {
+    "draw": "bill",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "self",
+     "sub": {
+      "a": "MN(.047 * base)"
+     },
+     "do": "cash += .047 * base; happy += 1"
+    },
+    {
+     "id": "firm",
+     "sub": {
+      "a": "MN(.033 * base)"
+     },
+     "do": "cash += .033 * base"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A letter about your car finance",
+     ".x": "Your old car finance company writes: the dealer’s commission wasn’t properly disclosed, and under the FCA’s redress scheme you are owed compensation. A claims firm has also texted, offering to handle it for you.",
+     ".self": "Reply to the lender yourself",
+     ".self.s": "About {a}, free to claim.",
+     ".firm": "Let the claims firm handle it",
+     ".firm.s": "About {a} after their fee."
+    },
+    "zh": {
+     ".t": "一封关于车贷的信",
+     ".x": "以前的车贷公司来信说，车行拿的佣金当初没有好好告知你，依照金融行为监管局的赔偿方案，你可以拿到补偿。另外有一家索赔公司发短信来，说可以帮你办。",
+     ".self": "自己回复贷款公司",
+     ".self.s": "大约{a}，申请不用钱。",
+     ".firm": "交给索赔公司办",
+     ".firm.s": "扣掉手续费后大约{a}。"
+    },
+    "zht": {
+     ".t": "一封關於車貸的信",
+     ".x": "以前的車貸公司來信說，車商拿的佣金當初沒有好好告知你，依照金融行為監理局的賠償方案，你可以拿到補償。另外有一家索賠公司傳簡訊來，說可以幫你辦。",
+     ".self": "自己回覆貸款公司",
+     ".self.s": "大約{a}，申請不用錢。",
+     ".firm": "交給索賠公司辦",
+     ".firm.s": "扣掉手續費後大約{a}。"
+    }
+   }
+  },
+  {
+   "id": "gb_apprent",
+   "src": "Degree apprenticeships: you work for an employer and study for a bachelor’s degree with no tuition fees, which the employer and the apprenticeship levy pay (GOV.UK). University tuition fees in England are up to £9,535 a year in 2025-26 (DfE). There were 353,500 apprenticeship starts at all levels in England in 2024-25 (House of Commons Library). Places are competitive; pay while training (about £20,000 ≈ 1.1) and the skill gained are an ESTIMATE. Choosing it counts as a degree, so the card at 18 is skipped. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    17,
+    18
+   ],
+   "weight": 0.55,
+   "when": {
+    "test": "!done.edu && !leftAt"
+   },
+   "def": "uni",
+   "tarot": "tuition",
+   "art": {
+    "draw": "tools",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "app",
+     "ok": "skill() >= 18 || M('.need')",
+     "sub": {
+      "a": "MN(1.1 * base)"
+     },
+     "hint": true,
+     "do": "done.edu = 'uni'; const lab = M('lbl.gb_app'); study = { end: age + 4, gain: 5.5 * learnLuck('gb_app'), pt: 1.1, label: lab, k: 'uni' }; T('sk_edu', { kind: 'skill', label: lab })"
+    },
+    {
+     "id": "uni"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A degree apprenticeship?",
+     ".x": "Instead of going to university, you could apply for a degree apprenticeship: four years working for an employer while you study for the same bachelor’s degree, with no tuition fees. University fees in England are up to £9,535 a year.",
+     ".app": "Apply for a degree apprenticeship",
+     ".app.s": "Paid about {a} a year while you train, and no student loan.",
+     ".app.h": "Skill +5.5 a year for 4 years; it counts as a degree.",
+     ".need": "Places are competitive, and your grades aren’t high enough.",
+     ".uni": "Stay on the usual path",
+     ".uni.s": "Then choose between university, college and work.",
+     "lbl.gb_app": "Degree apprenticeship"
+    },
+    "zh": {
+     ".t": "学位学徒制？",
+     ".x": "除了上大学，你也可以申请学位学徒制：一边在公司工作四年，一边读同样的学士学位，而且不用学费。英格兰的大学学费一年最高9,535英镑。",
+     ".app": "申请学位学徒制",
+     ".app.s": "受训期间每年大约{a}的薪水，也不用背学贷。",
+     ".app.h": "四年内每年能力 +5.5；算作大学学历。",
+     ".need": "名额竞争激烈，你的成绩不够。",
+     ".uni": "照常升学",
+     ".uni.s": "接着在大学、专科和工作之间选。",
+     "lbl.gb_app": "学位学徒"
+    },
+    "zht": {
+     ".t": "學位學徒制？",
+     ".x": "除了上大學，你也可以申請學位學徒制：一邊在公司工作四年，一邊讀同樣的學士學位，而且不用學費。英格蘭的大學學費一年最高9,535英鎊。",
+     ".app": "申請學位學徒制",
+     ".app.s": "受訓期間每年大約{a}的薪水，也不用背學貸。",
+     ".app.h": "四年內每年能力 +5.5；算作大學學歷。",
+     ".need": "名額競爭激烈，你的成績不夠。",
+     ".uni": "照常升學",
+     ".uni.s": "接著在大學、專科和工作之間選。",
+     "lbl.gb_app": "學位學徒"
+    }
+   }
+  },
+  {
+   "id": "gb_hts",
+   "src": "Help to Save: people on Universal Credit with earnings can save up to £50 a month for four years and get a 50% government bonus, up to £1,200 (GOV.UK); the scheme runs to at least April 2027. £600 a year (≈ 0.034) and who qualifies here are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    20,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "stats": {
+     "salary": "< 1.2 * base"
+    }
+   },
+   "def": "no",
+   "tarot": "save",
+   "art": {
+    "draw": "wallet",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "save",
+     "sub": {
+      "a": "MN(.034 * base)"
+     },
+     "hint": true,
+     "do": "yearly('gb_hts', { amt: .034 * base, until: age + 4, bonus: .5 }, { rate: 0 }, 'trk.gb_hts')"
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Help to Save",
+     ".x": "Because you get Universal Credit, you can open a Help to Save account: put in up to £50 a month for four years and the government adds 50% on top.",
+     ".save": "Open one and save £50 a month",
+     ".save.s": "About {a} a year for four years.",
+     ".save.h": "The bonus adds half of what you save.",
+     ".no": "Not now",
+     ".no.s": "Money is too tight.",
+     "trk.gb_hts": "Help to Save"
+    },
+    "zh": {
+     ".t": "储蓄补助计划",
+     ".x": "因为你领综合救济金，可以开一个“帮你存钱”账户：四年内每月最多存50英镑，政府再加给你50%。",
+     ".save": "开户，每月存50英镑",
+     ".save.s": "四年内每年大约{a}。",
+     ".save.h": "奖励金是你存的钱的一半。",
+     ".no": "先不要",
+     ".no.s": "手头太紧。",
+     "trk.gb_hts": "储蓄补助账户"
+    },
+    "zht": {
+     ".t": "儲蓄補助計畫",
+     ".x": "因為你領綜合救助金，可以開一個「幫你存錢」帳戶：四年內每月最多存50英鎊，政府再加給你50%。",
+     ".save": "開戶，每月存50英鎊",
+     ".save.s": "四年內每年大約{a}。",
+     ".save.h": "獎勵金是你存的錢的一半。",
+     ".no": "先不要",
+     ".no.s": "手頭太緊。",
+     "trk.gb_hts": "儲蓄補助帳戶"
+    }
+   }
+  },
+  {
+   "id": "gb_iva",
+   "src": "Debt solutions in England and Wales: an Individual Voluntary Arrangement is a legally binding deal to repay what you can afford, usually over five years, after which the rest is written off; a Debt Relief Order covers debts up to £50,000 for people with little income or assets, and has had no fee since April 2024 (Insolvency Service, GOV.UK). Both stay on your credit file for six years. The share repaid and who qualifies here are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    25,
+    55
+   ],
+   "weight": 0.5,
+   "when": {
+    "stats": {
+     "debt": "> .8 * base"
+    }
+   },
+   "def": "pay",
+   "tarot": "debt",
+   "art": {
+    "draw": "bill",
+    "bg": "mi"
+   },
+   "vars": {
+    "a": "MN(debt)"
+   },
+   "opts": [
+    {
+     "id": "iva",
+     "sub": {
+      "a": "MN(.1 * debt)"
+     },
+     "hint": true,
+     "do": "const x = debt; debt = 0; T('gb_iva', { kind: 'custom', label: M('trk.gb_iva') }); rec('gb_iva', .1 * x, 5); happy += 3"
+    },
+    {
+     "id": "dro",
+     "show": "debt < 2.8 * base && salary() < .9 * base && !house",
+     "hint": true,
+     "do": "debt = 0; happy += 4"
+    },
+    {
+     "id": "pay",
+     "hint": true
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Drowning in debt",
+     ".x": "Your debts have reached {a}, and the interest is outrunning your payments. A free debt charity explains your options.",
+     ".iva": "An IVA",
+     ".iva.s": "Pay about {a} a year for five years; the rest is written off.",
+     ".iva.h": "Happiness +3; your credit file shows it for six years.",
+     ".dro": "A Debt Relief Order",
+     ".dro.s": "No fee; for people with a low income and few assets.",
+     ".dro.h": "Happiness +4; the debts are written off after a year.",
+     ".pay": "Keep paying what you can",
+     ".pay.s": "Minimum payments, as now.",
+     ".pay.h": "The interest keeps growing.",
+     "trk.gb_iva": "An IVA"
+    },
+    "zh": {
+     ".t": "债务缠身",
+     ".x": "你的债务已经到了{a}，利息涨得比你还得还快。一家免费的债务咨询慈善机构向你说明了几种办法。",
+     ".iva": "个人自愿还款协议（IVA）",
+     ".iva.s": "五年内每年还大约{a}，剩下的一笔勾销。",
+     ".iva.h": "幸福感 +3；信用记录上会留六年。",
+     ".dro": "债务减免令",
+     ".dro.s": "不收费；适用于收入低、资产少的人。",
+     ".dro.h": "幸福感 +4；一年后债务一笔勾销。",
+     ".pay": "能还多少就还多少",
+     ".pay.s": "照现在这样付最低还款。",
+     ".pay.h": "利息会继续累积。",
+     "trk.gb_iva": "个人自愿还款协议"
+    },
+    "zht": {
+     ".t": "債務纏身",
+     ".x": "你的債務已經到了{a}，利息漲得比你還得還快。一家免費的債務諮詢慈善機構向你說明了幾種辦法。",
+     ".iva": "個人自願還款協議（IVA）",
+     ".iva.s": "五年內每年還大約{a}，剩下的一筆勾銷。",
+     ".iva.h": "幸福感 +3；信用紀錄上會留六年。",
+     ".dro": "債務減免令",
+     ".dro.s": "不收費；適用於收入低、資產少的人。",
+     ".dro.h": "幸福感 +4；一年後債務一筆勾銷。",
+     ".pay": "能還多少就還多少",
+     ".pay.s": "照現在這樣付最低還款。",
+     ".pay.h": "利息會繼續累積。",
+     "trk.gb_iva": "個人自願還款協議"
+    }
+   }
+  },
+  {
+   "id": "gb_gift",
+   "src": "Inheritance tax: 40% on estates above the £325,000 nil-rate band, plus up to £175,000 more when a home goes to children, both frozen until at least 2030 (HMRC); gifts are free of inheritance tax if you live seven more years. The game doesn’t charge the tax; the gift’s effect on Happiness and closeness is a game rule (ESTIMATE). Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    65,
+    82
+   ],
+   "weight": 0.45,
+   "when": {
+    "kids": true,
+    "stats": {
+     "netWorth": "> 10 * base",
+     "liquid": "> 2 * base"
+    }
+   },
+   "def": "keep",
+   "tarot": "will",
+   "art": {
+    "draw": "gift",
+    "bg": "wa"
+   },
+   "let": {
+    "a": "Math.min(.15 * netWorth(), .5 * liquid())"
+   },
+   "fn": {
+    "give": {
+     "args": [
+      "x"
+     ],
+     "do": "pay(x); const t = T('gb_gift', { kind: 'custom', label: M('trk.gb_gift') }); t.v -= x; t.note = M('note.gb_gift', { a: MN(x) })"
+    }
+   },
+   "opts": [
+    {
+     "id": "give",
+     "sub": {
+      "a": "MN(a)"
+     },
+     "hint": true,
+     "do": "give(a); bond('kid', 6); happy += 3"
+    },
+    {
+     "id": "small",
+     "sub": {
+      "a": "MN(a / 3)"
+     },
+     "hint": true,
+     "do": "give(a / 3); bond('kid', 3); happy += 1"
+    },
+    {
+     "id": "keep"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Giving while you’re alive",
+     ".x": "Your accountant points out that inheritance tax takes 40% of what you leave above £325,000, but gifts are tax-free if you live another seven years. Your children are raising families of their own.",
+     ".give": "Give them a large gift now",
+     ".give.s": "{a}, shared between them.",
+     ".give.h": "Happiness +3; you grow closer to your children.",
+     ".small": "A smaller gift",
+     ".small.s": "{a}.",
+     ".small.h": "Happiness +1; a little closer to your children.",
+     ".keep": "Keep it for now",
+     ".keep.s": "You might need it for care.",
+     "trk.gb_gift": "Gifts to your children",
+     "note.gb_gift": "Gave {a}"
+    },
+    "zh": {
+     ".t": "生前赠与",
+     ".x": "会计师提醒你，你留下的遗产超过32.5万英镑的部分要缴40%的遗产税，但只要赠与后再活满七年，赠与就免税。你的孩子们都在养自己的家了。",
+     ".give": "现在送一大笔",
+     ".give.s": "{a}，大家平分。",
+     ".give.h": "幸福感 +3；和孩子更亲近。",
+     ".small": "送少一点",
+     ".small.s": "{a}。",
+     ".small.h": "幸福感 +1；和孩子亲近一些。",
+     ".keep": "先留着",
+     ".keep.s": "说不定以后要用来请人照顾。",
+     "trk.gb_gift": "送给孩子的钱",
+     "note.gb_gift": "送出{a}"
+    },
+    "zht": {
+     ".t": "生前贈與",
+     ".x": "會計師提醒你，你留下的遺產超過32.5萬英鎊的部分要繳40%的遺產稅，但只要贈與後再活滿七年，贈與就免稅。你的孩子們都在養自己的家了。",
+     ".give": "現在送一大筆",
+     ".give.s": "{a}，大家平分。",
+     ".give.h": "幸福感 +3；和孩子更親近。",
+     ".small": "送少一點",
+     ".small.s": "{a}。",
+     ".small.h": "幸福感 +1；和孩子親近一些。",
+     ".keep": "先留著",
+     ".keep.s": "說不定以後要用來請人照顧。",
+     "trk.gb_gift": "送給孩子的錢",
+     "note.gb_gift": "送出{a}"
+    }
+   }
+  },
+  {
+   "id": "gb_jisa",
+   "src": "Junior ISA: up to £9,000 a year, invested free of tax; the money belongs to the child, who takes control of it at 18 (HMRC; the allowance stays at £9,000 until at least 2031, Autumn Budget 2025). The yearly amount is an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    22,
+    50
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true
+   },
+   "who": {
+    "role": "kid",
+    "age": [
+     0,
+     3
+    ],
+    "pick": "youngest"
+   },
+   "def": "no",
+   "tarot": "edufund",
+   "art": {
+    "draw": "shares",
+    "bg": "mi"
+   },
+   "vars": {
+    "p": "who(p)"
+   },
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {
+      "a": "MN(.04 * base)"
+     },
+     "hint": true,
+     "do": "yearly('gb_jisa', { amt: .04 * base, until: 18 - p.d }, {}, 'trk.gb_jisa'); next('gb_jisa2', 18 - age - p.d, {})"
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A Junior ISA",
+     ".x": "You could open a Junior ISA for {p}: up to £9,000 a year, invested tax-free. At 18 the money becomes theirs to spend as they like.",
+     ".yes": "Open one and pay in every month",
+     ".yes.s": "About {a} a year until they turn 18.",
+     ".yes.h": "Invested in shares; at 18 it all goes to your child.",
+     ".no": "Not now",
+     ".no.s": "You will save for them your own way.",
+     "trk.gb_jisa": "Junior ISA"
+    },
+    "zh": {
+     ".t": "儿童免税储蓄账户",
+     ".x": "你可以替{p}开一个儿童免税储蓄账户（Junior ISA）：每年最多存9,000英镑，投资免税。到了18岁，这笔钱就归孩子，爱怎么用就怎么用。",
+     ".yes": "开户，每月存钱",
+     ".yes.s": "每年大约{a}，存到孩子18岁。",
+     ".yes.h": "投资股票；18岁时全部归孩子。",
+     ".no": "先不开",
+     ".no.s": "你会用自己的方式替孩子存钱。",
+     "trk.gb_jisa": "儿童免税储蓄账户"
+    },
+    "zht": {
+     ".t": "兒童免稅儲蓄帳戶",
+     ".x": "你可以替{p}開一個兒童免稅儲蓄帳戶（Junior ISA）：每年最多存9,000英鎊，投資免稅。到了18歲，這筆錢就歸孩子，愛怎麼用就怎麼用。",
+     ".yes": "開戶，每月存錢",
+     ".yes.s": "每年大約{a}，存到孩子18歲。",
+     ".yes.h": "投資股票；18歲時全部歸孩子。",
+     ".no": "先不開",
+     ".no.s": "你會用自己的方式替孩子存錢。",
+     "trk.gb_jisa": "兒童免稅儲蓄帳戶"
+    }
+   }
+  },
+  {
+   "id": "gb_jisa2",
+   "src": "Junior ISA: at 18 the account becomes an adult ISA in the child’s name, and they decide what to do with it (HMRC). Effects are a game rule.",
+   "when": {
+    "test": "!!lots.gb_jisa && lots.gb_jisa.v > 0"
+   },
+   "chain": true,
+   "def": "talk",
+   "tarot": "edufund",
+   "art": {
+    "draw": "gift",
+    "bg": "ya"
+   },
+   "fn": {
+    "hand": {
+     "args": [
+      "b"
+     ],
+     "do": "const l = lots.gb_jisa; l.tout += l.v; l.v = 0; stopYearly('gb_jisa'); bond('kid', b)"
+    }
+   },
+   "vars": {
+    "a": "MN(lots.gb_jisa.v)"
+   },
+   "opts": [
+    {
+     "id": "talk",
+     "hint": true,
+     "do": "hand(3)"
+    },
+    {
+     "id": "free",
+     "hint": true,
+     "do": "hand(5); happy += 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Junior ISA at 18",
+     ".x": "Your child has turned 18, and the Junior ISA, now worth {a}, is theirs. They are thinking about buying a car.",
+     ".talk": "Talk them into saving it for a home",
+     ".talk.s": "It’s their decision, but they listen.",
+     ".talk.h": "The money leaves your savings; closeness +3.",
+     ".free": "Let them decide",
+     ".free.s": "A car, a trip or a deposit: their call.",
+     ".free.h": "The money leaves your savings; closeness +5, Happiness +1."
+    },
+    "zh": {
+     ".t": "孩子18岁了",
+     ".x": "孩子满18岁了，那个现在值{a}的储蓄账户归孩子了。孩子正在考虑买车。",
+     ".talk": "劝孩子留着买房",
+     ".talk.s": "决定权在孩子，但孩子听进去了。",
+     ".talk.h": "这笔钱离开你的账户；亲近度 +3。",
+     ".free": "让孩子自己决定",
+     ".free.s": "买车、旅行还是存首付，由孩子决定。",
+     ".free.h": "这笔钱离开你的账户；亲近度 +5，幸福感 +1。"
+    },
+    "zht": {
+     ".t": "孩子18歲了",
+     ".x": "孩子滿18歲了，那個現在值{a}的儲蓄帳戶歸孩子了。孩子正在考慮買車。",
+     ".talk": "勸孩子留著買房",
+     ".talk.s": "決定權在孩子，但孩子聽進去了。",
+     ".talk.h": "這筆錢離開你的帳戶；親近度 +3。",
+     ".free": "讓孩子自己決定",
+     ".free.s": "買車、旅行還是存頭期款，由孩子決定。",
+     ".free.h": "這筆錢離開你的帳戶；親近度 +5，幸福感 +1。"
+    }
+   }
+  },
+  {
+   "id": "gb_dubai",
+   "src": "Working in Dubai: the UAE has no personal income tax on salaries (UAE Ministry of Finance), and around 240,000 British nationals live there (FCDO estimate). The pay rise, the higher rents and school fees and the length of the contract are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    26,
+    45
+   ],
+   "weight": 0.35,
+   "when": {
+    "canWorkAbroad": true,
+    "careerType": [
+     "office"
+    ]
+   },
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {
+    "draw": "ctr",
+    "bg": "wa"
+   },
+   "vars": {
+    "a": "MN(1.5 * salary())"
+   },
+   "use": "ctr",
+   "with": {
+    "m": 1.5,
+    "cm": 1.3,
+    "yrs": 3,
+    "fee": 0.05,
+    "remit": 0
+   },
+   "i18n": {
+    "en": {
+     ".t": "A job in Dubai",
+     ".x": "A firm in Dubai offers you a three-year contract at about {a} a year, with no income tax. Rents and school fees there are steep.",
+     "trk.gb_dubai": "Working in Dubai"
+    },
+    "zh": {
+     ".t": "去迪拜工作",
+     ".x": "迪拜一家公司给你一份三年合约，年薪大约{a}，而且不用缴所得税。不过那里的房租和学费都很贵。",
+     "trk.gb_dubai": "在迪拜工作"
+    },
+    "zht": {
+     ".t": "去杜拜工作",
+     ".x": "杜拜一家公司給你一份三年合約，年薪大約{a}，而且不用繳所得稅。不過那裡的房租和學費都很貴。",
+     "trk.gb_dubai": "在杜拜工作"
+    }
+   }
+  },
+  {
+   "id": "gb_sell",
+   "src": "Renters’ Rights Act 2025: Section 21 ‘no-fault’ evictions ended in England on 1 May 2026; a landlord who wants to sell can still end a tenancy after the first year with four months’ notice (GOV.UK; Shelter). Rents for new lets, moving costs and the discount when buying from the landlord are an ESTIMATE. Amounts are compared with the game’s typical wage in the United Kingdom, about £17,700 a year (28,000 PPP dollars × 0.633).",
+   "age": [
+    24,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "house": false
+   },
+   "def": "near",
+   "tarot": "home",
+   "art": {
+    "draw": "keyhome",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "buy",
+     "show": "liquid() > .12 * price() && !(hWait > age)",
+     "sub": {
+      "a": "MN(.12 * .95 * price())"
+     },
+     "hint": true,
+     "do": "buyAt(.95 * price(), { dp: .1, fee: .02, lk: 'trk.gb_sellb' })"
+    },
+    {
+     "id": "near",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "spend('gb_mv', .05 * base, 'trk.gb_mv'); T('gb_rent', { kind: 'ghost', label: M('trk.gb_rent') }); rec('gb_rent', .04 * base, 5)"
+    },
+    {
+     "id": "far",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "spend('gb_mv', .05 * base, 'trk.gb_mv'); T('gb_far', { kind: 'custom', label: M('trk.gb_far') }); rec('gb_far', -.04 * base, 5, -.3); happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your landlord is selling",
+     ".x": "Your landlord is selling the flat and has given you four months’ notice. Rents for new lets nearby have gone up since you moved in. The landlord would sell it to you first, if you can get a mortgage.",
+     ".buy": "Buy the flat from your landlord",
+     ".buy.s": "A deposit and fees of about {a}.",
+     ".buy.h": "No estate agent: about 5% under the market price.",
+     ".near": "Rent another flat nearby",
+     ".near.s": "About {a} to move, and a higher rent.",
+     ".near.h": "The rent stays higher for the next five years.",
+     ".far": "Move further out",
+     ".far.s": "About {a} to move; a cheaper rent and a longer commute.",
+     ".far.h": "Rent saved, but Health a little lower each year and Happiness −1.",
+     "trk.gb_sellb": "The flat you rented",
+     "trk.gb_mv": "Moving out",
+     "trk.gb_rent": "A higher rent",
+     "trk.gb_far": "Rent saved living further out"
+    },
+    "zh": {
+     ".t": "房东要卖房",
+     ".x": "房东要卖掉这套公寓，给了你四个月的通知。你搬进来之后，附近新出租的房子都涨价了。房东说，如果你申请得到房贷，可以优先卖给你。",
+     ".buy": "向房东买下这套房",
+     ".buy.s": "首付加手续费大约{a}。",
+     ".buy.h": "不经过中介：比市价便宜约5%。",
+     ".near": "在附近另租一间",
+     ".near.s": "搬家大约{a}，房租也更高。",
+     ".near.h": "之后五年房租都比较高。",
+     ".far": "搬到更远的地方",
+     ".far.s": "搬家大约{a}；房租便宜，但通勤更远。",
+     ".far.h": "省下房租，但健康每年少一点，幸福感 −1。",
+     "trk.gb_sellb": "原本租的那套房",
+     "trk.gb_mv": "搬家",
+     "trk.gb_rent": "更高的房租",
+     "trk.gb_far": "住远一点省下的房租"
+    },
+    "zht": {
+     ".t": "房東要賣房",
+     ".x": "房東要賣掉這間公寓，給了你四個月的通知。你搬進來之後，附近新出租的房子都漲價了。房東說，如果你申請得到房貸，可以優先賣給你。",
+     ".buy": "向房東買下這間房",
+     ".buy.s": "頭期款加手續費大約{a}。",
+     ".buy.h": "不經過仲介：比市價便宜約5%。",
+     ".near": "在附近另租一間",
+     ".near.s": "搬家大約{a}，房租也更高。",
+     ".near.h": "之後五年房租都比較高。",
+     ".far": "搬到更遠的地方",
+     ".far.s": "搬家大約{a}；房租便宜，但通勤更遠。",
+     ".far.h": "省下房租，但健康每年少一點，幸福感 −1。",
+     "trk.gb_sellb": "原本租的那間房",
+     "trk.gb_mv": "搬家",
+     "trk.gb_rent": "更高的房租",
+     "trk.gb_far": "住遠一點省下的房租"
+    }
+   }
   }
  ]
 }

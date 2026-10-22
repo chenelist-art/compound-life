@@ -348,6 +348,1049 @@
      ".x": "2024年全國統一公職考試約有210萬人報名，競爭6,640個聯邦職位，約317人爭一個。公職工作穩定，還有退休金。"
     }
    }
+  },
+  {
+   "id": "br_pix",
+   "src": "The ‘new number’ scam: criminals message on WhatsApp pretending to be a relative with a new number and ask for an urgent Pix; in a Mobile Time/Opinion Box survey, 30% of Brazilians with smartphones had been targeted, and 48% of those knew a friend or relative who lost money (via Tecnoblog). Febraban advises checking with the person on their old number first. Banks can try to recover a Pix sent to fraudsters through the Central Bank’s MED, but often can’t. The amount asked (R$3,000 ≈ 0.14) and the chance of getting it back are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    45,
+    75
+   ],
+   "weight": 0.45,
+   "who": {
+    "role": "kid",
+    "age": [
+     16,
+     45
+    ],
+    "pick": "oldest"
+   },
+   "def": "call",
+   "tarot": "scam2",
+   "art": {
+    "draw": "wallet",
+    "bg": "co"
+   },
+   "vars": {
+    "n": "name(p)"
+   },
+   "opts": [
+    {
+     "id": "send",
+     "sub": {
+      "a": "MN(.14 * base)"
+     },
+     "hint": true,
+     "do": "pay(.14 * base); happy -= 3; const t = T('br_pix', { kind: 'custom', label: M('trk.br_pix') }); t.v -= .14 * base; if (roll('br_med') < .15) { cash += .14 * base; t.v += .14 * base }"
+    },
+    {
+     "id": "call"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A message from a new number",
+     ".x": "A WhatsApp message from an unknown number, with {n}’s photo: “Hi, it’s me, I changed my number. I have to pay a bill today and my bank app is blocked. Can you send a Pix? I’ll pay you back tomorrow.”",
+     ".send": "Send the Pix",
+     ".send.s": "About {a}.",
+     ".send.h": "It is almost always a scam, and the bank rarely gets the money back; Happiness −3.",
+     ".call": "Call them on the old number first",
+     ".call.s": "One minute to check.",
+     "trk.br_pix": "A Pix to a scammer"
+    },
+    "zh": {
+     ".t": "陌生号码传来的讯息",
+     ".x": "一个陌生号码在WhatsApp上传来讯息，头像是{n}的照片：“嗨，是我，我换号码了。今天得付一笔账单，可是银行App被锁了，你能先用Pix转给我吗？明天就还你。”",
+     ".send": "转账过去",
+     ".send.s": "大约{a}。",
+     ".send.h": "这几乎都是诈骗，银行也很少追得回来；幸福感 −3。",
+     ".call": "先打旧号码确认",
+     ".call.s": "花一分钟确认一下。",
+     "trk.br_pix": "转给骗子的钱"
+    },
+    "zht": {
+     ".t": "陌生號碼傳來的訊息",
+     ".x": "一個陌生號碼在WhatsApp上傳來訊息，大頭貼是{n}的照片：「嗨，是我，我換號碼了。今天得付一筆帳單，可是銀行App被鎖了，你能先用Pix轉給我嗎？明天就還你。」",
+     ".send": "轉帳過去",
+     ".send.s": "大約{a}。",
+     ".send.h": "這幾乎都是詐騙，銀行也很少追得回來；幸福感 −3。",
+     ".call": "先打舊號碼確認",
+     ".call.s": "花一分鐘確認一下。",
+     "trk.br_pix": "轉給騙子的錢"
+    }
+   }
+  },
+  {
+   "id": "br_consig",
+   "src": "Payroll loans for pensioners (consignado INSS): repayments come straight out of the pension, up to 35% of it for loans, at an interest rate capped by the National Social Security Council, below 2% a month in 2025 (INSS). Many pensioners take them out for relatives. The loan size (about R$13,000 ≈ 0.6), the repayments and the odds the relative pays it back are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    62,
+    80
+   ],
+   "weight": 0.45,
+   "when": {
+    "retired": true
+   },
+   "who": {
+    "role": "kid",
+    "age": [
+     25,
+     55
+    ]
+   },
+   "def": "no",
+   "tarot": "cosign",
+   "art": {
+    "draw": "bill",
+    "bg": "ya"
+   },
+   "fn": {
+    "lend": {
+     "args": [
+      "y"
+     ],
+     "do": "T('br_consig', { kind: 'custom', label: M('trk.br_consig') }); rec('br_consig', y, 5); later(age + 2, 'br_consig', {})"
+    }
+   },
+   "vars": {
+    "p": "Who(p)",
+    "a": "MN(.6 * base)"
+   },
+   "opts": [
+    {
+     "id": "take",
+     "sub": {
+      "b": "MN(.19 * base)"
+     },
+     "hint": true,
+     "bond": 5,
+     "do": "lend(.19 * base)"
+    },
+    {
+     "id": "half",
+     "sub": {
+      "b": "MN(.095 * base)"
+     },
+     "bond": 2,
+     "do": "lend(.095 * base)"
+    },
+    {
+     "id": "no",
+     "hint": true,
+     "bond": -4
+    }
+   ],
+   "later": {
+    "br_consig": "if (roll('br_consig') < .4) { stopRec('br_consig'); log(M('log.br_consigOk'), 'good') } else log(M('log.br_consigNo'), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A loan on your pension",
+     ".x": "{p} is behind on the rent and asks you to take out a consignado loan, repaid straight from your pension. The bank says you qualify for {a}.",
+     ".take": "Take the full loan for them",
+     ".take.s": "About {b} a year comes out of your pension for five years.",
+     ".take.h": "Closeness +5; your child may or may not pay you back.",
+     ".half": "Lend half",
+     ".half.s": "About {b} a year from your pension for five years.",
+     ".no": "Say no",
+     ".no.s": "Your pension is all you have.",
+     ".no.h": "Closeness −4.",
+     "trk.br_consig": "A consignado loan for your child",
+     "log.br_consigOk": "Your child has started paying back the consignado loan.",
+     "log.br_consigNo": "Your child can’t help with the consignado payments; they keep coming out of your pension."
+    },
+    "zh": {
+     ".t": "用退休金贷款",
+     ".x": "{p}欠了房租，请你用退休金办一笔挂扣贷款（consignado），直接从退休金里扣还。银行说你可以借到{a}。",
+     ".take": "借满额给孩子",
+     ".take.s": "五年内每年从退休金扣大约{b}。",
+     ".take.h": "亲近度 +5；孩子不一定会还你。",
+     ".half": "借一半",
+     ".half.s": "五年内每年从退休金扣大约{b}。",
+     ".no": "拒绝",
+     ".no.s": "退休金是你仅有的钱。",
+     ".no.h": "亲近度 −4。",
+     "trk.br_consig": "替孩子借的挂扣贷款",
+     "log.br_consigOk": "孩子开始帮你还那笔挂扣贷款了。",
+     "log.br_consigNo": "孩子没办法帮忙还贷款，还是一直从你的退休金里扣。"
+    },
+    "zht": {
+     ".t": "用退休金貸款",
+     ".x": "{p}欠了房租，請你用退休金辦一筆薪轉扣款貸款（consignado），直接從退休金裡扣還。銀行說你可以借到{a}。",
+     ".take": "借滿額給孩子",
+     ".take.s": "五年內每年從退休金扣大約{b}。",
+     ".take.h": "親近度 +5；孩子不一定會還你。",
+     ".half": "借一半",
+     ".half.s": "五年內每年從退休金扣大約{b}。",
+     ".no": "拒絕",
+     ".no.s": "退休金是你僅有的錢。",
+     ".no.h": "親近度 −4。",
+     "trk.br_consig": "替孩子借的扣款貸款",
+     "log.br_consigOk": "孩子開始幫你還那筆扣款貸款了。",
+     "log.br_consigNo": "孩子沒辦法幫忙還貸款，還是一直從你的退休金裡扣。"
+    }
+   }
+  },
+  {
+   "id": "br_inss",
+   "src": "Unauthorised deductions: in April 2025 the Federal Police and the CGU (Operation Sem Desconto) uncovered associations taking monthly fees from pensions without consent; by early 2026 about 4.3 million beneficiaries had been reimbursed R$2.96 billion, and a new law bans such deductions (Congresso em Foco; Monitor Mercantil). Claims go through the Meu INSS app, the 135 line or post offices. The amounts here are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    62,
+    80
+   ],
+   "weight": 0.45,
+   "when": {
+    "retired": true
+   },
+   "def": "ignore",
+   "tarot": "scam",
+   "art": {
+    "draw": "penclock",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "check",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "cash += .05 * base"
+    },
+    {
+     "id": "ignore",
+     "hint": true,
+     "do": "T('br_desc', { kind: 'ghost', label: M('trk.br_desc') }); rec('br_desc', .01 * base, 5)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A deduction you never agreed to",
+     ".x": "Your neighbour found a monthly fee for an “association” on her pension statement. You check yours: the same fee, for a club you have never heard of.",
+     ".check": "Contest it in the Meu INSS app",
+     ".check.s": "About {a} paid back.",
+     ".check.h": "It takes an afternoon, and the fee stops.",
+     ".ignore": "Leave it, it’s only a little",
+     ".ignore.s": "It goes on coming out.",
+     ".ignore.h": "A small sum every year.",
+     "trk.br_desc": "An association fee you never agreed to"
+    },
+    "zh": {
+     ".t": "莫名其妙的扣款",
+     ".x": "邻居在她的退休金明细上发现一笔每月扣的“协会会费”。你查了自己的：一样的扣款，而且是你从没听过的协会。",
+     ".check": "在Meu INSS App上申诉",
+     ".check.s": "退回大约{a}。",
+     ".check.h": "花一个下午，扣款就停了。",
+     ".ignore": "算了，钱不多",
+     ".ignore.s": "继续被扣。",
+     ".ignore.h": "每年被扣一小笔。",
+     "trk.br_desc": "你没同意过的协会会费"
+    },
+    "zht": {
+     ".t": "莫名其妙的扣款",
+     ".x": "鄰居在她的退休金明細上發現一筆每月扣的「協會會費」。你查了自己的：一樣的扣款，而且是你從沒聽過的協會。",
+     ".check": "在Meu INSS App上申訴",
+     ".check.s": "退回大約{a}。",
+     ".check.h": "花一個下午，扣款就停了。",
+     ".ignore": "算了，錢不多",
+     ".ignore.s": "繼續被扣。",
+     ".ignore.h": "每年被扣一小筆。",
+     "trk.br_desc": "你沒同意過的協會會費"
+    }
+   }
+  },
+  {
+   "id": "br_consorcio",
+   "src": "Consórcios: groups that pool monthly payments, with members drawn each month (or winning a bid, the lance) to receive a credit for a car or a home; there is no interest, only an administration fee, often 15–20% over the term. 12.76 million people were in a consórcio at the end of 2025, a record (ABAC, via sector press). A popular new car (about R$75,000 ≈ 3.5), the fees and the car-loan rate are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    24,
+    45
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "car": false
+   },
+   "def": "bus",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {
+     "id": "cons",
+     "sub": {
+      "a": "MN(.6 * base)"
+     },
+     "hint": true,
+     "do": "T('br_cons', { kind: 'ghost', label: M('trk.br_cons') }); rec('br_cons', .6 * base, 6)",
+     "next": {
+      "event": "br_consorcio2",
+      "in": [
+       1,
+       5
+      ]
+     }
+    },
+    {
+     "id": "loan",
+     "sub": {
+      "a": "MN(amort(3.5 * base, .15, 5))"
+     },
+     "hint": true,
+     "do": "car = { type: 'new', bal: 3.5 * base, pay: amort(3.5 * base, .15, 5), trk: 'br_loan' }; T('br_loan', { kind: 'ghost', label: M('trk.br_loan') }); happy += 3"
+    },
+    {
+     "id": "used",
+     "sub": {
+      "a": "MN(1.5 * base)"
+     },
+     "hint": true,
+     "do": "spend('br_used', 1.5 * base, 'trk.br_used'); car = { type: 'used', bal: 0, pay: 0, trk: 'br_used' }; happy += 1"
+    },
+    {
+     "id": "bus"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A car of your own",
+     ".x": "You are tired of crowded buses. The dealer offers a car loan; a colleague has joined a consórcio instead: everyone pays in every month, and each month a draw decides who gets the money for their car.",
+     ".cons": "Join a consórcio",
+     ".cons.s": "About {a} a year for six years; you get the car when you are drawn or win a bid.",
+     ".cons.h": "No interest, only the administration fee, but you may wait years.",
+     ".loan": "A new car on a loan",
+     ".loan.s": "Payments of about {a} a year.",
+     ".loan.h": "Happiness +3; car-loan interest in Brazil is high.",
+     ".used": "A used car, paid in cash",
+     ".used.s": "About {a}.",
+     ".used.h": "Happiness +1.",
+     ".bus": "Keep taking the bus",
+     ".bus.s": "Cheap, but slow.",
+     "trk.br_cons": "Consórcio payments",
+     "trk.br_loan": "A new car on a loan",
+     "trk.br_used": "A used car"
+    },
+    "zh": {
+     ".t": "买一辆自己的车",
+     ".x": "你受够了挤公交。车行可以帮你办车贷；同事则参加了合会购车（consórcio）：大家每月缴钱，每个月抽签决定谁拿到买车的钱。",
+     ".cons": "参加合会购车",
+     ".cons.s": "六年内每年大约{a}；抽中或竞标成功时就能拿车。",
+     ".cons.h": "没有利息，只有管理费，但可能要等好几年。",
+     ".loan": "贷款买新车",
+     ".loan.s": "每年还款大约{a}。",
+     ".loan.h": "幸福感 +3；巴西车贷利息很高。",
+     ".used": "付现金买二手车",
+     ".used.s": "大约{a}。",
+     ".used.h": "幸福感 +1。",
+     ".bus": "继续搭公交",
+     ".bus.s": "便宜，但很慢。",
+     "trk.br_cons": "合会购车的月缴",
+     "trk.br_loan": "贷款买的新车",
+     "trk.br_used": "二手车"
+    },
+    "zht": {
+     ".t": "買一輛自己的車",
+     ".x": "你受夠了擠公車。車商可以幫你辦車貸；同事則參加了合會購車（consórcio）：大家每月繳錢，每個月抽籤決定誰拿到買車的錢。",
+     ".cons": "參加合會購車",
+     ".cons.s": "六年內每年大約{a}；抽中或競標成功時就能拿車。",
+     ".cons.h": "沒有利息，只有管理費，但可能要等好幾年。",
+     ".loan": "貸款買新車",
+     ".loan.s": "每年還款大約{a}。",
+     ".loan.h": "幸福感 +3；巴西車貸利息很高。",
+     ".used": "付現金買二手車",
+     ".used.s": "大約{a}。",
+     ".used.h": "幸福感 +1。",
+     ".bus": "繼續搭公車",
+     ".bus.s": "便宜，但很慢。",
+     "trk.br_cons": "合會購車的月繳",
+     "trk.br_loan": "貸款買的新車",
+     "trk.br_used": "二手車"
+    }
+   }
+  },
+  {
+   "id": "br_consorcio2",
+   "src": "Consórcio members who are drawn receive a letter of credit to buy a car (ABAC). Game rule.",
+   "when": {
+    "car": false
+   },
+   "chain": true,
+   "def": "car",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {
+     "id": "car",
+     "hint": true,
+     "do": "car = { type: 'new', bal: 0, pay: 0, trk: 'br_cons' }; happy += 4"
+    },
+    {
+     "id": "used",
+     "sub": {
+      "a": "MN(.8 * base)"
+     },
+     "hint": true,
+     "do": "car = { type: 'used', bal: 0, pay: 0, trk: 'br_cons' }; cash += .8 * base; happy += 2"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your number came up",
+     ".x": "This month’s consórcio draw picked your quota: you have a letter of credit for a new car. The instalments go on until the group ends.",
+     ".car": "Pick up a new car",
+     ".car.s": "The instalments go on as before.",
+     ".car.h": "Happiness +4.",
+     ".used": "Buy a cheaper car and keep the rest",
+     ".used.s": "About {a} left over toward your instalments.",
+     ".used.h": "Happiness +2."
+    },
+    "zh": {
+     ".t": "抽中了！",
+     ".x": "这个月的合会抽签抽中了你：你拿到一张买新车的信用额度。月缴还要继续缴到合会结束。",
+     ".car": "去牵新车",
+     ".car.s": "月缴照旧。",
+     ".car.h": "幸福感 +4。",
+     ".used": "买便宜一点的车，剩下的留着",
+     ".used.s": "剩下大约{a}可以拿来缴月缴。",
+     ".used.h": "幸福感 +2。"
+    },
+    "zht": {
+     ".t": "抽中了！",
+     ".x": "這個月的合會抽籤抽中了你：你拿到一張買新車的信用額度。月繳還要繼續繳到合會結束。",
+     ".car": "去牽新車",
+     ".car.s": "月繳照舊。",
+     ".car.h": "幸福感 +4。",
+     ".used": "買便宜一點的車，剩下的留著",
+     ".used.s": "剩下大約{a}可以拿來繳月繳。",
+     ".used.h": "幸福感 +2。"
+    }
+   }
+  },
+  {
+   "id": "br_vestib",
+   "src": "University: federal universities charge no tuition and fill their places from ENEM scores through Sisu; ProUni gives full scholarships at private universities to students from low-income families (family income up to 1.5 minimum wages a person); FIES lends for private fees (MEC). About 6 in 10 FIES borrowers were behind on repayments in 2024 (Poder360). The scores needed, the share of fees refunded and student-house rents are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    18,
+    19
+   ],
+   "weight": 0.5,
+   "when": {
+    "studying": true,
+    "test": "study.k === 'uni'"
+   },
+   "def": "fies",
+   "tarot": "edu",
+   "art": {
+    "draw": "exam",
+    "bg": "mi"
+   },
+   "fn": {
+    "back": {
+     "args": [
+      "f"
+     ],
+     "do": "const c = trk.sk_edu ? trk.sk_edu.cost : 0, x = f * c, y = Math.min(sloan, x); sloan -= y; cash += x - y"
+    }
+   },
+   "opts": [
+    {
+     "id": "fed",
+     "ok": "skill() >= 24 || M('.score')",
+     "sub": {
+      "a": "MN(.3 * base)"
+     },
+     "hint": true,
+     "do": "back(.8); rl(-2); spend('br_rep', .3 * base, 'trk.br_rep')"
+    },
+    {
+     "id": "prouni",
+     "show": "fam === 'poor' || fam === 'working'",
+     "ok": "skill() >= 18 || M('.score')",
+     "hint": true,
+     "do": "back(1)"
+    },
+    {
+     "id": "fies",
+     "hint": true,
+     "next": {
+      "event": "br_fies2",
+      "in": [
+       6,
+       8
+      ],
+      "p": 0.4
+     }
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Federal or private?",
+     ".x": "Your ENEM results are out. A federal university in another city is free but takes only the top scores; private universities near home charge monthly fees, with a FIES loan to pay them, or a ProUni scholarship for families on low incomes.",
+     ".fed": "A federal university in another city",
+     ".fed.s": "No tuition; about {a} to share a house with other students.",
+     ".fed.h": "Most of your fees are refunded; Relationships −2 from moving away.",
+     ".score": "Your ENEM score isn’t high enough.",
+     ".prouni": "A ProUni scholarship at a private university",
+     ".prouni.s": "Free tuition, close to home.",
+     ".prouni.h": "Your fees are refunded.",
+     ".fies": "A private university with a FIES loan",
+     ".fies.s": "Close to home; the loan is repaid once you work.",
+     ".fies.h": "Many graduates struggle with the repayments.",
+     "trk.br_rep": "Rent in a student house"
+    },
+    "zh": {
+     ".t": "公立还是私立大学？",
+     ".x": "ENEM成绩出来了。外地的联邦大学免学费，但只收高分的学生；家附近的私立大学要按月缴学费，可以申请FIES贷款，低收入家庭也可以拿ProUni奖学金。",
+     ".fed": "外地的联邦大学",
+     ".fed.s": "免学费；和其他学生合租房子大约{a}。",
+     ".fed.h": "大部分学费退还；离家远让人际关系 −2。",
+     ".score": "你的ENEM分数不够高。",
+     ".prouni": "拿ProUni奖学金读私立大学",
+     ".prouni.s": "免学费，离家又近。",
+     ".prouni.h": "学费全部退还。",
+     ".fies": "贷FIES读私立大学",
+     ".fies.s": "离家近；贷款等工作后再还。",
+     ".fies.h": "很多毕业生还款很吃力。",
+     "trk.br_rep": "学生合租的房租"
+    },
+    "zht": {
+     ".t": "公立還是私立大學？",
+     ".x": "ENEM成績出來了。外地的聯邦大學免學費，但只收高分的學生；家附近的私立大學要按月繳學費，可以申請FIES貸款，低收入家庭也可以拿ProUni獎學金。",
+     ".fed": "外地的聯邦大學",
+     ".fed.s": "免學費；和其他學生合租房子大約{a}。",
+     ".fed.h": "大部分學費退還；離家遠讓人際關係 −2。",
+     ".score": "你的ENEM分數不夠高。",
+     ".prouni": "拿ProUni獎學金讀私立大學",
+     ".prouni.s": "免學費，離家又近。",
+     ".prouni.h": "學費全部退還。",
+     ".fies": "貸FIES讀私立大學",
+     ".fies.s": "離家近；貸款等工作後再還。",
+     ".fies.h": "很多畢業生還款很吃力。",
+     "trk.br_rep": "學生合租的房租"
+    }
+   }
+  },
+  {
+   "id": "br_fies2",
+   "src": "Desenrola Fies: borrowers behind on their payments could settle FIES debts with discounts of up to 77%, or 99% for families on the CadÚnico register (MEC, 2023–24); a new round is open until 31 December 2026 (Novo Desenrola Brasil). The share of the debt paid here is an ESTIMATE.",
+   "when": {
+    "stats": {
+     "sloan": "> .3 * base"
+    }
+   },
+   "chain": true,
+   "def": "pay",
+   "tarot": "debt",
+   "art": {
+    "draw": "gradloan",
+    "bg": "wa"
+   },
+   "vars": {
+    "a": "MN(sloan)"
+   },
+   "opts": [
+    {
+     "id": "settle",
+     "sub": {
+      "a": "MN(.3 * sloan)"
+     },
+     "hint": true,
+     "do": "pay(.3 * sloan); sloan = 0; happy += 2"
+    },
+    {
+     "id": "pay",
+     "hint": true
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Settle your FIES debt?",
+     ".x": "A bad year left you behind on your FIES repayments, and the debt has grown to {a}. The government’s Desenrola programme offers to settle it at a big discount.",
+     ".settle": "Settle it now",
+     ".settle.s": "Pay about {a} and the rest is forgiven.",
+     ".settle.h": "Happiness +2; the debt is cleared.",
+     ".pay": "Keep paying it off slowly",
+     ".pay.s": "The usual repayments.",
+     ".pay.h": "Years more of repayments."
+    },
+    "zh": {
+     ".t": "结清学贷？",
+     ".x": "有一年手头紧，你的FIES学贷没还上，欠款涨到了{a}。政府的Desenrola方案说可以大幅打折让你结清。",
+     ".settle": "现在结清",
+     ".settle.s": "付大约{a}，其余免还。",
+     ".settle.h": "幸福感 +2；债务清了。",
+     ".pay": "慢慢还",
+     ".pay.s": "照常还款。",
+     ".pay.h": "还要再还好几年。"
+    },
+    "zht": {
+     ".t": "結清學貸？",
+     ".x": "有一年手頭緊，你的FIES學貸沒還上，欠款漲到了{a}。政府的Desenrola方案說可以大幅打折讓你結清。",
+     ".settle": "現在結清",
+     ".settle.s": "付大約{a}，其餘免還。",
+     ".settle.h": "幸福感 +2；債務清了。",
+     ".pay": "慢慢還",
+     ".pay.s": "照常還款。",
+     ".pay.h": "還要再還好幾年。"
+    }
+   }
+  },
+  {
+   "id": "br_vgbl",
+   "src": "Private pensions: banks sell PGBL and VGBL plans, often with administration fees of 1.5–2.5% a year (Susep; consumer guides); Tesouro IPCA+ bonds pay a fixed rate above inflation, around 7% in 2025, taxed on the gain (Tesouro Nacional). The fee used and the returns after inflation and tax are an ESTIMATE.",
+   "age": [
+    30,
+    55
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "stats": {
+     "liquid": "> .6 * base"
+    }
+   },
+   "def": "keep",
+   "tarot": "agent",
+   "art": {
+    "draw": "penjar",
+    "bg": "co"
+   },
+   "let": {
+    "a": ".4 * liquid()"
+   },
+   "vars": {
+    "a": "MN(a)"
+   },
+   "opts": [
+    {
+     "id": "vgbl",
+     "sub": {
+      "a": "MN(a)"
+     },
+     "hint": true,
+     "do": "putIn('br_vgbl', a, { fee: .02 }, 'trk.br_vgbl')"
+    },
+    {
+     "id": "tes",
+     "sub": {
+      "a": "MN(a)"
+     },
+     "hint": true,
+     "do": "putIn('br_ipca', a, { rate: .045 }, 'trk.br_ipca')"
+    },
+    {
+     "id": "keep"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The bank manager’s pension plan",
+     ".x": "Your bank manager calls: with {a} sitting in your account, you should open a VGBL private pension plan, which “beats the poupança”. A friend says to buy Tesouro IPCA+ bonds yourself instead.",
+     ".vgbl": "Open the VGBL plan",
+     ".vgbl.s": "Move {a} in; the bank manages it.",
+     ".vgbl.h": "Invested like a fund, minus about 2% a year in fees.",
+     ".tes": "Buy Tesouro IPCA+ yourself",
+     ".tes.s": "Move {a} in, through the government’s site.",
+     ".tes.h": "A fixed rate above inflation, about 4.5% a year after tax, if you hold to maturity.",
+     ".keep": "Leave it where it is",
+     ".keep.s": "No decision today.",
+     "trk.br_vgbl": "A VGBL pension plan",
+     "trk.br_ipca": "Tesouro IPCA+"
+    },
+    "zh": {
+     ".t": "银行经理推荐的退休计划",
+     ".x": "银行经理打电话来说，你账户里放着{a}，应该开一个VGBL私人退休计划，“比储蓄账户强多了”。朋友却劝你自己去买Tesouro IPCA+公债。",
+     ".vgbl": "开VGBL计划",
+     ".vgbl.s": "转入{a}，由银行管理。",
+     ".vgbl.h": "像基金一样投资，但每年扣大约2%的管理费。",
+     ".tes": "自己买Tesouro IPCA+",
+     ".tes.s": "通过政府网站转入{a}。",
+     ".tes.h": "固定的通胀以上利率，持有到期的话税后每年约4.5%。",
+     ".keep": "先放着",
+     ".keep.s": "今天先不决定。",
+     "trk.br_vgbl": "VGBL退休计划",
+     "trk.br_ipca": "Tesouro IPCA+公债"
+    },
+    "zht": {
+     ".t": "銀行經理推薦的退休計畫",
+     ".x": "銀行經理打電話來說，你帳戶裡放著{a}，應該開一個VGBL私人退休計畫，「比儲蓄帳戶強多了」。朋友卻勸你自己去買Tesouro IPCA+公債。",
+     ".vgbl": "開VGBL計畫",
+     ".vgbl.s": "轉入{a}，由銀行管理。",
+     ".vgbl.h": "像基金一樣投資，但每年扣大約2%的管理費。",
+     ".tes": "自己買Tesouro IPCA+",
+     ".tes.s": "透過政府網站轉入{a}。",
+     ".tes.h": "固定的通膨以上利率，持有到期的話稅後每年約4.5%。",
+     ".keep": "先放著",
+     ".keep.s": "今天先不決定。",
+     "trk.br_vgbl": "VGBL退休計畫",
+     "trk.br_ipca": "Tesouro IPCA+公債"
+    }
+   }
+  },
+  {
+   "id": "br_portugal",
+   "src": "Brazilians in Portugal: 493,622 Brazilian residents at the end of 2025, the largest foreign community and 31% of all foreign residents (AIMA, Migration and Asylum Report 2025, via DN Brasil). Portugal’s minimum wage is €920 a month in 2026, paid 14 times a year (via Postal). Pay abroad, living costs, fees and the length of the stay are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    22,
+    40
+   ],
+   "weight": 0.4,
+   "when": {
+    "canWorkAbroad": true
+   },
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {
+    "draw": "ctr",
+    "bg": "mi"
+   },
+   "vars": {
+    "a": "MN(2.2 * salary())"
+   },
+   "use": "ctr",
+   "with": {
+    "m": 2.2,
+    "cm": 1.7,
+    "yrs": 4,
+    "fee": 0.4,
+    "remit": 0
+   },
+   "i18n": {
+    "en": {
+     ".t": "Work in Portugal",
+     ".x": "A cousin in Lisbon says the restaurant where she works needs people and can help with the papers. Pay there would be about {a} a year, but rents in Lisbon are steep.",
+     "trk.br_portugal": "Working in Portugal"
+    },
+    "zh": {
+     ".t": "去葡萄牙工作",
+     ".x": "住在里斯本的表姐说，她工作的餐厅缺人，还能帮忙办证件。那边年薪大约{a}，不过里斯本房租很贵。",
+     "trk.br_portugal": "在葡萄牙工作"
+    },
+    "zht": {
+     ".t": "去葡萄牙工作",
+     ".x": "住在里斯本的表姊說，她工作的餐廳缺人，還能幫忙辦證件。那邊年薪大約{a}，不過里斯本房租很貴。",
+     "trk.br_portugal": "在葡萄牙工作"
+    }
+   }
+  },
+  {
+   "id": "br_laje",
+   "src": "The laje: building an extra floor on top of a relative’s house is common in Brazilian cities; since Law 13,465/2017 the ‘direito de laje’ lets such a floor be registered as a property of its own (Civil Code, articles 1,510-A to 1,510-E). Building costs, rents and the risk of a tenant not paying are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    25,
+    45
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "house": false
+   },
+   "who": {
+    "role": "parent"
+   },
+   "def": "no",
+   "tarot": "room",
+   "art": {
+    "draw": "keyhome",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "live",
+     "sub": {
+      "a": "MN(1.2 * base)"
+     },
+     "hint": true,
+     "rel": 3,
+     "do": "spend('br_laje', 1.2 * base, 'trk.br_laje'); T('br_lajer', { kind: 'custom', label: M('trk.br_lajer') }); rec('br_lajer', -.2 * base, 30); happy -= 1"
+    },
+    {
+     "id": "rent",
+     "sub": {
+      "a": "MN(1.2 * base)"
+     },
+     "hint": true,
+     "do": "spend('br_laje', 1.2 * base, 'trk.br_laje'); T('br_lajei', { kind: 'custom', label: M('trk.br_lajei') }); rec('br_lajei', -.15 * base, 30)",
+     "next": {
+      "event": "br_laje2",
+      "in": [
+       2,
+       6
+      ],
+      "p": 0.4
+     }
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A floor on top",
+     ".x": "The family house has a flat concrete roof, a laje, and your uncle the builder says he could put a two-room floor on top. You could live there yourself, or rent it out.",
+     ".live": "Build it and move in",
+     ".live.s": "About {a} to build.",
+     ".live.h": "No more rent; Relationships +3 living near family, but little privacy, Happiness −1.",
+     ".rent": "Build it and rent it out",
+     ".rent.s": "About {a} to build.",
+     ".rent.h": "Rent comes in every month, if the tenant pays.",
+     ".no": "Leave the roof as it is",
+     ".no.s": "Keep your savings.",
+     "trk.br_laje": "Building the laje",
+     "trk.br_lajer": "Rent saved living on the laje",
+     "trk.br_lajei": "Rent from the laje"
+    },
+    "zh": {
+     ".t": "在屋顶加盖一层",
+     ".x": "家里的房子是平顶水泥屋顶（laje），当营造工人的叔叔说可以在上面加盖一层两房的。你可以自己住，也可以租出去。",
+     ".live": "盖好自己住",
+     ".live.s": "盖起来大约{a}。",
+     ".live.h": "不用再付房租；住在家人旁边，人际关系 +3，但没什么隐私，幸福感 −1。",
+     ".rent": "盖好租出去",
+     ".rent.s": "盖起来大约{a}。",
+     ".rent.h": "每个月有房租收入，前提是房客肯付。",
+     ".no": "屋顶保持原样",
+     ".no.s": "存款留着。",
+     "trk.br_laje": "加盖屋顶",
+     "trk.br_lajer": "住加盖层省下的房租",
+     "trk.br_lajei": "加盖层的房租收入"
+    },
+    "zht": {
+     ".t": "在屋頂加蓋一層",
+     ".x": "家裡的房子是平頂水泥屋頂（laje），當營造工人的叔叔說可以在上面加蓋一層兩房的。你可以自己住，也可以租出去。",
+     ".live": "蓋好自己住",
+     ".live.s": "蓋起來大約{a}。",
+     ".live.h": "不用再付房租；住在家人旁邊，人際關係 +3，但沒什麼隱私，幸福感 −1。",
+     ".rent": "蓋好租出去",
+     ".rent.s": "蓋起來大約{a}。",
+     ".rent.h": "每個月有房租收入，前提是房客肯付。",
+     ".no": "屋頂保持原樣",
+     ".no.s": "存款留著。",
+     "trk.br_laje": "加蓋屋頂",
+     "trk.br_lajer": "住加蓋層省下的房租",
+     "trk.br_lajei": "加蓋層的房租收入"
+    }
+   }
+  },
+  {
+   "id": "br_laje2",
+   "src": "Evictions for unpaid rent go through the courts under the Tenancy Law (Lei 8.245/1991) and can take months. Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "wait",
+   "tarot": "room",
+   "art": {
+    "draw": "bill",
+    "bg": "mi"
+   },
+   "fn": {
+    "lost": {
+     "args": [
+      "x"
+     ],
+     "do": "pay(x); const t = T('br_lajei', { kind: 'custom', label: M('trk.br_lajei') }); t.v -= x"
+    }
+   },
+   "opts": [
+    {
+     "id": "court",
+     "sub": {
+      "a": "MN(.08 * base)"
+     },
+     "hint": true,
+     "do": "lost(.08 * base + .05 * base); happy -= 2"
+    },
+    {
+     "id": "wait",
+     "hint": true,
+     "do": "lost(.12 * base); happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The tenant stopped paying",
+     ".x": "Your tenant upstairs hasn’t paid for four months. He says he lost his job and will pay when he can.",
+     ".court": "Go to court to evict him",
+     ".court.s": "About {a} in lawyer’s fees.",
+     ".court.h": "Happiness −2; a new tenant within a few months.",
+     ".wait": "Give him time",
+     ".wait.s": "Hope he finds work.",
+     ".wait.h": "Most of the missing rent is never paid; Happiness −1."
+    },
+    "zh": {
+     ".t": "房客不付租了",
+     ".x": "楼上的房客已经四个月没付房租了。他说他丢了工作，等有钱再付。",
+     ".court": "上法院请他搬走",
+     ".court.s": "律师费大约{a}。",
+     ".court.h": "幸福感 −2；几个月内换新房客。",
+     ".wait": "给他一点时间",
+     ".wait.s": "希望他找到工作。",
+     ".wait.h": "欠的房租大多要不回来；幸福感 −1。"
+    },
+    "zht": {
+     ".t": "房客不付租了",
+     ".x": "樓上的房客已經四個月沒付房租了。他說他丟了工作，等有錢再付。",
+     ".court": "上法院請他搬走",
+     ".court.s": "律師費大約{a}。",
+     ".court.h": "幸福感 −2；幾個月內換新房客。",
+     ".wait": "給他一點時間",
+     ".wait.s": "希望他找到工作。",
+     ".wait.h": "欠的房租大多要不回來；幸福感 −1。"
+    }
+   }
+  },
+  {
+   "id": "br_uber",
+   "src": "App work: about 1.5 million people in Brazil worked through apps in 2022, most of them driving passengers or delivering (IBGE, PNAD Contínua, 2023). Drivers without a car rent one by the week. Earnings after car rental and fuel, and the hours, are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    22,
+    55
+   ],
+   "weight": 0.5,
+   "when": {
+    "test": "swWhy === 'lay' && swAt === age"
+   },
+   "def": "look",
+   "tarot": "car2",
+   "art": {
+    "draw": "city",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "drive",
+     "hint": true,
+     "do": "T('br_app', { kind: 'custom', label: M('trk.br_app') }); rec('br_app', -.35 * base, 1, -1); happy -= 1"
+    },
+    {
+     "id": "look"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Driving while you look",
+     ".x": "Since the layoff, your savings are draining. A friend rents a car by the week and drives for the apps; he says you could clear more than the minimum wage.",
+     ".drive": "Rent a car and drive for the apps",
+     ".drive.s": "Long days; the car rental and fuel come out of what you make.",
+     ".drive.h": "Extra income for a year; Health −1, Happiness −1.",
+     ".look": "Spend the time job-hunting",
+     ".look.s": "Keep your days for applications and interviews.",
+     "trk.br_app": "Driving for the apps"
+    },
+    "zh": {
+     ".t": "边找工作边开车",
+     ".x": "被裁员之后，存款一直在减少。一个朋友按周租车跑网约车，他说你一个月赚的可以比最低工资还多。",
+     ".drive": "租车跑网约车",
+     ".drive.s": "工时很长；租车费和油钱都从收入里扣。",
+     ".drive.h": "一年的额外收入；健康 −1，幸福感 −1。",
+     ".look": "专心找工作",
+     ".look.s": "把时间留给投履历和面试。",
+     "trk.br_app": "跑网约车"
+    },
+    "zht": {
+     ".t": "邊找工作邊開車",
+     ".x": "被裁員之後，存款一直在減少。一個朋友按週租車跑叫車平台，他說你一個月賺的可以比最低工資還多。",
+     ".drive": "租車跑叫車平台",
+     ".drive.s": "工時很長；租車費和油錢都從收入裡扣。",
+     ".drive.h": "一年的額外收入；健康 −1，幸福感 −1。",
+     ".look": "專心找工作",
+     ".look.s": "把時間留給投履歷和面試。",
+     "trk.br_app": "跑叫車平台"
+    }
+   }
+  },
+  {
+   "id": "br_carro",
+   "src": "Car theft: hundreds of thousands of vehicles are stolen or taken in robberies in Brazil every year (Fórum Brasileiro de Segurança Pública, Anuário 2024). Insurance premiums (often 4–6% of the car’s value a year in big cities), the cost of a GPS tracker and the chance of a theft are an ESTIMATE. Amounts are compared with the game’s typical wage in Brazil, about R$21,700 a year (9,000 PPP dollars × 2.41).",
+   "age": [
+    25,
+    60
+   ],
+   "weight": 0.4,
+   "when": {
+    "car": true,
+    "test": "!car.bal"
+   },
+   "def": "none",
+   "tarot": "insure",
+   "art": "car",
+   "opts": [
+    {
+     "id": "ins",
+     "sub": {
+      "a": "MN(.15 * base)"
+     },
+     "hint": true,
+     "do": "br_seg = 2; T('br_seg', { kind: 'ghost', label: M('trk.br_seg') }); rec('br_seg', .15 * base, 5); later(age + 2, 'br_roubo', {})"
+    },
+    {
+     "id": "track",
+     "sub": {
+      "a": "MN(.03 * base)"
+     },
+     "hint": true,
+     "do": "br_seg = 1; T('br_trk', { kind: 'ghost', label: M('trk.br_trk') }); rec('br_trk', .03 * base, 5); later(age + 2, 'br_roubo', {})"
+    },
+    {
+     "id": "none",
+     "hint": true,
+     "do": "later(age + 2, 'br_roubo', {})"
+    }
+   ],
+   "later": {
+    "br_roubo": "if (car && roll('br_roubo') < (br_seg === 1 ? .08 : .15)) { if (br_seg === 2) { happy -= 2; log(M('log.br_rouboIns'), 'bad') } else { car = null; happy -= 6; log(M('log.br_roubo'), 'bad') } }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Insure the car?",
+     ".x": "Two cars were stolen on your street last month. The insurance quote is high in your neighbourhood; a GPS tracker is cheaper and helps the police find stolen cars.",
+     ".ins": "Full car insurance",
+     ".ins.s": "About {a} a year.",
+     ".ins.h": "If the car is stolen, the insurer replaces it.",
+     ".track": "Just a GPS tracker",
+     ".track.s": "About {a} a year.",
+     ".track.h": "Stolen cars with trackers are often found.",
+     ".none": "Take your chances",
+     ".none.s": "No cost.",
+     ".none.h": "If it is stolen, it is gone.",
+     "trk.br_seg": "Car insurance",
+     "trk.br_trk": "A GPS tracker",
+     "log.br_rouboIns": "Your car was stolen. The insurer paid for a replacement, after weeks of paperwork.",
+     "log.br_roubo": "Your car was stolen and never found."
+    },
+    "zh": {
+     ".t": "要不要保车险？",
+     ".x": "上个月你家那条街被偷了两辆车。你住的地区车险报价很高；装GPS追踪器比较便宜，也能帮警察找回被偷的车。",
+     ".ins": "保全险",
+     ".ins.s": "每年大约{a}。",
+     ".ins.h": "车被偷的话，保险公司赔一辆。",
+     ".track": "只装GPS追踪器",
+     ".track.s": "每年大约{a}。",
+     ".track.h": "装了追踪器的车被偷后常常找得回来。",
+     ".none": "碰碰运气",
+     ".none.s": "不花钱。",
+     ".none.h": "要是被偷就没了。",
+     "trk.br_seg": "车险",
+     "trk.br_trk": "GPS追踪器",
+     "log.br_rouboIns": "你的车被偷了。办了几个星期的手续后，保险公司赔了一辆。",
+     "log.br_roubo": "你的车被偷了，一直没找到。"
+    },
+    "zht": {
+     ".t": "要不要保車險？",
+     ".x": "上個月你家那條街被偷了兩輛車。你住的地區車險報價很高；裝GPS追蹤器比較便宜，也能幫警察找回被偷的車。",
+     ".ins": "保全險",
+     ".ins.s": "每年大約{a}。",
+     ".ins.h": "車被偷的話，保險公司賠一輛。",
+     ".track": "只裝GPS追蹤器",
+     ".track.s": "每年大約{a}。",
+     ".track.h": "裝了追蹤器的車被偷後常常找得回來。",
+     ".none": "碰碰運氣",
+     ".none.s": "不花錢。",
+     ".none.h": "要是被偷就沒了。",
+     "trk.br_seg": "車險",
+     "trk.br_trk": "GPS追蹤器",
+     "log.br_rouboIns": "你的車被偷了。辦了幾個星期的手續後，保險公司賠了一輛。",
+     "log.br_roubo": "你的車被偷了，一直沒找到。"
+    }
+   }
   }
  ]
 }

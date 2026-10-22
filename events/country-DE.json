@@ -476,6 +476,982 @@
      ".70.s": "從{n}歲起每年約{a}，終身領取。"
     }
    }
+  },
+  {
+   "id": "de_spar",
+   "src": "Saving in Germany: households hold more than €3 trillion in cash and bank deposits (Deutsche Bundesbank, financial accounts, 2025). A Bausparvertrag pays very little interest while you save and then entitles you to a fixed-rate home loan; the Wohnungsbauprämie adds 10% for lower incomes (BMF). Returns after inflation (a world ETF about 5% on average, a Bausparvertrag about −1.5%) are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    22,
+    40
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "stats": {
+     "liquid": "> .1 * base"
+    }
+   },
+   "def": "konto",
+   "tarot": "save",
+   "art": {
+    "draw": "shares",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "etf",
+     "sub": {
+      "a": "MN(.06 * base)"
+     },
+     "hint": true,
+     "do": "yearly('de_etf', { amt: .06 * base, until: age + 30 }, {}, 'trk.de_etf')"
+    },
+    {
+     "id": "bspar",
+     "sub": {
+      "a": "MN(.06 * base)"
+     },
+     "hint": true,
+     "do": "yearly('de_bspar', { amt: .06 * base, until: age + 7, bonus: .03 }, { rate: -.015 }, 'trk.de_bspar')"
+    },
+    {
+     "id": "konto",
+     "hint": true
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A savings plan",
+     ".x": "Your bank adviser suggests a Bausparvertrag, like the one your parents had. A colleague swears by an ETF savings plan: a fixed amount into a world index fund every month.",
+     ".etf": "An ETF savings plan",
+     ".etf.s": "About {a} a year into a world index fund.",
+     ".etf.h": "About 5% a year after inflation on average, with crashes along the way.",
+     ".bspar": "A Bausparvertrag",
+     ".bspar.s": "About {a} a year for seven years, for the right to a fixed-rate home loan later.",
+     ".bspar.h": "It earns almost nothing, so inflation shrinks it; the state adds a small bonus.",
+     ".konto": "Keep it in your current account",
+     ".konto.s": "No contract, no fees.",
+     ".konto.h": "Inflation eats it slowly.",
+     "trk.de_etf": "ETF savings plan",
+     "trk.de_bspar": "Bausparvertrag"
+    },
+    "zh": {
+     ".t": "储蓄计划",
+     ".x": "银行理财顾问建议你签一份住房储蓄合约（Bausparvertrag），就像你父母当年那样。一位同事则大力推荐ETF定投：每个月固定买一点全球指数基金。",
+     ".etf": "ETF定投",
+     ".etf.s": "每年大约{a}买全球指数基金。",
+     ".etf.h": "扣除通胀后平均每年约5%，中间会碰上股灾。",
+     ".bspar": "住房储蓄合约",
+     ".bspar.s": "七年内每年大约{a}，换取将来申请固定利率房贷的资格。",
+     ".bspar.h": "几乎没有利息，会被通胀慢慢吃掉；政府会补贴一点。",
+     ".konto": "放在活期账户",
+     ".konto.s": "不用签约，没有手续费。",
+     ".konto.h": "通胀会慢慢吃掉它。",
+     "trk.de_etf": "ETF定投",
+     "trk.de_bspar": "住房储蓄合约"
+    },
+    "zht": {
+     ".t": "儲蓄計畫",
+     ".x": "銀行理專建議你簽一份住房儲蓄合約（Bausparvertrag），就像你父母當年那樣。一位同事則大力推薦ETF定期定額：每個月固定買一點全球指數基金。",
+     ".etf": "ETF定期定額",
+     ".etf.s": "每年大約{a}買全球指數基金。",
+     ".etf.h": "扣除通膨後平均每年約5%，中間會碰上股災。",
+     ".bspar": "住房儲蓄合約",
+     ".bspar.s": "七年內每年大約{a}，換取將來申請固定利率房貸的資格。",
+     ".bspar.h": "幾乎沒有利息，會被通膨慢慢吃掉；政府會補貼一點。",
+     ".konto": "放在活期帳戶",
+     ".konto.s": "不用簽約，沒有手續費。",
+     ".konto.h": "通膨會慢慢吃掉它。",
+     "trk.de_etf": "ETF定期定額",
+     "trk.de_bspar": "住房儲蓄合約"
+    }
+   }
+  },
+  {
+   "id": "de_pkv",
+   "src": "Private health insurance: employees earning more than €77,400 a year (2026; €73,800 in 2025) may leave the statutory scheme (GKV) for private insurance (PKV) (Rechengrößen 2026, via krankenkassen.de). GKV contributions are a share of pay up to €69,750 a year (2026); PKV premiums depend on your age and health when you join and rise with age, and returning to the GKV after 55 is almost impossible (§ 6 (3a) SGB V). The saving while young and the share of bills paid are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    27,
+    40
+   ],
+   "weight": 0.5,
+   "when": {
+    "working": true,
+    "stats": {
+     "salary": "> 3.5 * base"
+    },
+    "test": "!medCut"
+   },
+   "def": "gkv",
+   "tarot": "health",
+   "art": {
+    "draw": "health",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "pkv",
+     "hint": true,
+     "do": "medPlan('de_pkv', .6, 0); T('de_pkvs', { kind: 'custom', label: M('trk.de_pkvs') }); rec('de_pkvs', -.1 * base, Math.max(1, 56 - age)); happy += 1; next('de_pkv2', Math.max(1, 56 - age), {})"
+    },
+    {
+     "id": "gkv"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Private health insurance?",
+     ".x": "Your pay is now above the line where you may leave the statutory health insurance. A broker shows you a private plan: lower premiums than your GKV contributions while you are young, and faster appointments.",
+     ".pkv": "Switch to private insurance",
+     ".pkv.s": "Lower premiums now; they depend on your age and health when you join.",
+     ".pkv.h": "Saves about a tenth of a typical wage a year for now and pays more of your bills; premiums rise steeply with age.",
+     ".gkv": "Stay in the statutory scheme",
+     ".gkv.s": "Contributions follow your pay; your family is covered free.",
+     "trk.de_pkv": "Private health insurance",
+     "trk.de_pkvs": "Lower premiums while young"
+    },
+    "zh": {
+     ".t": "改保私人医保？",
+     ".x": "你的收入已经超过可以退出法定医保的门槛。保险经纪人给你看一份私人医保：年轻时保费比法定医保的缴费低，看诊也更快。",
+     ".pkv": "改保私人医保",
+     ".pkv.s": "现在保费较低；保费看你投保时的年龄和健康状况。",
+     ".pkv.h": "目前每年省下大约十分之一个一般工资，理赔也比较多；但保费会随年龄大涨。",
+     ".gkv": "留在法定医保",
+     ".gkv.s": "缴费按收入计算；家人可以免费附保。",
+     "trk.de_pkv": "私人医保",
+     "trk.de_pkvs": "年轻时省下的保费"
+    },
+    "zht": {
+     ".t": "改保私人健康保險？",
+     ".x": "你的收入已經超過可以退出法定健保的門檻。保險經紀人給你看一份私人健康保險：年輕時保費比法定健保的繳費低，看診也更快。",
+     ".pkv": "改保私人健康保險",
+     ".pkv.s": "現在保費較低；保費看你投保時的年齡和健康狀況。",
+     ".pkv.h": "目前每年省下大約十分之一個一般薪資，理賠也比較多；但保費會隨年齡大漲。",
+     ".gkv": "留在法定健保",
+     ".gkv.s": "繳費按收入計算；家人可以免費依附投保。",
+     "trk.de_pkv": "私人健康保險",
+     "trk.de_pkvs": "年輕時省下的保費"
+    }
+   }
+  },
+  {
+   "id": "de_pkv2",
+   "src": "Private health insurance premiums rise with age and medical costs; insurers must offer a cheaper Standardtarif with cover like the GKV’s, and going back to the GKV after 55 is almost impossible (§ 6 (3a) SGB V; PKV-Verband). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "pay",
+   "tarot": "medcover",
+   "art": {
+    "draw": "bill",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {
+      "a": "MN(.2 * base)"
+     },
+     "hint": true,
+     "do": "T('de_pkv2', { kind: 'ghost', label: M('trk.de_pkv2') }); rec('de_pkv2', .2 * base, 30)"
+    },
+    {
+     "id": "std",
+     "sub": {
+      "a": "MN(.1 * base)"
+     },
+     "hint": true,
+     "do": "T('de_pkvstd', { kind: 'ghost', label: M('trk.de_pkvstd') }); rec('de_pkvstd', .1 * base, 30); medCut = .85"
+    },
+    {
+     "id": "deduct",
+     "sub": {
+      "a": "MN(.13 * base)"
+     },
+     "hint": true,
+     "do": "T('de_pkvded', { kind: 'ghost', label: M('trk.de_pkvded') }); rec('de_pkvded', .13 * base, 30); medCut = .75"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your private premiums",
+     ".x": "Your private health insurer has raised your premium again: now in your late fifties, you pay several times what you paid when you joined. Going back to the statutory scheme is no longer possible.",
+     ".pay": "Pay the higher premium",
+     ".pay.s": "About {a} a year from now on.",
+     ".pay.h": "Your cover stays the same.",
+     ".std": "Move to the Standardtarif",
+     ".std.s": "About {a} a year, with cover like the statutory scheme.",
+     ".std.h": "It pays a smaller share of your bills.",
+     ".deduct": "Take a higher deductible",
+     ".deduct.s": "About {a} a year; you pay the first part of each year’s bills.",
+     ".deduct.h": "It pays less of the smaller bills.",
+     "trk.de_pkv2": "Higher private premiums",
+     "trk.de_pkvstd": "The Standardtarif",
+     "trk.de_pkvded": "A plan with a higher deductible"
+    },
+    "zh": {
+     ".t": "私人医保的保费",
+     ".x": "私人医保公司又涨保费了：你快六十岁了，现在的保费是当初投保时的好几倍。想回法定医保也已经回不去了。",
+     ".pay": "照付更高的保费",
+     ".pay.s": "从现在起每年大约{a}。",
+     ".pay.h": "保障不变。",
+     ".std": "改成标准方案",
+     ".std.s": "每年大约{a}，保障和法定医保差不多。",
+     ".std.h": "理赔的比例变小。",
+     ".deduct": "提高自付额",
+     ".deduct.s": "每年大约{a}；每年开头一部分医疗费用要自己付。",
+     ".deduct.h": "小额的医疗费理赔变少。",
+     "trk.de_pkv2": "变贵的私人医保",
+     "trk.de_pkvstd": "标准方案",
+     "trk.de_pkvded": "高自付额方案"
+    },
+    "zht": {
+     ".t": "私人健康保險的保費",
+     ".x": "私人健康保險公司又漲保費了：你快六十歲了，現在的保費是當初投保時的好幾倍。想回法定健保也已經回不去了。",
+     ".pay": "照付更高的保費",
+     ".pay.s": "從現在起每年大約{a}。",
+     ".pay.h": "保障不變。",
+     ".std": "改成標準方案",
+     ".std.s": "每年大約{a}，保障和法定健保差不多。",
+     ".std.h": "理賠的比例變小。",
+     ".deduct": "提高自負額",
+     ".deduct.s": "每年大約{a}；每年開頭一部分醫療費用要自己付。",
+     ".deduct.h": "小額的醫療費理賠變少。",
+     "trk.de_pkv2": "變貴的私人健康保險",
+     "trk.de_pkvstd": "標準方案",
+     "trk.de_pkvded": "高自負額方案"
+    }
+   }
+  },
+  {
+   "id": "de_kirche",
+   "src": "Church tax: members of the Catholic and Protestant churches pay 8% (Bavaria, Baden-Württemberg) or 9% (other states) of their income tax as church tax, collected with it (church tax laws of the states). In 2025, 307,117 people left the Catholic Church and about 350,000 the Protestant churches (German Bishops’ Conference; EKD, via ZDF). The saving (about 1.2% of pay) and the effect on family ties are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    25,
+    50
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "stats": {
+     "salary": "> 1.2 * base"
+    }
+   },
+   "def": "stay",
+   "tarot": "charity",
+   "art": {
+    "draw": "lantern",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "leave",
+     "hint": true,
+     "rel": -1,
+     "do": "T('de_kist', { kind: 'custom', label: M('trk.de_kist') }); rec('de_kist', -.012 * salary(), 40)"
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Leave the church?",
+     ".x": "Your payslip shows church tax: 9% on top of your income tax. Hundreds of thousands of Germans leave the church every year; your grandmother would be upset if you did.",
+     ".leave": "Leave the church",
+     ".leave.s": "A short visit to the registry office, and the church tax stops.",
+     ".leave.h": "Saves about 1% of your pay a year; Relationships −1.",
+     ".stay": "Stay a member",
+     ".stay.s": "Your church tax goes on.",
+     "trk.de_kist": "Church tax saved"
+    },
+    "zh": {
+     ".t": "退出教会？",
+     ".x": "你的工资单上有一项教会税：所得税之外再加9%。每年有几十万德国人退出教会；可要是你也退出，祖母会很难过。",
+     ".leave": "退出教会",
+     ".leave.s": "去户政局办个手续，教会税就停了。",
+     ".leave.h": "每年省下大约1%的薪水；人际关系 −1。",
+     ".stay": "继续当教友",
+     ".stay.s": "照缴教会税。",
+     "trk.de_kist": "省下的教会税"
+    },
+    "zht": {
+     ".t": "退出教會？",
+     ".x": "你的薪資單上有一項教會稅：所得稅之外再加9%。每年有幾十萬德國人退出教會；可是要是你也退出，祖母會很難過。",
+     ".leave": "退出教會",
+     ".leave.s": "去戶政機關辦個手續，教會稅就停了。",
+     ".leave.h": "每年省下大約1%的薪水；人際關係 −1。",
+     ".stay": "繼續當教友",
+     ".stay.s": "照繳教會稅。",
+     "trk.de_kist": "省下的教會稅"
+    }
+   }
+  },
+  {
+   "id": "de_haft",
+   "src": "Personal liability insurance (Privathaftpflicht): not compulsory, but about 83% of households have it (GDV, from the 2018 household budget survey); you are liable for damage you cause others, with no upper limit (§ 823 BGB). A policy costs from about €50 a year (≈ 0.003). The size of a claim and its odds are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    20,
+    35
+   ],
+   "weight": 0.5,
+   "def": "yes",
+   "tarot": "insure",
+   "art": {
+    "draw": "keyhome",
+    "bg": "wh"
+   },
+   "opts": [
+    {
+     "id": "yes",
+     "sub": {
+      "a": "MN(.003 * base)"
+     },
+     "do": "de_haft = 1; T('de_haft', { kind: 'ghost', label: M('trk.de_haft') }); rec('de_haft', .003 * base, 40)",
+     "next": {
+      "event": "de_haft2",
+      "in": [
+       2,
+       10
+      ],
+      "p": 0.25
+     }
+    },
+    {
+     "id": "no",
+     "hint": true,
+     "next": {
+      "event": "de_haft2",
+      "in": [
+       2,
+       10
+      ],
+      "p": 0.25
+     }
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Liability insurance",
+     ".x": "Now that you have moved out, your parents ask whether you have Haftpflicht: if you damage someone else’s property or hurt someone, you pay for it, with no upper limit.",
+     ".yes": "Take out a policy",
+     ".yes.s": "About {a} a year.",
+     ".no": "Skip it",
+     ".no.s": "One contract fewer.",
+     ".no.h": "If you ever cause serious damage, you pay all of it.",
+     "trk.de_haft": "Liability insurance"
+    },
+    "zh": {
+     ".t": "个人责任险",
+     ".x": "你搬出去住了，父母问你有没有保个人责任险：要是你弄坏别人的东西或害别人受伤，你得负责赔偿，而且没有上限。",
+     ".yes": "投保",
+     ".yes.s": "每年大约{a}。",
+     ".no": "不保",
+     ".no.s": "少签一份合约。",
+     ".no.h": "要是哪天闯了大祸，全部都得自己赔。",
+     "trk.de_haft": "个人责任险"
+    },
+    "zht": {
+     ".t": "個人責任險",
+     ".x": "你搬出去住了，父母問你有沒有保個人責任險：要是你弄壞別人的東西或害別人受傷，你得負責賠償，而且沒有上限。",
+     ".yes": "投保",
+     ".yes.s": "每年大約{a}。",
+     ".no": "不保",
+     ".no.s": "少簽一份合約。",
+     ".no.h": "要是哪天闖了大禍，全部都得自己賠。",
+     "trk.de_haft": "個人責任險"
+    }
+   }
+  },
+  {
+   "id": "de_haft2",
+   "src": "Liability claims: a burst washing-machine hose or a cycling accident can cost thousands of euros, which a liability policy pays (GDV). Amounts and odds are an ESTIMATE.",
+   "chain": true,
+   "def": "deal",
+   "tarot": "roof",
+   "art": {
+    "draw": "flood",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "deal",
+     "sub": {
+      "a": "MN(.4 * base)"
+     },
+     "do": "if (de_haft) happy -= 1; else { spend('de_dmg', .4 * base, 'trk.de_dmg'); happy -= 3 }"
+    },
+    {
+     "id": "deny",
+     "hint": true,
+     "do": "rl(-2); if (roll('de_haft2') < .7) spend('de_dmg', (de_haft ? .1 : .5) * base, 'trk.de_dmg')"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The flat below is flooded",
+     ".x": "Your washing machine hose burst while you were at work, and the water has come through the ceiling of the flat below. Their kitchen needs replacing.",
+     ".deal": "Own up and report it",
+     ".deal.s": "With liability insurance, the insurer pays; without it, about {a}.",
+     ".deny": "Say it wasn’t your fault",
+     ".deny.s": "Their insurer may take you to court.",
+     ".deny.h": "It usually costs more in the end; Relationships −2.",
+     "trk.de_dmg": "Water damage downstairs"
+    },
+    "zh": {
+     ".t": "楼下被淹了",
+     ".x": "你上班的时候洗衣机水管爆了，水渗过天花板流进楼下住户家里。他们的厨房得整个换掉。",
+     ".deal": "老实承认并报案",
+     ".deal.s": "有责任险就由保险公司赔；没有的话大约{a}。",
+     ".deny": "说不是你的错",
+     ".deny.s": "对方的保险公司可能会告你。",
+     ".deny.h": "到头来通常花得更多；人际关系 −2。",
+     "trk.de_dmg": "赔楼下的水灾损失"
+    },
+    "zht": {
+     ".t": "樓下淹水了",
+     ".x": "你上班的時候洗衣機水管爆了，水滲過天花板流進樓下住戶家裡。他們的廚房得整個換掉。",
+     ".deal": "老實承認並報案",
+     ".deal.s": "有責任險就由保險公司賠；沒有的話大約{a}。",
+     ".deny": "說不是你的錯",
+     ".deny.s": "對方的保險公司可能會告你。",
+     ".deny.h": "到頭來通常花得更多；人際關係 −2。",
+     "trk.de_dmg": "賠樓下的淹水損失"
+    }
+   }
+  },
+  {
+   "id": "de_teilzeit",
+   "src": "Part-time work: in 2024, 68% of working mothers with children under 18 worked part-time, against 8% of fathers (Destatis, Mikrozensus 2024). Since 2019, staff at firms with more than 45 employees can work part-time for one to five years and then return to full-time (Brückenteilzeit, § 9a TzBfG). The effects on pay, promotion and pension are an ESTIMATE.",
+   "age": [
+    24,
+    45
+   ],
+   "weight": 0.5,
+   "when": {
+    "working": true,
+    "kidAge": [
+     1,
+     3
+    ]
+   },
+   "def": "full",
+   "tarot": "kids",
+   "art": {
+    "draw": "blocks",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "part",
+     "hint": true,
+     "do": "tmpPay('de_tz', .55, 6, 'trk.de_tz'); bump('de_tzc', .95, M('trk.de_tzc')); happy += 3; rl(3)"
+    },
+    {
+     "id": "bridge",
+     "hint": true,
+     "do": "tmpPay('de_btz', .7, 3, 'trk.de_btz'); happy += 2; rl(2)"
+    },
+    {
+     "id": "full",
+     "hint": true,
+     "do": "happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Part-time?",
+     ".x": "Your child has a Kita place now, until two in the afternoon. Most parents you know, nearly all of them mothers, have gone part-time; HR says you could too.",
+     ".part": "Go part-time for a few years",
+     ".part.s": "Around 20 hours a week, with pay to match.",
+     ".part.h": "Pay about 45% lower for six years, and a little lower for good after; Happiness +3, Relationships +3.",
+     ".bridge": "Bridge part-time, then back to full-time",
+     ".bridge.s": "Fewer hours for three years, with the right to return.",
+     ".bridge.h": "Pay 30% lower for three years; Happiness +2, Relationships +2.",
+     ".full": "Stay full-time",
+     ".full.s": "Pick-ups and errands get squeezed in.",
+     ".full.h": "Happiness −1.",
+     "trk.de_tz": "Part-time while the children are small",
+     "trk.de_tzc": "Career after part-time years",
+     "trk.de_btz": "Bridge part-time"
+    },
+    "zh": {
+     ".t": "改做兼职？",
+     ".x": "孩子现在上了托儿所，只到下午两点。你认识的家长大多改成兼职了，几乎都是妈妈；人事部说你也可以。",
+     ".part": "兼职几年",
+     ".part.s": "每周大约20小时，薪水也按比例。",
+     ".part.h": "六年内收入少约45%，之后也一直低一点；幸福感 +3，人际关系 +3。",
+     ".bridge": "过渡兼职，之后回全职",
+     ".bridge.s": "三年内减少工时，之后有权回到全职。",
+     ".bridge.h": "三年内收入少30%；幸福感 +2，人际关系 +2。",
+     ".full": "继续全职",
+     ".full.s": "接送和杂事只能硬挤时间。",
+     ".full.h": "幸福感 −1。",
+     "trk.de_tz": "孩子小时做兼职",
+     "trk.de_tzc": "兼职几年后的职涯",
+     "trk.de_btz": "过渡兼职"
+    },
+    "zht": {
+     ".t": "改做部分工時？",
+     ".x": "孩子現在上了托兒所，只到下午兩點。你認識的家長大多改成部分工時了，幾乎都是媽媽；人資部說你也可以。",
+     ".part": "做幾年部分工時",
+     ".part.s": "每週大約20小時，薪水也按比例。",
+     ".part.h": "六年內收入少約45%，之後也一直低一點；幸福感 +3，人際關係 +3。",
+     ".bridge": "過渡部分工時，之後回全職",
+     ".bridge.s": "三年內減少工時，之後有權回到全職。",
+     ".bridge.h": "三年內收入少30%；幸福感 +2，人際關係 +2。",
+     ".full": "繼續全職",
+     ".full.s": "接送和雜事只能硬擠時間。",
+     ".full.h": "幸福感 −1。",
+     "trk.de_tz": "孩子小時做部分工時",
+     "trk.de_tzc": "部分工時幾年後的職涯",
+     "trk.de_btz": "過渡部分工時"
+    }
+   }
+  },
+  {
+   "id": "de_heat",
+   "src": "Heating: the Building Energy Act (GEG) requires new heating systems to run on 65% renewable energy, phased in with each town’s heat plan (2026 for big cities, 2028 for the rest) (BMWK). KfW pays a 30% base grant for a heat pump, up to 70% with bonuses, on costs up to €28,000 for the first home (KfW programme 458 from July 2026, via test.de). The CO2 price on heating fuel is €55–65 a tonne in 2026 and is due to move to the EU’s ETS2 market (BEHG; EU). Costs (a heat pump about €30,000 before the grant, a gas boiler about €10,000) and running costs are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    35,
+    70
+   ],
+   "weight": 0.45,
+   "when": {
+    "house": true
+   },
+   "def": "fix",
+   "tarot": "roof",
+   "art": {
+    "draw": "solar",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "hp",
+     "sub": {
+      "a": "MN(.75 * base)"
+     },
+     "hint": true,
+     "do": "spend('de_hp', .75 * base, 'trk.de_hp'); T('de_hps', { kind: 'custom', label: M('trk.de_hps') }); rec('de_hps', -.03 * base, 20)"
+    },
+    {
+     "id": "gas",
+     "sub": {
+      "a": "MN(.45 * base)"
+     },
+     "hint": true,
+     "do": "spend('de_gas', .45 * base, 'trk.de_gas')",
+     "next": {
+      "event": "de_heat2",
+      "in": [
+       4,
+       8
+      ],
+      "p": 0.7
+     }
+    },
+    {
+     "id": "fix",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "spend('de_fix', .05 * base, 'trk.de_fix')",
+     "next": {
+      "event": "de_heat2",
+      "in": [
+       1,
+       4
+      ],
+      "p": 0.9
+     }
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The old boiler",
+     ".x": "Your gas boiler is 25 years old, and the heating engineer won’t promise it will last another winter. A heat pump would get a KfW grant; a new gas boiler costs less now, but the CO2 price on gas keeps rising.",
+     ".hp": "Install a heat pump",
+     ".hp.s": "About {a} after the KfW grant.",
+     ".hp.h": "Lower heating bills for twenty years, and no CO2 price.",
+     ".gas": "A new gas boiler",
+     ".gas.s": "About {a}.",
+     ".gas.h": "Cheaper now; gas bills rise as the CO2 price goes up.",
+     ".fix": "Patch up the old one",
+     ".fix.s": "About {a} for repairs.",
+     ".fix.h": "It may not last long.",
+     "trk.de_hp": "A heat pump",
+     "trk.de_hps": "Heating bills saved",
+     "trk.de_gas": "A new gas boiler",
+     "trk.de_fix": "Boiler repairs"
+    },
+    "zh": {
+     ".t": "旧锅炉",
+     ".x": "你家的燃气锅炉已经用了25年，暖气师傅不敢保证它还能撑过一个冬天。装热泵可以拿到复兴信贷银行（KfW）的补助；新的燃气锅炉现在比较便宜，但燃气的碳价一直在涨。",
+     ".hp": "装热泵",
+     ".hp.s": "扣掉补助后大约{a}。",
+     ".hp.h": "之后二十年暖气费比较低，也不用付碳价。",
+     ".gas": "换新的燃气锅炉",
+     ".gas.s": "大约{a}。",
+     ".gas.h": "现在比较便宜；碳价上涨后燃气费也会跟着涨。",
+     ".fix": "修一修旧的",
+     ".fix.s": "修理费大约{a}。",
+     ".fix.h": "可能撑不了多久。",
+     "trk.de_hp": "热泵",
+     "trk.de_hps": "省下的暖气费",
+     "trk.de_gas": "新的燃气锅炉",
+     "trk.de_fix": "锅炉修理费"
+    },
+    "zht": {
+     ".t": "舊鍋爐",
+     ".x": "你家的瓦斯鍋爐已經用了25年，暖氣師傅不敢保證它還能撐過一個冬天。裝熱泵可以拿到復興信貸銀行（KfW）的補助；新的瓦斯鍋爐現在比較便宜，但瓦斯的碳價一直在漲。",
+     ".hp": "裝熱泵",
+     ".hp.s": "扣掉補助後大約{a}。",
+     ".hp.h": "之後二十年暖氣費比較低，也不用付碳價。",
+     ".gas": "換新的瓦斯鍋爐",
+     ".gas.s": "大約{a}。",
+     ".gas.h": "現在比較便宜；碳價上漲後瓦斯費也會跟著漲。",
+     ".fix": "修一修舊的",
+     ".fix.s": "修理費大約{a}。",
+     ".fix.h": "可能撐不了多久。",
+     "trk.de_hp": "熱泵",
+     "trk.de_hps": "省下的暖氣費",
+     "trk.de_gas": "新的瓦斯鍋爐",
+     "trk.de_fix": "鍋爐修理費"
+    }
+   }
+  },
+  {
+   "id": "de_heat2",
+   "src": "From 2027 or 2028, CO2 prices for heating fuel are due to be set by the EU’s new ETS2 market and could rise well above today’s €55–65 a tonne (EU; BEHG). Amounts are an ESTIMATE.",
+   "when": {
+    "house": true
+   },
+   "chain": true,
+   "def": "pay",
+   "tarot": "rates",
+   "art": {
+    "draw": "infl",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {
+      "a": "MN(.03 * base)"
+     },
+     "do": "T('de_co2', { kind: 'ghost', label: M('trk.de_co2') }); rec('de_co2', .03 * base, 15)"
+    },
+    {
+     "id": "hp",
+     "sub": {
+      "a": "MN(.85 * base)"
+     },
+     "hint": true,
+     "do": "spend('de_hp', .85 * base, 'trk.de_hp'); T('de_hps', { kind: 'custom', label: M('trk.de_hps') }); rec('de_hps', -.03 * base, 15)"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Gas is getting dearer",
+     ".x": "Your gas bill has jumped as the CO2 price on heating rises, and it is set to go on rising.",
+     ".pay": "Pay the higher bills",
+     ".pay.s": "About {a} a year more.",
+     ".hp": "Switch to a heat pump now",
+     ".hp.s": "About {a}, with a smaller grant than before.",
+     ".hp.h": "Lower bills from now on.",
+     "trk.de_co2": "Higher gas bills"
+    },
+    "zh": {
+     ".t": "燃气越来越贵",
+     ".x": "暖气的碳价上涨，你的燃气账单跟着大涨，而且还会继续涨。",
+     ".pay": "照付更高的账单",
+     ".pay.s": "每年多大约{a}。",
+     ".hp": "现在改装热泵",
+     ".hp.s": "大约{a}，补助比以前少。",
+     ".hp.h": "从此暖气费变低。",
+     "trk.de_co2": "变贵的燃气费"
+    },
+    "zht": {
+     ".t": "瓦斯越來越貴",
+     ".x": "暖氣的碳價上漲，你的瓦斯帳單跟著大漲，而且還會繼續漲。",
+     ".pay": "照付更高的帳單",
+     ".pay.s": "每年多大約{a}。",
+     ".hp": "現在改裝熱泵",
+     ".hp.s": "大約{a}，補助比以前少。",
+     ".hp.h": "從此暖氣費變低。",
+     "trk.de_co2": "變貴的瓦斯費"
+    }
+   }
+  },
+  {
+   "id": "de_aktiv",
+   "src": "Aktivrente: since 1 January 2026, employees who keep working past the standard retirement age while drawing their state pension can earn up to €2,000 a month tax-free (§ 3 Nr. 21 EStG, via Bund der Steuerzahler); it doesn’t apply to the self-employed or to Minijobs. The hours and pay used here are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    67,
+    70
+   ],
+   "weight": 0.4,
+   "when": {
+    "retired": true,
+    "stats": {
+     "health": "> 55"
+    }
+   },
+   "def": "rest",
+   "tarot": "ret2",
+   "art": {
+    "draw": "suit",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "part",
+     "sub": {
+      "a": "MN(.55 * base)"
+     },
+     "hint": true,
+     "rel": 1,
+     "do": "T('de_akt', { kind: 'custom', label: M('trk.de_akt') }); rec('de_akt', -.55 * base, 3, -.2); happy += 1"
+    },
+    {
+     "id": "rest"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Aktivrente",
+     ".x": "Your old employer asks whether you would come back two days a week. Since 2026, up to €2,000 a month earned past retirement age is tax-free.",
+     ".part": "Go back two days a week",
+     ".part.s": "About {a} a year, tax-free, for a few years.",
+     ".part.h": "Happiness +1; Health a little lower each year.",
+     ".rest": "Enjoy your retirement",
+     ".rest.s": "Your time is your own.",
+     "trk.de_akt": "Working on with the Aktivrente"
+    },
+    "zh": {
+     ".t": "活力退休金",
+     ".x": "以前的公司问你愿不愿意回去，一周上两天班。从2026年起，过了退休年龄还工作的话，每月最多2,000欧元的收入免税。",
+     ".part": "回去一周上两天",
+     ".part.s": "每年大约{a}，免税，做几年。",
+     ".part.h": "幸福感 +1；健康每年少一点。",
+     ".rest": "好好享受退休",
+     ".rest.s": "时间都是自己的。",
+     "trk.de_akt": "领活力退休金继续工作"
+    },
+    "zht": {
+     ".t": "活力退休金",
+     ".x": "以前的公司問你願不願意回去，一週上兩天班。從2026年起，過了退休年齡還工作的話，每月最多2,000歐元的收入免稅。",
+     ".part": "回去一週上兩天",
+     ".part.s": "每年大約{a}，免稅，做幾年。",
+     ".part.h": "幸福感 +1；健康每年少一點。",
+     ".rest": "好好享受退休",
+     ".rest.s": "時間都是自己的。",
+     "trk.de_akt": "領活力退休金繼續工作"
+    }
+   }
+  },
+  {
+   "id": "de_beamter",
+   "src": "Civil-service teachers: most German states employ teachers as Beamte (civil servants), and Berlin went back to this in 2023-24 (Berlin Senate). Beamte cannot be laid off, pay no pension or unemployment contributions, receive a pension of up to 71.75% of final pay (Beamtenversorgungsgesetz) instead of the state pension, and take private health insurance with the state paying half or more of their bills (Beihilfe). A medical check by the public health officer comes first. Pay and pension effects are an ESTIMATE.",
+   "age": [
+    25,
+    40
+   ],
+   "weight": 0.6,
+   "when": {
+    "working": true,
+    "career": [
+     "teach"
+    ]
+   },
+   "def": "stay",
+   "tarot": "cert",
+   "art": {
+    "draw": "exam",
+    "bg": "wa"
+   },
+   "opts": [
+    {
+     "id": "beamt",
+     "ok": "health > 45 || M('.ill')",
+     "hint": true,
+     "do": "bump('de_beamt', 1.08, M('trk.de_beamt')); layM = (layM || 1) * .05; penM = (penM || 1) * 1.3; medPlan('de_beih', .4, .05 * base)"
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Become a Beamter?",
+     ".x": "Your state now offers civil-service status to teachers. You would have a job for life and a civil-service pension, but first comes a medical check by the public health officer.",
+     ".beamt": "Take civil-service status",
+     ".beamt.s": "A job for life, private health insurance with state help, a civil-service pension.",
+     ".beamt.h": "Take-home pay about 8% higher, no layoffs, a much bigger pension.",
+     ".ill": "The health check would rule you out.",
+     ".stay": "Stay an employee",
+     ".stay.s": "Your contract and the state pension, as now.",
+     "trk.de_beamt": "Civil-service status",
+     "trk.de_beih": "Private insurance with Beihilfe"
+    },
+    "zh": {
+     ".t": "成为公务员？",
+     ".x": "你所在的州现在让教师成为公务员。那样就是铁饭碗，还有公务员退休金，但得先通过公卫医官的体检。",
+     ".beamt": "成为公务员",
+     ".beamt.s": "铁饭碗、有政府补助的私人医保，还有公务员退休金。",
+     ".beamt.h": "到手收入高约8%，不会被裁员，退休金高很多。",
+     ".ill": "体检会过不了。",
+     ".stay": "继续当约聘员工",
+     ".stay.s": "维持现在的合约和国家养老金。",
+     "trk.de_beamt": "公务员身份",
+     "trk.de_beih": "有公费补助的私人医保"
+    },
+    "zht": {
+     ".t": "成為公務員？",
+     ".x": "你所在的邦現在讓教師成為公務員。那樣就是鐵飯碗，還有公務員退休金，但得先通過公衛醫官的體檢。",
+     ".beamt": "成為公務員",
+     ".beamt.s": "鐵飯碗、有政府補助的私人健康保險，還有公務員退休金。",
+     ".beamt.h": "到手收入高約8%，不會被裁員，退休金高很多。",
+     ".ill": "體檢會過不了。",
+     ".stay": "繼續當約聘員工",
+     ".stay.s": "維持現在的合約和國家年金。",
+     "trk.de_beamt": "公務員身分",
+     "trk.de_beih": "有公費補助的私人健康保險"
+    }
+   }
+  },
+  {
+   "id": "de_grenz",
+   "src": "Cross-border commuting: tens of thousands of people living in Germany work in Switzerland, mostly around Basel and Lake Constance (Swiss Federal Statistical Office, cross-border commuter statistics); they pay a 4.5% Swiss withholding tax and are taxed in Germany (Germany–Switzerland tax treaty). Pay (often far higher in Switzerland), the commute and the exchange-rate risk are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    25,
+    45
+   ],
+   "weight": 0.35,
+   "when": {
+    "working": true,
+    "careerType": [
+     "office",
+     "hands"
+    ],
+    "stats": {
+     "skill": "> 20"
+    }
+   },
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {
+    "draw": "bridge",
+    "bg": "mi"
+   },
+   "opts": [
+    {
+     "id": "go",
+     "hint": true,
+     "rel": -2,
+     "do": "tmpPay('de_ch', 1.5, 6, 'trk.de_ch'); T('de_chc', { kind: 'custom', label: M('trk.de_chc') }); rec('de_chc', .05 * base, 6, -.3); happy -= 1"
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A job across the Swiss border",
+     ".x": "A company in Basel offers you a job at Swiss pay. You would keep living in Germany and cross the border every morning, like thousands of your neighbours.",
+     ".go": "Take it and commute",
+     ".go.s": "Swiss pay in francs and a longer commute.",
+     ".go.h": "Pay about 50% higher for six years; Health a little lower each year; Happiness −1, Relationships −2.",
+     ".stay": "Stay with your German job",
+     ".stay.s": "Shorter days.",
+     "trk.de_ch": "Working in Switzerland",
+     "trk.de_chc": "Commuting across the border"
+    },
+    "zh": {
+     ".t": "去瑞士上班",
+     ".x": "巴塞尔一家公司开出瑞士水平的薪水请你过去。你可以继续住在德国，每天早上过境上班，就像成千上万的邻居一样。",
+     ".go": "接下来，每天通勤",
+     ".go.s": "领瑞士法郎薪水，通勤更远。",
+     ".go.h": "六年内收入高约50%；健康每年少一点；幸福感 −1，人际关系 −2。",
+     ".stay": "留在德国的工作",
+     ".stay.s": "每天比较不累。",
+     "trk.de_ch": "在瑞士工作",
+     "trk.de_chc": "跨境通勤"
+    },
+    "zht": {
+     ".t": "去瑞士上班",
+     ".x": "巴塞爾一家公司開出瑞士水準的薪水請你過去。你可以繼續住在德國，每天早上過境上班，就像成千上萬的鄰居一樣。",
+     ".go": "接下來，每天通勤",
+     ".go.s": "領瑞士法郎薪水，通勤更遠。",
+     ".go.h": "六年內收入高約50%；健康每年少一點；幸福感 −1，人際關係 −2。",
+     ".stay": "留在德國的工作",
+     ".stay.s": "每天比較不累。",
+     "trk.de_ch": "在瑞士工作",
+     "trk.de_chc": "跨境通勤"
+    }
+   }
+  },
+  {
+   "id": "de_dticket",
+   "src": "Deutschlandticket: unlimited local and regional public transport across Germany for €63 a month from January 2026, up from €58 (transport ministers’ decision, via Finanztip). The full cost of keeping a small car (loss of value, insurance, tax, fuel, repairs) and its sale price are an ESTIMATE. Amounts are compared with the game’s typical wage in Germany, about €22,000 a year (32,000 PPP dollars × 0.688).",
+   "age": [
+    25,
+    60
+   ],
+   "weight": 0.4,
+   "when": {
+    "car": true,
+    "working": true,
+    "test": "!car.bal"
+   },
+   "def": "keep",
+   "tarot": "car",
+   "art": {
+    "draw": "city",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "sell",
+     "hint": true,
+     "do": "car = null; cash += .25 * base; T('de_dt', { kind: 'custom', label: M('trk.de_dt') }); rec('de_dt', -.08 * base, 10, .2); happy -= 1"
+    },
+    {
+     "id": "keep"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sell the car?",
+     ".x": "Your car spends most of the week parked. With a Deutschlandticket at €63 a month you could take any bus, tram or regional train in the country.",
+     ".sell": "Sell it and get a Deutschlandticket",
+     ".sell.s": "Money from the sale now, and €63 a month.",
+     ".sell.h": "Saves about a twelfth of a typical wage a year; Health a little better each year from walking and cycling; Happiness −1.",
+     ".keep": "Keep the car",
+     ".keep.s": "Door to door, whenever you like.",
+     "trk.de_dt": "Life without a car"
+    },
+    "zh": {
+     ".t": "把车卖了？",
+     ".x": "你的车一个星期大部分时间都停着。买一张每月63欧元的德国票，就能搭全国任何公交、电车和区域火车。",
+     ".sell": "卖车，改买德国票",
+     ".sell.s": "现在拿到卖车的钱，之后每月63欧元。",
+     ".sell.h": "每年省下大约十二分之一个一般工资；多走路骑车让健康每年好一点；幸福感 −1。",
+     ".keep": "留着车",
+     ".keep.s": "想去哪就去哪，门口到门口。",
+     "trk.de_dt": "没有车的生活"
+    },
+    "zht": {
+     ".t": "把車賣了？",
+     ".x": "你的車一個星期大部分時間都停著。買一張每月63歐元的德國票，就能搭全國任何公車、電車和區域火車。",
+     ".sell": "賣車，改買德國票",
+     ".sell.s": "現在拿到賣車的錢，之後每月63歐元。",
+     ".sell.h": "每年省下大約十二分之一個一般薪資；多走路騎車讓健康每年好一點；幸福感 −1。",
+     ".keep": "留著車",
+     ".keep.s": "想去哪就去哪，門口到門口。",
+     "trk.de_dt": "沒有車的生活"
+    }
+   }
   }
  ]
 }

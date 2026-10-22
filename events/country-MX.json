@@ -303,6 +303,992 @@
      "trk.cetes": "國庫券"
     }
    }
+  },
+  {
+   "id": "mx_xv",
+   "src": "Quinceañeras: a girl’s fifteenth birthday is often celebrated with a Mass, a hall, a dinner, a dress and a waltz, with padrinos (sponsors) from the family paying for parts of it. Costs (a large party about MX$150,000 ≈ 1.5 before the padrinos’ share) are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    35,
+    60
+   ],
+   "weight": 0.5,
+   "who": {
+    "role": "kid",
+    "age": [
+     14,
+     14
+    ],
+    "test": "p.sex === 'f'"
+   },
+   "def": "trip",
+   "tarot": "cny",
+   "art": {
+    "draw": "feast",
+    "bg": "ya"
+   },
+   "vars": {
+    "n": "name(p)"
+   },
+   "opts": [
+    {
+     "id": "big",
+     "sub": {
+      "a": "MN(1.2 * base)"
+     },
+     "hint": true,
+     "bond": 6,
+     "do": "spend('mx_xv', 1.2 * base, 'trk.mx_xv'); happy += 3"
+    },
+    {
+     "id": "mid",
+     "sub": {
+      "a": "MN(.5 * base)"
+     },
+     "hint": true,
+     "bond": 4,
+     "do": "spend('mx_xv', .5 * base, 'trk.mx_xv'); happy += 2"
+    },
+    {
+     "id": "trip",
+     "sub": {
+      "a": "MN(.3 * base)"
+     },
+     "hint": true,
+     "bond": 5,
+     "do": "spend('mx_xvt', .3 * base, 'trk.mx_xvt'); happy += 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Her quinceañera",
+     ".x": "{n} turns fifteen this year. Her cousins had big quinceañeras with a hall, a band and a waltz; the godparents have offered to pay for the cake and the dress.",
+     ".big": "A big party with a hall and a band",
+     ".big.s": "About {a} after what the padrinos pay.",
+     ".big.h": "Happiness +3; closeness +6.",
+     ".mid": "A party at home with the family",
+     ".mid.s": "About {a}.",
+     ".mid.h": "Happiness +2; closeness +4.",
+     ".trip": "A trip, which she says she prefers",
+     ".trip.s": "About {a} for the two of you.",
+     ".trip.h": "Happiness +1; closeness +5.",
+     "trk.mx_xv": "A quinceañera",
+     "trk.mx_xvt": "A quinceañera trip"
+    },
+    "zh": {
+     ".t": "女儿的十五岁成年礼",
+     ".x": "{n}今年满十五岁。她的表姐妹们都办了盛大的成年礼，有宴会厅、乐队和华尔兹；教父母说可以出蛋糕和礼服的钱。",
+     ".big": "办宴会厅加乐队的大派对",
+     ".big.s": "扣掉教父母出的钱，大约{a}。",
+     ".big.h": "幸福感 +3；亲近度 +6。",
+     ".mid": "在家和亲戚办派对",
+     ".mid.s": "大约{a}。",
+     ".mid.h": "幸福感 +2；亲近度 +4。",
+     ".trip": "去旅行，她说她比较想要这个",
+     ".trip.s": "两个人大约{a}。",
+     ".trip.h": "幸福感 +1；亲近度 +5。",
+     "trk.mx_xv": "十五岁成年礼",
+     "trk.mx_xvt": "成年礼旅行"
+    },
+    "zht": {
+     ".t": "女兒的十五歲成年禮",
+     ".x": "{n}今年滿十五歲。她的表姊妹們都辦了盛大的成年禮，有宴會廳、樂團和華爾滋；教父母說可以出蛋糕和禮服的錢。",
+     ".big": "辦宴會廳加樂團的大派對",
+     ".big.s": "扣掉教父母出的錢，大約{a}。",
+     ".big.h": "幸福感 +3；親近度 +6。",
+     ".mid": "在家和親戚辦派對",
+     ".mid.s": "大約{a}。",
+     ".mid.h": "幸福感 +2；親近度 +4。",
+     ".trip": "去旅行，她說她比較想要這個",
+     ".trip.s": "兩個人大約{a}。",
+     ".trip.h": "幸福感 +1；親近度 +5。",
+     "trk.mx_xv": "十五歲成年禮",
+     "trk.mx_xvt": "成年禮旅行"
+    }
+   }
+  },
+  {
+   "id": "mx_ejido",
+   "src": "Ejido land: about 51% of Mexico’s land is social property held by 32,121 ejidos and communities (National Agrarian Registry, 2017, via UNAM). Since the 1992 reform an ejido’s assembly can let a plot become private property (dominio pleno), and about 285,000 plots have done so (RAN, via UNAM); plots sold without it can be contested by the ejido or the seller’s family. Prices, gains and the odds of a dispute are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    28,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "house": false,
+    "stats": {
+     "liquid": "> .6 * base"
+    }
+   },
+   "def": "none",
+   "tarot": "bubble",
+   "art": {
+    "draw": "keyhome",
+    "bg": "mi"
+   },
+   "opts": [
+    {
+     "id": "ejido",
+     "sub": {
+      "a": "MN(.5 * base)"
+     },
+     "hint": true,
+     "do": "putIn('mx_ejido', .5 * base, { rate: .03 }, 'trk.mx_ejido')",
+     "next": {
+      "event": "mx_ejido2",
+      "in": [
+       2,
+       6
+      ],
+      "p": 0.4
+     }
+    },
+    {
+     "id": "lote",
+     "show": "liquid() > 1.5 * base",
+     "sub": {
+      "a": "MN(1.5 * base)"
+     },
+     "hint": true,
+     "do": "putIn('mx_lote', 1.5 * base, { rate: .02 }, 'trk.mx_lote')"
+    },
+    {
+     "id": "none"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A cheap plot on ejido land",
+     ".x": "On the edge of town, an ejidatario is selling plots on ejido land for a third of the price of plots with a private title. Several neighbours have already started building there.",
+     ".ejido": "Buy an ejido plot",
+     ".ejido.s": "About {a}, with a handwritten contract.",
+     ".ejido.h": "Cheap land that should gain in value, but without full title the sale can be contested.",
+     ".lote": "A plot with a private title",
+     ".lote.s": "About {a}, signed before a notary.",
+     ".lote.h": "Slower gains, a clear title.",
+     ".none": "Keep saving",
+     ".none.s": "No land for now.",
+     "trk.mx_ejido": "An ejido plot",
+     "trk.mx_lote": "A plot with a private title"
+    },
+    "zh": {
+     ".t": "便宜的公社土地",
+     ".x": "城郊有一位公社社员在卖公社土地（ejido）上的地块，价格只有私有产权地块的三分之一。好几户邻居已经在那里盖房子了。",
+     ".ejido": "买公社地块",
+     ".ejido.s": "大约{a}，签一份手写合约。",
+     ".ejido.h": "便宜、应该会增值，但没有完整产权，买卖可能被告无效。",
+     ".lote": "买有私有产权的地",
+     ".lote.s": "大约{a}，在公证人面前签约。",
+     ".lote.h": "涨得慢，但产权清楚。",
+     ".none": "继续存钱",
+     ".none.s": "先不买地。",
+     "trk.mx_ejido": "公社地块",
+     "trk.mx_lote": "私有产权的地"
+    },
+    "zht": {
+     ".t": "便宜的公社土地",
+     ".x": "城郊有一位公社社員在賣公社土地（ejido）上的地塊，價格只有私有產權地塊的三分之一。好幾戶鄰居已經在那裡蓋房子了。",
+     ".ejido": "買公社地塊",
+     ".ejido.s": "大約{a}，簽一份手寫合約。",
+     ".ejido.h": "便宜、應該會增值，但沒有完整產權，買賣可能被告無效。",
+     ".lote": "買有私有產權的地",
+     ".lote.s": "大約{a}，在公證人面前簽約。",
+     ".lote.h": "漲得慢，但產權清楚。",
+     ".none": "繼續存錢",
+     ".none.s": "先不買地。",
+     "trk.mx_ejido": "公社地塊",
+     "trk.mx_lote": "私有產權的地"
+    }
+   }
+  },
+  {
+   "id": "mx_ejido2",
+   "src": "Disputes over ejido plots go to the agrarian courts; the seller’s family and other ejidatarios have a right of first refusal when parcel rights are sold (Ley Agraria, articles 80 and 84). Amounts and odds are an ESTIMATE.",
+   "when": {
+    "test": "!!lots.mx_ejido && lots.mx_ejido.v > 0"
+   },
+   "chain": true,
+   "def": "lawyer",
+   "tarot": "inhfight",
+   "art": {
+    "draw": "keyhome",
+    "bg": "co"
+   },
+   "let": {
+    "v": "lots.mx_ejido.v"
+   },
+   "vars": {
+    "a": "MN(v)"
+   },
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {
+      "a": "MN(.25 * base)"
+     },
+     "hint": true,
+     "do": "pay(.25 * base); happy -= 1"
+    },
+    {
+     "id": "lawyer",
+     "sub": {
+      "a": "MN(.1 * base)"
+     },
+     "hint": true,
+     "do": "pay(.1 * base); if (roll('mx_ejido2') < .5) { lots.mx_ejido.v = .2 * v; happy -= 4 } else happy -= 1"
+    },
+    {
+     "id": "walk",
+     "hint": true,
+     "do": "lots.mx_ejido.v = 0; happy -= 4"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The seller’s family wants the land back",
+     ".x": "The ejidatario who sold you the plot has died, and his children say he had no right to sell it without them. Your plot, worth about {a}, is now in dispute at the agrarian court.",
+     ".pay": "Pay his children to sign it over",
+     ".pay.s": "About {a}.",
+     ".pay.h": "Happiness −1; the plot is yours.",
+     ".lawyer": "Fight it in court",
+     ".lawyer.s": "About {a} in lawyer’s fees.",
+     ".lawyer.h": "Half the time you lose most of the plot’s value.",
+     ".walk": "Give it up",
+     ".walk.s": "No more fighting.",
+     ".walk.h": "Happiness −4; the plot is lost."
+    },
+    "zh": {
+     ".t": "卖家的家人要讨回土地",
+     ".x": "卖地给你的那位公社社员过世了，他的子女说他没经过他们同意，无权卖地。你那块大约值{a}的地，现在闹上了农地法院。",
+     ".pay": "付钱请子女签字转让",
+     ".pay.s": "大约{a}。",
+     ".pay.h": "幸福感 −1；地归你了。",
+     ".lawyer": "上法院打官司",
+     ".lawyer.s": "律师费大约{a}。",
+     ".lawyer.h": "有一半的机会会失去这块地大部分的价值。",
+     ".walk": "放弃",
+     ".walk.s": "不再争了。",
+     ".walk.h": "幸福感 −4；地没了。"
+    },
+    "zht": {
+     ".t": "賣家的家人要討回土地",
+     ".x": "賣地給你的那位公社社員過世了，他的子女說他沒經過他們同意，無權賣地。你那塊大約值{a}的地，現在鬧上了農地法院。",
+     ".pay": "付錢請子女簽字轉讓",
+     ".pay.s": "大約{a}。",
+     ".pay.h": "幸福感 −1；地歸你了。",
+     ".lawyer": "上法院打官司",
+     ".lawyer.s": "律師費大約{a}。",
+     ".lawyer.h": "有一半的機會會失去這塊地大部分的價值。",
+     ".walk": "放棄",
+     ".walk.s": "不再爭了。",
+     ".walk.h": "幸福感 −4；地沒了。"
+    }
+   }
+  },
+  {
+   "id": "mx_renta",
+   "src": "Rents in Mexico City: since 2024 the Civil Code caps yearly rent rises for homes at the previous year’s inflation (article 2448 D), upheld by the Supreme Court in February 2026; inflation was 3.69% in 2025 (INEGI, via El Financiero). Protests against gentrification and short-term lets spread through Roma and Condesa in July 2025. The landlord’s response, rents and commuting costs are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    24,
+    42
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "house": false
+   },
+   "def": "pay",
+   "tarot": "home",
+   "art": {
+    "draw": "city",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "cap",
+     "hint": true,
+     "do": "if (roll('mx_renta') < .4) { spend('mx_mv', .05 * base, 'trk.mx_mv'); T('mx_rup', { kind: 'ghost', label: M('trk.mx_rup') }); rec('mx_rup', .04 * base, 5); happy -= 1 }"
+    },
+    {
+     "id": "pay",
+     "sub": {
+      "a": "MN(.08 * base)"
+     },
+     "do": "T('mx_rup', { kind: 'ghost', label: M('trk.mx_rup') }); rec('mx_rup', .08 * base, 5)"
+    },
+    {
+     "id": "edomex",
+     "sub": {
+      "a": "MN(.05 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_mv', .05 * base, 'trk.mx_mv'); T('mx_far', { kind: 'custom', label: M('trk.mx_far') }); rec('mx_far', -.06 * base, 6, -.4); happy -= 2"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The rent is going up 30%",
+     ".x": "Your landlord in the city centre wants 30% more when the contract renews: flats nearby now rent to foreigners working remotely. The law caps rises at last year’s inflation, but he says he can always find someone else.",
+     ".cap": "Insist on the legal cap",
+     ".cap.s": "The law is on your side; the landlord may not renew.",
+     ".cap.h": "Often it works, but some landlords refuse to renew and you have to move.",
+     ".pay": "Pay the increase",
+     ".pay.s": "About {a} a year more.",
+     ".edomex": "Move out to the State of Mexico",
+     ".edomex.s": "About {a} to move; a much cheaper rent and a long commute.",
+     ".edomex.h": "Rent saved, but Health a little lower each year and Happiness −2.",
+     "trk.mx_rup": "A higher rent",
+     "trk.mx_mv": "Moving",
+     "trk.mx_far": "Rent saved living outside the city"
+    },
+    "zh": {
+     ".t": "房租要涨三成",
+     ".x": "市中心的房东说续约时房租要涨30%：附近的公寓现在都租给远程工作的外国人。法律规定涨幅不能超过去年的通胀，可他说随时都找得到别人租。",
+     ".cap": "坚持法定涨幅上限",
+     ".cap.s": "法律站在你这边；但房东可能不续约。",
+     ".cap.h": "常常有用，但有些房东会拒绝续约，你只好搬家。",
+     ".pay": "照付涨价",
+     ".pay.s": "每年多大约{a}。",
+     ".edomex": "搬到墨西哥州",
+     ".edomex.s": "搬家大约{a}；房租便宜很多，但通勤很远。",
+     ".edomex.h": "省下房租，但健康每年少一点，幸福感 −2。",
+     "trk.mx_rup": "更高的房租",
+     "trk.mx_mv": "搬家",
+     "trk.mx_far": "住城外省下的房租"
+    },
+    "zht": {
+     ".t": "房租要漲三成",
+     ".x": "市中心的房東說續約時房租要漲30%：附近的公寓現在都租給遠端工作的外國人。法律規定漲幅不能超過去年的通膨，可是他說隨時都找得到別人租。",
+     ".cap": "堅持法定漲幅上限",
+     ".cap.s": "法律站在你這邊；但房東可能不續約。",
+     ".cap.h": "常常有用，但有些房東會拒絕續約，你只好搬家。",
+     ".pay": "照付漲價",
+     ".pay.s": "每年多大約{a}。",
+     ".edomex": "搬到墨西哥州",
+     ".edomex.s": "搬家大約{a}；房租便宜很多，但通勤很遠。",
+     ".edomex.h": "省下房租，但健康每年少一點，幸福感 −2。",
+     "trk.mx_rup": "更高的房租",
+     "trk.mx_mv": "搬家",
+     "trk.mx_far": "住城外省下的房租"
+    }
+   }
+  },
+  {
+   "id": "mx_moto",
+   "src": "Delivery work: since 1 July 2025, people working through apps such as DiDi, Uber and Rappi who earn at least a monthly minimum wage are covered by IMSS social security, paid by the platforms (IMSS pilot, DOF, June 2025). Motorbikes are widely sold on weekly instalments. Earnings, the bike’s cost and the odds of an accident are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    19,
+    40
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true
+   },
+   "def": "no",
+   "tarot": "teen",
+   "art": {
+    "draw": "moto",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "ride",
+     "sub": {
+      "a": "MN(.12 * base)"
+     },
+     "hint": true,
+     "do": "T('mx_mpay', { kind: 'ghost', label: M('trk.mx_mpay') }); rec('mx_mpay', .12 * base, 2); T('mx_del', { kind: 'custom', label: M('trk.mx_del') }); rec('mx_del', -.25 * base, 4, -.4); happy -= 1",
+     "next": {
+      "event": "mx_moto2",
+      "in": [
+       1,
+       3
+      ],
+      "p": 0.25
+     }
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Delivering on a motorbike",
+     ".x": "A friend makes good money delivering for the apps in the evenings and at weekends. The store will sell you a motorbike today for small weekly payments, and the apps now register riders with IMSS.",
+     ".ride": "Buy the bike and deliver after work",
+     ".ride.s": "Weekly payments of about {a} a year for two years.",
+     ".ride.h": "Extra income of about a quarter of a typical wage a year; Health a little lower each year; Happiness −1; accidents happen.",
+     ".no": "Keep your evenings",
+     ".no.s": "Rest.",
+     "trk.mx_mpay": "A motorbike on weekly payments",
+     "trk.mx_del": "Delivery work"
+    },
+    "zh": {
+     ".t": "骑摩托车送外卖",
+     ".x": "一个朋友晚上和周末替外卖平台送餐，赚得不错。商店今天就能卖你一辆摩托车，每周付一点；而且平台现在会替骑手办社会保险（IMSS）。",
+     ".ride": "买摩托车，下班后送外卖",
+     ".ride.s": "分期每周付，两年内每年大约{a}。",
+     ".ride.h": "每年多赚大约四分之一个一般工资；健康每年少一点；幸福感 −1；可能会出车祸。",
+     ".no": "晚上留给自己",
+     ".no.s": "休息。",
+     "trk.mx_mpay": "分期买的摩托车",
+     "trk.mx_del": "送外卖"
+    },
+    "zht": {
+     ".t": "騎機車跑外送",
+     ".x": "一個朋友晚上和週末替外送平台送餐，賺得不錯。商店今天就能賣你一輛機車，每週付一點；而且平台現在會替外送員辦社會保險（IMSS）。",
+     ".ride": "買機車，下班後跑外送",
+     ".ride.s": "分期每週付，兩年內每年大約{a}。",
+     ".ride.h": "每年多賺大約四分之一個一般薪資；健康每年少一點；幸福感 −1；可能會出車禍。",
+     ".no": "晚上留給自己",
+     ".no.s": "休息。",
+     "trk.mx_mpay": "分期買的機車",
+     "trk.mx_del": "跑外送"
+    }
+   }
+  },
+  {
+   "id": "mx_moto2",
+   "src": "Motorcyclists are among the road users most often hurt in Mexico (INEGI road accident statistics); IMSS covers work accidents of registered platform workers since 2025. Effects are an ESTIMATE.",
+   "chain": true,
+   "def": "rest",
+   "tarot": "health2",
+   "art": {
+    "draw": "moto",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "rest",
+     "hint": true,
+     "do": "health -= 6; stopRec('mx_del'); happy -= 2"
+    },
+    {
+     "id": "back",
+     "hint": true,
+     "do": "health -= 10; happy -= 1"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Knocked off the bike",
+     ".x": "A car turned across you on a wet evening. Your leg is badly bruised and the bike needs repairs; IMSS covers the clinic.",
+     ".rest": "Stop delivering for good",
+     ".rest.s": "Heal properly.",
+     ".rest.h": "Health −6, Happiness −2; the delivery income ends.",
+     ".back": "Get back on as soon as you can",
+     ".back.s": "The weekly payments don’t stop.",
+     ".back.h": "Health −10; the income goes on."
+    },
+    "zh": {
+     ".t": "被撞下摩托车",
+     ".x": "一个下雨的晚上，一辆车突然转弯切到你前面。你的腿严重瘀伤，摩托车也得修；看诊费由社会保险出。",
+     ".rest": "不再送外卖了",
+     ".rest.s": "好好养伤。",
+     ".rest.h": "健康 −6，幸福感 −2；送餐收入没了。",
+     ".back": "尽快再上路",
+     ".back.s": "分期款可不会停。",
+     ".back.h": "健康 −10；收入照旧。"
+    },
+    "zht": {
+     ".t": "被撞下機車",
+     ".x": "一個下雨的晚上，一輛車突然轉彎切到你前面。你的腿嚴重瘀傷，機車也得修；看診費由社會保險出。",
+     ".rest": "不再跑外送了",
+     ".rest.s": "好好養傷。",
+     ".rest.h": "健康 −6，幸福感 −2；外送收入沒了。",
+     ".back": "儘快再上路",
+     ".back.s": "分期款可不會停。",
+     ".back.h": "健康 −10；收入照舊。"
+    }
+   }
+  },
+  {
+   "id": "mx_chocolate",
+   "src": "‘Chocolate’ cars: used cars brought in from the United States without import papers; a decree from January 2022, extended several times, let owners register them for a one-off MX$2,500 fee, and more than 2.5 million had been registered by October 2024 (REPUVE, via El Imparcial). Prices (about MX$60,000 ≈ 0.6 for a regularised US pickup against MX$110,000 ≈ 1.1 for a similar Mexican car) and repairs are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    20,
+    50
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "car": false
+   },
+   "def": "none",
+   "tarot": "car",
+   "art": "car",
+   "opts": [
+    {
+     "id": "choc",
+     "sub": {
+      "a": "MN(.6 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_choc', .6 * base, 'trk.mx_choc'); car = { type: 'used', bal: 0, pay: 0, trk: 'mx_choc' }; happy += 2; if (roll('mx_choc') < .3) spend('mx_chocfix', .1 * base, 'trk.mx_chocfix')"
+    },
+    {
+     "id": "nac",
+     "sub": {
+      "a": "MN(1.1 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_nac', 1.1 * base, 'trk.mx_nac'); car = { type: 'used', bal: 0, pay: 0, trk: 'mx_nac' }; happy += 2"
+    },
+    {
+     "id": "none"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A ‘chocolate’ car",
+     ".x": "A neighbour is selling a pickup brought in from Texas, newly registered under the government’s scheme for ‘chocolate’ cars. It costs about half of what a Mexican car of the same age would.",
+     ".choc": "Buy the regularised US pickup",
+     ".choc.s": "About {a}.",
+     ".choc.h": "Happiness +2; parts can be hard to find, and some of these cars hide old damage.",
+     ".nac": "A Mexican used car from a dealer",
+     ".nac.s": "About {a}.",
+     ".nac.h": "Happiness +2; a known history.",
+     ".none": "No car for now",
+     ".none.s": "Buses and colectivos.",
+     "trk.mx_choc": "A regularised US pickup",
+     "trk.mx_chocfix": "Repairs on the pickup",
+     "trk.mx_nac": "A Mexican used car"
+    },
+    "zh": {
+     ".t": "“巧克力车”",
+     ".x": "邻居要卖一辆从得州开过来的皮卡，刚依照政府的“巧克力车”合法化方案登记好。价格大约只有同车龄墨西哥车的一半。",
+     ".choc": "买这辆合法化的美国皮卡",
+     ".choc.s": "大约{a}。",
+     ".choc.h": "幸福感 +2；零件可能不好找，有些车还藏着旧伤。",
+     ".nac": "向车行买墨西哥二手车",
+     ".nac.s": "大约{a}。",
+     ".nac.h": "幸福感 +2；车况清楚。",
+     ".none": "先不买车",
+     ".none.s": "搭公交和小巴。",
+     "trk.mx_choc": "合法化的美国皮卡",
+     "trk.mx_chocfix": "皮卡的修理费",
+     "trk.mx_nac": "墨西哥二手车"
+    },
+    "zht": {
+     ".t": "「巧克力車」",
+     ".x": "鄰居要賣一輛從德州開過來的皮卡，剛依照政府的「巧克力車」合法化方案登記好。價格大約只有同車齡墨西哥車的一半。",
+     ".choc": "買這輛合法化的美國皮卡",
+     ".choc.s": "大約{a}。",
+     ".choc.h": "幸福感 +2；零件可能不好找，有些車還藏著舊傷。",
+     ".nac": "向車行買墨西哥二手車",
+     ".nac.s": "大約{a}。",
+     ".nac.h": "幸福感 +2；車況清楚。",
+     ".none": "先不買車",
+     ".none.s": "搭公車和小巴。",
+     "trk.mx_choc": "合法化的美國皮卡",
+     "trk.mx_chocfix": "皮卡的修理費",
+     "trk.mx_nac": "墨西哥二手車"
+    }
+   }
+  },
+  {
+   "id": "mx_buenfin",
+   "src": "El Buen Fin: a yearly November sales weekend since 2011, when shops offer months without interest (meses sin intereses) on credit cards (Profeco; Secretaría de Economía). Missing a payment ends the interest-free deal, and card interest for people who don’t pay in full averages over 30% a year (Banxico). The TV prices and the odds of falling behind are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    22,
+    50
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true
+   },
+   "def": "none",
+   "tarot": "bnpl",
+   "art": {
+    "draw": "bill",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "msi",
+     "sub": {
+      "a": "MN(.2 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_bf', .2 * base, 'trk.mx_bf'); happy += 2",
+     "next": {
+      "event": "mx_buenfin2",
+      "in": 1,
+      "p": 0.3
+     }
+    },
+    {
+     "id": "cash",
+     "sub": {
+      "a": "MN(.12 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_bfc', .12 * base, 'trk.mx_bfc'); happy += 1"
+    },
+    {
+     "id": "none"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "El Buen Fin",
+     ".x": "It’s the Buen Fin weekend, and the 65-inch TV you wanted is on offer at 18 months without interest on your credit card.",
+     ".msi": "Buy it at 18 months without interest",
+     ".msi.s": "About {a}, spread over 18 payments.",
+     ".msi.h": "Happiness +2; free credit as long as you never miss a payment.",
+     ".cash": "A smaller TV, paid in cash",
+     ".cash.s": "About {a}.",
+     ".cash.h": "Happiness +1.",
+     ".none": "Skip the sales",
+     ".none.s": "The old TV still works.",
+     "trk.mx_bf": "A TV at months without interest",
+     "trk.mx_bfc": "A TV, paid in cash"
+    },
+    "zh": {
+     ".t": "“好周末”大促销",
+     ".x": "“好周末”促销到了，你想要的65英寸电视用信用卡可以分18期零利率。",
+     ".msi": "刷卡分18期零利率",
+     ".msi.s": "大约{a}，分18期付。",
+     ".msi.h": "幸福感 +2；只要一期都不漏缴，就不用付利息。",
+     ".cash": "付现金买小一点的电视",
+     ".cash.s": "大约{a}。",
+     ".cash.h": "幸福感 +1。",
+     ".none": "不凑热闹",
+     ".none.s": "旧电视还能看。",
+     "trk.mx_bf": "分期零利率买的电视",
+     "trk.mx_bfc": "现金买的电视"
+    },
+    "zht": {
+     ".t": "「好週末」大促銷",
+     ".x": "「好週末」促銷到了，你想要的65吋電視用信用卡可以分18期零利率。",
+     ".msi": "刷卡分18期零利率",
+     ".msi.s": "大約{a}，分18期付。",
+     ".msi.h": "幸福感 +2；只要一期都不漏繳，就不用付利息。",
+     ".cash": "付現金買小一點的電視",
+     ".cash.s": "大約{a}。",
+     ".cash.h": "幸福感 +1。",
+     ".none": "不湊熱鬧",
+     ".none.s": "舊電視還能看。",
+     "trk.mx_bf": "分期零利率買的電視",
+     "trk.mx_bfc": "現金買的電視"
+    }
+   }
+  },
+  {
+   "id": "mx_buenfin2",
+   "src": "Missing a ‘months without interest’ payment usually moves the rest of the balance onto the card’s normal interest (Condusef). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "min",
+   "tarot": "debt",
+   "art": {
+    "draw": "bill",
+    "bg": "mi"
+   },
+   "opts": [
+    {
+     "id": "pay",
+     "sub": {
+      "a": "MN(.02 * base)"
+     },
+     "do": "pay(.02 * base)"
+    },
+    {
+     "id": "min",
+     "hint": true,
+     "do": "debt += .06 * base; happy -= 2"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A missed payment",
+     ".x": "A car repair left you short and you missed a payment on the TV. The bank has moved the rest of it onto your card’s normal interest rate.",
+     ".pay": "Pay off the rest now",
+     ".pay.s": "About {a} in interest so far.",
+     ".min": "Make the minimum payments",
+     ".min.s": "Keep the cash for now.",
+     ".min.h": "The interest keeps adding up; Happiness −2."
+    },
+    "zh": {
+     ".t": "漏缴了一期",
+     ".x": "修车让你手头紧，电视的分期款漏缴了一期。银行把剩下的金额改按信用卡的一般利率计息。",
+     ".pay": "现在一次付清",
+     ".pay.s": "目前的利息大约{a}。",
+     ".min": "只付最低还款",
+     ".min.s": "现金先留着。",
+     ".min.h": "利息会一直累积；幸福感 −2。"
+    },
+    "zht": {
+     ".t": "漏繳了一期",
+     ".x": "修車讓你手頭緊，電視的分期款漏繳了一期。銀行把剩下的金額改按信用卡的一般利率計息。",
+     ".pay": "現在一次付清",
+     ".pay.s": "目前的利息大約{a}。",
+     ".min": "只付最低應繳",
+     ".min.s": "現金先留著。",
+     ".min.h": "利息會一直累積；幸福感 −2。"
+    }
+   }
+  },
+  {
+   "id": "mx_norte",
+   "src": "The northern border: from January 2026 the minimum wage is MX$440.87 a day in the northern border zone against MX$315.04 in the rest of the country (CONASAMI, Dec 2025), and factories there are hiring as firms move production closer to the US. Pay, living costs and home prices after the move are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    20,
+    40
+   ],
+   "weight": 0.4,
+   "when": {
+    "working": true,
+    "careerType": [
+     "hands"
+    ],
+    "house": false
+   },
+   "def": "stay",
+   "tarot": "move",
+   "art": {
+    "draw": "tools",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "go",
+     "hint": true,
+     "do": "cityMove('mx_norte', 1.3, 1.1, 1.2, -4)"
+    },
+    {
+     "id": "stay"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A factory job in the north",
+     ".x": "Factories in Ciudad Juárez and Monterrey are hiring. The minimum wage in the border zone is 40% higher than at home, and a cousin there has a spare room.",
+     ".go": "Move north",
+     ".go.s": "Higher pay, far from family; prices are higher too.",
+     ".go.h": "Pay about 30% higher, living costs about 10% higher, homes about 20% dearer; Relationships −4.",
+     ".stay": "Stay home",
+     ".stay.s": "Near family.",
+     "trk.mx_norte": "Factory work in the north"
+    },
+    "zh": {
+     ".t": "北部的工厂工作",
+     ".x": "华雷斯城和蒙特雷的工厂在招人。边境地区的最低工资比家乡高40%，那里的表哥还有一间空房。",
+     ".go": "搬去北部",
+     ".go.s": "薪水较高，离家远；物价也比较高。",
+     ".go.h": "薪水高约30%，生活费高约10%，房价贵约20%；人际关系 −4。",
+     ".stay": "留在家乡",
+     ".stay.s": "离家人近。",
+     "trk.mx_norte": "在北部工厂工作"
+    },
+    "zht": {
+     ".t": "北部的工廠工作",
+     ".x": "華雷斯城和蒙特雷的工廠在招人。邊境地區的最低工資比家鄉高40%，那裡的表哥還有一間空房。",
+     ".go": "搬去北部",
+     ".go.s": "薪水較高，離家遠；物價也比較高。",
+     ".go.h": "薪水高約30%，生活費高約10%，房價貴約20%；人際關係 −4。",
+     ".stay": "留在家鄉",
+     ".stay.s": "離家人近。",
+     "trk.mx_norte": "在北部工廠工作"
+    }
+   }
+  },
+  {
+   "id": "mx_titulo",
+   "src": "Titulación: in Mexico finishing your courses isn’t enough to practise many professions; you need the título and the professional licence (cédula profesional, Dirección General de Profesiones), usually after a thesis, an exam or a paid diploma course, and many graduates put it off for years. Costs (about MX$25,000 ≈ 0.25) and the pay effect are an ESTIMATE. Amounts are compared with the game’s typical wage in Mexico, about MX$99,200 a year (10,000 PPP dollars × 9.92).",
+   "age": [
+    22,
+    27
+   ],
+   "weight": 0.45,
+   "when": {
+    "working": true,
+    "test": "edLv() === 2"
+   },
+   "def": "skip",
+   "tarot": "cert",
+   "art": {
+    "draw": "exam",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "tit",
+     "sub": {
+      "a": "MN(.25 * base)"
+     },
+     "hint": true,
+     "do": "spend('mx_tit', .25 * base, 'trk.mx_tit'); bump('mx_tit', 1.06, M('trk.mx_titb')); happy += 2"
+    },
+    {
+     "id": "skip",
+     "hint": true
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your título",
+     ".x": "You finished all your courses years ago but never did the thesis, so you have no título or cédula. Some job offers ask for them. Your university runs a paid diploma course that counts instead.",
+     ".tit": "Pay for the diploma course",
+     ".tit.s": "About {a} and six months of Saturdays.",
+     ".tit.h": "Pay about 6% higher; Happiness +2.",
+     ".skip": "Leave it",
+     ".skip.s": "Your work experience speaks for you.",
+     ".skip.h": "Some jobs stay out of reach.",
+     "trk.mx_tit": "The diploma course for your título",
+     "trk.mx_titb": "A degree with título and cédula"
+    },
+    "zh": {
+     ".t": "学位证书",
+     ".x": "你好几年前就修完所有课了，但一直没写论文，所以拿不到学位证书和专业执照。有些职缺要求要有。学校有开收费的结业课程，可以代替论文。",
+     ".tit": "报名结业课程",
+     ".tit.s": "大约{a}，外加六个月的星期六。",
+     ".tit.h": "薪水高约6%；幸福感 +2。",
+     ".skip": "算了",
+     ".skip.s": "你的工作经验就是证明。",
+     ".skip.h": "有些工作还是进不去。",
+     "trk.mx_tit": "为学位证书上的结业课程",
+     "trk.mx_titb": "有证书和执照的学位"
+    },
+    "zht": {
+     ".t": "學位證書",
+     ".x": "你好幾年前就修完所有課了，但一直沒寫論文，所以拿不到學位證書和專業執照。有些職缺要求要有。學校有開收費的結業課程，可以代替論文。",
+     ".tit": "報名結業課程",
+     ".tit.s": "大約{a}，外加六個月的星期六。",
+     ".tit.h": "薪水高約6%；幸福感 +2。",
+     ".skip": "算了",
+     ".skip.s": "你的工作經驗就是證明。",
+     ".skip.h": "有些工作還是進不去。",
+     "trk.mx_tit": "為學位證書上的結業課程",
+     "trk.mx_titb": "有證書和執照的學位"
+    }
+   }
+  },
+  {
+   "id": "mx_afored",
+   "src": "AFORE withdrawal for unemployment: after 46 days without work you can take out part of your retirement savings, about 30 days of salary (or, for older accounts, up to 90 days or 11.5% of the balance), once every five years; the weeks of contributions it represents are deducted, which can lower or delay your pension unless you pay it back (CONSAR, via El Imparcial and Expansión). The amount and the pension effect are an ESTIMATE.",
+   "age": [
+    25,
+    55
+   ],
+   "weight": 0.5,
+   "when": {
+    "test": "swWhy === 'lay' && swAt === age && !selfEmp()"
+   },
+   "def": "no",
+   "tarot": "efund",
+   "art": {
+    "draw": "penjar",
+    "bg": "co"
+   },
+   "opts": [
+    {
+     "id": "take",
+     "sub": {
+      "a": "MN(.1 * salary())"
+     },
+     "hint": true,
+     "do": "cash += .1 * salary(); penM = (penM || 1) * .97; happy += 1"
+    },
+    {
+     "id": "no"
+    }
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your AFORE after the layoff",
+     ".x": "Six weeks after the layoff, the AFORE app says you can withdraw part of your retirement savings for unemployment.",
+     ".take": "Withdraw it",
+     ".take.s": "About {a} now.",
+     ".take.h": "Happiness +1; the weeks it represents come off your record, so your pension is a little smaller.",
+     ".no": "Leave it for retirement",
+     ".no.s": "Get by on your savings."
+    },
+    "zh": {
+     ".t": "被裁员后的退休金账户",
+     ".x": "被裁员六个星期后，退休金账户（AFORE）的App通知你，可以申请失业提领一部分退休储蓄。",
+     ".take": "提出来",
+     ".take.s": "现在拿到大约{a}。",
+     ".take.h": "幸福感 +1；对应的缴费周数会被扣掉，退休金会少一点。",
+     ".no": "留到退休",
+     ".no.s": "靠存款撑过去。"
+    },
+    "zht": {
+     ".t": "被裁員後的退休金帳戶",
+     ".x": "被裁員六個星期後，退休金帳戶（AFORE）的App通知你，可以申請失業提領一部分退休儲蓄。",
+     ".take": "提出來",
+     ".take.s": "現在拿到大約{a}。",
+     ".take.h": "幸福感 +1；對應的繳費週數會被扣掉，退休金會少一點。",
+     ".no": "留到退休",
+     ".no.s": "靠存款撐過去。"
+    }
+   }
+  },
+  {
+   "id": "mx_uni",
+   "src": "UNAM: tuition at the National Autonomous University is famously symbolic, a few centavos a year, but places are scarce and filled by an entrance exam taken by well over a hundred thousand applicants a year, and many try again the following year (UNAM admissions). Private fees, the share refunded and the odds of a place on a second try are an ESTIMATE.",
+   "age": [
+    18,
+    19
+   ],
+   "weight": 0.5,
+   "when": {
+    "studying": true,
+    "test": "study.k === 'uni'"
+   },
+   "def": "priv",
+   "tarot": "edu",
+   "art": {
+    "draw": "exam",
+    "bg": "ya"
+   },
+   "opts": [
+    {
+     "id": "again",
+     "hint": true,
+     "do": "study.end += 1; happy -= 2; later(age + 1, 'mx_unam', {})"
+    },
+    {
+     "id": "priv"
+    }
+   ],
+   "later": {
+    "mx_unam": "if (roll('mx_unam') < .45) { const c = trk.sk_edu ? trk.sk_edu.cost : 0, x = .85 * c, y = Math.min(sloan, x); sloan -= y; cash += x - y; log(M('log.mx_unamOk'), 'good') } else log(M('log.mx_unamNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Not into UNAM",
+     ".x": "You missed the UNAM entrance exam cut-off by a few points. UNAM’s fees are almost nothing; the private university that accepted you charges every month.",
+     ".again": "Take a year and try again",
+     ".again.s": "Study for the next exam; the private place won’t wait.",
+     ".again.h": "Happiness −2 and a year’s delay; a bit under half get in on the second try, and then the fees are refunded.",
+     ".priv": "Go to the private university",
+     ".priv.s": "Monthly fees, starting now.",
+     "log.mx_unamOk": "You got into UNAM on your second try.",
+     "log.mx_unamNo": "You missed UNAM again and stayed at the private university."
+    },
+    "zh": {
+     ".t": "没考上国立自治大学",
+     ".x": "你差几分没考上墨西哥国立自治大学（UNAM）。UNAM几乎不收学费；录取你的私立大学则每个月都要缴学费。",
+     ".again": "空一年再考",
+     ".again.s": "准备下一次考试；私立大学的名额不会等你。",
+     ".again.h": "幸福感 −2，晚一年；第二次考上的不到一半，考上的话学费会退还。",
+     ".priv": "去读私立大学",
+     ".priv.s": "从现在起按月缴学费。",
+     "log.mx_unamOk": "你第二次考上了国立自治大学。",
+     "log.mx_unamNo": "你又没考上国立自治大学，继续读私立大学。"
+    },
+    "zht": {
+     ".t": "沒考上國立自治大學",
+     ".x": "你差幾分沒考上墨西哥國立自治大學（UNAM）。UNAM幾乎不收學費；錄取你的私立大學則每個月都要繳學費。",
+     ".again": "空一年再考",
+     ".again.s": "準備下一次考試；私立大學的名額不會等你。",
+     ".again.h": "幸福感 −2，晚一年；第二次考上的不到一半，考上的話學費會退還。",
+     ".priv": "去讀私立大學",
+     ".priv.s": "從現在起按月繳學費。",
+     "log.mx_unamOk": "你第二次考上了國立自治大學。",
+     "log.mx_unamNo": "你又沒考上國立自治大學，繼續讀私立大學。"
+    }
+   }
   }
  ]
 }
