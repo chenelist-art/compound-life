@@ -364,6 +364,653 @@
      ".x": "鄰居們辦了一個儲蓄互助會（samity）：會員每月交錢，每月抽籤由一人拿走會錢。"
     }
    }
+  },
+  {
+   "id": "bd_otp",
+   "src": "Mobile-money fraud: a common trick is a caller posing as a bKash agent or call centre who says money was sent to your number by mistake and asks for the code (OTP) just sent to your phone (The Financial Express reports on arrests of fraud gangs); bKash says it never asks for your PIN or OTP, and its helpline is 16247. Amounts are an ESTIMATE.",
+   "age": [30, 75],
+   "weight": 0.4,
+   "def": "hang",
+   "tarot": "scam2",
+   "art": {"draw": "wallet", "bg": "co"},
+   "let": {"a": "Math.min(.3 * base, .5 * liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "give", "hint": {"a": "MN(a)"}, "do": "pay(a); const t = T('bd_otp', {kind: 'ghost', label: M('trk.bd_otp')}); t.spent += a; t.g += a; happy -= 3"},
+    {"id": "hang", "hint": true, "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "“Money sent by mistake”",
+     ".x": "A man calls, very polite: he is from bKash, and Tk5,000 was sent to your account by mistake. To send it back, he needs the code that has just arrived on your phone.",
+     ".give": "Read him the code",
+     ".give.s": "He thanks you and hangs up.",
+     ".give.h": "The code lets him into your account: about {a} gone.",
+     ".hang": "Hang up and call 16247",
+     ".hang.s": "The bKash helpline.",
+     ".hang.h": "bKash never asks for your PIN or code.",
+     "trk.bd_otp": "Lost to a phone scam"
+    },
+    "zh": {
+     ".t": "“汇错钱了”",
+     ".x": "有个男人很客气地打电话来：他说他是bKash的人，有五千塔卡误转到你的账户。要退回去，他需要你手机刚收到的验证码。",
+     ".give": "把验证码念给他",
+     ".give.s": "他道谢后挂了电话。",
+     ".give.h": "验证码让他进了你的账户：大约{a}没了。",
+     ".hang": "挂断，打16247",
+     ".hang.s": "bKash客服热线。",
+     ".hang.h": "bKash从来不会要你的密码或验证码。",
+     "trk.bd_otp": "被电话诈骗骗走"
+    },
+    "zht": {
+     ".t": "「匯錯錢了」",
+     ".x": "有個男人很客氣地打電話來：他說他是bKash的人，有五千塔卡誤轉到你的帳戶。要退回去，他需要你手機剛收到的驗證碼。",
+     ".give": "把驗證碼念給他",
+     ".give.s": "他道謝後掛了電話。",
+     ".give.h": "驗證碼讓他進了你的帳戶：大約{a}沒了。",
+     ".hang": "掛斷，打16247",
+     ".hang.s": "bKash客服專線。",
+     ".hang.h": "bKash從來不會要你的密碼或驗證碼。",
+     "trk.bd_otp": "被電話詐騙騙走"
+    }
+   }
+  },
+  {
+   "id": "bd_rmg",
+   "src": "Garment work: the entry-level minimum wage is Tk12,500 a month from 1 December 2023, up from Tk8,000 in 2018; the Labour Act 2006 sets 8 hours a day and 48 a week, up to 10 hours a day with overtime, paid at twice the basic rate (Labour Act s.108, via MiHCM payroll guide). Pay and health effects are an ESTIMATE.",
+   "age": [18, 32],
+   "weight": 0.55,
+   "when": {"working": true, "career": ["fact"]},
+   "def": "normal",
+   "tarot": "job",
+   "art": {"draw": "tools", "bg": "mi"},
+   "opts": [
+    {"id": "ot", "hint": true, "do": "tmpPay('bd_ot', 1.25, 4, 'trk.bd_ot'); rec('bd_otH', 0, 4, -1); happy -= 1"},
+    {"id": "course", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('bd_course', .05 * base, 'trk.bd_course'); addSkill('learn', 2, M('trk.learn')); bump('bd_sup', 1.06, M('trk.bd_sup')); happy -= 1"},
+    {"id": "normal"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Overtime at the factory",
+     ".x": "Orders are pouring in for the new season. The line supervisor says anyone can stay two extra hours every night, at double the basic rate.",
+     ".ot": "Take every overtime shift",
+     ".ot.s": "Two more hours a day, paid double.",
+     ".ot.h": "Pay about 25% higher for four years; Health −1 a year, Happiness −1.",
+     ".course": "Take an evening course to become a supervisor",
+     ".course.s": "About {a} for the course.",
+     ".course.h": "Skill +2, pay about 6% higher for good. Happiness −1 while you study.",
+     ".normal": "Keep your normal hours",
+     ".normal.s": "Home by evening.",
+     "trk.bd_ot": "Overtime shifts",
+     "trk.bd_course": "A supervisor course",
+     "trk.bd_sup": "A supervisor’s pay"
+    },
+    "zh": {
+     ".t": "工厂加班",
+     ".x": "新一季的订单涌进来。线长说谁都可以每天晚上多留两小时，按底薪的两倍算。",
+     ".ot": "每次加班都接",
+     ".ot.s": "每天多做两小时，算双倍。",
+     ".ot.h": "四年内收入大约高25%；健康每年 −1，幸福感 −1。",
+     ".course": "上夜间课程，准备当线长",
+     ".course.s": "课程费大约{a}。",
+     ".course.h": "技能 +2，薪水永久高大约6%。读书期间幸福感 −1。",
+     ".normal": "维持正常工时",
+     ".normal.s": "傍晚就能回家。",
+     "trk.bd_ot": "加班",
+     "trk.bd_course": "线长课程",
+     "trk.bd_sup": "线长的薪水"
+    },
+    "zht": {
+     ".t": "工廠加班",
+     ".x": "新一季的訂單湧進來。線長說誰都可以每天晚上多留兩小時，按底薪的兩倍算。",
+     ".ot": "每次加班都接",
+     ".ot.s": "每天多做兩小時，算雙倍。",
+     ".ot.h": "四年內收入大約高25%；健康每年 −1，幸福感 −1。",
+     ".course": "上夜間課程，準備當線長",
+     ".course.s": "課程費大約{a}。",
+     ".course.h": "技能 +2，薪水永久高大約6%。讀書期間幸福感 −1。",
+     ".normal": "維持正常工時",
+     ".normal.s": "傍晚就能回家。",
+     "trk.bd_ot": "加班",
+     "trk.bd_course": "線長課程",
+     "trk.bd_sup": "線長的薪水"
+    }
+   }
+  },
+  {
+   "id": "bd_bank",
+   "src": "Weak banks: in 2025 five troubled Shariah banks (First Security, Union, Global Islami, Social Islami and EXIM) were merged into the state-run Sammilito Islami Bank; deposits up to Tk2 lakh were repaid from the Deposit Insurance Fund, while larger depositors could take out Tk1 lakh every three months for up to two years (emergencies up to Tk10 lakh from July 2026) (The Daily Star; Dhaka Tribune; Ittefaq). Weak banks had offered higher rates to attract deposits. Tk2 lakh ≈ 1.8 of the game’s typical wage; rates and odds are an ESTIMATE.",
+   "age": [28, 60],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "big",
+   "tarot": "save",
+   "art": {"draw": "bill", "bg": "wa"},
+   "let": {"a": "Math.min(2 * base, .7 * liquid())"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('bd_big', a, {rate: .01}, 'trk.bd_big')"},
+    {"id": "weak", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('bd_weak', a, {rate: .03}, 'trk.bd_weak')", "next": {"event": "bd_bank2", "in": [2, 5], "p": 0.3}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Where to keep your savings",
+     ".x": "You want to put your savings in a fixed deposit. A big bank offers a modest rate; a smaller bank down the road offers two points more.",
+     ".big": "The big bank",
+     ".big.s": "{a} at the usual rate.",
+     ".big.h": "About 1% a year above inflation, and safe.",
+     ".weak": "The bank with the higher rate",
+     ".weak.s": "{a} at two points more.",
+     ".weak.h": "Banks that pay much more are often in trouble.",
+     "trk.bd_big": "Fixed deposit at a big bank",
+     "trk.bd_weak": "Fixed deposit at a small bank"
+    },
+    "zh": {
+     ".t": "存款放哪家银行",
+     ".x": "你想把存款拿去做定存。大银行的利率普通；街上一家小银行多给两个百分点。",
+     ".big": "放大银行",
+     ".big.s": "{a}，一般利率。",
+     ".big.h": "扣除通胀后每年大约1%，很安全。",
+     ".weak": "放利率高的银行",
+     ".weak.s": "{a}，多两个百分点。",
+     ".weak.h": "利率特别高的银行常常有问题。",
+     "trk.bd_big": "大银行定存",
+     "trk.bd_weak": "小银行定存"
+    },
+    "zht": {
+     ".t": "存款放哪家銀行",
+     ".x": "你想把存款拿去做定存。大銀行的利率普通；街上一家小銀行多給兩個百分點。",
+     ".big": "放大銀行",
+     ".big.s": "{a}，一般利率。",
+     ".big.h": "扣除通膨後每年大約1%，很安全。",
+     ".weak": "放利率高的銀行",
+     ".weak.s": "{a}，多兩個百分點。",
+     ".weak.h": "利率特別高的銀行常常有問題。",
+     "trk.bd_big": "大銀行定存",
+     "trk.bd_weak": "小銀行定存"
+    }
+   }
+  },
+  {
+   "id": "bd_bank2",
+   "src": "After the 2025 merger, deposits up to Tk2 lakh (≈ 1.8 of the game’s typical wage) were repaid from the Deposit Insurance Fund and larger ones were released in instalments over two years (Bangladesh Bank, via The Daily Star). The loss to inflation while money is held is an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.bd_weak && lots.bd_weak.v > 0"},
+   "def": "wait",
+   "tarot": "save",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"v": "lots.bd_weak.v", "g": "Math.min(lots.bd_weak.v, 1.8 * base)"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "wait", "hint": true, "do": "lots.bd_weak.v = .85 * v; happy -= 3"},
+    {"id": "take", "sub": {"a": "MN(g)"}, "hint": true, "do": "lots.bd_weak.v -= g; lots.bd_weak.tout += g; cash += g; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your bank has been taken over",
+     ".x": "The central bank has merged your bank with four others. Your {a} is safe on paper, but withdrawals are rationed.",
+     ".wait": "Wait for the instalments",
+     ".wait.s": "Tk1 lakh every three months.",
+     ".wait.h": "Happiness −3; years without interest while prices rise.",
+     ".take": "Take the insured amount now",
+     ".take.s": "Up to Tk2 lakh: {a}.",
+     ".take.h": "Happiness −2; the rest stays in the queue."
+    },
+    "zh": {
+     ".t": "你的银行被接管了",
+     ".x": "央行把你的银行跟另外四家合并了。你的{a}在纸面上没事，但提款有限额。",
+     ".wait": "等分期还款",
+     ".wait.s": "每三个月一万塔卡。",
+     ".wait.h": "幸福感 −3；好几年没利息，物价却一直涨。",
+     ".take": "先领有保险的部分",
+     ".take.s": "最多二十万塔卡：{a}。",
+     ".take.h": "幸福感 −2；其余的继续排队。"
+    },
+    "zht": {
+     ".t": "你的銀行被接管了",
+     ".x": "央行把你的銀行跟另外四家合併了。你的{a}在紙面上沒事，但提款有限額。",
+     ".wait": "等分期還款",
+     ".wait.s": "每三個月十萬塔卡。",
+     ".wait.h": "幸福感 −3；好幾年沒利息，物價卻一直漲。",
+     ".take": "先領有保險的部分",
+     ".take.s": "最多二十萬塔卡：{a}。",
+     ".take.h": "幸福感 −2；其餘的繼續排隊。"
+    }
+   }
+  },
+  {
+   "id": "bd_devland",
+   "src": "Land sharing with developers: owners of small plots in Dhaka commonly give the land to a developer, who builds flats and hands the owner a share of them, often half (industry practice); projects are often delayed for years. Land in central Dhaka is worth crores of taka per katha (Prothom Alo). The rent from your share, the sale price and the odds of delays are an ESTIMATE; famSpent lowers what your parents leave you.",
+   "age": [35, 60],
+   "weight": 0.4,
+   "who": {"role": "parent"},
+   "def": "wait",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "opts": [
+    {"id": "jv", "hint": true, "bond": 2, "do": "later(age + 5, 'bd_flats', {})", "next": {"event": "bd_devland2", "in": [2, 4], "p": 0.4}},
+    {"id": "sell", "sub": {"a": "MN(1.5 * base)"}, "hint": true, "do": "cash += 1.5 * base; famSpent = (famSpent || 0) + 1.5; happy += 1"},
+    {"id": "wait"}
+   ],
+   "later": {
+    "bd_flats": "const t = T('bd_flats', {kind: 'custom', label: M('trk.bd_flats')}); rec('bd_flats', -.15 * base, 30); log(M('log.bd_flats'), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The family plot",
+     ".x": "Your parents still own the small plot with the old tin-roofed house in Dhaka. A developer offers to build a six-storey block on it and give the family half the flats.",
+     ".jv": "Sign with the developer",
+     ".jv.s": "Flats in a few years; the family moves out meanwhile.",
+     ".jv.h": "Rent from your share of the flats for decades, if the developer finishes on time.",
+     ".sell": "Sell the plot and share the money",
+     ".sell.s": "Your share: about {a}.",
+     ".sell.h": "Money now, but it comes out of what your parents would leave you.",
+     ".wait": "Leave it as it is",
+     ".wait.s": "Your parents stay in their house.",
+     "trk.bd_flats": "Rent from the family flats",
+     "log.bd_flats": "The developer hands over the family’s flats. Tenants move into yours."
+    },
+    "zh": {
+     ".t": "家里的那块地",
+     ".x": "爸妈在达卡还有一小块地，上面是铁皮屋顶的老房子。一个开发商提议在那里盖六层楼，盖好后分一半的公寓给你们家。",
+     ".jv": "跟开发商签约",
+     ".jv.s": "几年后拿到公寓；这段时间全家要先搬走。",
+     ".jv.h": "开发商如期完工的话，你那份公寓能收几十年的租金。",
+     ".sell": "把地卖了，大家分钱",
+     ".sell.s": "你分到大约{a}。",
+     ".sell.h": "现在拿到钱，但会从父母留给你的遗产里扣。",
+     ".wait": "维持原样",
+     ".wait.s": "爸妈继续住老房子。",
+     "trk.bd_flats": "家里公寓的租金",
+     "log.bd_flats": "开发商交了公寓给你们家。你那几间租出去了。"
+    },
+    "zht": {
+     ".t": "家裡的那塊地",
+     ".x": "爸媽在達卡還有一小塊地，上面是鐵皮屋頂的老房子。一個建商提議在那裡蓋六層樓，蓋好後分一半的公寓給你們家。",
+     ".jv": "跟建商簽約",
+     ".jv.s": "幾年後拿到公寓；這段時間全家要先搬走。",
+     ".jv.h": "建商如期完工的話，你那份公寓能收幾十年的租金。",
+     ".sell": "把地賣了，大家分錢",
+     ".sell.s": "你分到大約{a}。",
+     ".sell.h": "現在拿到錢，但會從父母留給你的遺產裡扣。",
+     ".wait": "維持原樣",
+     ".wait.s": "爸媽繼續住老房子。",
+     "trk.bd_flats": "家裡公寓的租金",
+     "log.bd_flats": "建商交了公寓給你們家。你那幾間租出去了。"
+    }
+   }
+  },
+  {
+   "id": "bd_devland2",
+   "src": "Developer projects in Dhaka are often stalled by funding gaps or disputes, and owners go to court or to the developers’ association, REHAB (news reports). Costs are an ESTIMATE.",
+   "chain": true,
+   "def": "wait",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "wait", "hint": true, "do": "happy -= 2"},
+    {"id": "court", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "spend('bd_court', .2 * base, 'trk.bd_court'); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The building has stopped",
+     ".x": "Two floors are up, then nothing. The developer says he is waiting for a bank loan.",
+     ".wait": "Wait it out",
+     ".wait.s": "The family rents elsewhere meanwhile.",
+     ".wait.h": "Happiness −2.",
+     ".court": "Take the developer to court",
+     ".court.s": "About {a} in legal fees.",
+     ".court.h": "Pressure helps a little; the flats still come late.",
+     "trk.bd_court": "Legal fees against the developer"
+    },
+    "zh": {
+     ".t": "工程停了",
+     ".x": "盖了两层就停了。开发商说他在等银行贷款。",
+     ".wait": "耐心等",
+     ".wait.s": "这段时间家人在别处租房。",
+     ".wait.h": "幸福感 −2。",
+     ".court": "告开发商",
+     ".court.s": "律师费大约{a}。",
+     ".court.h": "施压有一点用；公寓还是会晚交。",
+     "trk.bd_court": "告开发商的律师费"
+    },
+    "zht": {
+     ".t": "工程停了",
+     ".x": "蓋了兩層就停了。建商說他在等銀行貸款。",
+     ".wait": "耐心等",
+     ".wait.s": "這段時間家人在別處租房。",
+     ".wait.h": "幸福感 −2。",
+     ".court": "告建商",
+     ".court.s": "律師費大約{a}。",
+     ".court.h": "施壓有一點用；公寓還是會晚交。",
+     "trk.bd_court": "告建商的律師費"
+    }
+   }
+  },
+  {
+   "id": "bd_qurbani",
+   "src": "Eid-ul-Azha: about 9.14 million animals were sacrificed in Bangladesh in 2025, 4.7 million of them cattle and buffaloes (Department of Livestock Services, via Dhaka Tribune, Jun 2025); a cow may be shared by up to seven families, and much of the meat is given away. A cow (≈ Tk1 lakh ≈ 0.9 of the game’s typical wage) and a share are an ESTIMATE.",
+   "age": [25, 70],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "share",
+   "tarot": "charity",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "cow", "sub": {"a": "MN(.9 * base)"}, "rel": 3, "do": "spend('bd_qurbani', .9 * base, 'trk.bd_qurbani'); happy += 2"},
+    {"id": "share", "sub": {"a": "MN(.14 * base)"}, "rel": 1, "do": "spend('bd_qurbani', .14 * base, 'trk.bd_qurbani'); happy += 1"},
+    {"id": "none", "rel": -1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Eid-ul-Azha",
+     ".x": "The cattle markets are full before Eid. Your neighbours ask whether your family will take a whole cow this year, or a share with them.",
+     ".cow": "A whole cow",
+     ".cow.s": "About {a}; meat for the family, relatives and the poor.",
+     ".share": "A seventh share with the neighbours",
+     ".share.s": "About {a}.",
+     ".none": "Not this year",
+     ".none.s": "Money is tight.",
+     "trk.bd_qurbani": "Eid sacrifice"
+    },
+    "zh": {
+     ".t": "宰牲节",
+     ".x": "宰牲节前牛市挤满了人。邻居问你家今年要买整头牛，还是跟他们合买一份。",
+     ".cow": "买整头牛",
+     ".cow.s": "大约{a}；肉分给家人、亲戚和穷人。",
+     ".share": "跟邻居合买七分之一",
+     ".share.s": "大约{a}。",
+     ".none": "今年不买",
+     ".none.s": "手头比较紧。",
+     "trk.bd_qurbani": "宰牲节献牲"
+    },
+    "zht": {
+     ".t": "宰牲節",
+     ".x": "宰牲節前牛市擠滿了人。鄰居問你家今年要買整頭牛，還是跟他們合買一份。",
+     ".cow": "買整頭牛",
+     ".cow.s": "大約{a}；肉分給家人、親戚和窮人。",
+     ".share": "跟鄰居合買七分之一",
+     ".share.s": "大約{a}。",
+     ".none": "今年不買",
+     ".none.s": "手頭比較緊。",
+     "trk.bd_qurbani": "宰牲節獻牲"
+    }
+   }
+  },
+  {
+   "id": "bd_hospital",
+   "src": "Treatment abroad: India issued over 2 million visas to Bangladeshis in 2023, most for medical care, but after August 2024 fewer than 1,000 medical visas a working day, down from 5,000–7,000 (Reuters, via Al Jazeera, Jan 2025); Thailand costs far more. Government hospitals are cheap but crowded. Costs are an ESTIMATE.",
+   "age": [35, 65],
+   "weight": 0.4,
+   "who": {"role": "parent"},
+   "def": "govt",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "wa"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.6 * base)"}, "bond": 4, "do": "spend('bd_hosp', .6 * base, 'trk.bd_hosp'); happy -= 1"},
+    {"id": "govt", "hint": true, "bond": 1, "do": "happy -= 2"},
+    {"id": "abroad", "sub": {"a": "MN(2 * base)"}, "hint": true, "bond": 6, "do": "spend('bd_hosp', 2 * base, 'trk.bd_hosp')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An operation for your parent",
+     ".x": "Your parent needs heart surgery. Before 2024 many families went to India, but medical visas have become hard to get.",
+     ".private": "A private hospital in Dhaka",
+     ".private.s": "About {a}.",
+     ".govt": "The government hospital",
+     ".govt.s": "Cheap, with a long wait and crowded wards.",
+     ".govt.h": "Happiness −2 from the worry and the queues.",
+     ".abroad": "A hospital in Bangkok",
+     ".abroad.s": "About {a} with travel.",
+     ".abroad.h": "Excellent care, at several times the price.",
+     "trk.bd_hosp": "Your parent’s operation"
+    },
+    "zh": {
+     ".t": "父亲或母亲要开刀",
+     ".x": "你的父亲或母亲需要做心脏手术。2024年以前很多人去印度看病，现在医疗签证很难拿了。",
+     ".private": "达卡的私立医院",
+     ".private.s": "大约{a}。",
+     ".govt": "公立医院",
+     ".govt.s": "便宜，但要等很久，病房很挤。",
+     ".govt.h": "担心又要排队，幸福感 −2。",
+     ".abroad": "去曼谷的医院",
+     ".abroad.s": "含旅费大约{a}。",
+     ".abroad.h": "照顾很好，但价钱是好几倍。",
+     "trk.bd_hosp": "父母的手术费"
+    },
+    "zht": {
+     ".t": "父親或母親要開刀",
+     ".x": "你的父親或母親需要做心臟手術。2024年以前很多人去印度看病，現在醫療簽證很難拿了。",
+     ".private": "達卡的私立醫院",
+     ".private.s": "大約{a}。",
+     ".govt": "公立醫院",
+     ".govt.s": "便宜，但要等很久，病房很擠。",
+     ".govt.h": "擔心又要排隊，幸福感 −2。",
+     ".abroad": "去曼谷的醫院",
+     ".abroad.s": "含旅費大約{a}。",
+     ".abroad.h": "照顧很好，但價錢是好幾倍。",
+     "trk.bd_hosp": "父母的手術費"
+    }
+   }
+  },
+  {
+   "id": "bd_hundi",
+   "src": "Remittances: the government adds a 2.5% cash incentive to money sent through banks and licensed channels (2% from 2019, 2.5% from 2022), while informal hundi dealers often offer a better rate but no protection (TBS; The Daily Star: a record $32.8bn came through official channels in 2025). The rate gap and the risk of losing a transfer are an ESTIMATE.",
+   "age": [22, 45],
+   "weight": 0.7,
+   "when": {"test": "!!ctr"},
+   "def": "bank",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "ya"},
+   "opts": [
+    {"id": "bank", "hint": true, "do": "T('bd_inc', {kind: 'custom', label: M('trk.bd_inc')}); rec('bd_inc', -.01 * base, 3)"},
+    {"id": "hundi", "hint": true, "do": "T('bd_inc', {kind: 'custom', label: M('trk.bd_hundi')}); rec('bd_inc', -.02 * base, 3); if (roll('bd_hundi') < .15) later(age + 1, 'bd_hundiLost', {})"}
+   ],
+   "later": {
+    "bd_hundiLost": "pay(.3 * base); log(M('log.bd_hundiLost', {a: MN(.3 * base)}), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Sending money home",
+     ".x": "Every month you send money to your family. A man at the market offers a better rate than the bank, through hundi.",
+     ".bank": "Through the bank",
+     ".bank.s": "The official rate, plus a 2.5% government incentive.",
+     ".bank.h": "Safe, and the incentive adds up.",
+     ".hundi": "Through hundi",
+     ".hundi.s": "A better rate, cash delivered to your family.",
+     ".hundi.h": "A little more each month, but it is illegal and dealers sometimes vanish with the money.",
+     "trk.bd_inc": "Remittance incentive",
+     "trk.bd_hundi": "A better hundi rate",
+     "log.bd_hundiLost": "The hundi dealer disappeared with your family’s money: {a} lost."
+    },
+    "zh": {
+     ".t": "寄钱回家",
+     ".x": "你每个月都寄钱回家。市场里有个人说走“hundi”地下汇兑，汇率比银行好。",
+     ".bank": "走银行",
+     ".bank.s": "官方汇率，政府再补贴2.5%。",
+     ".bank.h": "安全，补贴也积少成多。",
+     ".hundi": "走hundi",
+     ".hundi.s": "汇率较好，现金直接送到家人手上。",
+     ".hundi.h": "每个月多一点，但这是违法的，偶尔有人卷款跑路。",
+     "trk.bd_inc": "汇款补贴",
+     "trk.bd_hundi": "hundi的较好汇率",
+     "log.bd_hundiLost": "hundi的人带着你家人的钱跑了：损失{a}。"
+    },
+    "zht": {
+     ".t": "寄錢回家",
+     ".x": "你每個月都寄錢回家。市場裡有個人說走「hundi」地下匯兌，匯率比銀行好。",
+     ".bank": "走銀行",
+     ".bank.s": "官方匯率，政府再補貼2.5%。",
+     ".bank.h": "安全，補貼也積少成多。",
+     ".hundi": "走hundi",
+     ".hundi.s": "匯率較好，現金直接送到家人手上。",
+     ".hundi.h": "每個月多一點，但這是違法的，偶爾有人捲款跑路。",
+     "trk.bd_inc": "匯款補貼",
+     "trk.bd_hundi": "hundi的較好匯率",
+     "log.bd_hundiLost": "hundi的人帶著你家人的錢跑了：損失{a}。"
+    }
+   }
+  },
+  {
+   "id": "bd_bcs",
+   "src": "BCS exam: about 338,000 people applied for 3,140 posts in the 46th BCS (advertised in 2023), and 374,747 for 3,688 posts in the 47th (advertised in 2024) (Prothom Alo; UNB), about one in a hundred; many quit work to prepare full-time. The chance for a serious candidate (3%), the year of lost pay and the pay and pension effects are an ESTIMATE.",
+   "age": [22, 28],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "co"},
+   "opts": [
+    {"id": "try", "hint": true, "do": "tmpPay('bd_bcsP', .2, 1, 'trk.bd_bcsP'); spend('bd_coach', .1 * base, 'trk.bd_coach'); happy -= 2; later(age + 1, 'bd_bcs', {})"},
+    {"id": "stay"}
+   ],
+   "later": {
+    "bd_bcs": "if (roll('bd_bcs') < .03) { bump('bd_bcs', .95, M('trk.bd_bcs')); layM = (layM || 1) * .1; penM = (penM || 1) * 1.3; happy += 6; log(M('log.bd_bcsOk'), 'good') } else { log(M('log.bd_bcsNo'), 'bad'); happy -= 2 }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The BCS dream",
+     ".x": "Your friends from university are leaving their jobs to prepare full-time for the BCS civil-service exam. A cadre post is the job every family dreams of.",
+     ".try": "Quit and prepare for a year",
+     ".try.s": "Coaching fees, and a year with almost no pay.",
+     ".try.h": "Happiness −2. About one applicant in a hundred gets a post; those who do have a job for life and a better pension.",
+     ".stay": "Keep your job",
+     ".stay.s": "A private-sector career.",
+     "trk.bd_bcs": "A civil-service cadre post",
+     "trk.bd_bcsP": "A year preparing for the BCS",
+     "trk.bd_coach": "BCS coaching",
+     "log.bd_bcsOk": "You passed the BCS and join the civil service. The whole family celebrates.",
+     "log.bd_bcsNo": "You didn’t make the BCS list, and go back to private work."
+    },
+    "zh": {
+     ".t": "公务员考试梦",
+     ".x": "大学同学纷纷辞职，全心准备BCS公务员考试。当上公务员是每个家庭的梦想。",
+     ".try": "辞职准备一年",
+     ".try.s": "补习费，还有一年几乎没收入。",
+     ".try.h": "幸福感 −2。大约一百个人只有一个考上；考上的人一辈子有工作，退休金也比较好。",
+     ".stay": "保住工作",
+     ".stay.s": "在私人企业发展。",
+     "trk.bd_bcs": "公务员职位",
+     "trk.bd_bcsP": "准备BCS的一年",
+     "trk.bd_coach": "BCS补习",
+     "log.bd_bcsOk": "你考上BCS，进了公务员体系。全家都在庆祝。",
+     "log.bd_bcsNo": "你没考上BCS，回到私人企业工作。"
+    },
+    "zht": {
+     ".t": "公務員考試夢",
+     ".x": "大學同學紛紛辭職，全心準備BCS公務員考試。當上公務員是每個家庭的夢想。",
+     ".try": "辭職準備一年",
+     ".try.s": "補習費，還有一年幾乎沒收入。",
+     ".try.h": "幸福感 −2。大約一百個人只有一個考上；考上的人一輩子有工作，退休金也比較好。",
+     ".stay": "保住工作",
+     ".stay.s": "在私人企業發展。",
+     "trk.bd_bcs": "公務員職位",
+     "trk.bd_bcsP": "準備BCS的一年",
+     "trk.bd_coach": "BCS補習",
+     "log.bd_bcsOk": "你考上BCS，進了公務員體系。全家都在慶祝。",
+     "log.bd_bcsNo": "你沒考上BCS，回到私人企業工作。"
+    }
+   }
+  },
+  {
+   "id": "bd_privuni",
+   "src": "University: public universities charge low fees but entry is very competitive and sessions are often delayed; top private universities charge by the credit, e.g. Tk8,000 a credit for the BBA at North South University (NSU fee page, 2026), about Tk10–11 lakh for a degree with fees (≈ 9.5 of the game’s typical wage). Pay effects are an ESTIMATE.",
+   "age": [18, 19],
+   "weight": 0.45,
+   "if": {"family": ["middle", "rich"]},
+   "when": {"studying": true, "test": "study.k === 'uni'"},
+   "def": "public",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "public", "hint": true, "do": "happy -= 1"},
+    {"id": "private", "sub": {"a": "MN(9.5 * base)"}, "hint": true, "do": "famPay('bd_privuni', 9.5); bump('bd_privuni', 1.03, M('trk.bd_privuni')); happy += 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Public or private university?",
+     ".x": "You have a place at a public university outside Dhaka. Your parents could also pay for a private university in the city.",
+     ".public": "The public university",
+     ".public.s": "Low fees, a hostel room.",
+     ".public.h": "Happiness −1: crowded halls, and sessions often run late.",
+     ".private": "A private university in Dhaka",
+     ".private.s": "About {a} in all, paid by your parents.",
+     ".private.h": "Happiness +2, pay about 3% higher; it comes out of what they would leave you.",
+     "trk.bd_privuni": "A private university degree"
+    },
+    "zh": {
+     ".t": "公立还是私立大学？",
+     ".x": "你考上了达卡以外的一所公立大学。爸妈也负担得起城里的私立大学。",
+     ".public": "念公立大学",
+     ".public.s": "学费低，住宿舍。",
+     ".public.h": "幸福感 −1：宿舍拥挤，学期常常延误。",
+     ".private": "念达卡的私立大学",
+     ".private.s": "总共大约{a}，由爸妈出。",
+     ".private.h": "幸福感 +2，薪水大约高3%；这笔钱会从他们留给你的遗产里扣。",
+     "trk.bd_privuni": "私立大学学位"
+    },
+    "zht": {
+     ".t": "公立還是私立大學？",
+     ".x": "你考上了達卡以外的一所公立大學。爸媽也負擔得起城裡的私立大學。",
+     ".public": "念公立大學",
+     ".public.s": "學費低，住宿舍。",
+     ".public.h": "幸福感 −1：宿舍擁擠，學期常常延誤。",
+     ".private": "念達卡的私立大學",
+     ".private.s": "總共大約{a}，由爸媽出。",
+     ".private.h": "幸福感 +2，薪水大約高3%；這筆錢會從他們留給你的遺產裡扣。",
+     "trk.bd_privuni": "私立大學學位"
+    }
+   }
+  },
+  {
+   "id": "bd_arsenic",
+   "src": "Arsenic: in 2019, 11.8% of people (17.5 million) drank water above Bangladesh’s arsenic limit of 50 ppb, five times the WHO guideline (MICS 2019, BBS/UNICEF), and 9.9% of households in MICS 2025. Wells can be tested; long exposure causes skin lesions, cancers and heart disease. The chance your well is unsafe (12%), filter costs and health effects are an ESTIMATE.",
+   "age": [25, 60],
+   "weight": 0.4,
+   "def": "test",
+   "tarot": "health",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "test", "sub": {"a": "MN(.01 * base)"}, "hint": true, "do": "spend('bd_test', .01 * base, 'trk.bd_test'); if (roll('bd_arsenic') < .12) { T('bd_filter', {kind: 'custom', label: M('trk.bd_filter')}); rec('bd_filter', .02 * base, 20) }"},
+    {"id": "skip", "hint": true, "do": "if (roll('bd_arsenic') < .12) rec('bd_ars', 0, 20, -.5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your tube well",
+     ".x": "A health worker is testing tube wells in your area for arsenic. Your family has drunk from yours for years.",
+     ".test": "Have it tested",
+     ".test.s": "About {a}.",
+     ".test.h": "If it is unsafe, a filter or another well keeps your family healthy.",
+     ".skip": "The water tastes fine",
+     ".skip.s": "No cost.",
+     ".skip.h": "About one well in eight is unsafe, and the harm builds up over the years.",
+     "trk.bd_test": "A well test",
+     "trk.bd_filter": "An arsenic filter"
+    },
+    "zh": {
+     ".t": "你家的压水井",
+     ".x": "卫生人员在你们这一带检测压水井的砷含量。你家喝这口井的水已经好多年了。",
+     ".test": "检测一下",
+     ".test.s": "大约{a}。",
+     ".test.h": "如果水不安全，装滤水器或改用别的井就能保护家人健康。",
+     ".skip": "水喝起来没问题",
+     ".skip.s": "不用花钱。",
+     ".skip.h": "大约八口井就有一口不安全，伤害会年复一年累积。",
+     "trk.bd_test": "水井检测",
+     "trk.bd_filter": "除砷滤水器"
+    },
+    "zht": {
+     ".t": "你家的壓水井",
+     ".x": "衛生人員在你們這一帶檢測壓水井的砷含量。你家喝這口井的水已經好多年了。",
+     ".test": "檢測一下",
+     ".test.s": "大約{a}。",
+     ".test.h": "如果水不安全，裝濾水器或改用別的井就能保護家人健康。",
+     ".skip": "水喝起來沒問題",
+     ".skip.s": "不用花錢。",
+     ".skip.h": "大約八口井就有一口不安全，傷害會年復一年累積。",
+     "trk.bd_test": "水井檢測",
+     "trk.bd_filter": "除砷濾水器"
+    }
+   }
   }
  ]
 }

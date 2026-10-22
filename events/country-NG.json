@@ -353,6 +353,735 @@
      "trk.mpp": "微型退休金"
     }
    }
+  },
+  {
+   "id": "ng_ponzi",
+   "src": "Ponzi schemes: CBEX, a “crypto trading” app promising high monthly returns, collapsed on 14 April 2025; about 600,000 Nigerians reportedly lost over ₦1 trillion (Arise TV; Nairametrics); the SEC said it was never registered, and when it reappeared in June 2025 it demanded “withdrawal fees” (SEC warning, via Nairametrics). MMM Nigeria froze accounts in December 2016. Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Amounts and odds are an ESTIMATE.",
+   "age": [22, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .2 * base"}},
+   "def": "no",
+   "tarot": "scam",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"a": "Math.min(.6 * base, .5 * liquid())"},
+   "opts": [
+    {"id": "in", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ng_cbex', a, {rate: .15}, 'trk.ng_cbex')", "next": {"event": "ng_ponzi2", "in": [1, 2], "p": 0.85}},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A trading app that pays every week",
+     ".x": "Your church friend shows you her trading app: it uses “AI” to trade crypto and has paid her every week for months. Bring two friends and you earn a bonus.",
+     ".in": "Put money in",
+     ".in.s": "{a}.",
+     ".in.h": "Schemes that pay early investors from new money always collapse.",
+     ".no": "Stay out",
+     ".no.s": "It sounds too good to be true.",
+     ".no.h": "It isn’t registered with the SEC.",
+     "trk.ng_cbex": "A trading app"
+    },
+    "zh": {
+     ".t": "每周都给钱的交易App",
+     ".x": "教会的朋友给你看她的交易App：说是用“人工智能”炒加密货币，几个月来每周都有入账。拉两个朋友加入还有奖金。",
+     ".in": "投钱进去",
+     ".in.s": "{a}。",
+     ".in.h": "用新钱付老会员的模式迟早会垮。",
+     ".no": "不加入",
+     ".no.s": "好得不像真的。",
+     ".no.h": "它没有在证监会登记。",
+     "trk.ng_cbex": "交易App"
+    },
+    "zht": {
+     ".t": "每週都給錢的交易App",
+     ".x": "教會的朋友給你看她的交易App：說是用「人工智慧」炒加密貨幣，幾個月來每週都有入帳。拉兩個朋友加入還有獎金。",
+     ".in": "投錢進去",
+     ".in.s": "{a}。",
+     ".in.h": "用新錢付老會員的模式遲早會垮。",
+     ".no": "不加入",
+     ".no.s": "好得不像真的。",
+     ".no.h": "它沒有在證管會登記。",
+     "trk.ng_cbex": "交易App"
+    }
+   }
+  },
+  {
+   "id": "ng_ponzi2",
+   "src": "After collapsing, CBEX asked users for “withdrawal fees” to release their money (SEC warning, Jun 2025). The fee is an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.ng_cbex && lots.ng_cbex.v > 0"},
+   "def": "walk",
+   "tarot": "scam",
+   "art": {"draw": "bill", "bg": "mi"},
+   "let": {"v": "lots.ng_cbex.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "walk", "hint": true, "do": "lots.ng_cbex.v = 0; happy -= 3"},
+    {"id": "fee", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "lots.ng_cbex.v = 0; pay(.1 * base); happy -= 4"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Withdrawals frozen",
+     ".x": "The app has stopped paying and your balance of {a} shows zero. A message says you can get it back by paying a “release fee” first.",
+     ".walk": "Report it to the EFCC and walk away",
+     ".walk.s": "Lesson learned.",
+     ".walk.h": "Happiness −3; the money is gone.",
+     ".fee": "Pay the release fee",
+     ".fee.s": "About {a}.",
+     ".fee.h": "Happiness −4. The fee is part of the scam."
+    },
+    "zh": {
+     ".t": "提款冻结了",
+     ".x": "App停止付款，你那{a}的余额显示为零。有讯息说先付一笔“解冻费”就能拿回来。",
+     ".walk": "向经济犯罪委员会检举，认了",
+     ".walk.s": "学到教训了。",
+     ".walk.h": "幸福感 −3；钱没了。",
+     ".fee": "付解冻费",
+     ".fee.s": "大约{a}。",
+     ".fee.h": "幸福感 −4。解冻费也是骗局的一部分。"
+    },
+    "zht": {
+     ".t": "提款凍結了",
+     ".x": "App停止付款，你那{a}的餘額顯示為零。有訊息說先付一筆「解凍費」就能拿回來。",
+     ".walk": "向經濟犯罪委員會檢舉，認了",
+     ".walk.s": "學到教訓了。",
+     ".walk.h": "幸福感 −3；錢沒了。",
+     ".fee": "付解凍費",
+     ".fee.s": "大約{a}。",
+     ".fee.h": "幸福感 −4。解凍費也是騙局的一部分。"
+    }
+   }
+  },
+  {
+   "id": "ng_land",
+   "src": "Buying land in Lagos: fake documents are common, and buyers are advised to check the survey plan and title (C of O, deed, Governor’s Consent) at the Lands Bureau and the Surveyor-General; consent and registration cost about 3% of the value since 2015, and some “omo-onile” (families of the original owners) demand extra payments (The Guardian Nigeria; Ripples Nigeria; Gazette, 2025). Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Costs and odds are an ESTIMATE.",
+   "age": [30, 55],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> 1 * base"}},
+   "def": "none",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"a": "Math.min(2 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "check", "sub": {"a": "MN(a)", "b": "MN(.15 * base)"}, "hint": true, "do": "spend('ng_lv', .15 * base, 'trk.ng_lv'); putIn('ng_land', a, {rate: .03}, 'trk.ng_land')"},
+    {"id": "quick", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ng_land', a, {rate: .03}, 'trk.ng_land')", "next": {"event": "ng_land2", "in": [1, 4], "p": 0.35}},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A plot outside Lagos",
+     ".x": "An agent is selling plots in a new estate on the Lekki-Epe road. “Prices go up every month,” he says. A lawyer friend says to check the papers first.",
+     ".check": "Buy, after a lawyer and surveyor check the title",
+     ".check.s": "{a}, plus about {b} for the checks and the consent fee.",
+     ".check.h": "Land near growing roads rises faster than inflation; the checks make the title safe.",
+     ".quick": "Buy now, before the price goes up",
+     ".quick.s": "{a}.",
+     ".quick.h": "Skipping the checks risks fake papers or a land dispute.",
+     ".none": "Keep your savings",
+     ".none.s": "No paperwork.",
+     "trk.ng_lv": "Title checks and consent fees",
+     "trk.ng_land": "A plot of land"
+    },
+    "zh": {
+     ".t": "拉各斯郊外的一块地",
+     ".x": "有个中介在卖莱基—埃佩公路旁新社区的地。他说：“每个月都在涨。”当律师的朋友说先查清文件再说。",
+     ".check": "先请律师和测量师查产权，再买",
+     ".check.s": "{a}，另外查证和同意费大约{b}。",
+     ".check.h": "新路附近的地涨得比通胀快；查过的产权比较安全。",
+     ".quick": "趁还没涨，马上买",
+     ".quick.s": "{a}。",
+     ".quick.h": "跳过查证，可能遇到假文件或土地纠纷。",
+     ".none": "钱留着",
+     ".none.s": "不用办手续。",
+     "trk.ng_lv": "产权查证和同意费",
+     "trk.ng_land": "一块地"
+    },
+    "zht": {
+     ".t": "拉哥斯郊外的一塊地",
+     ".x": "有個仲介在賣萊基—埃佩公路旁新社區的地。他說：「每個月都在漲。」當律師的朋友說先查清文件再說。",
+     ".check": "先請律師和測量師查產權，再買",
+     ".check.s": "{a}，另外查證和同意費大約{b}。",
+     ".check.h": "新路附近的地漲得比通膨快；查過的產權比較安全。",
+     ".quick": "趁還沒漲，馬上買",
+     ".quick.s": "{a}。",
+     ".quick.h": "跳過查證，可能遇到假文件或土地糾紛。",
+     ".none": "錢留著",
+     ".none.s": "不用辦手續。",
+     "trk.ng_lv": "產權查證和同意費",
+     "trk.ng_land": "一塊地"
+    }
+   }
+  },
+  {
+   "id": "ng_land2",
+   "src": "Disputes over land sold twice or with false papers often end in court or in payments to the omo-onile (Lagos Lands Bureau officials, via Gazette). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.ng_land && lots.ng_land.v > 0"},
+   "def": "settle",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"v": "lots.ng_land.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "settle", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "pay(.2 * base); happy -= 2"},
+    {"id": "court", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "spend('ng_court', .3 * base, 'trk.ng_court'); happy -= 3; if (roll('ng_land2') >= .5) lots.ng_land.v = 0"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Someone else is building on your plot",
+     ".x": "You visit your plot and find a foundation going up. A family says the land is theirs and the agent had no right to sell it.",
+     ".settle": "Pay them to sign off",
+     ".settle.s": "About {a}.",
+     ".settle.h": "Happiness −2; the plot is yours.",
+     ".court": "Take it to court",
+     ".court.s": "About {a} in legal fees, and years of hearings.",
+     ".court.h": "Happiness −3. About half keep their land.",
+     "trk.ng_court": "Legal fees for a land dispute"
+    },
+    "zh": {
+     ".t": "有人在你的地上盖房子",
+     ".x": "你去看你的地，发现有人在打地基。一家人说那块地是他们的，中介根本无权卖。",
+     ".settle": "付钱请他们签字放弃",
+     ".settle.s": "大约{a}。",
+     ".settle.h": "幸福感 −2；地保住了。",
+     ".court": "打官司",
+     ".court.s": "律师费大约{a}，还要开好几年庭。",
+     ".court.h": "幸福感 −3。大约一半能保住土地。",
+     "trk.ng_court": "土地纠纷律师费"
+    },
+    "zht": {
+     ".t": "有人在你的地上蓋房子",
+     ".x": "你去看你的地，發現有人在打地基。一家人說那塊地是他們的，仲介根本無權賣。",
+     ".settle": "付錢請他們簽字放棄",
+     ".settle.s": "大約{a}。",
+     ".settle.h": "幸福感 −2；地保住了。",
+     ".court": "打官司",
+     ".court.s": "律師費大約{a}，還要開好幾年庭。",
+     ".court.h": "幸福感 −3。大約一半能保住土地。",
+     "trk.ng_court": "土地糾紛律師費"
+    }
+   }
+  },
+  {
+   "id": "ng_uni",
+   "src": "University: federal universities charge low fees but strikes are common (ASUU struck from 14 February to 14 October 2022, eight months; ThisDay). NELFUND student loans (Student Loans Act 2024) pay fees and upkeep at public institutions, interest-free, repaid at 10% of pay once you work after NYSC; over 864,000 students had received loans (NELFUND, via Arise TV). Private university fees (about ₦2 million a year, ≈ 9.5 of the game’s yardstick for four years) and the pay effects are an ESTIMATE. Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024).",
+   "age": [18, 19],
+   "weight": 0.5,
+   "when": {"studying": true, "test": "study.k === 'uni'"},
+   "def": "fed",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "fed", "hint": true, "do": "if (roll('ng_asuu') < .4) happy -= 2"},
+    {"id": "loan", "sub": {"a": "MN(.4 * base)"}, "hint": true, "do": "cash += .4 * base; later(age + 6, 'ng_nel', {}); if (roll('ng_asuu') < .4) happy -= 2"},
+    {"id": "private", "sub": {"a": "MN(9.5 * base)", "b": "famNote()"}, "hint": true, "do": "famPay('ng_uni', 9.5); bump('ng_priv', 1.02, M('trk.ng_priv')); happy += 2"}
+   ],
+   "later": {
+    "ng_nel": "const t = T('ng_nel', {kind: 'custom', label: M('trk.ng_nel')}); rec('ng_nel', .1 * base, 5)"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Federal or private university?",
+     ".x": "You have a place at a federal university. Some classmates are going to private universities instead, where lecturers don’t go on strike.",
+     ".fed": "The federal university",
+     ".fed.s": "Low fees, paid by your family.",
+     ".fed.h": "A strike may cost you months.",
+     ".loan": "The federal university, with a NELFUND loan",
+     ".loan.s": "Fees and upkeep covered, about {a} in all; repaid from your pay later.",
+     ".loan.h": "No interest; 10% of your pay goes to repayments for some years once you work.",
+     ".private": "A private university",
+     ".private.s": "About {a} for four years, paid by your family.{b}",
+     ".private.h": "Happiness +2, no strikes; pay about 2% higher.",
+     "trk.ng_nel": "NELFUND loan repayments",
+     "trk.ng_priv": "A private university degree"
+    },
+    "zh": {
+     ".t": "联邦大学还是私立大学？",
+     ".x": "你考上了一所联邦大学。有些同学改去念私立大学，那里的讲师不会罢工。",
+     ".fed": "念联邦大学",
+     ".fed.s": "学费低，由家里付。",
+     ".fed.h": "罢工可能让你耽误好几个月。",
+     ".loan": "念联邦大学，申请NELFUND学贷",
+     ".loan.s": "学费和生活费都有，总共大约{a}；以后从薪水扣还。",
+     ".loan.h": "零利息；工作后有几年要拿薪水的10%来还。",
+     ".private": "念私立大学",
+     ".private.s": "四年大约{a}，由家里出。{b}",
+     ".private.h": "幸福感 +2，不会罢工；薪水大约高2%。",
+     "trk.ng_nel": "NELFUND学贷还款",
+     "trk.ng_priv": "私立大学学位"
+    },
+    "zht": {
+     ".t": "聯邦大學還是私立大學？",
+     ".x": "你考上了一所聯邦大學。有些同學改去念私立大學，那裡的講師不會罷工。",
+     ".fed": "念聯邦大學",
+     ".fed.s": "學費低，由家裡付。",
+     ".fed.h": "罷工可能讓你耽誤好幾個月。",
+     ".loan": "念聯邦大學，申請NELFUND學貸",
+     ".loan.s": "學費和生活費都有，總共大約{a}；以後從薪水扣還。",
+     ".loan.h": "零利息；工作後有幾年要拿薪水的10%來還。",
+     ".private": "念私立大學",
+     ".private.s": "四年大約{a}，由家裡出。{b}",
+     ".private.h": "幸福感 +2，不會罷工；薪水大約高2%。",
+     "trk.ng_nel": "NELFUND學貸還款",
+     "trk.ng_priv": "私立大學學位"
+    }
+   }
+  },
+  {
+   "id": "ng_owambe",
+   "src": "Weddings: traditional and church weddings with hundreds of guests in matching aso-ebi fabric are common, and guests bring gifts and cash; “spraying” naira notes at parties is an offence under Section 21 of the CBN Act (at least six months or a ₦50,000 fine), and the EFCC has prosecuted celebrities for it since 2024 (TheCable; Gazette, Oct 2026). Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Costs and gifts are an ESTIMATE.",
+   "age": [24, 34],
+   "weight": 0.45,
+   "when": {"partner": ["dating", "living"]},
+   "def": "mid",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "mi"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(3 * base)"}, "hint": true, "rel": 3, "do": "pay(3 * base); cash += 1.2 * base; const tq = T('ng_wed', {kind: 'custom', label: M('trk.ng_wed')}); tq.v += -1.8 * base; happy += 3"},
+    {"id": "mid", "sub": {"a": "MN(1.2 * base)"}, "rel": 1, "do": "pay(1.2 * base); cash += .5 * base; const tq = T('ng_wed', {kind: 'custom', label: M('trk.ng_wed')}); tq.v += -.7 * base; happy += 1"},
+    {"id": "registry", "sub": {"a": "MN(.2 * base)"}, "hint": true, "rel": -2, "do": "pay(.2 * base); const tq = T('ng_wed', {kind: 'custom', label: M('trk.ng_wed')}); tq.v += -.2 * base"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An owambe wedding?",
+     ".x": "You and your partner are getting married. Your mother has already chosen the aso-ebi fabric for 400 guests, and the families expect a traditional wedding and a church one.",
+     ".big": "The full owambe, both ceremonies",
+     ".big.s": "About {a}; guests’ gifts pay some of it back.",
+     ".big.h": "Happiness +3; the families are proud. Gifts cover about 40%.",
+     ".mid": "A smaller church wedding and reception",
+     ".mid.s": "About {a}; gifts pay some of it back.",
+     ".registry": "The registry and a family lunch",
+     ".registry.s": "About {a}.",
+     ".registry.h": "Some relatives are offended.",
+     "trk.ng_wed": "The wedding, after gifts"
+    },
+    "zh": {
+     ".t": "办派对式婚礼？",
+     ".x": "你和伴侣要结婚了。你妈已经帮四百位宾客挑好了统一的布料，两家人都期待办传统婚礼加教堂婚礼。",
+     ".big": "两场都办，热热闹闹",
+     ".big.s": "大约{a}；宾客的礼金能收回一部分。",
+     ".big.h": "幸福感 +3；两家都很有面子。礼金大约能抵四成。",
+     ".mid": "小一点的教堂婚礼和喜宴",
+     ".mid.s": "大约{a}；礼金能收回一部分。",
+     ".registry": "公证结婚加家庭午餐",
+     ".registry.s": "大约{a}。",
+     ".registry.h": "有些亲戚不高兴。",
+     "trk.ng_wed": "扣掉礼金后的婚礼开销"
+    },
+    "zht": {
+     ".t": "辦派對式婚禮？",
+     ".x": "你和伴侶要結婚了。你媽已經幫四百位賓客挑好了統一的布料，兩家人都期待辦傳統婚禮加教堂婚禮。",
+     ".big": "兩場都辦，熱熱鬧鬧",
+     ".big.s": "大約{a}；賓客的禮金能收回一部分。",
+     ".big.h": "幸福感 +3；兩家都很有面子。禮金大約能抵四成。",
+     ".mid": "小一點的教堂婚禮和喜宴",
+     ".mid.s": "大約{a}；禮金能收回一部分。",
+     ".registry": "公證結婚加家庭午餐",
+     ".registry.s": "大約{a}。",
+     ".registry.h": "有些親戚不高興。",
+     "trk.ng_wed": "扣掉禮金後的婚禮開銷"
+    }
+   }
+  },
+  {
+   "id": "ng_dollar",
+   "src": "The naira fell from about ₦465 a dollar in mid-2023 to ₦907 at the end of 2023 and ₦1,535 at the end of 2024 (CBN, via Nairametrics and BusinessDay); many savers moved money into domiciliary (dollar) accounts, which the CBN said it had no plan to convert (Africa Check, 2024). Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Real returns are an ESTIMATE.",
+   "age": [25, 55],
+   "weight": 0.45,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "keep",
+   "tarot": "gold",
+   "art": {"draw": "infl", "bg": "co"},
+   "let": {"a": "Math.min(base, .5 * liquid())"},
+   "opts": [
+    {"id": "dom", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ng_dom', a, {rate: -.02}, 'trk.ng_dom')"},
+    {"id": "fixed", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ng_fd', a, {rate: -.06}, 'trk.ng_fd')"},
+    {"id": "keep", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Naira or dollars?",
+     ".x": "The naira has lost two-thirds of its value against the dollar in two years. Your bank offers a domiciliary account in dollars, or a naira fixed deposit at 20%.",
+     ".dom": "Move savings into dollars",
+     ".dom.s": "{a} into a domiciliary account.",
+     ".dom.h": "Holds its value much better than naira.",
+     ".fixed": "A naira fixed deposit at 20%",
+     ".fixed.s": "{a} for a year.",
+     ".fixed.h": "20% sounds high, but prices rise faster.",
+     ".keep": "Leave it as it is",
+     ".keep.s": "Easy to reach.",
+     ".keep.h": "Cash loses the most to inflation.",
+     "trk.ng_dom": "Dollar savings",
+     "trk.ng_fd": "Naira fixed deposit"
+    },
+    "zh": {
+     ".t": "奈拉还是美元？",
+     ".x": "奈拉两年内对美元贬值了三分之二。银行可以帮你开美元户头，或做年利20%的奈拉定存。",
+     ".dom": "把存款换成美元",
+     ".dom.s": "{a}存进美元户头。",
+     ".dom.h": "比奈拉保值得多。",
+     ".fixed": "做20%的奈拉定存",
+     ".fixed.s": "{a}，存一年。",
+     ".fixed.h": "20%听起来很高，但物价涨得更快。",
+     ".keep": "维持现状",
+     ".keep.s": "随时拿得到。",
+     ".keep.h": "现金被通胀吃掉的最多。",
+     "trk.ng_dom": "美元存款",
+     "trk.ng_fd": "奈拉定存"
+    },
+    "zht": {
+     ".t": "奈拉還是美元？",
+     ".x": "奈拉兩年內對美元貶值了三分之二。銀行可以幫你開美元帳戶，或做年利20%的奈拉定存。",
+     ".dom": "把存款換成美元",
+     ".dom.s": "{a}存進美元帳戶。",
+     ".dom.h": "比奈拉保值得多。",
+     ".fixed": "做20%的奈拉定存",
+     ".fixed.s": "{a}，存一年。",
+     ".fixed.h": "20%聽起來很高，但物價漲得更快。",
+     ".keep": "維持現狀",
+     ".keep.s": "隨時拿得到。",
+     ".keep.h": "現金被通膨吃掉的最多。",
+     "trk.ng_dom": "美元存款",
+     "trk.ng_fd": "奈拉定存"
+    }
+   }
+  },
+  {
+   "id": "ng_pos",
+   "src": "POS agents: Nigeria had about 5.9 million active POS terminals, and POS payments reached ₦18 trillion in 2024 (TechCabal; NIBSS data); agents earn a fee on each withdrawal or transfer (₦100–150 per ₦5,000 in Lagos), and from December 2024 the CBN limited agents to ₦1.2 million cash out a day (TechCabal). Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Start-up costs, earnings and fraud odds are an ESTIMATE.",
+   "age": [22, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "opts": [
+    {"id": "start", "sub": {"a": "MN(.5 * base)"}, "hint": true, "do": "pay(.5 * base); const tq = T('ng_pos', {kind: 'custom', label: M('trk.ng_pos')}); tq.v -= .5 * base; rec('ng_pos', -.3 * base, 8, -.2); happy -= 1", "next": {"event": "ng_pos2", "in": [1, 3], "p": 0.35}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A POS stand",
+     ".x": "There’s no bank for kilometres around your street, and people queue at the one POS stand. A fintech will give you a terminal if you keep a float.",
+     ".start": "Set up a POS stand",
+     ".start.s": "About {a} for the float, a kiosk and an umbrella.",
+     ".start.h": "A steady fee income; long hours in the sun, and fraud is a risk.",
+     ".no": "Not for you",
+     ".no.s": "Keep your savings.",
+     "trk.ng_pos": "A POS stand"
+    },
+    "zh": {
+     ".t": "开个POS刷卡摊",
+     ".x": "你家这条街几公里内都没有银行，大家都在唯一一个POS摊前排队。一家金融科技公司说只要你备好周转金，就给你一台刷卡机。",
+     ".start": "开POS摊",
+     ".start.s": "周转金、小亭子和遮阳伞大约{a}。",
+     ".start.h": "有稳定的手续费收入；但要长时间晒太阳，还有被骗的风险。",
+     ".no": "算了",
+     ".no.s": "钱留着。",
+     "trk.ng_pos": "POS刷卡摊"
+    },
+    "zht": {
+     ".t": "開個POS刷卡攤",
+     ".x": "你家這條街幾公里內都沒有銀行，大家都在唯一一個POS攤前排隊。一家金融科技公司說只要你備好周轉金，就給你一台刷卡機。",
+     ".start": "開POS攤",
+     ".start.s": "周轉金、小亭子和遮陽傘大約{a}。",
+     ".start.h": "有穩定的手續費收入；但要長時間曬太陽，還有被騙的風險。",
+     ".no": "算了",
+     ".no.s": "錢留著。",
+     "trk.ng_pos": "POS刷卡攤"
+    }
+   }
+  },
+  {
+   "id": "ng_pos2",
+   "src": "Fake transfer alerts and robberies are common risks for POS agents (TechCabal; news reports). Amounts are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!trk.ng_pos"},
+   "def": "absorb",
+   "tarot": "biz",
+   "art": {"draw": "bill", "bg": "co"},
+   "opts": [
+    {"id": "absorb", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "pay(.15 * base); happy -= 2"},
+    {"id": "close", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "pay(.15 * base); stopRec('ng_pos'); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A fake alert",
+     ".x": "A customer showed you a transfer alert on his phone and left with the cash. The money never arrived.",
+     ".absorb": "Take the loss and keep going",
+     ".absorb.s": "About {a} lost.",
+     ".absorb.h": "Happiness −2; you check every alert from now on.",
+     ".close": "Take the loss and close the stand",
+     ".close.s": "About {a} lost.",
+     ".close.h": "The income stops."
+    },
+    "zh": {
+     ".t": "假转账通知",
+     ".x": "有个客人拿手机上的转账通知给你看，拿了现金就走了。钱根本没到账。",
+     ".absorb": "认赔，继续做",
+     ".absorb.s": "损失大约{a}。",
+     ".absorb.h": "幸福感 −2；以后每笔都仔细确认。",
+     ".close": "认赔，收摊",
+     ".close.s": "损失大约{a}。",
+     ".close.h": "收入没了。"
+    },
+    "zht": {
+     ".t": "假轉帳通知",
+     ".x": "有個客人拿手機上的轉帳通知給你看，拿了現金就走了。錢根本沒到帳。",
+     ".absorb": "認賠，繼續做",
+     ".absorb.s": "損失大約{a}。",
+     ".absorb.h": "幸福感 −2；以後每筆都仔細確認。",
+     ".close": "認賠，收攤",
+     ".close.s": "損失大約{a}。",
+     ".close.h": "收入沒了。"
+    }
+   }
+  },
+  {
+   "id": "ng_cng",
+   "src": "CNG: after the fuel subsidy ended in 2023, petrol rose to about ₦1,265 a litre in Lagos (NNPC, Aug 2026, via Legit) while CNG sold at about ₦230; conversion kits cost about ₦1–1.5 million, free for many commercial vehicles under the Presidential CNG Initiative (P-CNGi, via ThisDay and The Guardian). ₦1.2 million ≈ 1.4 of the game’s yardstick. Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Savings depend on driving: an ESTIMATE.",
+   "age": [26, 55],
+   "weight": 0.4,
+   "when": {"car": true},
+   "def": "keep",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "convert", "sub": {"a": "MN(1.4 * base)"}, "hint": true, "do": "spend('ng_cng', 1.4 * base, 'trk.ng_cng'); T('ng_cngS', {kind: 'custom', label: M('trk.ng_cngS')}); rec('ng_cngS', -.3 * base, 8)"},
+    {"id": "keep", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Convert the car to gas?",
+     ".x": "Petrol now costs five times what CNG does. A workshop can convert your car to run on gas.",
+     ".convert": "Convert it",
+     ".convert.s": "About {a} for the kit and fitting.",
+     ".convert.h": "Much cheaper to run, though CNG stations are still few.",
+     ".keep": "Keep buying petrol",
+     ".keep.s": "No change.",
+     ".keep.h": "Fuel stays your biggest running cost.",
+     "trk.ng_cng": "A CNG conversion",
+     "trk.ng_cngS": "Fuel saved with CNG"
+    },
+    "zh": {
+     ".t": "汽车改用天然气？",
+     ".x": "汽油现在是压缩天然气的五倍价钱。修车厂可以把你的车改成烧天然气。",
+     ".convert": "改装",
+     ".convert.s": "套件和安装大约{a}。",
+     ".convert.h": "用车成本低很多，但加气站还很少。",
+     ".keep": "继续加汽油",
+     ".keep.s": "不变。",
+     ".keep.h": "油钱还是最大的用车开销。",
+     "trk.ng_cng": "天然气改装",
+     "trk.ng_cngS": "改用天然气省下的油钱"
+    },
+    "zht": {
+     ".t": "汽車改用天然氣？",
+     ".x": "汽油現在是壓縮天然氣的五倍價錢。修車廠可以把你的車改成燒天然氣。",
+     ".convert": "改裝",
+     ".convert.s": "套件和安裝大約{a}。",
+     ".convert.h": "用車成本低很多，但加氣站還很少。",
+     ".keep": "繼續加汽油",
+     ".keep.s": "不變。",
+     ".keep.h": "油錢還是最大的用車開銷。",
+     "trk.ng_cng": "天然氣改裝",
+     "trk.ng_cngS": "改用天然氣省下的油錢"
+    }
+   }
+  },
+  {
+   "id": "ng_rent",
+   "src": "Rent in Lagos: the Lagos Tenancy Law 2011 makes it unlawful to demand more than a year’s rent in advance from a new tenant (BusinessDay), but landlords commonly ask for one to two years plus agency and legal fees of about 10% each (Ownkey, 2026). Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Amounts are an ESTIMATE.",
+   "age": [24, 40],
+   "weight": 0.45,
+   "when": {"working": true, "house": false},
+   "def": "pay",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(.25 * base)"}, "hint": true, "do": "spend('ng_fees', .25 * base, 'trk.ng_fees'); happy += 1"},
+    {"id": "law", "hint": true, "do": "if (roll('ng_rent') < .5) spend('ng_fees', .12 * base, 'trk.ng_fees'); else { T('ng_far', {kind: 'custom', label: M('trk.ng_far')}); rec('ng_far', -.05 * base, 4, -.3); happy -= 2 }"},
+    {"id": "far", "hint": true, "do": "T('ng_far', {kind: 'custom', label: M('trk.ng_far')}); rec('ng_far', -.05 * base, 4, -.3); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Two years upfront",
+     ".x": "You’ve found a flat on the mainland. The landlord wants two years’ rent upfront, plus agency and legal fees.",
+     ".pay": "Pay it all",
+     ".pay.s": "About {a} in fees on top of the rent.",
+     ".pay.h": "Happiness +1: a good flat near work.",
+     ".law": "Offer one year, as the law allows",
+     ".law.s": "The law is on your side; the landlord may not be.",
+     ".law.h": "Half of landlords agree; the others let it to someone else.",
+     ".far": "A cheaper place further out",
+     ".far.s": "A longer commute in traffic.",
+     ".far.h": "Rent saved, but Happiness −2 and Health a little lower each year.",
+     "trk.ng_fees": "Agency and legal fees",
+     "trk.ng_far": "Rent saved living further out"
+    },
+    "zh": {
+     ".t": "预付两年房租",
+     ".x": "你在本岛那边找到一间公寓。房东要预付两年房租，另外还有中介费和律师费。",
+     ".pay": "全付",
+     ".pay.s": "房租之外另付大约{a}的费用。",
+     ".pay.h": "幸福感 +1：离公司近的好房子。",
+     ".law": "依法只付一年",
+     ".law.s": "法律站在你这边，房东不一定。",
+     ".law.h": "一半的房东会答应；其他的就租给别人。",
+     ".far": "找远一点、便宜一点的",
+     ".far.s": "通勤要塞更久的车。",
+     ".far.h": "省了房租，但幸福感 −2，健康每年少一点。",
+     "trk.ng_fees": "中介费和律师费",
+     "trk.ng_far": "住远一点省下的房租"
+    },
+    "zht": {
+     ".t": "預付兩年房租",
+     ".x": "你在本島那邊找到一間公寓。房東要預付兩年房租，另外還有仲介費和律師費。",
+     ".pay": "全付",
+     ".pay.s": "房租之外另付大約{a}的費用。",
+     ".pay.h": "幸福感 +1：離公司近的好房子。",
+     ".law": "依法只付一年",
+     ".law.s": "法律站在你這邊，房東不一定。",
+     ".law.h": "一半的房東會答應；其他的就租給別人。",
+     ".far": "找遠一點、便宜一點的",
+     ".far.s": "通勤要塞更久的車。",
+     ".far.h": "省了房租，但幸福感 −2，健康每年少一點。",
+     "trk.ng_fees": "仲介費和律師費",
+     "trk.ng_far": "住遠一點省下的房租"
+    }
+   }
+  },
+  {
+   "id": "ng_bet",
+   "src": "Sports betting: about 60 million Nigerians aged 18–40 were involved in sports betting, and over half of them bet daily (NOIPolls, 2019). Bookmakers keep a margin on every bet, so bettors lose over time. Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024). Odds and amounts are an ESTIMATE.",
+   "age": [18, 35],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "life",
+   "art": {"draw": "wallet", "bg": "co"},
+   "opts": [
+    {"id": "bet", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "pay(.02 * base); if (roll('ng_bet') < .3) cash += .04 * base", "next": {"event": "ng_bet2", "in": [1, 2], "p": 0.5}},
+    {"id": "no", "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A sure accumulator",
+     ".x": "Everyone at work is on a betting app before the weekend’s matches. A colleague says his ten-game accumulator is “sure banker”.",
+     ".bet": "Stake ₦15,000",
+     ".bet.s": "About {a}.",
+     ".bet.h": "The bookmaker keeps a cut of every bet; bettors lose over time.",
+     ".no": "Watch the match instead",
+     ".no.s": "Free."
+    },
+    "zh": {
+     ".t": "稳赢的串关",
+     ".x": "周末比赛前，同事全都在用投注App。有个同事说他的十场串关“稳赢”。",
+     ".bet": "押一万五千奈拉",
+     ".bet.s": "大约{a}。",
+     ".bet.h": "庄家每一注都抽成；赌的人迟早会输。",
+     ".no": "只看球就好",
+     ".no.s": "不花钱。"
+    },
+    "zht": {
+     ".t": "穩贏的過關",
+     ".x": "週末比賽前，同事全都在用投注App。有個同事說他的十場過關「穩贏」。",
+     ".bet": "押一萬五千奈拉",
+     ".bet.s": "大約{a}。",
+     ".bet.h": "莊家每一注都抽成；賭的人遲早會輸。",
+     ".no": "只看球就好",
+     ".no.s": "不花錢。"
+    }
+   }
+  },
+  {
+   "id": "ng_bet2",
+   "src": "ESTIMATE: game rule (bettors who chase losses usually lose more; some borrow to bet, BusinessDay 2024).",
+   "chain": true,
+   "when": {"stats": {"liquid": "> .05 * base"}},
+   "def": "stop",
+   "tarot": "life",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "let": {"a": "Math.min(.4 * base, .5 * liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "more", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); happy -= 3; if (roll('ng_bet2') < .1) cash += 1.5 * a"},
+    {"id": "stop", "rel": 1, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "One game cut your ticket",
+     ".x": "Your last ticket lost by one match. The app offers a bonus if you deposit again today.",
+     ".more": "Deposit again and win it back",
+     ".more.s": "{a} from your savings.",
+     ".more.h": "Happiness −3. Chasing losses almost always ends in bigger losses.",
+     ".stop": "Delete the app",
+     ".stop.s": "Tell a friend to keep you honest."
+    },
+    "zh": {
+     ".t": "差一场就中了",
+     ".x": "你上一张彩票只差一场就中了。App说今天再储值就送奖金。",
+     ".more": "再储值，把钱赢回来",
+     ".more.s": "从存款拿{a}。",
+     ".more.h": "幸福感 −3。追输的钱几乎都会输得更多。",
+     ".stop": "删掉App",
+     ".stop.s": "请朋友监督你。"
+    },
+    "zht": {
+     ".t": "差一場就中了",
+     ".x": "你上一張彩票只差一場就中了。App說今天再儲值就送獎金。",
+     ".more": "再儲值，把錢贏回來",
+     ".more.s": "從存款拿{a}。",
+     ".more.h": "幸福感 −3。追輸的錢幾乎都會輸得更多。",
+     ".stop": "刪掉App",
+     ".stop.s": "請朋友監督你。"
+    }
+   }
+  },
+  {
+   "id": "ng_remote",
+   "src": "Remote work: Nigerian professionals increasingly work remotely for foreign firms, paid in dollars through platforms such as Deel; after the 2023–24 devaluation, dollar pay is worth several times local pay. Pay multiples, contract length and the risk of the contract ending are an ESTIMATE. Amounts are compared with a year at the national minimum wage, ₦70,000 a month (₦840,000) from 2024 (Minimum Wage Act 2024).",
+   "age": [22, 38],
+   "weight": 0.4,
+   "when": {"working": true, "careerType": ["office"], "stats": {"skill": "> 25"}},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "sidejob", "bg": "wa"},
+   "opts": [
+    {"id": "take", "hint": true, "do": "tmpPay('ng_remote', 1.8, 3, 'trk.ng_remote'); layM = (layM || 1) * 1.5; rec('ng_night', 0, 3, -.5); happy += 1"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A remote job paid in dollars",
+     ".x": "A London start-up offers you a remote contract paid in dollars, working UK hours from your flat in Lagos.",
+     ".take": "Take the contract",
+     ".take.s": "Paid in dollars; you need your own power and internet.",
+     ".take.h": "Pay about 80% higher while it lasts, but contracts end easily. Health a little lower from long days.",
+     ".stay": "Stay in your local job",
+     ".stay.s": "Steady, in naira.",
+     "trk.ng_remote": "A remote contract in dollars"
+    },
+    "zh": {
+     ".t": "领美元的远程工作",
+     ".x": "伦敦一家新创公司给你一份远程合约，薪水用美元付，在拉各斯的家里按英国时间上班。",
+     ".take": "接下合约",
+     ".take.s": "领美元；电力和网络要自己搞定。",
+     ".take.h": "合约期间薪水大约高80%，但合约很容易结束。工作时间长，健康少一点。",
+     ".stay": "留在本地工作",
+     ".stay.s": "稳定，领奈拉。",
+     "trk.ng_remote": "领美元的远程合约"
+    },
+    "zht": {
+     ".t": "領美元的遠端工作",
+     ".x": "倫敦一家新創公司給你一份遠端合約，薪水用美元付，在拉哥斯的家裡按英國時間上班。",
+     ".take": "接下合約",
+     ".take.s": "領美元；電力和網路要自己搞定。",
+     ".take.h": "合約期間薪水大約高80%，但合約很容易結束。工作時間長，健康少一點。",
+     ".stay": "留在本地工作",
+     ".stay.s": "穩定，領奈拉。",
+     "trk.ng_remote": "領美元的遠端合約"
+    }
+   }
   }
  ]
 }

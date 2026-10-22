@@ -924,15 +924,18 @@
    "i18n": {
     "en": {
      ".t": "Nursing abroad",
-     ".x": "A recruiter for American hospitals offers to sponsor you if you pass the NCLEX. Pay there would be about {a} a year."
+     ".x": "A recruiter for American hospitals offers to sponsor you if you pass the NCLEX. Pay there would be about {a} a year.",
+     "trk.ph_nclex": "Nursing in the United States"
     },
     "zh": {
      ".t": "出国当护理师",
-     ".x": "美国医院的招募人员说，只要你考过NCLEX，他们就替你担保。那边年薪大约{a}。"
+     ".x": "美国医院的招募人员说，只要你考过NCLEX，他们就替你担保。那边年薪大约{a}。",
+     "trk.ph_nclex": "在美国当护理师"
     },
     "zht": {
      ".t": "出國當護理師",
-     ".x": "美國醫院的招募人員說，只要你考過NCLEX，他們就替你擔保。那邊年薪大約{a}。"
+     ".x": "美國醫院的招募人員說，只要你考過NCLEX，他們就替你擔保。那邊年薪大約{a}。",
+     "trk.ph_nclex": "在美國當護理師"
     }
    }
   },

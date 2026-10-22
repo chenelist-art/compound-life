@@ -135,6 +135,8 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
   if(e.age==null&&e.when==null&&!e.chain&&!e.who)E(where,'needs an "age" window, a "when" condition, a "who", or "chain": true');
   if(e.dens!=null&&!(e.dens>0&&e.dens<=1))E(where+'.dens','should be between 0 and 1');
   const params=Object.assign({},tp&&tp.defaults,e.with,tp?{id:e.id}:{});
+  /* the contract template names its passbook line from the event id (contract() in js/verbs.js reads M('trk.'+id)) */
+  if(e.use==='ctr')needKey(where,'trk.'+e.id);
   /* who the card is about */
   if(e.who!=null){const w=e.who,ww=where+'.who';if(typeof w!=='object'||Array.isArray(w))E(ww,'should be {"role": …}');else{for(const k of Object.keys(w))if(!WHO_KEYS.has(k))E(ww,'unknown field "'+k+'" (role, age, test, pick, dead)');
    if(!WHO_ROLES.includes(w.role))E(ww+'.role','one of '+WHO_ROLES.join(', '));if(w.age!=null&&!(Array.isArray(w.age)&&w.age.length===2&&w.age[0]<=w.age[1]))E(ww+'.age','should be [from, to] (their age)');

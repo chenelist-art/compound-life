@@ -318,6 +318,689 @@
      ".govt.h": "以後拿獎學金的機會較小。"
     }
    }
+  },
+  {
+   "id": "pk_plot",
+   "src": "Plot files: in October 2022 the Lahore Development Authority declared 116 housing societies illegal, and more than 250 schemes in Lahore were reported to be operating illegally (Profit, Dec 2022); some developers sold plot “files” with no land behind them (Zameen), and the LDA advises buyers to check a scheme’s status first. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025). Returns and odds are an ESTIMATE.",
+   "age": [28, 55],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> 1 * base"}},
+   "def": "none",
+   "tarot": "bubble",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"a": "Math.min(2 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "file", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('pk_file', a, {rate: .04}, 'trk.pk_file')", "next": {"event": "pk_plot2", "in": [2, 5], "p": 0.35}},
+    {"id": "approved", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('pk_plot', a, {rate: .015}, 'trk.pk_plot')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A plot file",
+     ".x": "A property dealer has “files” for plots in a new housing society on the edge of the city. Their price has doubled in two years, he says. Plots in an older, approved society cost more.",
+     ".file": "Buy a file in the new society",
+     ".file.s": "{a}.",
+     ".file.h": "Files trade on hope; some societies have no approval or even no land.",
+     ".approved": "A plot in an approved society",
+     ".approved.s": "{a}.",
+     ".approved.h": "Slower gains, a clear title.",
+     ".none": "Keep your savings",
+     ".none.s": "No paperwork.",
+     "trk.pk_file": "A plot file",
+     "trk.pk_plot": "A plot in an approved society"
+    },
+    "zh": {
+     ".t": "买地块“档案”",
+     ".x": "房产中介手上有城郊一个新住宅社区的地块“档案”。他说两年就涨了一倍。已获批准的老社区地块比较贵。",
+     ".file": "买新社区的档案",
+     ".file.s": "{a}。",
+     ".file.h": "档案靠预期炒作；有些社区根本没被批准，甚至没有地。",
+     ".approved": "买已批准社区的地",
+     ".approved.s": "{a}。",
+     ".approved.h": "涨得慢，但产权清楚。",
+     ".none": "钱留着",
+     ".none.s": "不用办手续。",
+     "trk.pk_file": "地块档案",
+     "trk.pk_plot": "已批准社区的地"
+    },
+    "zht": {
+     ".t": "買地塊「檔案」",
+     ".x": "房產仲介手上有城郊一個新住宅社區的地塊「檔案」。他說兩年就漲了一倍。已獲核准的老社區地塊比較貴。",
+     ".file": "買新社區的檔案",
+     ".file.s": "{a}。",
+     ".file.h": "檔案靠預期炒作；有些社區根本沒被核准，甚至沒有地。",
+     ".approved": "買已核准社區的地",
+     ".approved.s": "{a}。",
+     ".approved.h": "漲得慢，但產權清楚。",
+     ".none": "錢留著",
+     ".none.s": "不用辦手續。",
+     "trk.pk_file": "地塊檔案",
+     "trk.pk_plot": "已核准社區的地"
+    }
+   }
+  },
+  {
+   "id": "pk_plot2",
+   "src": "Illegal housing societies are listed by development authorities in newspaper notices; buyers often wait years or lose most of their money (LDA notices; Profit, 2022). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.pk_file && lots.pk_file.v > 0"},
+   "def": "wait",
+   "tarot": "bubble",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"v": "lots.pk_file.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "wait", "hint": true, "do": "lots.pk_file.v = .4 * v; happy -= 3"},
+    {"id": "sell", "sub": {"a": "MN(.3 * v)"}, "hint": true, "do": "lots.pk_file.v = 0; lots.pk_file.tout += .3 * v; cash += .3 * v; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The society is on the illegal list",
+     ".x": "The development authority’s newspaper notice lists your housing society as illegal. Your file, once worth {a}, can barely be sold.",
+     ".wait": "Hold on and hope it gets approved",
+     ".wait.s": "The developer promises it will be sorted out.",
+     ".wait.h": "Happiness −3; the file is worth well under half.",
+     ".sell": "Sell to whoever will buy",
+     ".sell.s": "About {a}.",
+     ".sell.h": "Happiness −2; at least it’s over."
+    },
+    "zh": {
+     ".t": "社区被列为非法",
+     ".x": "开发局在报上的公告把你那个社区列为非法。你那份曾经值{a}的档案几乎卖不掉了。",
+     ".wait": "先拿着，希望能获批",
+     ".wait.s": "开发商保证会处理好。",
+     ".wait.h": "幸福感 −3；档案价值剩不到一半。",
+     ".sell": "有人要就卖",
+     ".sell.s": "大约{a}。",
+     ".sell.h": "幸福感 −2；至少结束了。"
+    },
+    "zht": {
+     ".t": "社區被列為非法",
+     ".x": "開發局在報上的公告把你那個社區列為非法。你那份曾經值{a}的檔案幾乎賣不掉了。",
+     ".wait": "先拿著，希望能獲准",
+     ".wait.s": "建商保證會處理好。",
+     ".wait.h": "幸福感 −3；檔案價值剩不到一半。",
+     ".sell": "有人要就賣",
+     ".sell.s": "大約{a}。",
+     ".sell.h": "幸福感 −2；至少結束了。"
+    }
+   }
+  },
+  {
+   "id": "pk_shaadi",
+   "src": "Weddings: mehndi, baraat and walima often run over three days, and the bride’s family is expected to give jahez (dowry goods); the Dowry and Bridal Gifts (Restriction) Act 1976 limits dowry, and Punjab’s Marriage Functions Act 2016 allows only one dish and limits hours, but both are loosely enforced. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025). Amounts are an ESTIMATE.",
+   "age": [45, 62],
+   "weight": 0.45,
+   "when": {"kidAge": [20, 30]},
+   "def": "modest",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(3 * base)"}, "hint": true, "rel": 3, "do": "spend('pk_shaadi', 3 * base, 'trk.pk_shaadi'); bond('kid', 3); happy += 2"},
+    {"id": "modest", "sub": {"a": "MN(1 * base)"}, "rel": 1, "do": "spend('pk_shaadi', base, 'trk.pk_shaadi'); bond('kid', 2)"},
+    {"id": "simple", "sub": {"a": "MN(.25 * base)"}, "hint": true, "rel": -2, "do": "spend('pk_shaadi', .25 * base, 'trk.pk_shaadi'); bond('kid', 1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child’s wedding",
+     ".x": "Your child is getting married. The relatives are already planning the mehndi, the baraat and the walima, and asking about the jahez.",
+     ".big": "Three days, the way the family expects",
+     ".big.s": "About {a}, with gifts and jahez.",
+     ".big.h": "Happiness +2; the family’s name is upheld.",
+     ".modest": "A modest wedding",
+     ".modest.s": "About {a}.",
+     ".simple": "Nikah at home and a small walima",
+     ".simple.s": "About {a}; no jahez.",
+     ".simple.h": "Some relatives grumble; the couple starts without debt.",
+     "trk.pk_shaadi": "Your child’s wedding"
+    },
+    "zh": {
+     ".t": "孩子的婚礼",
+     ".x": "你的孩子要结婚了。亲戚已经在张罗彩绘礼、迎亲和喜宴，还在问嫁妆的事。",
+     ".big": "办三天，照家族的规矩来",
+     ".big.s": "连礼物和嫁妆大约{a}。",
+     ".big.h": "幸福感 +2；家族很有面子。",
+     ".modest": "办个简单的婚礼",
+     ".modest.s": "大约{a}。",
+     ".simple": "在家办证婚，加一场小喜宴",
+     ".simple.s": "大约{a}；不办嫁妆。",
+     ".simple.h": "有些亲戚抱怨；新人没有负担地开始。",
+     "trk.pk_shaadi": "孩子的婚礼"
+    },
+    "zht": {
+     ".t": "孩子的婚禮",
+     ".x": "你的孩子要結婚了。親戚已經在張羅彩繪禮、迎親和喜宴，還在問嫁妝的事。",
+     ".big": "辦三天，照家族的規矩來",
+     ".big.s": "連禮物和嫁妝大約{a}。",
+     ".big.h": "幸福感 +2；家族很有面子。",
+     ".modest": "辦個簡單的婚禮",
+     ".modest.s": "大約{a}。",
+     ".simple": "在家辦證婚，加一場小喜宴",
+     ".simple.s": "大約{a}；不辦嫁妝。",
+     ".simple.h": "有些親戚抱怨；新人沒有負擔地開始。",
+     "trk.pk_shaadi": "孩子的婚禮"
+    }
+   }
+  },
+  {
+   "id": "pk_car",
+   "src": "Car finance: the State Bank caps car loans at Rs3 million, with at least 30% down and five years at most (SBP prudential regulations, 2022). Buyers often pay dealers an “own money” premium to skip months-long waits. A small new car (about Rs3 million ≈ 6.8 of the game’s yardstick), the premium and a used car’s price are an ESTIMATE. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025).",
+   "age": [28, 50],
+   "weight": 0.4,
+   "when": {"working": true, "car": false, "stats": {"salary": "> 2.5 * base", "liquid": "> 2.5 * base"}},
+   "def": "none",
+   "tarot": "car2",
+   "art": "car",
+   "opts": [
+    {"id": "wait", "sub": {"a": "MN(2 * base)", "b": "MN(carPay(4.8 * base))"}, "hint": true, "do": "pay(2 * base); car = { type: 'new', bal: 4.8 * base, pay: carPay(4.8 * base) }; T('car', { kind: 'ghost', label: M('trk.carNew') }); happy += 2"},
+    {"id": "own", "sub": {"a": "MN(2.5 * base)", "b": "MN(carPay(4.8 * base))"}, "hint": true, "do": "pay(2.5 * base); car = { type: 'new', bal: 4.8 * base, pay: carPay(4.8 * base) }; const t = T('car', { kind: 'ghost', label: M('trk.carNew') }); t.spent += .5 * base; t.g += .5 * base; happy += 3"},
+    {"id": "used", "sub": {"a": "MN(1.5 * base)"}, "hint": true, "do": "car = { type: 'used', bal: 0, pay: 0 }; pay(1.5 * base); const t = T('car', { kind: 'ghost', label: M('trk.carUsed') }); t.spent += 1.5 * base; t.g += 1.5 * base; happy += 1"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Booking a car",
+     ".x": "You want a car for the family. The dealer’s waiting list for a new one is six months, unless you pay him “own money” to jump the queue.",
+     ".wait": "Book it on a bank loan and wait",
+     ".wait.s": "{a} down, then about {b} a year.",
+     ".wait.h": "Happiness +2 when it comes; the loan costs interest.",
+     ".own": "Pay “own money” and drive it home this week",
+     ".own.s": "{a} up front, then about {b} a year.",
+     ".own.h": "Happiness +3; the premium is money gone.",
+     ".used": "A used car",
+     ".used.s": "About {a}.",
+     ".used.h": "Happiness +1; more repairs.",
+     ".none": "Keep using the motorbike",
+     ".none.s": "No payments."
+    },
+    "zh": {
+     ".t": "订车",
+     ".x": "你想给家里买辆车。新车要排六个月，除非付车商一笔“插队费”（own money）。",
+     ".wait": "用银行贷款订车，慢慢等",
+     ".wait.s": "头期款{a}，之后每年大约{b}。",
+     ".wait.h": "车到了幸福感 +2；贷款要付利息。",
+     ".own": "付插队费，这周就开回家",
+     ".own.s": "先付{a}，之后每年大约{b}。",
+     ".own.h": "幸福感 +3；插队费就是白花的钱。",
+     ".used": "买二手车",
+     ".used.s": "大约{a}。",
+     ".used.h": "幸福感 +1；比较常要修。",
+     ".none": "继续骑摩托车",
+     ".none.s": "不用付分期。"
+    },
+    "zht": {
+     ".t": "訂車",
+     ".x": "你想給家裡買台車。新車要排六個月，除非付車商一筆「插隊費」（own money）。",
+     ".wait": "用銀行貸款訂車，慢慢等",
+     ".wait.s": "頭期款{a}，之後每年大約{b}。",
+     ".wait.h": "車到了幸福感 +2；貸款要付利息。",
+     ".own": "付插隊費，這週就開回家",
+     ".own.s": "先付{a}，之後每年大約{b}。",
+     ".own.h": "幸福感 +3；插隊費就是白花的錢。",
+     ".used": "買二手車",
+     ".used.s": "大約{a}。",
+     ".used.h": "幸福感 +1；比較常要修。",
+     ".none": "繼續騎機車",
+     ".none.s": "不用付分期。"
+    }
+   }
+  },
+  {
+   "id": "pk_freelance",
+   "src": "Freelancing: Pakistan has over 2.3 million freelancers (freelancers’ union, via Arab News); in 2024 internet speeds fell 30–40% as a national firewall was installed, and the software houses’ association warned of losses up to $300 million (WISPAP and P@SHA, via Arab News, Aug 2024). Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025). Earnings and odds are an ESTIMATE.",
+   "age": [20, 35],
+   "weight": 0.45,
+   "when": {"working": true, "stats": {"skill": "> 20"}},
+   "def": "no",
+   "tarot": "teen",
+   "art": {"draw": "sidejob", "bg": "mi"},
+   "opts": [
+    {"id": "start", "hint": true, "do": "T('pk_fl', {kind: 'custom', label: M('trk.pk_fl')}); rec('pk_fl', -.3 * base, 6, -.3); happy -= 1", "next": {"event": "pk_freelance2", "in": [1, 3], "p": 0.5}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Freelancing at night",
+     ".x": "A cousin earns in dollars on Upwork after his day job, designing logos for clients abroad. He says you could do it too.",
+     ".start": "Start freelancing in the evenings",
+     ".start.s": "Paid in dollars, at the hours clients want.",
+     ".start.h": "Extra income worth about a third of a minimum wage a year; Health a little lower from late nights.",
+     ".no": "Keep your evenings",
+     ".no.s": "Rest.",
+     "trk.pk_fl": "Freelance income"
+    },
+    "zh": {
+     ".t": "晚上接外包",
+     ".x": "一个表亲下班后在Upwork上接案，帮国外客户设计商标，赚的是美元。他说你也可以。",
+     ".start": "晚上开始接案",
+     ".start.s": "收美元，配合客户的时间。",
+     ".start.h": "每年多出大约三分之一个最低工资的收入；熬夜让健康少一点。",
+     ".no": "晚上留给自己",
+     ".no.s": "休息。",
+     "trk.pk_fl": "外包收入"
+    },
+    "zht": {
+     ".t": "晚上接外包",
+     ".x": "一個表親下班後在Upwork上接案，幫國外客戶設計商標，賺的是美元。他說你也可以。",
+     ".start": "晚上開始接案",
+     ".start.s": "收美元，配合客戶的時間。",
+     ".start.h": "每年多出大約三分之一個最低工資的收入；熬夜讓健康少一點。",
+     ".no": "晚上留給自己",
+     ".no.s": "休息。",
+     "trk.pk_fl": "外包收入"
+    }
+   }
+  },
+  {
+   "id": "pk_freelance2",
+   "src": "Internet slowdowns and outages hit freelancers repeatedly in 2024–2025 (Arab News; Profit, Aug 2025). Costs and effects are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!trk.pk_fl"},
+   "def": "backup",
+   "tarot": "teen",
+   "art": {"draw": "sidejob", "bg": "co"},
+   "opts": [
+    {"id": "backup", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('pk_net', .05 * base, 'trk.pk_net'); happy -= 1"},
+    {"id": "stop", "hint": true, "do": "stopRec('pk_fl'); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The internet crawls",
+     ".x": "The internet has slowed to a crawl for weeks. A client has cancelled because your files arrived late.",
+     ".backup": "Pay for a second connection and a VPN",
+     ".backup.s": "About {a}.",
+     ".backup.h": "You keep your clients. Happiness −1.",
+     ".stop": "Give it up",
+     ".stop.s": "Evenings free again.",
+     ".stop.h": "The extra income stops.",
+     "trk.pk_net": "A backup internet connection"
+    },
+    "zh": {
+     ".t": "网速慢得像乌龟",
+     ".x": "网速已经慢了好几个星期。有个客户因为你交件太慢取消了合作。",
+     ".backup": "加办第二条网络和VPN",
+     ".backup.s": "大约{a}。",
+     ".backup.h": "客户保住了。幸福感 −1。",
+     ".stop": "不做了",
+     ".stop.s": "晚上又空出来了。",
+     ".stop.h": "额外收入没了。",
+     "trk.pk_net": "备用网络"
+    },
+    "zht": {
+     ".t": "網速慢得像烏龜",
+     ".x": "網速已經慢了好幾個星期。有個客戶因為你交件太慢取消了合作。",
+     ".backup": "加辦第二條網路和VPN",
+     ".backup.s": "大約{a}。",
+     ".backup.h": "客戶保住了。幸福感 −1。",
+     ".stop": "不做了",
+     ".stop.s": "晚上又空出來了。",
+     ".stop.h": "額外收入沒了。",
+     "trk.pk_net": "備用網路"
+    }
+   }
+  },
+  {
+   "id": "pk_pmyb",
+   "src": "Prime Minister’s Youth Business & Agriculture Loan Scheme: for ages 21–45, loans up to Rs0.5 million interest-free (tier 1), up to Rs1.5 million at 5% and up to Rs7.5 million at 7%, repaid over up to eight years (SBP; HBL and Bank of Khyber scheme pages, 2022–23). Rs0.5 million ≈ 1.1 of the game’s yardstick; repaid over eight years ≈ 0.14 a year. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025). Profit and odds are an ESTIMATE.",
+   "age": [21, 45],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "opts": [
+    {"id": "loan", "sub": {"a": "MN(1.1 * base)", "b": "MN(.14 * base)"}, "hint": true, "do": "T('pk_pmyb', {kind: 'custom', label: M('trk.pk_pmyb')}); rec('pk_pmyb', .14 * base, 8); T('pk_shop', {kind: 'custom', label: M('trk.pk_shop')}); rec('pk_shop', -.35 * base, 12, -.3); happy += 1", "next": {"event": "pk_pmyb2", "in": [1, 3], "p": 0.4}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An interest-free business loan",
+     ".x": "You and a friend want to open a mobile-phone repair shop. The government’s youth scheme offers loans of up to Rs0.5 million with no interest.",
+     ".loan": "Take the loan and open the shop",
+     ".loan.s": "A {a} loan, repaid at about {b} a year for eight years.",
+     ".loan.h": "A good shop earns well above the repayments; some don’t make it.",
+     ".no": "Not now",
+     ".no.s": "Keep your job only.",
+     "trk.pk_pmyb": "Youth scheme loan repayments",
+     "trk.pk_shop": "The repair shop"
+    },
+    "zh": {
+     ".t": "无息创业贷款",
+     ".x": "你和朋友想开一间手机维修店。政府的青年计划提供最多五十万卢比的无息贷款。",
+     ".loan": "贷款，开店",
+     ".loan.s": "贷款{a}，八年里每年还大约{b}。",
+     ".loan.h": "生意好的话赚的比还款多很多；但也有撑不下去的。",
+     ".no": "先不要",
+     ".no.s": "只做现在的工作。",
+     "trk.pk_pmyb": "青年贷款还款",
+     "trk.pk_shop": "维修店"
+    },
+    "zht": {
+     ".t": "無息創業貸款",
+     ".x": "你和朋友想開一間手機維修店。政府的青年計畫提供最多五十萬盧比的無息貸款。",
+     ".loan": "貸款，開店",
+     ".loan.s": "貸款{a}，八年裡每年還大約{b}。",
+     ".loan.h": "生意好的話賺的比還款多很多；但也有撐不下去的。",
+     ".no": "先不要",
+     ".no.s": "只做現在的工作。",
+     "trk.pk_pmyb": "青年貸款還款",
+     "trk.pk_shop": "維修店"
+    }
+   }
+  },
+  {
+   "id": "pk_pmyb2",
+   "src": "ESTIMATE: game rule (small shops struggle with power cuts, rent rises and competition).",
+   "chain": true,
+   "when": {"test": "!!trk.pk_shop"},
+   "def": "close",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "co"},
+   "opts": [
+    {"id": "close", "do": "stopRec('pk_shop'); happy -= 2"},
+    {"id": "push", "hint": true, "do": "if (roll('pk_pmyb2') < .45) happy += 1; else { stopRec('pk_shop'); pay(.1 * base); happy -= 3 }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The shop is struggling",
+     ".x": "Load-shedding cuts your hours and a bigger shop has opened across the road. Some months you barely cover the rent.",
+     ".close": "Close the shop",
+     ".close.s": "The loan still has to be repaid.",
+     ".push": "Buy a generator and keep going",
+     ".push.s": "More debt, more hours.",
+     ".push.h": "Fewer than half of struggling shops recover."
+    },
+    "zh": {
+     ".t": "店撑不下去了",
+     ".x": "停电让你营业时间变短，对街又开了一家大店。有几个月连房租都快付不出来。",
+     ".close": "把店关了",
+     ".close.s": "贷款还是得继续还。",
+     ".push": "买台发电机，继续撑",
+     ".push.s": "更多债务，更长工时。",
+     ".push.h": "撑不下去的店，能翻身的不到一半。"
+    },
+    "zht": {
+     ".t": "店撐不下去了",
+     ".x": "停電讓你營業時間變短，對街又開了一家大店。有幾個月連房租都快付不出來。",
+     ".close": "把店收了",
+     ".close.s": "貸款還是得繼續還。",
+     ".push": "買台發電機，繼續撐",
+     ".push.s": "更多債務，更長工時。",
+     ".push.h": "撐不下去的店，能翻身的不到一半。"
+    }
+   }
+  },
+  {
+   "id": "pk_zakat",
+   "src": "Zakat at source: on the first of Ramadan, banks deduct 2.5% zakat from savings accounts above the nisab (Rs179,689 in 2025, Rs503,529 in 2026); current accounts are exempt, and a notarised CZ-50 declaration lets you pay zakat yourself instead (Zakat and Ushr Ordinance 1980; Allied Bank; Profit, Feb 2026). Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025).",
+   "age": [30, 65],
+   "weight": 0.45,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "bank",
+   "tarot": "charity",
+   "art": {"draw": "gold", "bg": "mi"},
+   "let": {"a": ".025 * Math.min(liquid(), 3 * base)"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "bank", "sub": {"a": "MN(a)"}, "rel": 1, "do": "pay(a); const t = T('pk_zakat', {kind: 'custom', label: M('trk.pk_zakat')}); t.v -= a; happy += 1"},
+    {"id": "self", "sub": {"a": "MN(a)"}, "hint": true, "rel": 3, "do": "pay(a + .005 * base); const t = T('pk_zakat', {kind: 'custom', label: M('trk.pk_zakat')}); t.v -= a + .005 * base; happy += 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Zakat on your savings",
+     ".x": "Ramadan is coming. On the first day, your bank will deduct 2.5% zakat from your savings account, about {a}, unless you file a declaration and pay it yourself.",
+     ".bank": "Let the bank deduct it",
+     ".bank.s": "About {a}, collected by the state’s zakat fund.",
+     ".self": "File a CZ-50 and give it yourself",
+     ".self.s": "About {a} to people you know who need it, plus a notary’s fee.",
+     ".self.h": "Happiness +2: you see where it goes.",
+     "trk.pk_zakat": "Zakat"
+    },
+    "zh": {
+     ".t": "存款的天课",
+     ".x": "斋月快到了。第一天银行会从你的储蓄账户扣2.5%的天课，大约{a}，除非你先提交声明，自己去缴。",
+     ".bank": "让银行扣",
+     ".bank.s": "大约{a}，交给政府的天课基金。",
+     ".self": "提交CZ-50，自己捐",
+     ".self.s": "大约{a}给你认识、需要帮助的人，另加公证费。",
+     ".self.h": "幸福感 +2：你看得到钱用在哪里。",
+     "trk.pk_zakat": "天课"
+    },
+    "zht": {
+     ".t": "存款的天課",
+     ".x": "齋月快到了。第一天銀行會從你的儲蓄帳戶扣2.5%的天課，大約{a}，除非你先提交聲明，自己去繳。",
+     ".bank": "讓銀行扣",
+     ".bank.s": "大約{a}，交給政府的天課基金。",
+     ".self": "提交CZ-50，自己捐",
+     ".self.s": "大約{a}給你認識、需要幫助的人，另加公證費。",
+     ".self.h": "幸福感 +2：你看得到錢用在哪裡。",
+     "trk.pk_zakat": "天課"
+    }
+   }
+  },
+  {
+   "id": "pk_wheat",
+   "src": "Wheat in 2024: Punjab delayed and cut its procurement, and farmers sold at Rs2,800–3,200 per 40 kg against a support price of Rs3,900 (Dawn; ProPakistani, Apr 2024). The price paths and storage losses are an ESTIMATE.",
+   "age": [25, 65],
+   "weight": 0.6,
+   "when": {"working": true, "career": ["farm"]},
+   "def": "sell",
+   "tarot": "crash",
+   "art": {"draw": "gauge", "bg": "ya"},
+   "opts": [
+    {"id": "sell", "hint": true, "do": "tmpPay('pk_wheat', .75, 1, 'trk.pk_wheat'); happy -= 1"},
+    {"id": "store", "hint": true, "do": "if (roll('pk_wheat') < .5) tmpPay('pk_wheat', .95, 1, 'trk.pk_wheat'); else tmpPay('pk_wheat', .6, 1, 'trk.pk_wheat'); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "No buyer at the support price",
+     ".x": "Harvest is in, but the government hasn’t started buying wheat. Traders offer far below the support price.",
+     ".sell": "Sell to the traders now",
+     ".sell.s": "Cash now, at a low price.",
+     ".sell.h": "About a quarter less income this year.",
+     ".store": "Store it and wait for a better price",
+     ".store.s": "Rent for storage, and a gamble on prices.",
+     ".store.h": "Prices may recover, or fall further.",
+     "trk.pk_wheat": "A bad wheat year"
+    },
+    "zh": {
+     ".t": "没人照保证价收购",
+     ".x": "小麦收成了，可是政府还没开始收购。商贩开的价比保证价低很多。",
+     ".sell": "现在卖给商贩",
+     ".sell.s": "马上拿钱，但价钱低。",
+     ".sell.h": "今年收入大约少四分之一。",
+     ".store": "囤起来，等好价钱",
+     ".store.s": "要付仓储费，赌价格会回升。",
+     ".store.h": "价格可能回升，也可能跌更多。",
+     "trk.pk_wheat": "小麦歉收价低的一年"
+    },
+    "zht": {
+     ".t": "沒人照保證價收購",
+     ".x": "小麥收成了，可是政府還沒開始收購。商販開的價比保證價低很多。",
+     ".sell": "現在賣給商販",
+     ".sell.s": "馬上拿錢，但價錢低。",
+     ".sell.h": "今年收入大約少四分之一。",
+     ".store": "囤起來，等好價錢",
+     ".store.s": "要付倉儲費，賭價格會回升。",
+     ".store.h": "價格可能回升，也可能跌更多。",
+     "trk.pk_wheat": "小麥價低的一年"
+    }
+   }
+  },
+  {
+   "id": "pk_filer",
+   "src": "Filers and non-filers: people not on FBR’s active taxpayer list pay higher withholding taxes, e.g. 0.8% on cash withdrawals above Rs50,000 a day (Budget 2025-26), and higher rates on buying property and cars, with limits on large purchases (Zameen; ICT tax guide, 2025). Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025). The adviser’s fee and the taxes saved are an ESTIMATE.",
+   "age": [28, 55],
+   "weight": 0.45,
+   "when": {"working": true, "stats": {"salary": "> 1.5 * base"}},
+   "def": "file",
+   "tarot": "scheme",
+   "art": {"draw": "tax", "bg": "co"},
+   "opts": [
+    {"id": "file", "sub": {"a": "MN(.02 * base)"}, "hint": true, "do": "spend('pk_adv', .02 * base, 'trk.pk_adv'); T('pk_filer', {kind: 'custom', label: M('trk.pk_filer')}); rec('pk_filer', -.01 * base, 30)"},
+    {"id": "skip", "hint": true, "do": "T('pk_filer', {kind: 'custom', label: M('trk.pk_nonfiler')}); rec('pk_filer', .015 * base, 30)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Filing your tax return",
+     ".x": "Your tax is deducted from your salary, but you have never filed a return. A friend says non-filers pay extra tax on almost everything.",
+     ".file": "Hire an adviser and file",
+     ".file.s": "About {a} a year for the adviser.",
+     ".file.h": "Lower withholding taxes on bank withdrawals, property and cars.",
+     ".skip": "Don’t bother",
+     ".skip.s": "Less paperwork.",
+     ".skip.h": "Extra withholding tax on many transactions, for years.",
+     "trk.pk_adv": "A tax adviser",
+     "trk.pk_filer": "Taxes saved as a filer",
+     "trk.pk_nonfiler": "Extra tax as a non-filer"
+    },
+    "zh": {
+     ".t": "报税",
+     ".x": "你的税是从薪水直接扣的，可是你从来没报过税。朋友说没报税的人几乎什么都要多缴税。",
+     ".file": "请税务顾问去报",
+     ".file.s": "顾问费每年大约{a}。",
+     ".file.h": "提款、买房、买车的预扣税都比较低。",
+     ".skip": "懒得报",
+     ".skip.s": "少点文书工作。",
+     ".skip.h": "很多交易都要多缴预扣税，一缴好多年。",
+     "trk.pk_adv": "税务顾问",
+     "trk.pk_filer": "报税省下的税",
+     "trk.pk_nonfiler": "没报税多缴的税"
+    },
+    "zht": {
+     ".t": "報稅",
+     ".x": "你的稅是從薪水直接扣的，可是你從來沒報過稅。朋友說沒報稅的人幾乎什麼都要多繳稅。",
+     ".file": "請稅務顧問去報",
+     ".file.s": "顧問費每年大約{a}。",
+     ".file.h": "提款、買房、買車的預扣稅都比較低。",
+     ".skip": "懶得報",
+     ".skip.s": "少點文書工作。",
+     ".skip.h": "很多交易都要多繳預扣稅，一繳好多年。",
+     "trk.pk_adv": "稅務顧問",
+     "trk.pk_filer": "報稅省下的稅",
+     "trk.pk_nonfiler": "沒報稅多繳的稅"
+    }
+   }
+  },
+  {
+   "id": "pk_css",
+   "src": "CSS exam: the Federal Public Service Commission’s competitive exam for the civil service, where only a few percent of candidates pass the written papers each year (FPSC annual reports). The pass chance for a serious candidate (4%), the preparation year and the pay and pension effects are an ESTIMATE. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025).",
+   "age": [22, 28],
+   "weight": 0.35,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "wa"},
+   "opts": [
+    {"id": "try", "hint": true, "do": "tmpPay('pk_cssP', .2, 1, 'trk.pk_cssP'); spend('pk_academy', .15 * base, 'trk.pk_academy'); happy -= 2; later(age + 1, 'pk_css', {})"},
+    {"id": "stay"}
+   ],
+   "later": {
+    "pk_css": "if (roll('pk_css') < .04) { bump('pk_css', 1.05, M('trk.pk_css')); layM = (layM || 1) * .1; penM = (penM || 1) * 1.3; happy += 6; log(M('log.pk_cssOk'), 'good') } else { log(M('log.pk_cssNo'), 'bad'); happy -= 2 }"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The CSS exam",
+     ".x": "Your father still talks about the uncle who became a deputy commissioner. He wants you to take a year off and sit the CSS exam.",
+     ".try": "Join an academy and prepare for a year",
+     ".try.s": "Academy fees, and a year with almost no pay.",
+     ".try.h": "Happiness −2. Only a few percent pass; officers get secure, respected careers and a good pension.",
+     ".stay": "Stay in your job",
+     ".stay.s": "A steady private career.",
+     "trk.pk_css": "A civil-service career",
+     "trk.pk_cssP": "A year preparing for the CSS",
+     "trk.pk_academy": "CSS academy fees",
+     "log.pk_cssOk": "You passed the CSS exam and joined the civil service.",
+     "log.pk_cssNo": "You didn’t pass the CSS written papers, and go back to work."
+    },
+    "zh": {
+     ".t": "CSS公务员考试",
+     ".x": "你爸还常提起那个当上副专员的叔叔。他希望你休息一年去考CSS。",
+     ".try": "上补习学院准备一年",
+     ".try.s": "学院学费，还有一年几乎没收入。",
+     ".try.h": "幸福感 −2。考上的只有百分之几；考上的人有稳定又受尊敬的职业和不错的退休金。",
+     ".stay": "留在原来的工作",
+     ".stay.s": "稳定的私人企业工作。",
+     "trk.pk_css": "公务员生涯",
+     "trk.pk_cssP": "准备CSS的一年",
+     "trk.pk_academy": "CSS补习学院学费",
+     "log.pk_cssOk": "你考上CSS，进了公务员体系。",
+     "log.pk_cssNo": "你没考过CSS笔试，回去上班。"
+    },
+    "zht": {
+     ".t": "CSS公務員考試",
+     ".x": "你爸還常提起那個當上副專員的叔叔。他希望你休息一年去考CSS。",
+     ".try": "上補習學院準備一年",
+     ".try.s": "學院學費，還有一年幾乎沒收入。",
+     ".try.h": "幸福感 −2。考上的只有百分之幾；考上的人有穩定又受尊敬的職業和不錯的退休金。",
+     ".stay": "留在原來的工作",
+     ".stay.s": "穩定的私人企業工作。",
+     "trk.pk_css": "公務員生涯",
+     "trk.pk_cssP": "準備CSS的一年",
+     "trk.pk_academy": "CSS補習學院學費",
+     "log.pk_cssOk": "你考上CSS，進了公務員體系。",
+     "log.pk_cssNo": "你沒考過CSS筆試，回去上班。"
+    }
+   }
+  },
+  {
+   "id": "pk_qist",
+   "src": "Instalment buying (qist): shops and qist companies sell fridges, phones and motorbikes on monthly instalments with a mark-up, often 25–50% over the cash price for a year (shop price lists, 2025: ESTIMATE). A fridge (Rs120,000 ≈ 0.27 of the game’s yardstick) is an ESTIMATE. Amounts are compared with a year at the federal minimum wage, Rs37,000 a month (Rs444,000), unchanged in the FY2025-26 budget (Profit, Jun 2025).",
+   "age": [22, 50],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "bnpl",
+   "art": {"draw": "bill", "bg": "ya"},
+   "opts": [
+    {"id": "qist", "sub": {"a": "MN(.4 * base)"}, "hint": true, "do": "spend('pk_qist', .4 * base, 'trk.pk_qist'); happy += 2"},
+    {"id": "save", "sub": {"a": "MN(.27 * base)"}, "hint": true, "do": "spend('pk_qist', .27 * base, 'trk.pk_fridge'); happy += 1"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A new fridge on qist",
+     ".x": "Summer is coming and the old fridge has died. The shop will let you take a new one home today, paid in twelve monthly qists.",
+     ".qist": "Take it home on qist",
+     ".qist.s": "About {a} over twelve months.",
+     ".qist.h": "Happiness +2 now; the mark-up is about half the cash price.",
+     ".save": "Pay cash",
+     ".save.s": "About {a}.",
+     ".save.h": "Happiness +1, no mark-up.",
+     ".none": "Manage without for now",
+     ".none.s": "Buy ice from the shop next door.",
+     "trk.pk_qist": "A fridge on qist",
+     "trk.pk_fridge": "A new fridge"
+    },
+    "zh": {
+     ".t": "分期买冰箱",
+     ".x": "夏天要到了，旧冰箱坏了。店家说今天就能把新冰箱载回家，分十二期付款。",
+     ".qist": "分期带回家",
+     ".qist.s": "十二个月共大约{a}。",
+     ".qist.h": "现在幸福感 +2；加价大约是现金价的一半。",
+     ".save": "付现金",
+     ".save.s": "大约{a}。",
+     ".save.h": "幸福感 +1，没有加价。",
+     ".none": "先将就一下",
+     ".none.s": "去隔壁买冰块。",
+     "trk.pk_qist": "分期买的冰箱",
+     "trk.pk_fridge": "新冰箱"
+    },
+    "zht": {
+     ".t": "分期買冰箱",
+     ".x": "夏天要到了，舊冰箱壞了。店家說今天就能把新冰箱載回家，分十二期付款。",
+     ".qist": "分期帶回家",
+     ".qist.s": "十二個月共大約{a}。",
+     ".qist.h": "現在幸福感 +2；加價大約是現金價的一半。",
+     ".save": "付現金",
+     ".save.s": "大約{a}。",
+     ".save.h": "幸福感 +1，沒有加價。",
+     ".none": "先將就一下",
+     ".none.s": "去隔壁買冰塊。",
+     "trk.pk_qist": "分期買的冰箱",
+     "trk.pk_fridge": "新冰箱"
+    }
+   }
   }
  ]
 }

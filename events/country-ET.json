@@ -331,6 +331,622 @@
      "trk.esx": "衣索比亞電信股票"
     }
    }
+  },
+  {
+   "id": "et_gulf",
+   "src": "Saudi Arabia resumed recruiting Ethiopian domestic workers in March 2023 through its Musaned platform, with recruitment fees (paid by employers) capped at SR6,900 and a minimum salary of SR1,000 a month under the 2017 labour agreement (Migrant-Rights.org; The Reporter). Pay and cost multiples and the travel and training costs are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [20, 35],
+   "weight": 0.45,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "mi"},
+   "vars": {"a": "MN(3 * salary())"},
+   "use": "ctr",
+   "with": {"m": 3, "cm": 0.8, "yrs": 2, "fee": 0.3, "remit": 0.4},
+   "i18n": {
+    "en": {
+     ".t": "Work in Saudi Arabia",
+     ".x": "A licensed agency offers a two-year job in Saudi Arabia at about {a} a year, with food and housing. Your neighbour’s daughter went last year.",
+     "trk.et_gulf": "Work in Saudi Arabia"
+    },
+    "zh": {
+     ".t": "去沙特工作",
+     ".x": "一家合法仲介提供去沙特的两年工作，年薪大约{a}，包吃住。邻居的女儿去年去了。",
+     "trk.et_gulf": "在沙特工作"
+    },
+    "zht": {
+     ".t": "去沙烏地工作",
+     ".x": "一家合法仲介提供去沙烏地的兩年工作，年薪大約{a}，包吃住。鄰居的女兒去年去了。",
+     "trk.et_gulf": "在沙烏地工作"
+    }
+   }
+  },
+  {
+   "id": "et_sacco",
+   "src": "Savings and credit cooperatives (SACCOs) are common at workplaces: members save a share of pay each month, earn a dividend and can borrow a multiple of their savings (Cooperative Societies Proclamation 985/2016; Federal Cooperative Agency). Rates, the dividend and the loan are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [24, 50],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "save",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(.1 * base)"}, "hint": true, "rel": 1, "do": "yearly('et_sacco', {amt: .1 * base, until: age + 12}, {rate: .01}, 'trk.et_sacco')", "next": {"event": "et_sacco2", "in": [3, 5], "p": 0.6}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The workplace SACCO",
+     ".x": "Your workplace has a savings and credit cooperative. Members save every month, and after a few years can borrow three times what they have saved.",
+     ".join": "Join and save every month",
+     ".join.s": "About {a} a year from your pay.",
+     ".join.h": "A small dividend, and a cheap loan later.",
+     ".no": "Not now",
+     ".no.s": "Keep your whole salary.",
+     "trk.et_sacco": "SACCO savings"
+    },
+    "zh": {
+     ".t": "单位的储蓄互助社",
+     ".x": "你们单位有个储蓄信用合作社。社员每个月存钱，几年后可以借到存款三倍的钱。",
+     ".join": "加入，每月存钱",
+     ".join.s": "每年从薪水扣大约{a}。",
+     ".join.h": "有一点股息，以后还能借到便宜的贷款。",
+     ".no": "先不加入",
+     ".no.s": "薪水全拿。",
+     "trk.et_sacco": "互助社储蓄"
+    },
+    "zht": {
+     ".t": "單位的儲蓄互助社",
+     ".x": "你們單位有個儲蓄信用合作社。社員每個月存錢，幾年後可以借到存款三倍的錢。",
+     ".join": "加入，每月存錢",
+     ".join.s": "每年從薪水扣大約{a}。",
+     ".join.h": "有一點股息，以後還能借到便宜的貸款。",
+     ".no": "先不加入",
+     ".no.s": "薪水全拿。",
+     "trk.et_sacco": "互助社儲蓄"
+    }
+   }
+  },
+  {
+   "id": "et_sacco2",
+   "src": "SACCO loans of a multiple of members’ savings, often used to build rooms to rent out (Federal Cooperative Agency; ESTIMATE). Rent, cost and repayments are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.et_sacco && lots.et_sacco.v > 0"},
+   "def": "no",
+   "tarot": "save",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "opts": [
+    {"id": "build", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "T('et_loan', {kind: 'custom', label: M('trk.et_loan')}); rec('et_loan', .2 * base, 6); T('et_room', {kind: 'custom', label: M('trk.et_room')}); rec('et_room', -.25 * base, 20); happy += 1"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A SACCO loan",
+     ".x": "You can now borrow three times your SACCO savings. A builder says he could add two rooms behind your family’s house to rent out.",
+     ".build": "Borrow and build two rooms",
+     ".build.s": "Repaid at about {a} a year for six years.",
+     ".build.h": "The rent covers the loan and then some, for years.",
+     ".no": "Keep saving",
+     ".no.s": "No debt.",
+     "trk.et_loan": "SACCO loan repayments",
+     "trk.et_room": "Rent from two rooms"
+    },
+    "zh": {
+     ".t": "互助社贷款",
+     ".x": "你现在可以借到互助社存款的三倍。有个工头说可以在你家后面加盖两个房间出租。",
+     ".build": "借钱，加盖两个房间",
+     ".build.s": "六年里每年还大约{a}。",
+     ".build.h": "租金付得了贷款，还有剩，能收好多年。",
+     ".no": "继续存钱",
+     ".no.s": "没有负债。",
+     "trk.et_loan": "互助社贷款还款",
+     "trk.et_room": "两个房间的租金"
+    },
+    "zht": {
+     ".t": "互助社貸款",
+     ".x": "你現在可以借到互助社存款的三倍。有個工頭說可以在你家後面加蓋兩個房間出租。",
+     ".build": "借錢，加蓋兩個房間",
+     ".build.s": "六年裡每年還大約{a}。",
+     ".build.h": "租金付得了貸款，還有剩，能收好多年。",
+     ".no": "繼續存錢",
+     ".no.s": "沒有負債。",
+     "trk.et_loan": "互助社貸款還款",
+     "trk.et_room": "兩個房間的租金"
+    }
+   }
+  },
+  {
+   "id": "et_corridor",
+   "src": "Addis Ababa’s Corridor Development Project: demolitions in Piassa in early 2024 displaced thousands of households, some with five days’ notice, who were offered condominiums or kebele houses by lottery; Amnesty International found at least 872 people forcibly evicted in Bole and Lemi Kura in November 2024 (Amnesty, Apr 2025); condominium down payments of about Br120,000 exceeded many families’ compensation (Addis Fortune). Prices and effects are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [25, 60],
+   "weight": 0.3,
+   "when": {"house": false},
+   "def": "far",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "co"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "opts": [
+    {"id": "condo", "sub": {"a": "MN(.2 * .6 * P)"}, "ok": "liq >= .23 * .6 * P || M('e.home.need', { n: MN(.23 * .6 * P), h: MN(liq) })", "hint": true, "do": "buyAt(.6 * P, { val: .8 * P, dp: .2, fee: .03, r: .03, n: 20, lk: 'trk.et_condo2' }); happy -= 2; rl(-2)"},
+    {"id": "far", "hint": true, "do": "T('et_far', {kind: 'custom', label: M('trk.et_far')}); rec('et_far', -.04 * base, 5, -.4); happy -= 3; rl(-2)"},
+    {"id": "near", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "T('et_near', {kind: 'custom', label: M('trk.et_near')}); rec('et_near', .1 * base, 5); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your street is coming down",
+     ".x": "A notice on the door: your neighbourhood is to be cleared for the new corridor within weeks. Tenants must find somewhere else.",
+     ".condo": "Enter the condominium lottery and buy one",
+     ".condo.s": "A down payment of about {a}, far out of the centre.",
+     ".condo.h": "A home of your own, but Happiness −2 and the neighbours are scattered.",
+     ".far": "Rent on the edge of the city",
+     ".far.s": "Cheaper rent and long minibus rides.",
+     ".far.h": "Happiness −3, Health a little lower each year from the commute.",
+     ".near": "Rent near the centre at the new prices",
+     ".near.s": "About {a} a year more in rent.",
+     ".near.h": "Happiness −1.",
+     "trk.et_condo2": "A condominium after the demolitions",
+     "trk.et_far": "Rent saved on the edge of the city",
+     "trk.et_near": "Higher rent near the centre"
+    },
+    "zh": {
+     ".t": "你住的街要拆了",
+     ".x": "门上贴了通知：几周内你们这一带要拆掉，改建新的城市廊道。租户得另找地方住。",
+     ".condo": "参加公寓抽签，买一间",
+     ".condo.s": "头期款大约{a}，离市中心很远。",
+     ".condo.h": "有了自己的房子，但幸福感 −2，老邻居都散了。",
+     ".far": "到城市边缘租房",
+     ".far.s": "房租便宜，但要坐很久的小巴。",
+     ".far.h": "幸福感 −3，通勤让健康每年少一点。",
+     ".near": "照新价钱在市中心附近租",
+     ".near.s": "房租每年多大约{a}。",
+     ".near.h": "幸福感 −1。",
+     "trk.et_condo2": "拆迁后买的公寓",
+     "trk.et_far": "住城郊省下的房租",
+     "trk.et_near": "市中心较高的房租"
+    },
+    "zht": {
+     ".t": "你住的街要拆了",
+     ".x": "門上貼了通知：幾週內你們這一帶要拆掉，改建新的城市廊道。租戶得另找地方住。",
+     ".condo": "參加公寓抽籤，買一間",
+     ".condo.s": "頭期款大約{a}，離市中心很遠。",
+     ".condo.h": "有了自己的房子，但幸福感 −2，老鄰居都散了。",
+     ".far": "到城市邊緣租房",
+     ".far.s": "房租便宜，但要坐很久的小巴。",
+     ".far.h": "幸福感 −3，通勤讓健康每年少一點。",
+     ".near": "照新價錢在市中心附近租",
+     ".near.s": "房租每年多大約{a}。",
+     ".near.h": "幸福感 −1。",
+     "trk.et_condo2": "拆遷後買的公寓",
+     "trk.et_far": "住城郊省下的房租",
+     "trk.et_near": "市中心較高的房租"
+    }
+   }
+  },
+  {
+   "id": "et_dv",
+   "src": "The US Diversity Visa lottery: entering is free online, successful entrants are never told by letter or email, and paid “agents” have misled applicants and charged high fees (US State Department fraud warning; PolitiFact on a 2007 government report naming Ethiopia). The chance of selection (about 1.5%) and the agent’s fee (Br8,000 ≈ 0.07) are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [20, 35],
+   "weight": 0.45,
+   "when": {"abroad": false},
+   "def": "self",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "ya"},
+   "opts": [
+    {"id": "self", "hint": true, "next": {"event": "et_dv2", "in": 1, "p": 0.015}},
+    {"id": "agent", "sub": {"a": "MN(.07 * base)"}, "hint": true, "do": "spend('et_agent', .07 * base, 'trk.et_agent')", "next": {"event": "et_dv2", "in": 1, "p": 0.015}},
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The DV lottery",
+     ".x": "The US green-card lottery is open. An internet café owner offers to enter you “with a better chance” for a fee.",
+     ".self": "Enter yourself online",
+     ".self.s": "Free.",
+     ".self.h": "About one entrant in seventy is selected.",
+     ".agent": "Pay the café owner to enter you",
+     ".agent.s": "About {a}.",
+     ".agent.h": "Nobody can improve your odds; some agents keep entrants’ results to charge more.",
+     ".skip": "Don’t enter",
+     ".skip.s": "Your life is here.",
+     "trk.et_agent": "A DV agent’s fee"
+    },
+    "zh": {
+     ".t": "美国多元移民签证抽签",
+     ".x": "美国绿卡抽签开放报名了。一家网咖老板说收点钱就能帮你报名，“中签机会更大”。",
+     ".self": "自己上网报名",
+     ".self.s": "免费。",
+     ".self.h": "大约七十个人里有一个中签。",
+     ".agent": "付钱请网咖老板报名",
+     ".agent.s": "大约{a}。",
+     ".agent.h": "没人能提高中签率；有些中介会扣住结果再加收费用。",
+     ".skip": "不报名",
+     ".skip.s": "你的生活在这里。",
+     "trk.et_agent": "代办抽签的费用"
+    },
+    "zht": {
+     ".t": "美國多元移民簽證抽籤",
+     ".x": "美國綠卡抽籤開放報名了。一家網咖老闆說收點錢就能幫你報名，「中籤機會更大」。",
+     ".self": "自己上網報名",
+     ".self.s": "免費。",
+     ".self.h": "大約七十個人裡有一個中籤。",
+     ".agent": "付錢請網咖老闆報名",
+     ".agent.s": "大約{a}。",
+     ".agent.h": "沒人能提高中籤率；有些仲介會扣住結果再加收費用。",
+     ".skip": "不報名",
+     ".skip.s": "你的生活在這裡。",
+     "trk.et_agent": "代辦抽籤的費用"
+    }
+   }
+  },
+  {
+   "id": "et_dv2",
+   "src": "Selected entrants must apply and pay visa and medical fees, and travel at their own cost (US State Department). Pay and cost multiples in the United States are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "chain": true,
+   "when": {"canWorkAbroad": true},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "wa"},
+   "vars": {"a": "MN(4 * salary())"},
+   "use": "ctr",
+   "with": {"m": 4, "cm": 1.3, "yrs": 15, "fee": 2, "remit": 0.5},
+   "i18n": {
+    "en": {
+     ".t": "You were selected",
+     ".x": "You check the State Department website and can hardly believe it: you have been selected for a US immigrant visa. Work there could pay about {a} a year.",
+     "trk.et_dv2": "A new life in the United States"
+    },
+    "zh": {
+     ".t": "你中签了",
+     ".x": "你上美国国务院网站一查，简直不敢相信：你中了美国移民签证。在那边工作年薪大约{a}。",
+     "trk.et_dv2": "在美国的新生活"
+    },
+    "zht": {
+     ".t": "你中籤了",
+     ".x": "你上美國國務院網站一查，簡直不敢相信：你中了美國移民簽證。在那邊工作年薪大約{a}。",
+     "trk.et_dv2": "在美國的新生活"
+    }
+   }
+  },
+  {
+   "id": "et_school",
+   "src": "Private school fees in Addis Ababa rose fast with inflation; in 2024 the city’s regulator capped increases at 40–65% for 1,227 private schools after most asked for 100–263%, and fees can top Br6,500 a month (Addis Fortune, Jul 2024). Br6,500 a month for ten months ≈ 0.54 of the game’s yardstick. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage. Bursary odds are an ESTIMATE.",
+   "age": [30, 48],
+   "weight": 0.45,
+   "when": {"kidAge": [6, 12]},
+   "def": "public",
+   "tarot": "tuition",
+   "art": "tuition",
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.54 * base)"}, "hint": true, "do": "T('et_school', {kind: 'custom', label: M('trk.et_school')}); rec('et_school', .54 * base, 6); kidWin(.15, .7)"},
+    {"id": "public", "hint": true, "do": "kidWin(.05, .85); bond('kid', 1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "School fees are rising",
+     ".x": "Your child’s private school has raised its fees by two-thirds. The public school down the road is free but has seventy pupils to a class.",
+     ".private": "Keep them at the private school",
+     ".private.s": "About {a} a year.",
+     ".private.h": "Some of its pupils later win university scholarships.",
+     ".public": "Move them to the public school",
+     ".public.s": "Free.",
+     ".public.h": "A smaller chance of a scholarship later.",
+     "trk.et_school": "Private school fees"
+    },
+    "zh": {
+     ".t": "学费又涨了",
+     ".x": "孩子的私立学校学费涨了三分之二。路口的公立学校免费，但一班有七十个学生。",
+     ".private": "继续念私立学校",
+     ".private.s": "每年大约{a}。",
+     ".private.h": "有些学生以后能拿大学奖学金。",
+     ".public": "转去公立学校",
+     ".public.s": "免费。",
+     ".public.h": "以后拿奖学金的机会比较小。",
+     "trk.et_school": "私立学校学费"
+    },
+    "zht": {
+     ".t": "學費又漲了",
+     ".x": "孩子的私立學校學費漲了三分之二。路口的公立學校免費，但一班有七十個學生。",
+     ".private": "繼續念私立學校",
+     ".private.s": "每年大約{a}。",
+     ".private.h": "有些學生以後能拿大學獎學金。",
+     ".public": "轉去公立學校",
+     ".public.s": "免費。",
+     ".public.h": "以後拿獎學金的機會比較小。",
+     "trk.et_school": "私立學校學費"
+    }
+   }
+  },
+  {
+   "id": "et_mela",
+   "src": "Telebirr Mela: since 2022 Ethio Telecom and Dashen Bank lend small amounts through the telebirr app without collateral, scored on phone and payment history (up to Br2,000 a day and Br10,000 a month at launch), alongside the Endekise overdraft (Ethio Telecom; Capital Ethiopia). The fee and the effect are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [20, 45],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "< .05 * base"}},
+   "def": "iqub",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "ya"},
+   "let": {"a": ".05 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "mela", "hint": true, "do": "debt += 1.1 * a"},
+    {"id": "iqub", "rel": -1, "do": "happy -= 1"},
+    {"id": "lender", "hint": true, "do": "debt += 1.4 * a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Short of cash",
+     ".x": "The rent is due on Monday and you are {a} short. Telebirr offers you a small loan on your phone.",
+     ".mela": "A telebirr Mela loan",
+     ".mela.s": "In your wallet in a minute.",
+     ".mela.h": "A service charge of about a tenth.",
+     ".iqub": "Ask your equb for an early draw",
+     ".iqub.s": "The members talk it over.",
+     ".lender": "A local moneylender",
+     ".lender.s": "Cash today.",
+     ".lender.h": "Far more expensive."
+    },
+    "zh": {
+     ".t": "手头很紧",
+     ".x": "星期一要交房租，你还差{a}。Telebirr在手机上提供小额贷款。",
+     ".mela": "用telebirr借款",
+     ".mela.s": "一分钟就到账。",
+     ".mela.h": "手续费大约一成。",
+     ".iqub": "请储蓄会让你提早领钱",
+     ".iqub.s": "会员商量一下。",
+     ".lender": "找本地放贷人",
+     ".lender.s": "今天就有现金。",
+     ".lender.h": "贵得多。"
+    },
+    "zht": {
+     ".t": "手頭很緊",
+     ".x": "星期一要交房租，你還差{a}。Telebirr在手機上提供小額貸款。",
+     ".mela": "用telebirr借款",
+     ".mela.s": "一分鐘就到帳。",
+     ".mela.h": "手續費大約一成。",
+     ".iqub": "請儲蓄會讓你提早領錢",
+     ".iqub.s": "會員商量一下。",
+     ".lender": "找本地放貸人",
+     ".lender.s": "今天就有現金。",
+     ".lender.h": "貴得多。"
+    }
+   }
+  },
+  {
+   "id": "et_coffee",
+   "src": "Coffee: Ethiopia earned a record $2.65 billion from 468,967 tonnes of coffee exports in 2024/25 (Ethiopian Coffee and Tea Authority, via Food Business MEA), as Arabica prices rose from about 270 to 423 US cents a pound between May 2024 and April 2025; reforms since 2017 let producers and cooperative unions export directly. The price paths, membership fee and effects are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [25, 65],
+   "weight": 0.6,
+   "when": {"working": true, "career": ["farm"]},
+   "def": "sell",
+   "tarot": "gold",
+   "art": {"draw": "gauge", "bg": "wa"},
+   "opts": [
+    {"id": "sell", "hint": true, "do": ""},
+    {"id": "dry", "hint": true, "do": "if (roll('et_coffee') < .6) tmpPay('et_coffee', 1.2, 1, 'trk.et_coffee'); else tmpPay('et_coffee', .85, 1, 'trk.et_coffee'); happy -= 1"},
+    {"id": "union", "sub": {"a": "MN(.1 * base)"}, "hint": true, "rel": 1, "do": "spend('et_union', .1 * base, 'trk.et_union'); bump('et_union', 1.08, M('trk.et_union2'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Coffee prices are high",
+     ".x": "World coffee prices are the highest in decades. A collector offers cash for your red cherries today; a cooperative union nearby exports directly.",
+     ".sell": "Sell red cherries to the collector",
+     ".sell.s": "Cash today, at his price.",
+     ".sell.h": "A fair year, no risk.",
+     ".dry": "Sun-dry them and sell later",
+     ".dry.s": "More work, and a bet on prices.",
+     ".dry.h": "Often about 20% more, but prices can fall.",
+     ".union": "Join the cooperative union",
+     ".union.s": "About {a} to join.",
+     ".union.h": "Direct exports pay about 8% more, year after year.",
+     "trk.et_coffee": "A coffee season",
+     "trk.et_union": "Joining the coffee union",
+     "trk.et_union2": "Direct coffee exports"
+    },
+    "zh": {
+     ".t": "咖啡价格很高",
+     ".x": "国际咖啡价格创下几十年来的新高。收购商今天就能付现金买你的红咖啡果；附近的合作社联社可以直接出口。",
+     ".sell": "把红果卖给收购商",
+     ".sell.s": "今天拿现金，照他的价钱。",
+     ".sell.h": "普通的一年，没有风险。",
+     ".dry": "晒干，晚点再卖",
+     ".dry.s": "比较辛苦，赌价格会更好。",
+     ".dry.h": "常常能多赚两成，但价格也可能下跌。",
+     ".union": "加入合作社联社",
+     ".union.s": "入社大约{a}。",
+     ".union.h": "直接出口每年都能多大约8%。",
+     "trk.et_coffee": "一季咖啡",
+     "trk.et_union": "加入咖啡联社",
+     "trk.et_union2": "咖啡直接出口"
+    },
+    "zht": {
+     ".t": "咖啡價格很高",
+     ".x": "國際咖啡價格創下幾十年來的新高。收購商今天就能付現金買你的紅咖啡果；附近的合作社聯社可以直接出口。",
+     ".sell": "把紅果賣給收購商",
+     ".sell.s": "今天拿現金，照他的價錢。",
+     ".sell.h": "普通的一年，沒有風險。",
+     ".dry": "曬乾，晚點再賣",
+     ".dry.s": "比較辛苦，賭價格會更好。",
+     ".dry.h": "常常能多賺兩成，但價格也可能下跌。",
+     ".union": "加入合作社聯社",
+     ".union.s": "入社大約{a}。",
+     ".union.h": "直接出口每年都能多大約8%。",
+     "trk.et_coffee": "一季咖啡",
+     "trk.et_union": "加入咖啡聯社",
+     "trk.et_union2": "咖啡直接出口"
+    }
+   }
+  },
+  {
+   "id": "et_rent",
+   "src": "Rent control: the Residential House Rent Control and Administration Proclamation No. 1320/2024 requires written rent contracts registered with the authorities, sets a minimum term of two years and lets a regulator set allowed increases; Addis Ababa’s Directive 7/2024 makes demanding more rent than the registered contract unlawful (Dablo Law Firm; The Reporter). Renewal is not guaranteed. The increase and odds are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [22, 45],
+   "weight": 0.45,
+   "when": {"house": false},
+   "def": "pay",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "pay", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "T('et_rentUp', {kind: 'custom', label: M('trk.et_rentUp')}); rec('et_rentUp', .15 * base, 4)"},
+    {"id": "register", "hint": true, "do": "happy -= 1; if (roll('et_rent') < .4) { spend('et_move', .05 * base, 'trk.et_move'); happy -= 1 }"},
+    {"id": "move", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('et_move', .05 * base, 'trk.et_move'); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The landlord wants 50% more",
+     ".x": "Your landlord says the rent goes up by half next month. Your contract is only a handwritten note.",
+     ".pay": "Pay the new rent",
+     ".pay.s": "About {a} a year more.",
+     ".pay.h": "No fuss, for now.",
+     ".register": "Insist on a registered two-year contract at the legal rate",
+     ".register.s": "The new rent law is on your side.",
+     ".register.h": "Happiness −1 from the argument; some landlords find another tenant instead.",
+     ".move": "Move somewhere cheaper",
+     ".move.s": "About {a} to move.",
+     ".move.h": "Happiness −2.",
+     "trk.et_rentUp": "A rent rise",
+     "trk.et_move": "Moving house"
+    },
+    "zh": {
+     ".t": "房东要涨五成房租",
+     ".x": "房东说下个月房租要涨一半。你们的合约只是手写的一张纸条。",
+     ".pay": "照新价钱付",
+     ".pay.s": "每年多大约{a}。",
+     ".pay.h": "暂时不用吵。",
+     ".register": "坚持签登记过的两年合约，照法定涨幅",
+     ".register.s": "新的租赁法站在你这边。",
+     ".register.h": "吵一架，幸福感 −1；有些房东会改租给别人。",
+     ".move": "搬到便宜一点的地方",
+     ".move.s": "搬家大约{a}。",
+     ".move.h": "幸福感 −2。",
+     "trk.et_rentUp": "涨的房租",
+     "trk.et_move": "搬家"
+    },
+    "zht": {
+     ".t": "房東要漲五成房租",
+     ".x": "房東說下個月房租要漲一半。你們的合約只是手寫的一張紙條。",
+     ".pay": "照新價錢付",
+     ".pay.s": "每年多大約{a}。",
+     ".pay.h": "暫時不用吵。",
+     ".register": "堅持簽登記過的兩年合約，照法定漲幅",
+     ".register.s": "新的租賃法站在你這邊。",
+     ".register.h": "吵一架，幸福感 −1；有些房東會改租給別人。",
+     ".move": "搬到便宜一點的地方",
+     ".move.s": "搬家大約{a}。",
+     ".move.h": "幸福感 −2。",
+     "trk.et_rentUp": "漲的房租",
+     "trk.et_move": "搬家"
+    }
+   }
+  },
+  {
+   "id": "et_serg",
+   "src": "Weddings: Ethiopian weddings traditionally host hundreds of guests over several days, with a feast, a hall and a video, and guests and relatives often contribute through gifts or a wedding committee; with high inflation many couples now hold smaller ones (custom; news reports). Costs and contributions are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [24, 34],
+   "weight": 0.45,
+   "when": {"partner": ["dating", "living"]},
+   "def": "mid",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "ya"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(2.5 * base)"}, "hint": true, "rel": 3, "do": "pay(2.5 * base); cash += .8 * base; const tq = T('et_wed', {kind: 'custom', label: M('trk.et_wed')}); tq.v += -1.7 * base; happy += 3"},
+    {"id": "mid", "sub": {"a": "MN(1 * base)"}, "rel": 1, "do": "pay(base); cash += .35 * base; const tq = T('et_wed', {kind: 'custom', label: M('trk.et_wed')}); tq.v += -.65 * base; happy += 1"},
+    {"id": "small", "sub": {"a": "MN(.2 * base)"}, "hint": true, "rel": -2, "do": "pay(.2 * base); const tq = T('et_wed', {kind: 'custom', label: M('trk.et_wed')}); tq.v += -.2 * base"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Planning the wedding",
+     ".x": "You and your partner are getting married. Both families want a hall for five hundred guests, a video crew and a second day of feasting.",
+     ".big": "The full wedding, two days",
+     ".big.s": "About {a}; gifts and relatives cover some of it.",
+     ".big.h": "Happiness +3; the families are proud. Contributions cover about a third.",
+     ".mid": "One day, a smaller hall",
+     ".mid.s": "About {a}; gifts cover some of it.",
+     ".small": "Church, then lunch at home",
+     ".small.s": "About {a}.",
+     ".small.h": "Some relatives feel slighted.",
+     "trk.et_wed": "The wedding, after gifts"
+    },
+    "zh": {
+     ".t": "筹备婚礼",
+     ".x": "你和伴侣要结婚了。两家人都想租能坐五百人的礼堂，请摄影团队，第二天还要再请一次客。",
+     ".big": "办完整的两天婚礼",
+     ".big.s": "大约{a}；礼物和亲戚会分担一部分。",
+     ".big.h": "幸福感 +3；两家都很有面子。大约三分之一有人分担。",
+     ".mid": "办一天，小一点的礼堂",
+     ".mid.s": "大约{a}；礼物能抵一部分。",
+     ".small": "教堂仪式加家里午餐",
+     ".small.s": "大约{a}。",
+     ".small.h": "有些亲戚觉得被怠慢。",
+     "trk.et_wed": "扣掉礼物后的婚礼开销"
+    },
+    "zht": {
+     ".t": "籌備婚禮",
+     ".x": "你和伴侶要結婚了。兩家人都想租能坐五百人的禮堂，請攝影團隊，第二天還要再請一次客。",
+     ".big": "辦完整的兩天婚禮",
+     ".big.s": "大約{a}；禮物和親戚會分擔一部分。",
+     ".big.h": "幸福感 +3；兩家都很有面子。大約三分之一有人分擔。",
+     ".mid": "辦一天，小一點的禮堂",
+     ".mid.s": "大約{a}；禮物能抵一部分。",
+     ".small": "教堂儀式加家裡午餐",
+     ".small.s": "大約{a}。",
+     ".small.h": "有些親戚覺得被怠慢。",
+     "trk.et_wed": "扣掉禮物後的婚禮開銷"
+    }
+   }
+  },
+  {
+   "id": "et_remit",
+   "src": "Money from relatives abroad: the National Bank of Ethiopia floated the birr in July 2024 (it fell from about 57 to 128 a dollar by December 2024: Ethiopian Economics Association, via The Reporter), narrowing the gap with the parallel market, where dealing is illegal and accounts have been frozen in crackdowns. The amounts, the rate gap and the risk are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "age": [22, 60],
+   "weight": 0.4,
+   "def": "bank",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "wa"},
+   "opts": [
+    {"id": "bank", "hint": true, "rel": 1, "do": "T('et_remit', {kind: 'custom', label: M('trk.et_remit')}); rec('et_remit', -.1 * base, 5)"},
+    {"id": "black", "hint": true, "rel": 1, "do": "T('et_remit', {kind: 'custom', label: M('trk.et_remit')}); rec('et_remit', -.11 * base, 5); if (roll('et_remit') < .15) later(age + 2, 'et_remitLost', {})"}
+   ],
+   "later": {
+    "et_remitLost": "pay(.15 * base); log(M('log.et_remitLost', {a: MN(.15 * base)}), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A cousin abroad sends money",
+     ".x": "Your cousin in Washington wants to send your family a little every month. A dealer in Merkato offers a better rate than the bank.",
+     ".bank": "Through the bank or a money transfer firm",
+     ".bank.s": "The official rate, now close to the street rate.",
+     ".bank.h": "Safe and legal.",
+     ".black": "Through the dealer",
+     ".black.s": "A slightly better rate.",
+     ".black.h": "A little more each month, but it is illegal and dealers’ accounts get frozen.",
+     "trk.et_remit": "Money from a cousin abroad",
+     "log.et_remitLost": "Police froze the money dealer’s accounts, and a transfer to your family was lost: {a}."
+    },
+    "zh": {
+     ".t": "国外的表亲寄钱回来",
+     ".x": "你在华盛顿的表亲想每个月寄点钱给你们家。墨卡托市场的换汇商开的汇率比银行好。",
+     ".bank": "走银行或汇款公司",
+     ".bank.s": "官方汇率，现在跟黑市差不多。",
+     ".bank.h": "安全又合法。",
+     ".black": "走换汇商",
+     ".black.s": "汇率好一点点。",
+     ".black.h": "每个月多一点，但这是违法的，换汇商的账户常被冻结。",
+     "trk.et_remit": "国外表亲寄来的钱",
+     "log.et_remitLost": "警方冻结了换汇商的账户，一笔寄给你家的钱没了：{a}。"
+    },
+    "zht": {
+     ".t": "國外的表親寄錢回來",
+     ".x": "你在華盛頓的表親想每個月寄點錢給你們家。墨卡托市場的換匯商開的匯率比銀行好。",
+     ".bank": "走銀行或匯款公司",
+     ".bank.s": "官方匯率，現在跟黑市差不多。",
+     ".bank.h": "安全又合法。",
+     ".black": "走換匯商",
+     ".black.s": "匯率好一點點。",
+     ".black.h": "每個月多一點，但這是違法的，換匯商的帳戶常被凍結。",
+     "trk.et_remit": "國外表親寄來的錢",
+     "log.et_remitLost": "警方凍結了換匯商的帳戶，一筆寄給你家的錢沒了：{a}。"
+    }
+   }
   }
  ]
 }
