@@ -319,6 +319,674 @@
      "trk.ph_ahp": "社會住房"
     }
    }
+  },
+  {
+   "id": "ph_bpo",
+   "src": "The IT-BPM industry (call centres and back offices) employed about 1.82 million people in 2024 (IBPAP, via Daily Tribune, Jan 2025); most serve US clients at night, and work between 10 pm and 6 am earns at least 10% more under the Labor Code’s night-shift differential (Art. 86; IBPAP via BusinessWorld). The pay ratio (≈1.2×) and the health effect of night work are an ESTIMATE.",
+   "age": [19, 30],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "job",
+   "art": {"draw": "sidejob", "bg": "mi"},
+   "opts": [
+    {"id": "bpo", "hint": true, "do": "tmpPay('ph_bpo', 1.2, 5, 'trk.ph_bpo'); rec('ph_night', 0, 5, -1); happy -= 1"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A call-centre job",
+     ".x": "A call centre in your city is hiring for its US accounts. The pay is better than yours, but the shifts run through the night.",
+     ".bpo": "Take the night shift",
+     ".bpo.s": "Better pay, with a night-shift premium.",
+     ".bpo.h": "Pay about 20% higher for five years; Health −1 a year from the nights, Happiness −1.",
+     ".stay": "Keep your day job",
+     ".stay.s": "Sleep at night.",
+     "trk.ph_bpo": "Night shifts at a call centre"
+    },
+    "zh": {
+     ".t": "客服中心的工作",
+     ".x": "城里一家客服中心在招人，服务美国客户。薪水比你现在高，但都是通宵班。",
+     ".bpo": "接下夜班",
+     ".bpo.s": "薪水较高，还有夜班津贴。",
+     ".bpo.h": "五年内薪水大约高20%；熬夜让健康每年 −1，幸福感 −1。",
+     ".stay": "保留白天的工作",
+     ".stay.s": "晚上睡觉。",
+     "trk.ph_bpo": "客服中心夜班"
+    },
+    "zht": {
+     ".t": "客服中心的工作",
+     ".x": "城裡一家客服中心在徵人，服務美國客戶。薪水比你現在高，但都是大夜班。",
+     ".bpo": "接下大夜班",
+     ".bpo.s": "薪水較高，還有夜班津貼。",
+     ".bpo.h": "五年內薪水大約高20%；熬夜讓健康每年 −1，幸福感 −1。",
+     ".stay": "保留白天的工作",
+     ".stay.s": "晚上睡覺。",
+     "trk.ph_bpo": "客服中心大夜班"
+    }
+   }
+  },
+  {
+   "id": "ph_fivesix",
+   "src": "“5-6” lending: borrow ₱5 and repay ₱6, about 20% a month, often collected daily (Inquirer; Wikipedia, “5-6 moneylending”). SSS salary loans charge 10% a year on the diminishing balance (SSS announced a cut to 8% from 2025) and take a week or two (SSS; Moneymax, 2025). ₱10,500 ≈ 0.1 of the game’s typical wage. Costs are an ESTIMATE.",
+   "age": [22, 50],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"liquid": "< .05 * base"}},
+   "def": "sss",
+   "tarot": "lend",
+   "art": {"draw": "bill", "bg": "ya"},
+   "let": {"a": ".1 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "fivesix", "hint": true, "do": "debt += 1.6 * a; happy -= 1"},
+    {"id": "sss", "hint": true, "do": "debt += 1.05 * a"},
+    {"id": "family", "rel": -1, "do": "bond('parent', -2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Short of cash",
+     ".x": "Your child’s school fees are due and you need {a} this week. The man who lends “5-6” comes by your street every morning.",
+     ".fivesix": "Borrow from the 5-6 lender",
+     ".fivesix.s": "Cash today, paid back daily.",
+     ".fivesix.h": "About 20% a month.",
+     ".sss": "An SSS salary loan",
+     ".sss.s": "Apply online; the money comes in a week or two.",
+     ".sss.h": "About 10% a year.",
+     ".family": "Ask your family",
+     ".family.s": "Awkward, but they help."
+    },
+    "zh": {
+     ".t": "手头很紧",
+     ".x": "孩子的学费到期了，你这个星期需要{a}。放“5-6”高利贷的人每天早上都会来你家这条街。",
+     ".fivesix": "跟“5-6”放贷人借",
+     ".fivesix.s": "今天拿钱，每天还。",
+     ".fivesix.h": "每个月大约20%利息。",
+     ".sss": "申请SSS薪资贷款",
+     ".sss.s": "网上申请；一两周到账。",
+     ".sss.h": "年利率大约10%。",
+     ".family": "向家人开口",
+     ".family.s": "有点尴尬，但他们帮了你。"
+    },
+    "zht": {
+     ".t": "手頭很緊",
+     ".x": "孩子的學費到期了，你這個星期需要{a}。放「5-6」高利貸的人每天早上都會來你家這條街。",
+     ".fivesix": "跟「5-6」放貸人借",
+     ".fivesix.s": "今天拿錢，每天還。",
+     ".fivesix.h": "每個月大約20%利息。",
+     ".sss": "申請SSS薪資貸款",
+     ".sss.s": "網路申請；一兩週到帳。",
+     ".sss.h": "年利率大約10%。",
+     ".family": "向家人開口",
+     ".family.s": "有點尷尬，但他們幫了你。"
+    }
+   }
+  },
+  {
+   "id": "ph_college",
+   "src": "Free tuition: the Universal Access to Quality Tertiary Education Act (RA 10931, 2017) made state and local universities tuition-free from AY 2018–19, with 5.48 million beneficiaries to AY 2025–26 (UniFAST). UPCAT 2025: 17,996 of 135,236 examinees admitted, 13.3% (University of the Philippines, via Wikipedia). Private tuition (≈ ₱100,000 a year ≈ 0.95 of the game’s typical wage, 3.8 for four years) and the pay effects are an ESTIMATE.",
+   "age": [18, 19],
+   "weight": 0.45,
+   "when": {"studying": true, "test": "study.k === 'uni'"},
+   "def": "suc",
+   "tarot": "edu",
+   "art": {"draw": "exam", "bg": "ya"},
+   "opts": [
+    {"id": "suc", "do": ""},
+    {"id": "upcat", "hint": true, "do": "happy -= 1; later(age + 1, 'ph_upcat', {})"},
+    {"id": "private", "sub": {"a": "MN(3.8 * base)", "b": "famNote()"}, "hint": true, "do": "famPay('ph_college', 3.8); bump('ph_priv', 1.02, M('trk.ph_priv')); happy += 1"}
+   ],
+   "later": {
+    "ph_upcat": "if (roll('ph_upcat') < .13) { bump('ph_up', 1.05, M('trk.ph_up')); happy += 3; log(M('log.ph_upOk'), 'good') } else log(M('log.ph_upNo'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Which university?",
+     ".x": "You have a place at your provincial state university, free of tuition. You could also sit the UPCAT for the University of the Philippines, or go to a private university in Manila.",
+     ".suc": "The state university",
+     ".suc.s": "Free tuition, close to home.",
+     ".upcat": "Sit the UPCAT",
+     ".upcat.s": "Free tuition if you get in; a hard exam.",
+     ".upcat.h": "About one in eight examinees gets in; UP graduates earn about 5% more.",
+     ".private": "A private university in Manila",
+     ".private.s": "About {a} for four years, paid by your family.{b}",
+     ".private.h": "Happiness +1; pay about 2% higher.",
+     "trk.ph_up": "A degree from UP",
+     "trk.ph_priv": "A private university degree",
+     "log.ph_upOk": "You passed the UPCAT and start at the University of the Philippines.",
+     "log.ph_upNo": "You didn’t get into UP, and start at the state university."
+    },
+    "zh": {
+     ".t": "念哪所大学？",
+     ".x": "你考上了省里的州立大学，学费全免。你也可以去考菲律宾大学的入学考试（UPCAT），或者去马尼拉念私立大学。",
+     ".suc": "念州立大学",
+     ".suc.s": "学费全免，离家近。",
+     ".upcat": "去考UPCAT",
+     ".upcat.s": "考上就免学费；考试很难。",
+     ".upcat.h": "大约八个考生只有一个考上；菲大毕业生薪水大约高5%。",
+     ".private": "去马尼拉念私立大学",
+     ".private.s": "四年大约{a}，由家里出。{b}",
+     ".private.h": "幸福感 +1；薪水大约高2%。",
+     "trk.ph_up": "菲律宾大学学位",
+     "trk.ph_priv": "私立大学学位",
+     "log.ph_upOk": "你考上了UPCAT，进了菲律宾大学。",
+     "log.ph_upNo": "你没考上菲大，去念州立大学。"
+    },
+    "zht": {
+     ".t": "念哪所大學？",
+     ".x": "你考上了省裡的州立大學，學費全免。你也可以去考菲律賓大學的入學考試（UPCAT），或者去馬尼拉念私立大學。",
+     ".suc": "念州立大學",
+     ".suc.s": "學費全免，離家近。",
+     ".upcat": "去考UPCAT",
+     ".upcat.s": "考上就免學費；考試很難。",
+     ".upcat.h": "大約八個考生只有一個考上；菲大畢業生薪水大約高5%。",
+     ".private": "去馬尼拉念私立大學",
+     ".private.s": "四年大約{a}，由家裡出。{b}",
+     ".private.h": "幸福感 +1；薪水大約高2%。",
+     "trk.ph_up": "菲律賓大學學位",
+     "trk.ph_priv": "私立大學學位",
+     "log.ph_upOk": "你考上了UPCAT，進了菲律賓大學。",
+     "log.ph_upNo": "你沒考上菲大，去念州立大學。"
+    }
+   }
+  },
+  {
+   "id": "ph_sari",
+   "src": "Sari-sari stores, tiny neighbourhood shops, number over a million across the Philippines (industry estimates); selling on credit (utang, written in a listahan) is common and a leading reason they fail. Start-up cost (₱30,000 ≈ 0.3), profit and odds are an ESTIMATE.",
+   "age": [30, 60],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .3 * base"}},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "mi"},
+   "opts": [
+    {"id": "open", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "pay(.3 * base); const tq = T('ph_sari', {kind: 'custom', label: M('trk.ph_sari')}); tq.v -= .3 * base; rec('ph_sari', -.12 * base, 15); happy += 1", "next": {"event": "ph_sari2", "in": [1, 3], "p": 0.6}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A sari-sari store",
+     ".x": "The front room of your house faces the street. A sari-sari store there could sell snacks, soap and load to the neighbours.",
+     ".open": "Open the store",
+     ".open.s": "About {a} for shelves and stock.",
+     ".open.h": "A steady small income, if the neighbours pay their tabs.",
+     ".no": "Keep the front room",
+     ".no.s": "No extra work.",
+     "trk.ph_sari": "A sari-sari store"
+    },
+    "zh": {
+     ".t": "开一家杂货小铺",
+     ".x": "你家前厅正对着街。开一家小杂货店，可以卖零食、肥皂和手机储值给邻居。",
+     ".open": "开店",
+     ".open.s": "货架和进货大约{a}。",
+     ".open.h": "只要邻居肯还赊账，就有稳定的小收入。",
+     ".no": "前厅留着自己用",
+     ".no.s": "不用多做事。",
+     "trk.ph_sari": "杂货小铺"
+    },
+    "zht": {
+     ".t": "開一家雜貨小舖",
+     ".x": "你家前廳正對著街。開一家小雜貨店，可以賣零食、肥皂和手機儲值給鄰居。",
+     ".open": "開店",
+     ".open.s": "貨架和進貨大約{a}。",
+     ".open.h": "只要鄰居肯還賒帳，就有穩定的小收入。",
+     ".no": "前廳留著自己用",
+     ".no.s": "不用多做事。",
+     "trk.ph_sari": "雜貨小舖"
+    }
+   }
+  },
+  {
+   "id": "ph_sari2",
+   "src": "ESTIMATE: game rule (unpaid tabs eat into a sari-sari store’s thin margins).",
+   "chain": true,
+   "when": {"test": "!!trk.ph_sari"},
+   "def": "keep",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "let": {"a": ".08 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "keep", "hint": true, "rel": 1, "do": "stopRec('ph_sari'); rec('ph_sari', -.05 * base, 12)"},
+    {"id": "cut", "hint": true, "rel": -2, "do": "happy -= 1"},
+    {"id": "collect", "hint": true, "rel": -1, "do": "if (roll('ph_sari2') < .5) cash += a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The listahan",
+     ".x": "Your notebook of tabs has grown long: the neighbours owe you about {a}, and a few have stopped coming by.",
+     ".keep": "Keep giving credit",
+     ".keep.s": "Neighbours stay loyal.",
+     ".keep.h": "Your profit falls by about half.",
+     ".cut": "Cash only from now on",
+     ".cut.s": "A sign on the counter.",
+     ".cut.h": "Profit holds up, but some neighbours take offence.",
+     ".collect": "Go door to door to collect",
+     ".collect.s": "Awkward conversations.",
+     ".collect.h": "You get back about half the time."
+    },
+    "zh": {
+     ".t": "赊账本",
+     ".x": "你的赊账本越写越长：邻居欠你大约{a}，有几个人干脆不来了。",
+     ".keep": "继续让人赊账",
+     ".keep.s": "邻居继续捧场。",
+     ".keep.h": "利润大约少一半。",
+     ".cut": "以后只收现金",
+     ".cut.s": "柜台贴了张告示。",
+     ".cut.h": "利润保住了，但有些邻居不高兴。",
+     ".collect": "挨家挨户去收",
+     ".collect.s": "尴尬的对话。",
+     ".collect.h": "大约一半的机会能收回来。"
+    },
+    "zht": {
+     ".t": "賒帳本",
+     ".x": "你的賒帳本越寫越長：鄰居欠你大約{a}，有幾個人乾脆不來了。",
+     ".keep": "繼續讓人賒帳",
+     ".keep.s": "鄰居繼續捧場。",
+     ".keep.h": "利潤大約少一半。",
+     ".cut": "以後只收現金",
+     ".cut.s": "櫃檯貼了張告示。",
+     ".cut.h": "利潤保住了，但有些鄰居不高興。",
+     ".collect": "挨家挨戶去收",
+     ".collect.s": "尷尬的對話。",
+     ".collect.h": "大約一半的機會能收回來。"
+    }
+   }
+  },
+  {
+   "id": "ph_vul",
+   "src": "VUL (variable universal life) policies mix life cover with investment funds and charge high fees in the first years, with surrender charges if you stop early (e.g. 5% falling to 0% by year 6 in one insurer’s product terms); not disclosing charges or risks is misleading sales under the Insurance Code, Sec. 370 (Insurance Commission; Inquirer). Many planners advise term insurance plus a separate fund (“buy term and invest the difference”). ₱36,000 a year ≈ 0.34; a term policy (₱6,000) ≈ 0.057. Fees and returns are an ESTIMATE.",
+   "age": [24, 40],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "none",
+   "tarot": "agent",
+   "art": {"draw": "shares", "bg": "wa"},
+   "opts": [
+    {"id": "vul", "sub": {"a": "MN(.34 * base)"}, "hint": true, "do": "yearly('ph_vul', {amt: .34 * base, until: age + 10}, {fee: .03, lock: age + 10}, 'trk.ph_vul')", "next": {"event": "ph_vul2", "in": [2, 4], "p": 0.6}},
+    {"id": "btid", "sub": {"a": "MN(.057 * base)", "b": "MN(.28 * base)"}, "hint": true, "do": "T('ph_term', {kind: 'ghost', label: M('trk.ph_term')}); rec('ph_term', .057 * base, 20); yearly('ph_btid', {amt: .28 * base, until: age + 10}, {}, 'trk.ph_btid')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A friend’s insurance pitch",
+     ".x": "A college friend has become a “financial adviser” and invites you for coffee. She recommends a VUL: life insurance and investment in one.",
+     ".vul": "Buy the VUL",
+     ".vul.s": "About {a} a year for ten years.",
+     ".vul.h": "High charges in the early years eat much of what you put in, and stopping early costs more.",
+     ".btid": "Term insurance and a separate fund",
+     ".btid.s": "About {a} a year for cover, and {b} a year into an index fund.",
+     ".btid.h": "The same cover for less, and low fund fees.",
+     ".none": "Just coffee, thanks",
+     ".none.s": "Change the subject.",
+     "trk.ph_vul": "VUL policy fund",
+     "trk.ph_term": "Term life insurance",
+     "trk.ph_btid": "Index fund"
+    },
+    "zh": {
+     ".t": "朋友来推销保险",
+     ".x": "大学同学当上了“理财顾问”，约你喝咖啡。她推荐一份VUL：保险加投资一次搞定。",
+     ".vul": "买VUL",
+     ".vul.s": "十年里每年大约{a}。",
+     ".vul.h": "前几年的高额费用会吃掉一大部分保费，提早解约还要再扣钱。",
+     ".btid": "买定期险，另外投资基金",
+     ".btid.s": "保障每年大约{a}，另外每年{b}投指数基金。",
+     ".btid.h": "同样的保障更便宜，基金费用也低。",
+     ".none": "只喝咖啡就好",
+     ".none.s": "换个话题。",
+     "trk.ph_vul": "VUL保单基金",
+     "trk.ph_term": "定期寿险",
+     "trk.ph_btid": "指数基金"
+    },
+    "zht": {
+     ".t": "朋友來推銷保險",
+     ".x": "大學同學當上了「理財顧問」，約你喝咖啡。她推薦一份VUL：保險加投資一次搞定。",
+     ".vul": "買VUL",
+     ".vul.s": "十年裡每年大約{a}。",
+     ".vul.h": "前幾年的高額費用會吃掉一大部分保費，提早解約還要再扣錢。",
+     ".btid": "買定期險，另外投資基金",
+     ".btid.s": "保障每年大約{a}，另外每年{b}投指數基金。",
+     ".btid.h": "同樣的保障更便宜，基金費用也低。",
+     ".none": "只喝咖啡就好",
+     ".none.s": "換個話題。",
+     "trk.ph_vul": "VUL保單基金",
+     "trk.ph_term": "定期壽險",
+     "trk.ph_btid": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "ph_vul2",
+   "src": "VUL fund values are often far below premiums paid in the first years because of premium and insurance charges; surrendering early adds a surrender charge (insurer product terms; Insurance Commission). The 10% surrender charge is an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.ph_vul && lots.ph_vul.v > 0"},
+   "def": "keep",
+   "tarot": "agent",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"v": "lots.ph_vul.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "keep", "hint": true},
+    {"id": "stop", "sub": {"a": "MN(.9 * v)"}, "hint": true, "do": "lots.ph_vul.v = 0; lots.ph_vul.tout += .9 * v; cash += .9 * v; stopYearly('ph_vul'); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your VUL statement",
+     ".x": "Your yearly VUL statement arrives. After all your premiums, the fund is worth only {a}.",
+     ".keep": "Keep paying",
+     ".keep.s": "The adviser says it gets better later.",
+     ".keep.h": "Charges are lower in later years, but stay higher than a plain fund’s.",
+     ".stop": "Surrender the policy",
+     ".stop.s": "About {a} back after the surrender charge.",
+     ".stop.h": "Happiness −1; no more premiums."
+    },
+    "zh": {
+     ".t": "你的VUL对账单",
+     ".x": "VUL年度对账单寄来了。缴了这么多保费，基金只值{a}。",
+     ".keep": "继续缴",
+     ".keep.s": "顾问说以后会变好。",
+     ".keep.h": "后几年费用会降低，但还是比一般基金高。",
+     ".stop": "解约",
+     ".stop.s": "扣掉解约费，大约拿回{a}。",
+     ".stop.h": "幸福感 −1；不用再缴保费了。"
+    },
+    "zht": {
+     ".t": "你的VUL對帳單",
+     ".x": "VUL年度對帳單寄來了。繳了這麼多保費，基金只值{a}。",
+     ".keep": "繼續繳",
+     ".keep.s": "顧問說以後會變好。",
+     ".keep.h": "後幾年費用會降低，但還是比一般基金高。",
+     ".stop": "解約",
+     ".stop.s": "扣掉解約費，大約拿回{a}。",
+     ".stop.h": "幸福感 −1；不用再繳保費了。"
+    }
+   }
+  },
+  {
+   "id": "ph_condo",
+   "src": "Metro Manila condos: Colliers counted 79,200 unsold units at end-2025, nearly eight years of sales (a peak of 13.4 years in Q2 2025), with developers offering big discounts (Colliers, via Gulf News and Malaya, 2025–26). Investors buying pre-selling units to rent out face high vacancy. Price growth, rental yield and odds are an ESTIMATE.",
+   "age": [28, 50],
+   "weight": 0.35,
+   "when": {"working": true, "stats": {"liquid": "> 1 * base"}},
+   "def": "no",
+   "tarot": "home",
+   "art": {"draw": "city", "bg": "wa"},
+   "let": {"a": "Math.min(1.5 * base, .7 * liquid())"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ph_condo', a, {rate: .005}, 'trk.ph_condo'); T('ph_condoR', {kind: 'custom', label: M('trk.ph_condoR')}); rec('ph_condoR', -.03 * a, 20)", "next": {"event": "ph_condo2", "in": [2, 4], "p": 0.45}},
+    {"id": "fund", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('ph_fund', a, {}, 'trk.ph_fund')"},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A pre-selling condo",
+     ".x": "A developer’s agent says a pre-selling studio near a business district will pay for itself with rent. The down payment is spread over three years.",
+     ".buy": "Buy it to rent out",
+     ".buy.s": "{a} in down payments and fees.",
+     ".buy.h": "Prices have barely beaten inflation, and many units sit empty.",
+     ".fund": "An index fund instead",
+     ".fund.s": "{a}.",
+     ".fund.h": "Rises and falls with the market.",
+     ".no": "Keep your savings",
+     ".no.s": "No paperwork.",
+     "trk.ph_condo": "A condo to rent out",
+     "trk.ph_condoR": "Condo rent",
+     "trk.ph_fund": "Index fund"
+    },
+    "zh": {
+     ".t": "预售公寓",
+     ".x": "开发商的业务说，商业区附近一间预售套房，光靠租金就能回本。头期款可以分三年付。",
+     ".buy": "买来出租",
+     ".buy.s": "头期款和费用共{a}。",
+     ".buy.h": "房价涨幅只比通胀高一点，很多房子都空着。",
+     ".fund": "改买指数基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟着市场涨跌。",
+     ".no": "钱留着",
+     ".no.s": "不用办手续。",
+     "trk.ph_condo": "出租公寓",
+     "trk.ph_condoR": "公寓租金",
+     "trk.ph_fund": "指数基金"
+    },
+    "zht": {
+     ".t": "預售公寓",
+     ".x": "建商的業務說，商業區附近一間預售套房，光靠租金就能回本。頭期款可以分三年付。",
+     ".buy": "買來出租",
+     ".buy.s": "頭期款和費用共{a}。",
+     ".buy.h": "房價漲幅只比通膨高一點，很多房子都空著。",
+     ".fund": "改買指數基金",
+     ".fund.s": "{a}。",
+     ".fund.h": "跟著市場漲跌。",
+     ".no": "錢留著",
+     ".no.s": "不用辦手續。",
+     "trk.ph_condo": "出租公寓",
+     "trk.ph_condoR": "公寓租金",
+     "trk.ph_fund": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "ph_condo2",
+   "src": "With years of unsold supply, Metro Manila condo owners compete with developers’ discounts for tenants and buyers (Colliers, 2025–26). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.ph_condo && lots.ph_condo.v > 0"},
+   "def": "hold",
+   "tarot": "home",
+   "art": {"draw": "city", "bg": "co"},
+   "let": {"v": "lots.ph_condo.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "hold", "hint": true, "do": "stopRec('ph_condoR'); rec('ph_condoR', -.01 * v, 18); happy -= 1"},
+    {"id": "sell", "sub": {"a": "MN(.85 * v)"}, "hint": true, "do": "lots.ph_condo.v = 0; lots.ph_condo.tout += .85 * v; cash += .85 * v; stopRec('ph_condoR'); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "No tenants",
+     ".x": "Your unit was handed over, but the building is half empty and the developer is selling new units at a discount. Nobody wants to rent yours at the price you hoped.",
+     ".hold": "Cut the rent and wait",
+     ".hold.s": "Less income, and dues to pay.",
+     ".hold.h": "Rent falls by two-thirds. Happiness −1.",
+     ".sell": "Sell at a loss",
+     ".sell.s": "About {a} back.",
+     ".sell.h": "Happiness −2."
+    },
+    "zh": {
+     ".t": "租不出去",
+     ".x": "房子交屋了，可是整栋楼空了一半，开发商还在打折卖新房。没人愿意用你期望的价钱租。",
+     ".hold": "降租金，等一等",
+     ".hold.s": "收入少了，管理费照付。",
+     ".hold.h": "租金少三分之二。幸福感 −1。",
+     ".sell": "认赔卖掉",
+     ".sell.s": "大约拿回{a}。",
+     ".sell.h": "幸福感 −2。"
+    },
+    "zht": {
+     ".t": "租不出去",
+     ".x": "房子交屋了，可是整棟樓空了一半，建商還在打折賣新房。沒人願意用你期望的價錢租。",
+     ".hold": "降租金，等一等",
+     ".hold.s": "收入少了，管理費照付。",
+     ".hold.h": "租金少三分之二。幸福感 −1。",
+     ".sell": "認賠賣掉",
+     ".sell.s": "大約拿回{a}。",
+     ".sell.h": "幸福感 −2。"
+    }
+   }
+  },
+  {
+   "id": "ph_school",
+   "src": "Public schools are free (DepEd); private school tuition commonly runs ₱40,000–100,000 a year (school fee lists, 2025: ESTIMATE), and the ESC voucher programme covers part of private junior high fees for some pupils (DepEd/PEAC). ₱60,000 ≈ 0.57 of the game’s typical wage. Bursary odds are an ESTIMATE.",
+   "age": [30, 48],
+   "weight": 0.45,
+   "when": {"kidAge": [6, 12]},
+   "def": "public",
+   "tarot": "tuition",
+   "art": "tuition",
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.57 * base)"}, "hint": true, "do": "T('ph_school', {kind: 'custom', label: M('trk.ph_school')}); rec('ph_school', .57 * base, 6); kidWin(.15, .7)"},
+    {"id": "public", "hint": true, "do": "kidWin(.06, .85); bond('kid', 1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A private school?",
+     ".x": "Your child’s public school has fifty pupils to a class. A private Catholic school nearby has a place.",
+     ".private": "The private school",
+     ".private.s": "About {a} a year for six years.",
+     ".private.h": "Some of its pupils later win university scholarships.",
+     ".public": "Stay in public school",
+     ".public.s": "Free.",
+     ".public.h": "A smaller chance of a scholarship later.",
+     "trk.ph_school": "Private school fees"
+    },
+    "zh": {
+     ".t": "念私立学校？",
+     ".x": "孩子念的公立学校一班五十个学生。附近一所私立天主教学校还有名额。",
+     ".private": "念私立学校",
+     ".private.s": "六年里每年大约{a}。",
+     ".private.h": "有些学生以后能拿大学奖学金。",
+     ".public": "继续念公立学校",
+     ".public.s": "免费。",
+     ".public.h": "以后拿奖学金的机会比较小。",
+     "trk.ph_school": "私立学校学费"
+    },
+    "zht": {
+     ".t": "念私立學校？",
+     ".x": "孩子念的公立學校一班五十個學生。附近一所私立天主教學校還有名額。",
+     ".private": "念私立學校",
+     ".private.s": "六年裡每年大約{a}。",
+     ".private.h": "有些學生以後能拿大學獎學金。",
+     ".public": "繼續念公立學校",
+     ".public.s": "免費。",
+     ".public.h": "以後拿獎學金的機會比較小。",
+     "trk.ph_school": "私立學校學費"
+    }
+   }
+  },
+  {
+   "id": "ph_ninong",
+   "src": "Being a ninong or ninang (godparent) at baptisms and weddings is a common honour in the Philippines, and godchildren expect gifts at Christmas (custom). Amounts are an ESTIMATE.",
+   "age": [28, 55],
+   "weight": 0.4,
+   "def": "few",
+   "tarot": "charity",
+   "art": {"draw": "gift", "bg": "co"},
+   "opts": [
+    {"id": "all", "sub": {"a": "MN(.03 * base)"}, "rel": 3, "do": "T('ph_ninong', {kind: 'custom', label: M('trk.ph_ninong')}); rec('ph_ninong', .03 * base, 15); happy += 1"},
+    {"id": "few", "sub": {"a": "MN(.01 * base)"}, "rel": 1, "do": "T('ph_ninong', {kind: 'custom', label: M('trk.ph_ninong')}); rec('ph_ninong', .01 * base, 15)"},
+    {"id": "no", "rel": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Ninong and ninang",
+     ".x": "Three friends have asked you to be a godparent to their babies this year. Every Christmas, godchildren come by for their aguinaldo.",
+     ".all": "Say yes to all three",
+     ".all.s": "About {a} a year in gifts.",
+     ".few": "Say yes to your closest friend",
+     ".few.s": "About {a} a year in gifts.",
+     ".no": "Politely decline",
+     ".no.s": "No gifts to buy.",
+     "trk.ph_ninong": "Gifts for godchildren"
+    },
+    "zh": {
+     ".t": "当教父教母",
+     ".x": "今年有三个朋友请你当他们宝宝的教父母。每年圣诞节，教子女都会上门拿红包。",
+     ".all": "三个都答应",
+     ".all.s": "每年礼物大约{a}。",
+     ".few": "只答应最好的朋友",
+     ".few.s": "每年礼物大约{a}。",
+     ".no": "婉拒",
+     ".no.s": "不用买礼物。",
+     "trk.ph_ninong": "给教子女的礼物"
+    },
+    "zht": {
+     ".t": "當教父教母",
+     ".x": "今年有三個朋友請你當他們寶寶的教父母。每年聖誕節，教子女都會上門拿紅包。",
+     ".all": "三個都答應",
+     ".all.s": "每年禮物大約{a}。",
+     ".few": "只答應最好的朋友",
+     ".few.s": "每年禮物大約{a}。",
+     ".no": "婉拒",
+     ".no.s": "不用買禮物。",
+     "trk.ph_ninong": "給教子女的禮物"
+    }
+   }
+  },
+  {
+   "id": "ph_nclex",
+   "src": "Nurses abroad: the Philippines is the largest source of foreign-educated nurses in the United States (Migration Policy Institute), and nurses there earn several times Philippine pay. Taking the NCLEX, credential checks and visa costs, and the pay and cost multiples used here, are an ESTIMATE.",
+   "age": [24, 38],
+   "weight": 0.5,
+   "when": {"canWorkAbroad": true, "career": ["nurse"]},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "wa"},
+   "vars": {"a": "MN(3.2 * salary())"},
+   "use": "ctr",
+   "with": {"m": 3.2, "cm": 1.3, "yrs": 8, "fee": 0.8, "remit": 0.4},
+   "i18n": {
+    "en": {
+     ".t": "Nursing abroad",
+     ".x": "A recruiter for American hospitals offers to sponsor you if you pass the NCLEX. Pay there would be about {a} a year."
+    },
+    "zh": {
+     ".t": "出国当护理师",
+     ".x": "美国医院的招募人员说，只要你考过NCLEX，他们就替你担保。那边年薪大约{a}。"
+    },
+    "zht": {
+     ".t": "出國當護理師",
+     ".x": "美國醫院的招募人員說，只要你考過NCLEX，他們就替你擔保。那邊年薪大約{a}。"
+    }
+   }
+  },
+  {
+   "id": "ph_jeep",
+   "src": "Jeepney modernisation (PUV Modernization Program, DOTr DO 2017-011): operators had to consolidate into cooperatives or corporations by 30 April 2024 to keep their franchises; modern units cost about ₱2.4–2.8 million each, part-subsidised (DOTr and LTFRB, reported 2024). Your share of the cooperative’s loan and the odds of losing your route are an ESTIMATE.",
+   "age": [30, 60],
+   "weight": 0.5,
+   "when": {"working": true, "career": ["drv"]},
+   "def": "coop",
+   "tarot": "car",
+   "art": {"draw": "moto", "bg": "ya"},
+   "opts": [
+    {"id": "coop", "sub": {"a": "MN(.15 * base)"}, "hint": true, "do": "T('ph_coop', {kind: 'custom', label: M('trk.ph_coop')}); rec('ph_coop', .15 * base, 7); happy -= 1"},
+    {"id": "keep", "hint": true, "do": "if (roll('ph_jeep') < .6) { tmpPay('ph_jeepX', .6, 2, 'trk.ph_jeepX'); happy -= 2 }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Modern jeepneys",
+     ".x": "Your old jeepney must join a cooperative that buys new air-conditioned units, or lose its franchise.",
+     ".coop": "Join the cooperative",
+     ".coop.s": "Your share of the loan: about {a} a year for seven years.",
+     ".coop.h": "You keep your route; Happiness −1, it isn’t your own jeep any more.",
+     ".keep": "Keep driving your own jeep",
+     ".keep.s": "No loan, and you hope for an extension.",
+     ".keep.h": "Most unconsolidated jeeps lose their routes; your pay would fall for two years.",
+     "trk.ph_coop": "Jeepney cooperative loan",
+     "trk.ph_jeepX": "A route lost"
+    },
+    "zh": {
+     ".t": "吉普尼现代化",
+     ".x": "你的老吉普尼必须加入合作社，一起买有冷气的新车，否则就会失去营运执照。",
+     ".coop": "加入合作社",
+     ".coop.s": "你要分摊的贷款：七年里每年大约{a}。",
+     ".coop.h": "路线保住了；幸福感 −1，车不再是自己的了。",
+     ".keep": "继续开自己的车",
+     ".keep.s": "不用贷款，希望能延期。",
+     ".keep.h": "没加入的吉普尼大多会失去路线；你两年的收入会下降。",
+     "trk.ph_coop": "吉普尼合作社贷款",
+     "trk.ph_jeepX": "失去路线"
+    },
+    "zht": {
+     ".t": "吉普尼現代化",
+     ".x": "你的老吉普尼必須加入合作社，一起買有冷氣的新車，否則就會失去營運執照。",
+     ".coop": "加入合作社",
+     ".coop.s": "你要分攤的貸款：七年裡每年大約{a}。",
+     ".coop.h": "路線保住了；幸福感 −1，車不再是自己的了。",
+     ".keep": "繼續開自己的車",
+     ".keep.s": "不用貸款，希望能延期。",
+     ".keep.h": "沒加入的吉普尼大多會失去路線；你兩年的收入會下降。",
+     "trk.ph_coop": "吉普尼合作社貸款",
+     "trk.ph_jeepX": "失去路線"
+    }
+   }
   }
  ]
 }

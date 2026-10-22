@@ -531,6 +531,734 @@
      "trk.jp_quakeI": "地震保險"
     }
    }
+  },
+  {
+   "id": "jp_haken",
+   "src": "Non-regular work: 36.8% of employees were non-regular (part-time, contract or dispatched) in 2024 (Labour Force Survey, MIC), and their average monthly pay was about 67% of regular employees’ (¥233,100 against ¥348,600), rising little with age (Basic Survey on Wage Structure 2024, MHLW). The pay and layoff multiples used here are an ESTIMATE.",
+   "age": [22, 26],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "regular",
+   "tarot": "job",
+   "art": {"draw": "suit", "bg": "mi"},
+   "opts": [
+    {"id": "haken", "hint": true, "do": "tmpPay('jp_haken', 1.15, 4, 'trk.jp_haken'); layM = (layM || 1) * 1.5; later(age + 4, 'jp_hakenEnd', {})"},
+    {"id": "regular", "hint": true, "do": "layM = (layM || 1) * .7"}
+   ],
+   "later": {
+    "jp_hakenEnd": "bump('jp_hk', .85, M('trk.jp_hk')); log(M('log.jp_hk'), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "Regular or dispatched?",
+     ".x": "Two offers: a regular job (seishain) at a small firm, or better-paid dispatched work at a big company in Tokyo on a renewable contract.",
+     ".haken": "The dispatched job in Tokyo",
+     ".haken.s": "Higher hourly pay, contracts renewed every few months.",
+     ".haken.h": "Pay about 15% higher for four years, then it falls behind; contracts are easier to end.",
+     ".regular": "The regular job",
+     ".regular.s": "Lower starting pay, a yearly raise and a bonus.",
+     ".regular.h": "Regular staff are rarely let go.",
+     "trk.jp_haken": "Dispatched work",
+     "trk.jp_hk": "Years as a non-regular worker",
+     "log.jp_hk": "Your dispatch contracts keep being renewed, but the pay hasn’t moved while your friends in regular jobs got raises."
+    },
+    "zh": {
+     ".t": "正式员工还是派遣？",
+     ".x": "你有两个机会：一家小公司的正式员工，或是东京大公司的派遣工作，薪水较高，合约一期一期续。",
+     ".haken": "接东京的派遣工作",
+     ".haken.s": "时薪较高，合约每几个月续一次。",
+     ".haken.h": "头四年薪水大约高15%，之后就落后了；合约也比较容易被终止。",
+     ".regular": "接正式员工的工作",
+     ".regular.s": "起薪较低，每年调薪，还有奖金。",
+     ".regular.h": "正式员工很少被裁。",
+     "trk.jp_haken": "派遣工作",
+     "trk.jp_hk": "当非正式员工的岁月",
+     "log.jp_hk": "你的派遣合约一直续约，薪水却没涨，而当正式员工的朋友都加薪了。"
+    },
+    "zht": {
+     ".t": "正職還是派遣？",
+     ".x": "你有兩個機會：一家小公司的正職，或是東京大公司的派遣工作，薪水較高，合約一期一期續。",
+     ".haken": "接東京的派遣工作",
+     ".haken.s": "時薪較高，合約每幾個月續一次。",
+     ".haken.h": "頭四年薪水大約高15%，之後就落後了；合約也比較容易被終止。",
+     ".regular": "接正職的工作",
+     ".regular.s": "起薪較低，每年調薪，還有獎金。",
+     ".regular.h": "正職很少被裁。",
+     "trk.jp_haken": "派遣工作",
+     "trk.jp_hk": "當非正職的歲月",
+     "log.jp_hk": "你的派遣合約一直續約，薪水卻沒漲，而當正職的朋友都加薪了。"
+    }
+   }
+  },
+  {
+   "id": "jp_juku",
+   "src": "Juku for private junior high entrance exams cost about ¥2.1–2.6 million over the three years before the exam at the big chains (2023 reports, via Agaroot and Inter-Edu); about 52,300 children sat private and national junior high exams in the Tokyo area in 2025 (Shutoken Moshi Center). ¥800,000 a year ≈ 0.32 of the game’s typical wage. Bursary odds are an ESTIMATE.",
+   "age": [34, 50],
+   "weight": 0.45,
+   "when": {"kidAge": [9, 9]},
+   "def": "none",
+   "tarot": "tuition",
+   "art": "tuition",
+   "opts": [
+    {"id": "juku", "sub": {"a": "MN(.32 * base)"}, "hint": true, "do": "T('jp_juku', {kind: 'custom', label: M('trk.jp_juku')}); rec('jp_juku', .32 * base, 3); kidWin(.25, .7); bond('kid', -2); happy -= 1", "next": {"event": "jp_juku2", "in": 3, "p": 0.5}},
+    {"id": "local", "sub": {"a": "MN(.08 * base)"}, "hint": true, "do": "T('jp_juku', {kind: 'custom', label: M('trk.jp_juku2')}); rec('jp_juku', .08 * base, 3); kidWin(.1, .85)"},
+    {"id": "none", "do": "bond('kid', 2)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The entrance-exam juku",
+     ".x": "Half your child’s class is starting cram school for private junior high entrance exams. Classes run three evenings a week and all weekend.",
+     ".juku": "A big exam juku",
+     ".juku.s": "About {a} a year for three years.",
+     ".juku.h": "Long hours for your child and you. Many pass a private school’s exam; good schools can lead to scholarships.",
+     ".local": "A small local juku",
+     ".local.s": "About {a} a year.",
+     ".local.h": "A small chance of a scholarship later.",
+     ".none": "The local public school is fine",
+     ".none.s": "Weekends together.",
+     "trk.jp_juku": "Exam juku",
+     "trk.jp_juku2": "Local juku"
+    },
+    "zh": {
+     ".t": "中学入学考补习班",
+     ".x": "孩子班上一半同学都开始上补习班，准备考私立初中。每周三个晚上，加上整个周末。",
+     ".juku": "上大型升学补习班",
+     ".juku.s": "三年里每年大约{a}。",
+     ".juku.h": "孩子和你都很辛苦。很多人能考上私立学校；好学校以后可能拿到奖学金。",
+     ".local": "附近的小补习班",
+     ".local.s": "每年大约{a}。",
+     ".local.h": "以后有一点机会拿奖学金。",
+     ".none": "念附近的公立学校就好",
+     ".none.s": "周末一起过。",
+     "trk.jp_juku": "升学补习班",
+     "trk.jp_juku2": "附近的补习班"
+    },
+    "zht": {
+     ".t": "中學入學考補習班",
+     ".x": "孩子班上一半同學都開始上補習班，準備考私立國中。每週三個晚上，加上整個週末。",
+     ".juku": "上大型升學補習班",
+     ".juku.s": "三年裡每年大約{a}。",
+     ".juku.h": "孩子和你都很辛苦。很多人能考上私立學校；好學校以後可能拿到獎學金。",
+     ".local": "附近的小補習班",
+     ".local.s": "每年大約{a}。",
+     ".local.h": "以後有一點機會拿獎學金。",
+     ".none": "念附近的公立學校就好",
+     ".none.s": "週末一起過。",
+     "trk.jp_juku": "升學補習班",
+     "trk.jp_juku2": "附近的補習班"
+    }
+   }
+  },
+  {
+   "id": "jp_juku2",
+   "src": "Families spent about ¥1.56 million a year on a private junior high pupil against about ¥540,000 for a public one (MEXT Survey of Children’s Learning Expenses, FY2023). The difference (≈ ¥1 million ≈ 0.4 of the game’s typical wage) and its effects are an ESTIMATE.",
+   "chain": true,
+   "when": {"kidAge": [11, 13]},
+   "def": "public",
+   "tarot": "tuition",
+   "art": {"draw": "schoolbag", "bg": "ya"},
+   "opts": [
+    {"id": "private", "sub": {"a": "MN(.4 * base)"}, "hint": true, "do": "T('jp_shi', {kind: 'custom', label: M('trk.jp_shi')}); rec('jp_shi', .4 * base, 6); kidWin(.2, .75); happy += 1"},
+    {"id": "public", "do": "bond('kid', -1)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child passed",
+     ".x": "Your child passed the entrance exam for a private junior and senior high school.",
+     ".private": "Send them there",
+     ".private.s": "About {a} a year more than public school, for six years.",
+     ".private.h": "Happiness +1; a better shot at a scholarship later.",
+     ".public": "The public school after all",
+     ".public.s": "Three years of juku, and no private fees.",
+     "trk.jp_shi": "Private school fees"
+    },
+    "zh": {
+     ".t": "孩子考上了",
+     ".x": "孩子考上了一所私立的初高中一贯制学校。",
+     ".private": "让孩子去念",
+     ".private.s": "六年里每年比公立学校多大约{a}。",
+     ".private.h": "幸福感 +1；以后拿奖学金的机会大一些。",
+     ".public": "还是念公立学校",
+     ".public.s": "补了三年习，但不用付私立学费。",
+     "trk.jp_shi": "私立学校学费"
+    },
+    "zht": {
+     ".t": "孩子考上了",
+     ".x": "孩子考上了一所私立的國高中一貫制學校。",
+     ".private": "讓孩子去念",
+     ".private.s": "六年裡每年比公立學校多大約{a}。",
+     ".private.h": "幸福感 +1；以後拿獎學金的機會大一些。",
+     ".public": "還是念公立學校",
+     ".public.s": "補了三年習，但不用付私立學費。",
+     "trk.jp_shi": "私立學校學費"
+    }
+   }
+  },
+  {
+   "id": "jp_tenkin",
+   "src": "Transfers (tenkin) are common at large Japanese firms, and many married employees move alone (tanshin funin), keeping the family home where the children are at school. The transfer allowance, the second household’s cost and the career effects are an ESTIMATE.",
+   "age": [30, 50],
+   "weight": 0.45,
+   "when": {"working": true, "careerType": ["office"], "kids": true},
+   "def": "family",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "mi"},
+   "opts": [
+    {"id": "alone", "hint": true, "do": "tmpPay('jp_tenkin', 1.1, 3, 'trk.jp_tenkin'); T('jp_tanshin', {kind: 'custom', label: M('trk.jp_tanshin')}); rec('jp_tanshin', .1 * base, 3); bond('pt', -4); bond('kid', -3); rl(-3); happy -= 2"},
+    {"id": "family", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "spend('jp_move', .1 * base, 'trk.jp_move'); bump('jp_tenkin2', 1.03, M('trk.jp_tenkin2')); bond('kid', -1); happy -= 1"},
+    {"id": "refuse", "hint": true, "do": "bump('jp_tenkinNo', .95, M('trk.jp_tenkinNo')); happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A transfer to another city",
+     ".x": "Your company is transferring you to a branch in another city for at least three years. Your children are settled at school here.",
+     ".alone": "Go alone (tanshin funin)",
+     ".alone.s": "A small flat there; home at weekends when you can.",
+     ".alone.h": "A transfer allowance, but two households to run; the family drifts a little. Happiness −2.",
+     ".family": "Move the whole family",
+     ".family.s": "About {a} in moving costs not covered.",
+     ".family.h": "Your career keeps moving; the children have to start over.",
+     ".refuse": "Turn the transfer down",
+     ".refuse.s": "Your boss is not pleased.",
+     ".refuse.h": "Promotions come slower: pay about 5% lower for good. Happiness +1.",
+     "trk.jp_tenkin": "Transfer allowance",
+     "trk.jp_tanshin": "A second home for the transfer",
+     "trk.jp_move": "Moving the family",
+     "trk.jp_tenkin2": "A career that kept moving",
+     "trk.jp_tenkinNo": "A transfer turned down"
+    },
+    "zh": {
+     ".t": "调职到外地",
+     ".x": "公司要把你调到外地分公司，至少三年。孩子在这里的学校已经适应了。",
+     ".alone": "一个人去赴任",
+     ".alone.s": "在那边租个小房间；能回家就周末回。",
+     ".alone.h": "有调职津贴，但要负担两个家；跟家人有点疏远。幸福感 −2。",
+     ".family": "全家一起搬",
+     ".family.s": "搬家费有大约{a}公司不付。",
+     ".family.h": "事业继续往上走；孩子得重新适应。",
+     ".refuse": "拒绝调职",
+     ".refuse.s": "上司不太高兴。",
+     ".refuse.h": "升迁变慢：薪水永久低大约5%。幸福感 +1。",
+     "trk.jp_tenkin": "调职津贴",
+     "trk.jp_tanshin": "赴任地的第二个家",
+     "trk.jp_move": "全家搬家",
+     "trk.jp_tenkin2": "持续往上的事业",
+     "trk.jp_tenkinNo": "拒绝调职"
+    },
+    "zht": {
+     ".t": "調職到外地",
+     ".x": "公司要把你調到外地分公司，至少三年。孩子在這裡的學校已經適應了。",
+     ".alone": "一個人去赴任",
+     ".alone.s": "在那邊租個小房間；能回家就週末回。",
+     ".alone.h": "有調職津貼，但要負擔兩個家；跟家人有點疏遠。幸福感 −2。",
+     ".family": "全家一起搬",
+     ".family.s": "搬家費有大約{a}公司不付。",
+     ".family.h": "事業繼續往上走；孩子得重新適應。",
+     ".refuse": "拒絕調職",
+     ".refuse.s": "上司不太高興。",
+     ".refuse.h": "升遷變慢：薪水永久低大約5%。幸福感 +1。",
+     "trk.jp_tenkin": "調職津貼",
+     "trk.jp_tanshin": "赴任地的第二個家",
+     "trk.jp_move": "全家搬家",
+     "trk.jp_tenkin2": "持續往上的事業",
+     "trk.jp_tenkinNo": "拒絕調職"
+    }
+   }
+  },
+  {
+   "id": "jp_ikukyu",
+   "src": "Childcare leave: employment insurance pays 67% of pay for the first 180 days and 50% after, tax-free and without social insurance premiums; from April 2025 it tops up to 80% (about all of take-home pay) for up to 28 days when both parents take leave (MHLW). 40.5% of fathers and 86.6% of mothers took leave in FY2024 (Basic Survey of Equal Employment Management, MHLW). Career and family effects are an ESTIMATE.",
+   "age": [25, 45],
+   "weight": 0.55,
+   "when": {"working": true, "kidAge": [0, 0]},
+   "def": "short",
+   "tarot": "grandkid",
+   "art": {"draw": "baby", "bg": "wa"},
+   "opts": [
+    {"id": "long", "hint": true, "rel": 2, "do": "tmpPay('jp_ikukyu', .67, 1, 'trk.jp_ikukyu'); bond('kid', 6); bond('pt', 3); happy += 2"},
+    {"id": "short", "hint": true, "do": "bond('kid', 2); happy += 1"},
+    {"id": "none", "hint": true, "do": "bond('pt', -2); happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Childcare leave",
+     ".x": "Your baby has arrived. You can take childcare leave, paid by employment insurance, though few people in your team have taken much.",
+     ".long": "Take a year off",
+     ".long.s": "About two-thirds of your pay, tax-free.",
+     ".long.h": "Happiness +2; you grow much closer to your child and partner.",
+     ".short": "Take four weeks",
+     ".short.s": "Nearly full take-home pay.",
+     ".short.h": "Happiness +1.",
+     ".none": "Don’t take leave",
+     ".none.s": "The team is short-handed.",
+     ".none.h": "Happiness −1; your partner carries most of it.",
+     "trk.jp_ikukyu": "A year of childcare leave"
+    },
+    "zh": {
+     ".t": "育儿假",
+     ".x": "宝宝出生了。你可以请育儿假，由雇佣保险发津贴，不过你们部门很少有人请很久。",
+     ".long": "请一年",
+     ".long.s": "大约三分之二的薪水，免税。",
+     ".long.h": "幸福感 +2；跟孩子和伴侣都亲近很多。",
+     ".short": "请四个星期",
+     ".short.s": "几乎领全额实拿薪水。",
+     ".short.h": "幸福感 +1。",
+     ".none": "不请假",
+     ".none.s": "部门人手不足。",
+     ".none.h": "幸福感 −1；大部分都落在伴侣身上。",
+     "trk.jp_ikukyu": "一年的育儿假"
+    },
+    "zht": {
+     ".t": "育嬰假",
+     ".x": "寶寶出生了。你可以請育嬰假，由就業保險發津貼，不過你們部門很少有人請很久。",
+     ".long": "請一年",
+     ".long.s": "大約三分之二的薪水，免稅。",
+     ".long.h": "幸福感 +2；跟孩子和伴侶都親近很多。",
+     ".short": "請四個星期",
+     ".short.s": "幾乎領全額實領薪水。",
+     ".short.h": "幸福感 +1。",
+     ".none": "不請假",
+     ".none.s": "部門人手不足。",
+     ".none.h": "幸福感 −1；大部分都落在伴侶身上。",
+     "trk.jp_ikukyu": "一年的育嬰假"
+    }
+   }
+  },
+  {
+   "id": "jp_rate",
+   "src": "Mortgage rates: most Japanese borrowers chose variable rates of about 0.5–1% at online banks, against about 2% fixed for 35 years (Flat 35) in 2025; the Bank of Japan raised its policy rate in steps from −0.1% (March 2024) to about 1% (June 2026), and banks raised variable rates again in October 2026 (Business Insider Japan; 77 Bank, Oct 2026). Variable payments are usually reset every five years. The real rates used (0.3% variable, 1.2% fixed) and the later rise are an ESTIMATE.",
+   "age": [28, 45],
+   "weight": 0.4,
+   "when": {"working": true, "house": false, "test": "!(hWait > age)"},
+   "def": "rent",
+   "tarot": "rates",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "opts": [
+    {"id": "var", "sub": {"a": "MN(.13 * P)"}, "ok": "liq >= .13 * P || M('e.home.need', { n: MN(.13 * P), h: MN(liq) })", "hint": true, "do": "buyAt(P, { dp: .1, fee: .03, r: .003, n: 35, lk: 'trk.jp_var' })", "next": {"event": "jp_rate2", "in": [3, 7], "p": 0.6}},
+    {"id": "fix", "sub": {"a": "MN(.13 * P)"}, "ok": "liq >= .13 * P || M('e.home.need', { n: MN(.13 * P), h: MN(liq) })", "hint": true, "do": "buyAt(P, { dp: .1, fee: .03, r: .012, n: 35, lk: 'trk.jp_fix', fixed: true })"},
+    {"id": "rent"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Variable or fixed?",
+     ".x": "You’ve found a flat you like. An online bank offers a variable-rate mortgage at under 1%; a 35-year fixed loan costs about 2%.",
+     ".var": "Buy it with a variable-rate loan",
+     ".var.s": "About {a} down with costs; the lowest payments today.",
+     ".var.h": "Rates have started to rise; payments can go up.",
+     ".fix": "Buy it with a 35-year fixed loan",
+     ".fix.s": "About {a} down with costs; higher payments that never change.",
+     ".fix.h": "You pay more now for certainty.",
+     ".rent": "Keep renting",
+     ".rent.s": "Wait and see.",
+     "trk.jp_var": "A flat on a variable-rate loan",
+     "trk.jp_fix": "A flat on a fixed-rate loan"
+    },
+    "zh": {
+     ".t": "浮动利率还是固定利率？",
+     ".x": "你看中了一间公寓。网络银行的浮动利率房贷不到1%；35年固定利率大约2%。",
+     ".var": "用浮动利率贷款买",
+     ".var.s": "头期款加费用大约{a}；现在月付最低。",
+     ".var.h": "利率已经开始上升；月付可能会变高。",
+     ".fix": "用35年固定利率贷款买",
+     ".fix.s": "头期款加费用大约{a}；月付较高，但永远不变。",
+     ".fix.h": "现在多付一点，换来安心。",
+     ".rent": "继续租房",
+     ".rent.s": "再看看。",
+     "trk.jp_var": "浮动利率买的公寓",
+     "trk.jp_fix": "固定利率买的公寓"
+    },
+    "zht": {
+     ".t": "浮動利率還是固定利率？",
+     ".x": "你看中了一間公寓。網路銀行的浮動利率房貸不到1%；35年固定利率大約2%。",
+     ".var": "用浮動利率貸款買",
+     ".var.s": "頭期款加費用大約{a}；現在月付最低。",
+     ".var.h": "利率已經開始上升；月付可能會變高。",
+     ".fix": "用35年固定利率貸款買",
+     ".fix.s": "頭期款加費用大約{a}；月付較高，但永遠不變。",
+     ".fix.h": "現在多付一點，換來安心。",
+     ".rent": "繼續租房",
+     ".rent.s": "再看看。",
+     "trk.jp_var": "浮動利率買的公寓",
+     "trk.jp_fix": "固定利率買的公寓"
+    }
+   }
+  },
+  {
+   "id": "jp_rate2",
+   "src": "As the Bank of Japan raised rates, banks raised variable mortgage rates by about 0.25% each time (2024–2026); payments rise at the five-yearly reset, capped at 125% of the old payment (the “125% rule”, which defers rather than forgives interest). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"house": true, "test": "!house.fixed && house.mort > 0"},
+   "def": "keep",
+   "tarot": "rates",
+   "art": {"draw": "bill", "bg": "ya"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "house.pay = house.pay * 1.15; happy -= 1"},
+    {"id": "fix", "sub": {"a": "MN(.01 * house.mort)"}, "hint": true, "do": "pay(.01 * house.mort); house.pay = house.pay * 1.25; house.fixed = true"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your rate is going up",
+     ".x": "The bank writes: your variable rate is rising, and your payments will be reset next year.",
+     ".keep": "Stay on the variable rate",
+     ".keep.s": "Payments go up now, and may go up again.",
+     ".keep.h": "About 15% more a year. Happiness −1.",
+     ".fix": "Refinance to a fixed rate",
+     ".fix.s": "About {a} in fees; higher payments that won’t change.",
+     ".fix.h": "About 25% more a year, fixed for good."
+    },
+    "zh": {
+     ".t": "你的利率要涨了",
+     ".x": "银行来信：你的浮动利率要调高，明年起月付会重新计算。",
+     ".keep": "维持浮动利率",
+     ".keep.s": "月付现在就涨，以后可能再涨。",
+     ".keep.h": "每年多大约15%。幸福感 −1。",
+     ".fix": "转成固定利率",
+     ".fix.s": "手续费大约{a}；月付较高，但不会再变。",
+     ".fix.h": "每年多大约25%，从此固定。"
+    },
+    "zht": {
+     ".t": "你的利率要漲了",
+     ".x": "銀行來信：你的浮動利率要調高，明年起月付會重新計算。",
+     ".keep": "維持浮動利率",
+     ".keep.s": "月付現在就漲，以後可能再漲。",
+     ".keep.h": "每年多大約15%。幸福感 −1。",
+     ".fix": "轉成固定利率",
+     ".fix.s": "手續費大約{a}；月付較高，但不會再變。",
+     ".fix.h": "每年多大約25%，從此固定。"
+    }
+   }
+  },
+  {
+   "id": "jp_oneroom",
+   "src": "Investment studio flats sold by cold call to young workers, often on 35-year loans with a “rent guarantee” (sublease) whose rent can be cut, are a frequent consumer complaint: complaints from people in their 20s rose from 160 in FY2013 to 405 in FY2018 (National Consumer Affairs Center, Mar 2019), and the Tokyo Consumer Center warns that guaranteed rents are often lowered mid-contract (2020). Cash flows and the flat’s value are an ESTIMATE.",
+   "age": [25, 38],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"salary": "> 1.5 * base"}},
+   "def": "no",
+   "tarot": "mlm",
+   "art": {"draw": "city", "bg": "co"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "T('jp_1rC', {kind: 'custom', label: M('trk.jp_1rC')}); rec('jp_1rC', .06 * base, 35); later(age + 35, 'jp_1rEnd', {})", "next": {"event": "jp_oneroom2", "in": [3, 6], "p": 0.6}},
+    {"id": "no"}
+   ],
+   "later": {
+    "jp_1rEnd": "mkLot('jp_1r', {rate: -.01}, 'trk.jp_1r'); addLot('jp_1r', 2 * base); log(M('log.jp_1r'), '')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "An investment flat",
+     ".x": "A salesman calls you at work: a new studio flat in Tokyo, on a 35-year loan with no money down. The rent is guaranteed, he says, and it is “a pension you build with the bank’s money”.",
+     ".buy": "Sign up",
+     ".buy.s": "The rent covers most of the loan; you add about {a} a year.",
+     ".buy.h": "These flats are sold above their value, and guaranteed rents are often cut later.",
+     ".no": "Hang up",
+     ".no.s": "He calls twice more.",
+     "trk.jp_1rC": "Topping up the flat’s loan",
+     "trk.jp_1r": "A paid-off studio flat",
+     "log.jp_1r": "The loan on your investment flat is finally paid off. The flat is old now."
+    },
+    "zh": {
+     ".t": "投资套房",
+     ".x": "有个业务打到公司找你：东京的新建套房，35年贷款，零头期款。他说租金有保证，是“用银行的钱帮自己存退休金”。",
+     ".buy": "签约",
+     ".buy.s": "租金能付大部分贷款；你每年再补大约{a}。",
+     ".buy.h": "这种套房卖价高于实际价值，保证租金以后常常会被调降。",
+     ".no": "挂电话",
+     ".no.s": "他又打来两次。",
+     "trk.jp_1rC": "补贴套房贷款",
+     "trk.jp_1r": "还清贷款的套房",
+     "log.jp_1r": "投资套房的贷款终于还完了。房子也旧了。"
+    },
+    "zht": {
+     ".t": "投資套房",
+     ".x": "有個業務打到公司找你：東京的新建套房，35年貸款，零頭期款。他說租金有保證，是「用銀行的錢幫自己存退休金」。",
+     ".buy": "簽約",
+     ".buy.s": "租金能付大部分貸款；你每年再補大約{a}。",
+     ".buy.h": "這種套房賣價高於實際價值，保證租金以後常常會被調降。",
+     ".no": "掛電話",
+     ".no.s": "他又打來兩次。",
+     "trk.jp_1rC": "補貼套房貸款",
+     "trk.jp_1r": "還清貸款的套房",
+     "log.jp_1r": "投資套房的貸款終於還完了。房子也舊了。"
+    }
+   }
+  },
+  {
+   "id": "jp_oneroom2",
+   "src": "Sublease companies may lower guaranteed rents during the contract (Consumer Affairs Agency; MLIT, 2018–2020). Selling early often means paying off a loan larger than the flat’s price. Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!trk.jp_1rC"},
+   "def": "keep",
+   "tarot": "mlm",
+   "art": {"draw": "bill", "bg": "co"},
+   "opts": [
+    {"id": "keep", "hint": true, "do": "T('jp_1rC', {kind: 'custom', label: M('trk.jp_1rC')}); rec('jp_1rC', .06 * base, 30); happy -= 1"},
+    {"id": "sell", "sub": {"a": "MN(1 * base)"}, "hint": true, "do": "stopRec('jp_1rC'); pay(base); const tq = T('jp_1rC', {kind: 'custom', label: M('trk.jp_1rC')}); tq.v -= base; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The guaranteed rent is cut",
+     ".x": "The sublease company says the “guaranteed” rent will be cut by 15%. You now pay twice as much each year to keep the loan going.",
+     ".keep": "Keep the flat",
+     ".keep.s": "Pay the difference.",
+     ".keep.h": "About twice the yearly top-up; the flat is yours when the loan ends.",
+     ".sell": "Sell it",
+     ".sell.s": "The flat sells for less than the loan: about {a} to make up.",
+     ".sell.h": "Happiness −2; it’s over."
+    },
+    "zh": {
+     ".t": "保证租金被调降",
+     ".x": "包租公司说“保证”租金要降15%。你每年要补的钱变成两倍。",
+     ".keep": "继续持有",
+     ".keep.s": "补差额。",
+     ".keep.h": "每年补贴大约变两倍；贷款还完房子就是你的。",
+     ".sell": "卖掉",
+     ".sell.s": "卖价比贷款低：大约要补{a}。",
+     ".sell.h": "幸福感 −2；总算结束了。"
+    },
+    "zht": {
+     ".t": "保證租金被調降",
+     ".x": "包租公司說「保證」租金要降15%。你每年要補的錢變成兩倍。",
+     ".keep": "繼續持有",
+     ".keep.s": "補差額。",
+     ".keep.h": "每年補貼大約變兩倍；貸款還完房子就是你的。",
+     ".sell": "賣掉",
+     ".sell.s": "賣價比貸款低：大約要補{a}。",
+     ".sell.h": "幸福感 −2；總算結束了。"
+    }
+   }
+  },
+  {
+   "id": "jp_konkatsu",
+   "src": "Marriage agencies (kekkon sōdanjo) charge about ¥300,000–500,000 in the first year in joining and monthly fees, and dating apps a few thousand yen a month (agency and app price lists, 2025: ESTIMATE). How much each raises the chance of meeting someone is a game rule.",
+   "age": [28, 40],
+   "weight": 0.4,
+   "when": {"partner": ["single"]},
+   "def": "none",
+   "tarot": "date",
+   "art": {"draw": "gift", "bg": "wa"},
+   "opts": [
+    {"id": "agency", "sub": {"a": "MN(.16 * base)"}, "hint": true, "do": "spend('jp_kon', .16 * base, 'trk.jp_kon'); look = age; happy -= 1"},
+    {"id": "app", "sub": {"a": "MN(.015 * base)"}, "hint": true, "do": "spend('jp_kon', .015 * base, 'trk.jp_kon'); if (roll('jp_konkatsu') < .5) look = age"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Marriage hunting",
+     ".x": "Your friends are getting married one after another, and your mother keeps sending you brochures from marriage agencies.",
+     ".agency": "Join a marriage agency",
+     ".agency.s": "About {a} for the first year.",
+     ".agency.h": "A much better chance of meeting someone this year. Happiness −1 from all the meetings.",
+     ".app": "Try a dating app",
+     ".app.s": "About {a} a year.",
+     ".app.h": "Some chance of meeting someone.",
+     ".none": "Let it happen naturally",
+     ".none.s": "No fees.",
+     "trk.jp_kon": "Marriage hunting"
+    },
+    "zh": {
+     ".t": "婚活",
+     ".x": "朋友一个接一个结婚，妈妈一直寄婚友社的简介给你。",
+     ".agency": "加入婚友社",
+     ".agency.s": "第一年大约{a}。",
+     ".agency.h": "今年遇到对象的机会大很多。见面太多，幸福感 −1。",
+     ".app": "试试交友App",
+     ".app.s": "每年大约{a}。",
+     ".app.h": "有一些机会遇到对象。",
+     ".none": "顺其自然",
+     ".none.s": "不用花钱。",
+     "trk.jp_kon": "婚活费用"
+    },
+    "zht": {
+     ".t": "婚活",
+     ".x": "朋友一個接一個結婚，媽媽一直寄婚友社的簡介給你。",
+     ".agency": "加入婚友社",
+     ".agency.s": "第一年大約{a}。",
+     ".agency.h": "今年遇到對象的機會大很多。見面太多，幸福感 −1。",
+     ".app": "試試交友App",
+     ".app.s": "每年大約{a}。",
+     ".app.h": "有一些機會遇到對象。",
+     ".none": "順其自然",
+     ".none.s": "不用花錢。",
+     "trk.jp_kon": "婚活費用"
+    }
+   }
+  },
+  {
+   "id": "jp_taishoku",
+   "src": "Retirement allowances: university graduates retiring after long service received about ¥19 million on average (MHLW General Survey on Working Conditions, 2023); banks court new retirees with “retirement allowance plans” that pair a high-rate deposit for a few months with investment trusts carrying high fees, and the FSA has urged customer-first sales. The allowance (taken as 2.5 years’ pay, at most 8 typical wages) and the 2% a year fees are an ESTIMATE.",
+   "age": [59, 60],
+   "weight": 0.6,
+   "when": {"working": true, "careerType": ["office"]},
+   "def": "keep",
+   "tarot": "annuity",
+   "art": {"draw": "cashout", "bg": "ya"},
+   "let": {"a": "Math.min(8 * base, 2.5 * Math.max(base, salary()))"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "bank", "sub": {"a": "MN(.5 * a)"}, "hint": true, "do": "cash += a; const tq = T('jp_taishoku', {kind: 'custom', label: M('trk.jp_taishoku')}); tq.v += a; putIn('jp_bank', .5 * a, {fee: .02}, 'trk.jp_bank'); happy += 1"},
+    {"id": "index", "sub": {"a": "MN(.5 * a)"}, "hint": true, "do": "cash += a; const tq = T('jp_taishoku', {kind: 'custom', label: M('trk.jp_taishoku')}); tq.v += a; putIn('jp_idx', .5 * a, {}, 'trk.jp_idx')"},
+    {"id": "keep", "do": "cash += a; const tq = T('jp_taishoku', {kind: 'custom', label: M('trk.jp_taishoku')}); tq.v += a"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your retirement allowance",
+     ".x": "Your company pays your retirement allowance: {a}. The next day your bank calls about its special plan for retirees.",
+     ".bank": "The bank’s retirement plan",
+     ".bank.s": "Half, {a}, into a special deposit and the bank’s funds.",
+     ".bank.h": "Happiness +1; the funds charge about 2% a year.",
+     ".index": "Half into a low-cost index fund",
+     ".index.s": "{a}, through your NISA and an ordinary account.",
+     ".index.h": "Grows with the market, with low fees.",
+     ".keep": "Keep it in your savings account",
+     ".keep.s": "Safe and easy to reach.",
+     "trk.jp_taishoku": "Retirement allowance",
+     "trk.jp_bank": "The bank’s retirement plan",
+     "trk.jp_idx": "Index fund"
+    },
+    "zh": {
+     ".t": "退休金一次领",
+     ".x": "公司发给你一笔退职金：{a}。第二天银行就打电话来推销退休族专案。",
+     ".bank": "参加银行的退休专案",
+     ".bank.s": "一半，{a}，放进特别定存和银行的基金。",
+     ".bank.h": "幸福感 +1；基金每年收费大约2%。",
+     ".index": "一半买低成本指数基金",
+     ".index.s": "{a}，放NISA和一般账户。",
+     ".index.h": "跟着市场成长，费用低。",
+     ".keep": "放在储蓄账户",
+     ".keep.s": "安全，随时拿得到。",
+     "trk.jp_taishoku": "退职金",
+     "trk.jp_bank": "银行退休专案",
+     "trk.jp_idx": "指数基金"
+    },
+    "zht": {
+     ".t": "退職金一次領",
+     ".x": "公司發給你一筆退職金：{a}。第二天銀行就打電話來推銷退休族專案。",
+     ".bank": "參加銀行的退休專案",
+     ".bank.s": "一半，{a}，放進特別定存和銀行的基金。",
+     ".bank.h": "幸福感 +1；基金每年收費大約2%。",
+     ".index": "一半買低成本指數基金",
+     ".index.s": "{a}，放NISA和一般帳戶。",
+     ".index.h": "跟著市場成長，費用低。",
+     ".keep": "放在儲蓄帳戶",
+     ".keep.s": "安全，隨時拿得到。",
+     "trk.jp_taishoku": "退職金",
+     "trk.jp_bank": "銀行退休專案",
+     "trk.jp_idx": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "jp_hoken",
+   "src": "Public health insurance pays 70% of bills, and the high-cost medical expense benefit caps what a middle earner pays at about ¥80,100 a month plus 1% of costs above ¥267,000 (MHLW), so private medical insurance pays out less than many expect. Premiums (¥8,000 a month ≈ 0.04 a year; cancer cover ¥2,500 ≈ 0.012) and the share of bills saved are an ESTIMATE.",
+   "age": [27, 45],
+   "weight": 0.45,
+   "when": {"working": true},
+   "def": "public",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "co"},
+   "opts": [
+    {"id": "full", "sub": {"a": "MN(.04 * base)"}, "hint": true, "do": "T('jp_hoken', {kind: 'ghost', label: M('trk.jp_hoken')}); rec('jp_hoken', .04 * base, 30); medCut = (medCut || 1) * .9; happy += 1"},
+    {"id": "cancer", "sub": {"a": "MN(.012 * base)"}, "hint": true, "do": "T('jp_hoken', {kind: 'ghost', label: M('trk.jp_hokenC')}); rec('jp_hoken', .012 * base, 30); medCut = (medCut || 1) * .95"},
+    {"id": "public", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Medical insurance at work",
+     ".x": "An insurance saleswoman visits your office at lunch with a medical policy and a cancer policy. “Everyone your age has one,” she says.",
+     ".full": "Medical and cancer cover",
+     ".full.s": "About {a} a year.",
+     ".full.h": "Happiness +1 for peace of mind; it pays only a little more than the public cap already saves.",
+     ".cancer": "Cancer cover only",
+     ".cancer.s": "About {a} a year.",
+     ".cancer.h": "Pays a lump sum if you are diagnosed.",
+     ".public": "Rely on public insurance",
+     ".public.s": "No extra premium.",
+     ".public.h": "The monthly cap already limits big bills.",
+     "trk.jp_hoken": "Medical insurance premiums",
+     "trk.jp_hokenC": "Cancer insurance premiums"
+    },
+    "zh": {
+     ".t": "公司来的保险业务",
+     ".x": "午休时，保险业务员来公司推销医疗险和癌症险。她说：“你这个年纪的人都有一份。”",
+     ".full": "医疗险加癌症险",
+     ".full.s": "每年大约{a}。",
+     ".full.h": "安心一点，幸福感 +1；但它比公家医疗的上限多赔不了多少。",
+     ".cancer": "只保癌症险",
+     ".cancer.s": "每年大约{a}。",
+     ".cancer.h": "确诊时一次给付一笔钱。",
+     ".public": "靠公家健保就好",
+     ".public.s": "不用额外保费。",
+     ".public.h": "每月的自付上限已经挡住大笔账单。",
+     "trk.jp_hoken": "医疗险保费",
+     "trk.jp_hokenC": "癌症险保费"
+    },
+    "zht": {
+     ".t": "公司來的保險業務",
+     ".x": "午休時，保險業務員來公司推銷醫療險和癌症險。她說：「你這個年紀的人都有一份。」",
+     ".full": "醫療險加癌症險",
+     ".full.s": "每年大約{a}。",
+     ".full.h": "安心一點，幸福感 +1；但它比公家醫療的上限多賠不了多少。",
+     ".cancer": "只保癌症險",
+     ".cancer.s": "每年大約{a}。",
+     ".cancer.h": "確診時一次給付一筆錢。",
+     ".public": "靠公家健保就好",
+     ".public.s": "不用額外保費。",
+     ".public.h": "每月的自付上限已經擋住大筆帳單。",
+     "trk.jp_hoken": "醫療險保費",
+     "trk.jp_hokenC": "癌症險保費"
+    }
+   }
+  },
+  {
+   "id": "jp_hakajimai",
+   "src": "Moving or closing a family grave (kaisō, “hakajimai”) has doubled in ten years, from about 84,000 cases in FY2014 to about 176,000 in FY2024 (MHLW Report on Public Health Administration, cited in a Cabinet Office review); costs run from ¥300,000 to ¥3 million (consumer guides: ESTIMATE). Keeping a distant grave means temple fees and trips home. ¥1 million ≈ 0.4 of the game’s typical wage.",
+   "age": [50, 70],
+   "weight": 0.4,
+   "who": {"role": "parent", "dead": true},
+   "def": "keep",
+   "tarot": "funeral",
+   "art": {"draw": "lantern", "bg": "mi"},
+   "opts": [
+    {"id": "close", "sub": {"a": "MN(.4 * base)"}, "hint": true, "do": "spend('jp_haka', .4 * base, 'trk.jp_haka'); happy += 1"},
+    {"id": "keep", "sub": {"a": "MN(.03 * base)"}, "rel": 1, "do": "T('jp_haka2', {kind: 'custom', label: M('trk.jp_haka2')}); rec('jp_haka2', .03 * base, 20)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The family grave",
+     ".x": "Your family grave is at a temple in your parents’ hometown, a long train ride away. Nobody lives there any more, and the temple asks who will look after it.",
+     ".close": "Move the remains near you",
+     ".close.s": "About {a} for the temple, the stonemason and a new place.",
+     ".close.h": "Happiness +1: easier to visit.",
+     ".keep": "Keep the grave where it is",
+     ".keep.s": "Temple fees and a trip every Obon: about {a} a year.",
+     "trk.jp_haka": "Moving the family grave",
+     "trk.jp_haka2": "Looking after the family grave"
+    },
+    "zh": {
+     ".t": "祖坟",
+     ".x": "家族的坟在爸妈老家的寺庙里，坐火车要很久。那里已经没有家人住了，寺庙问以后谁来照顾。",
+     ".close": "把遗骨迁到附近",
+     ".close.s": "寺庙、石匠和新墓地大约{a}。",
+     ".close.h": "幸福感 +1：方便去祭拜。",
+     ".keep": "坟墓留在原地",
+     ".keep.s": "寺庙费用加上每年盂兰盆节回去一趟：每年大约{a}。",
+     "trk.jp_haka": "迁坟",
+     "trk.jp_haka2": "照顾祖坟"
+    },
+    "zht": {
+     ".t": "祖墳",
+     ".x": "家族的墓在爸媽老家的寺廟裡，坐火車要很久。那裡已經沒有家人住了，寺廟問以後誰來照顧。",
+     ".close": "把遺骨遷到附近",
+     ".close.s": "寺廟、石匠和新墓地大約{a}。",
+     ".close.h": "幸福感 +1：方便去祭拜。",
+     ".keep": "墓留在原地",
+     ".keep.s": "寺廟費用加上每年盂蘭盆節回去一趟：每年大約{a}。",
+     "trk.jp_haka": "遷墓",
+     "trk.jp_haka2": "照顧祖墳"
+    }
+   }
   }
  ]
 }

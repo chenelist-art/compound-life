@@ -350,6 +350,777 @@
      "trk.ori": "零售國債"
     }
    }
+  },
+  {
+   "id": "id_jht",
+   "src": "JHT (Jaminan Hari Tua): 5.7% of wages a month, 3.7% from the employer and 2% from the worker (PP 46/2015); after leaving a job the whole balance can be taken in cash after a one-month wait (Permenaker 4/2022, from 26 Apr 2022, via CNN Indonesia and Tempo). The JHT fund earned 6.87% in 2024 (BPJS Ketenagakerjaan financial report, via Bisnis, Jul 2025), roughly 4% after inflation. The balance (taken as 7% of a year’s pay per year worked, with returns) and the smaller old-age income are an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.45,
+   "when": {"working": true, "test": "(carN || 0) >= 2"},
+   "def": "keep",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "ya"},
+   "let": {"n": "Math.min(15, exp || 0)", "a": "n * .07 * Math.max(0, salary())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "keep", "hint": true},
+    {"id": "take", "sub": {"a": "MN(a)", "n": "n"}, "ok": "n >= 1 || M('.no')", "hint": true, "do": "cash += a; penM = (penM || 1) * (1 - .03 * n); penTk = 'id_jht'; T('id_jht', {kind: 'custom', label: M('trk.id_jht'), v: a, note: M('note.got', {a: MN(a)})})"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your JHT savings",
+     ".x": "You’re changing jobs. Your BPJS Ketenagakerjaan old-age savings (JHT) hold about {a}, and since 2022 you can take it all in cash a month after leaving.",
+     ".keep": "Leave it in",
+     ".keep.s": "It keeps growing until you are 56.",
+     ".keep.h": "The fund has paid about 4% a year above inflation.",
+     ".take": "Take it all in cash",
+     ".take.s": "About {a} for {n} years of work.",
+     ".take.h": "You will have less to live on in old age.",
+     ".no": "You haven’t paid in long enough.",
+     "trk.id_jht": "JHT taken out"
+    },
+    "zh": {
+     ".t": "你的JHT养老储蓄",
+     ".x": "你要换工作了。你在BPJS就业社保的养老储蓄（JHT）里大约有{a}，从2022年起，离职一个月后就能全部领现金。",
+     ".keep": "留着不动",
+     ".keep.s": "一直存到56岁，继续增值。",
+     ".keep.h": "这笔基金扣除通胀后每年大约4%。",
+     ".take": "全部领出来",
+     ".take.s": "工作{n}年，大约{a}。",
+     ".take.h": "老了以后可用的钱会少一些。",
+     ".no": "你缴的时间还不够。",
+     "trk.id_jht": "领出的JHT"
+    },
+    "zht": {
+     ".t": "你的JHT養老儲蓄",
+     ".x": "你要換工作了。你在BPJS就業社保的養老儲蓄（JHT）裡大約有{a}，從2022年起，離職一個月後就能全部領現金。",
+     ".keep": "留著不動",
+     ".keep.s": "一直存到56歲，繼續增值。",
+     ".keep.h": "這筆基金扣除通膨後每年大約4%。",
+     ".take": "全部領出來",
+     ".take.s": "工作{n}年，大約{a}。",
+     ".take.h": "老了以後可用的錢會少一些。",
+     ".no": "你繳的時間還不夠。",
+     "trk.id_jht": "領出的JHT"
+    }
+   }
+  },
+  {
+   "id": "id_kur",
+   "src": "KUR (Kredit Usaha Rakyat): government-subsidised small business loans at 6% a year (effective), micro loans up to Rp100 million, with collateral rules that vary by bank (Kemenko Perekonomian; BRI and Mandiri, 2025, via Bisnis and Kontan). Rp50 million ≈ 1.56 of the game’s typical wage; five years of repayments at 6% ≈ Rp11.9 million a year (0.37). A stall run by the family, its profit (about Rp13 million a year) and its odds are an ESTIMATE.",
+   "age": [27, 50],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "ya"},
+   "opts": [
+    {"id": "kur", "sub": {"a": "MN(1.56 * base)", "b": "MN(.37 * base)"}, "hint": true, "do": "T('id_kur', {kind: 'custom', label: M('trk.id_kur')}); rec('id_kur', .37 * base, 5); T('id_warung', {kind: 'custom', label: M('trk.id_warung')}); rec('id_warung', -.4 * base, 12, -.3); happy += 1", "next": {"event": "id_kur2", "in": [1, 3], "p": 0.4}},
+    {"id": "small", "sub": {"a": "MN(.3 * base)"}, "ok": "liquid() >= .3 * base || M('kid.cash', {a: MN(Math.max(0, liquid()))})", "hint": true, "do": "pay(.3 * base); const tq = T('id_warung', {kind: 'custom', label: M('trk.id_warung')}); tq.v -= .3 * base; rec('id_warung', -.15 * base, 12, -.2)", "next": {"event": "id_kur2", "in": [1, 3], "p": 0.3}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A KUR loan",
+     ".x": "Your family wants to open a warung in front of the house, with you as the backer. The bank offers a KUR loan at 6% a year.",
+     ".kur": "Borrow Rp50 million and open a proper warung",
+     ".kur.s": "A {a} loan, repaid at about {b} a year for five years.",
+     ".kur.h": "A good stall earns more than the repayments; some don’t last. Health a little lower each year from the extra work.",
+     ".small": "Start small with your savings",
+     ".small.s": "About {a} for a cart and stock.",
+     ".small.h": "Smaller profits, smaller risk.",
+     ".no": "Not now",
+     ".no.s": "Your money stays where it is.",
+     "trk.id_kur": "KUR loan repayments",
+     "trk.id_warung": "The family warung"
+    },
+    "zh": {
+     ".t": "人民商业贷款（KUR）",
+     ".x": "家人想在家门口开一间小吃店（warung），由你出资。银行可以提供年利率6%的KUR贷款。",
+     ".kur": "借五千万印尼盾，好好开一间",
+     ".kur.s": "贷款{a}，五年里每年还大约{b}。",
+     ".kur.h": "生意好的话赚的比月供多；但有些撑不下去。多出来的活儿让健康每年少一点。",
+     ".small": "用存款小规模起步",
+     ".small.s": "推车和货大约{a}。",
+     ".small.h": "赚得少，风险也小。",
+     ".no": "先不要",
+     ".no.s": "钱先留着。",
+     "trk.id_kur": "KUR贷款还款",
+     "trk.id_warung": "家里的小吃店"
+    },
+    "zht": {
+     ".t": "人民商業貸款（KUR）",
+     ".x": "家人想在家門口開一間小吃店（warung），由你出資。銀行可以提供年利率6%的KUR貸款。",
+     ".kur": "借五千萬印尼盾，好好開一間",
+     ".kur.s": "貸款{a}，五年裡每年還大約{b}。",
+     ".kur.h": "生意好的話賺的比月付多；但有些撐不下去。多出來的活兒讓健康每年少一點。",
+     ".small": "用存款小規模起步",
+     ".small.s": "推車和貨大約{a}。",
+     ".small.h": "賺得少，風險也小。",
+     ".no": "先不要",
+     ".no.s": "錢先留著。",
+     "trk.id_kur": "KUR貸款還款",
+     "trk.id_warung": "家裡的小吃店"
+    }
+   }
+  },
+  {
+   "id": "id_kur2",
+   "src": "ESTIMATE: game rule (many small food stalls struggle when a competitor opens nearby).",
+   "chain": true,
+   "when": {"test": "!!trk.id_warung"},
+   "def": "close",
+   "tarot": "biz",
+   "art": {"draw": "stall", "bg": "co"},
+   "opts": [
+    {"id": "close", "do": "stopRec('id_warung'); happy -= 2"},
+    {"id": "push", "hint": true, "do": "if (roll('id_kur2') < .4) happy += 1; else { stopRec('id_warung'); pay(.1 * base); happy -= 3 }"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Sales have dried up",
+     ".x": "A minimarket opened on the corner and the warung is barely covering its costs.",
+     ".close": "Close the warung",
+     ".close.s": "Any loan still has to be repaid.",
+     ".push": "Keep going with a new menu",
+     ".push.s": "More hours, a few more weeks of stock.",
+     ".push.h": "Fewer than half of struggling stalls recover."
+    },
+    "zh": {
+     ".t": "生意冷清了",
+     ".x": "街角开了一家便利商店，小吃店几乎不赚钱了。",
+     ".close": "把店关了",
+     ".close.s": "如果有贷款，还是得继续还。",
+     ".push": "换个菜单继续撑",
+     ".push.s": "多花时间，多进几周的货。",
+     ".push.h": "撑不下去的店，能翻身的不到一半。"
+    },
+    "zht": {
+     ".t": "生意冷清了",
+     ".x": "街角開了一家便利商店，小吃店幾乎不賺錢了。",
+     ".close": "把店收了",
+     ".close.s": "如果有貸款，還是得繼續還。",
+     ".push": "換個菜單繼續撐",
+     ".push.s": "多花時間，多進幾週的貨。",
+     ".push.h": "撐不下去的店，能翻身的不到一半。"
+    }
+   }
+  },
+  {
+   "id": "id_pinjol",
+   "src": "Online loans (pinjol): OJK caps the interest on licensed consumer loans of under a year at 0.1% a day from 1 Jan 2026 (0.3% in 2024, 0.2% in 2025), with late fees capped at 100% of the loan (SEOJK 19/2023, via Bisnis and Investor Trust); unlicensed lenders charge far more and often harass borrowers and their contacts (OJK; Satgas PASTI). Rp3.2 million ≈ 0.1 of the game’s typical wage. Costs are an ESTIMATE.",
+   "age": [20, 45],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "< .05 * base"}},
+   "def": "family",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"a": ".1 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "legal", "hint": true, "do": "debt += 1.1 * a"},
+    {"id": "family", "rel": -1, "do": "bond('parent', -2)"},
+    {"id": "illegal", "hint": true, "do": "debt += 1.6 * a; happy -= 1", "next": {"event": "id_pinjol2", "in": 1, "p": 0.6}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Short before payday",
+     ".x": "Your motorbike needs repairs and the rent is due. You need {a} before payday, and there is nothing in your account.",
+     ".legal": "A licensed lending app",
+     ".legal.s": "Registered with OJK; interest capped by law.",
+     ".legal.h": "Still expensive: about 36% a year.",
+     ".family": "Ask your family",
+     ".family.s": "Awkward, but they help.",
+     ".illegal": "The app from the text message",
+     ".illegal.s": "Money in ten minutes, no questions.",
+     ".illegal.h": "Unlicensed apps charge far more and read your contacts."
+    },
+    "zh": {
+     ".t": "发薪前缺钱",
+     ".x": "摩托车要修，房租也到期了。发薪前你需要{a}，可是户头里一毛钱都没有。",
+     ".legal": "用合法的借贷App",
+     ".legal.s": "在OJK登记；利息有法定上限。",
+     ".legal.h": "还是很贵：年利率大约36%。",
+     ".family": "向家人开口",
+     ".family.s": "有点尴尬，但他们帮了你。",
+     ".illegal": "短信里的借贷App",
+     ".illegal.s": "十分钟到账，什么都不问。",
+     ".illegal.h": "无牌App收费高得多，还会读取你的通讯录。"
+    },
+    "zht": {
+     ".t": "發薪前缺錢",
+     ".x": "機車要修，房租也到期了。發薪前你需要{a}，可是帳戶裡一毛錢都沒有。",
+     ".legal": "用合法的借貸App",
+     ".legal.s": "在OJK登記；利息有法定上限。",
+     ".legal.h": "還是很貴：年利率大約36%。",
+     ".family": "向家人開口",
+     ".family.s": "有點尷尬，但他們幫了你。",
+     ".illegal": "簡訊裡的借貸App",
+     ".illegal.s": "十分鐘到帳，什麼都不問。",
+     ".illegal.h": "無牌App收費高得多，還會讀取你的通訊錄。"
+    }
+   }
+  },
+  {
+   "id": "id_pinjol2",
+   "src": "Illegal online lenders are known for messaging borrowers’ contacts and employers; OJK and the police advise reporting them (OJK, Satgas PASTI). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "report",
+   "tarot": "debt",
+   "art": {"draw": "bill", "bg": "mi"},
+   "opts": [
+    {"id": "report", "hint": true, "do": "happy -= 2; rl(-2)"},
+    {"id": "pay", "sub": {"a": "MN(.1 * base)"}, "hint": true, "do": "pay(.1 * base); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Messages to everyone you know",
+     ".x": "The app says you owe double. Your friends and your boss are getting messages calling you a thief.",
+     ".report": "Report it to OJK and the police",
+     ".report.s": "Explain to your friends what happened.",
+     ".report.h": "Happiness −2 and some embarrassment; the messages stop.",
+     ".pay": "Pay to make it stop",
+     ".pay.s": "About {a} more.",
+     ".pay.h": "Happiness −2. Paying often brings new demands."
+    },
+    "zh": {
+     ".t": "通讯录里的人都收到讯息",
+     ".x": "App说你欠的钱翻了一倍。你的朋友和老板都收到讯息，说你是小偷。",
+     ".report": "向OJK和警方检举",
+     ".report.s": "跟朋友解释发生了什么。",
+     ".report.h": "幸福感 −2，有点丢脸；讯息停了。",
+     ".pay": "付钱了事",
+     ".pay.s": "再付大约{a}。",
+     ".pay.h": "幸福感 −2。付了常常会被要更多。"
+    },
+    "zht": {
+     ".t": "通訊錄裡的人都收到訊息",
+     ".x": "App說你欠的錢翻了一倍。你的朋友和老闆都收到訊息，說你是小偷。",
+     ".report": "向OJK和警方檢舉",
+     ".report.s": "跟朋友解釋發生了什麼。",
+     ".report.h": "幸福感 −2，有點丟臉；訊息停了。",
+     ".pay": "付錢了事",
+     ".pay.s": "再付大約{a}。",
+     ".pay.h": "幸福感 −2。付了常常會被要更多。"
+    }
+   }
+  },
+  {
+   "id": "id_judol",
+   "src": "Online gambling (judi online, judol) is illegal in Indonesia; PPATK estimated about 8.8 million players by Q3 2024 (3.4 million in 2023), most betting under Rp100,000 at a time, with Rp43 trillion deposited and Rp283 trillion of turnover (PPATK, via Bisnis and Kontan, Nov–Dec 2024). Rp1 million ≈ 0.03 of the game’s typical wage. Odds and amounts are an ESTIMATE.",
+   "age": [18, 35],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "no",
+   "tarot": "life",
+   "art": {"draw": "wallet", "bg": "co"},
+   "opts": [
+    {"id": "try", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "pay(.03 * base); if (roll('id_judol') < .3) cash += .05 * base", "next": {"event": "id_judol2", "in": [1, 2], "p": 0.5}},
+    {"id": "no", "rel": 1}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A “lucky” slot game",
+     ".x": "A friend shows you a slot game on his phone that he says is “gacor” right now: he turned Rp100,000 into Rp2 million last night.",
+     ".try": "Try it with Rp1 million",
+     ".try.s": "About {a}.",
+     ".try.h": "These games are built so players lose over time.",
+     ".no": "Not for you",
+     ".no.s": "You change the subject."
+    },
+    "zh": {
+     ".t": "“会中奖”的老虎机",
+     ".x": "朋友给你看他手机上的老虎机游戏，说现在“很会出”：他昨晚把十万印尼盾变成了两百万。",
+     ".try": "拿一百万试试",
+     ".try.s": "大约{a}。",
+     ".try.h": "这种游戏的设计就是玩家迟早会输。",
+     ".no": "不玩",
+     ".no.s": "你换了个话题。"
+    },
+    "zht": {
+     ".t": "「會中獎」的老虎機",
+     ".x": "朋友給你看他手機上的老虎機遊戲，說現在「很會出」：他昨晚把十萬印尼盾變成了兩百萬。",
+     ".try": "拿一百萬試試",
+     ".try.s": "大約{a}。",
+     ".try.h": "這種遊戲的設計就是玩家遲早會輸。",
+     ".no": "不玩",
+     ".no.s": "你換了個話題。"
+    }
+   }
+  },
+  {
+   "id": "id_judol2",
+   "src": "ESTIMATE: game rule (people who chase gambling losses usually lose more).",
+   "chain": true,
+   "when": {"stats": {"liquid": "> .05 * base"}},
+   "def": "stop",
+   "tarot": "life",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "let": {"a": "Math.min(.4 * base, .5 * liquid())"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "more", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); happy -= 3; if (roll('id_judol2') < .1) cash += 1.5 * a"},
+    {"id": "stop", "rel": 1, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Win it back?",
+     ".x": "You’ve lost more than you meant to. The app sends you a bonus code: “Your luck is about to turn.”",
+     ".more": "Top up and win it back",
+     ".more.s": "{a} from your savings.",
+     ".more.h": "Happiness −3. Chasing losses almost always ends in bigger losses.",
+     ".stop": "Delete the app and tell someone",
+     ".stop.s": "A hard conversation."
+    },
+    "zh": {
+     ".t": "想把钱赢回来？",
+     ".x": "你输的比原本打算的多。App传来一个奖励码：“你要转运了。”",
+     ".more": "加值，把钱赢回来",
+     ".more.s": "从存款拿{a}。",
+     ".more.h": "幸福感 −3。追输的钱几乎都会输得更多。",
+     ".stop": "删掉App，跟人说",
+     ".stop.s": "一次不好开口的谈话。"
+    },
+    "zht": {
+     ".t": "想把錢贏回來？",
+     ".x": "你輸的比原本打算的多。App傳來一個獎勵碼：「你要轉運了。」",
+     ".more": "加值，把錢贏回來",
+     ".more.s": "從存款拿{a}。",
+     ".more.h": "幸福感 −3。追輸的錢幾乎都會輸得更多。",
+     ".stop": "刪掉App，跟人說",
+     ".stop.s": "一次不好開口的談話。"
+    }
+   }
+  },
+  {
+   "id": "id_haji",
+   "src": "Regular Hajj: registering takes a Rp25 million deposit per person, unchanged since 2010; those registering in 2025 wait from about 17 years (Gorontalo) to 34 years (Aceh), with a national quota of about 221,000 (Kemenag, via Kontan, 2025); pilgrims paid on average Rp55.4 million in 2025, about 62% of the full cost (Kemenag, via NU Online). Umrah packages cost about Rp30–40 million a person (travel agents, 2025: ESTIMATE). Rp50 million ≈ 1.56, two umrah trips (Rp70 million) ≈ 2.2 of the game’s typical wage.",
+   "age": [28, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "who": {"role": "parent"},
+   "def": "later",
+   "tarot": "parents",
+   "art": {"draw": "passport", "bg": "ya"},
+   "opts": [
+    {"id": "reg", "sub": {"a": "MN(1.56 * base)"}, "hint": true, "bond": 3, "do": "spend('id_haji', 1.56 * base, 'trk.id_haji')", "next": {"event": "id_haji2", "in": [12, 18], "p": 1}},
+    {"id": "umrah", "sub": {"a": "MN(2.2 * base)"}, "rel": 2, "bond": 6, "do": "spend('id_umrah', 2.2 * base, 'trk.id_umrah'); happy += 2"},
+    {"id": "later"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your parents’ pilgrimage",
+     ".x": "Your parents have long dreamed of the Hajj. The waiting list in your province is about twenty years.",
+     ".reg": "Pay their Hajj deposits",
+     ".reg.s": "Rp25 million each, {a} for both, to join the queue.",
+     ".reg.h": "The wait can be longer than parents have.",
+     ".umrah": "Send them on umrah now",
+     ".umrah.s": "About {a} for the two of them.",
+     ".later": "Not yet",
+     ".later.s": "Maybe when you have more saved.",
+     "trk.id_haji": "Hajj deposits",
+     "trk.id_umrah": "Umrah for your parents"
+    },
+    "zh": {
+     ".t": "父母的朝圣梦",
+     ".x": "爸妈一直梦想去麦加朝觐。你们省的排队名单大约要等二十年。",
+     ".reg": "帮他们缴朝觐订金",
+     ".reg.s": "每人两千五百万印尼盾，两人共{a}，开始排队。",
+     ".reg.h": "等待的时间可能比父母剩下的岁月还长。",
+     ".umrah": "现在就送他们去小朝",
+     ".umrah.s": "两个人大约{a}。",
+     ".later": "还不是时候",
+     ".later.s": "等存够了再说。",
+     "trk.id_haji": "朝觐订金",
+     "trk.id_umrah": "送父母小朝"
+    },
+    "zht": {
+     ".t": "父母的朝聖夢",
+     ".x": "爸媽一直夢想去麥加朝覲。你們省的排隊名單大約要等二十年。",
+     ".reg": "幫他們繳朝覲訂金",
+     ".reg.s": "每人兩千五百萬印尼盾，兩人共{a}，開始排隊。",
+     ".reg.h": "等待的時間可能比父母剩下的歲月還長。",
+     ".umrah": "現在就送他們去小朝",
+     ".umrah.s": "兩個人大約{a}。",
+     ".later": "還不是時候",
+     ".later.s": "等存夠了再說。",
+     "trk.id_haji": "朝覲訂金",
+     "trk.id_umrah": "送父母小朝"
+    }
+   }
+  },
+  {
+   "id": "id_haji2",
+   "src": "When a registered pilgrim’s turn comes, the balance of the cost is due; if the pilgrim has died, the seat can pass to a child or the deposit can be refunded (Kemenag rules on pelimpahan porsi). Balance (Rp60 million for two) ≈ 1.9 of the game’s typical wage; amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "refund",
+   "tarot": "parents",
+   "art": {"draw": "passport", "bg": "mi"},
+   "opts": [
+    {"id": "go", "show": "!!person('mother') || !!person('father')", "sub": {"a": "MN(1.9 * base)"}, "rel": 2, "do": "pay(1.9 * base); bond('parent', 6); happy += 3"},
+    {"id": "self", "show": "!person('mother') && !person('father')", "sub": {"a": "MN(.95 * base)"}, "do": "pay(.95 * base); happy += 4"},
+    {"id": "refund", "sub": {"a": "MN(1.56 * base)"}, "do": "cash += 1.56 * base"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The Hajj seat is ready",
+     ".x": "A letter from the Ministry of Religious Affairs: the seats you paid for years ago are ready this season.",
+     ".go": "Pay the balance and send them",
+     ".go.s": "About {a} more.",
+     ".self": "Take your parent’s seat yourself",
+     ".self.s": "About {a}, in their memory.",
+     ".refund": "Take the deposits back",
+     ".refund.s": "{a} back."
+    },
+    "zh": {
+     ".t": "朝觐名额轮到了",
+     ".x": "宗教部来信：你多年前缴订金的名额，今年轮到了。",
+     ".go": "付尾款，送他们去",
+     ".go.s": "再付大约{a}。",
+     ".self": "自己接下父母的名额",
+     ".self.s": "大约{a}，为了纪念他们。",
+     ".refund": "把订金领回来",
+     ".refund.s": "领回{a}。"
+    },
+    "zht": {
+     ".t": "朝覲名額輪到了",
+     ".x": "宗教部來信：你多年前繳訂金的名額，今年輪到了。",
+     ".go": "付尾款，送他們去",
+     ".go.s": "再付大約{a}。",
+     ".self": "自己接下父母的名額",
+     ".self.s": "大約{a}，為了紀念他們。",
+     ".refund": "把訂金領回來",
+     ".refund.s": "領回{a}。"
+    }
+   }
+  },
+  {
+   "id": "id_cpns",
+   "src": "CPNS 2024: 250,407 civil-service posts (114,706 central, 135,701 regional) and over 2 million registrants by 2 Sep 2024 (MenPAN-RB; BKN, via Kompas TV and Bisnis), roughly one place for every eight. Civil servants rarely lose their jobs and get a pension. The chance of passing (12%), the pay and pension effects and the course fee (Rp1.6 million ≈ 0.05) are an ESTIMATE.",
+   "age": [22, 30],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "stay",
+   "tarot": "cert",
+   "art": {"draw": "exam", "bg": "mi"},
+   "opts": [
+    {"id": "try", "sub": {"a": "MN(.05 * base)"}, "hint": true, "do": "spend('id_cpnsP', .05 * base, 'trk.id_cpnsP'); happy -= 1; later(age + 1, 'id_cpns', {})"},
+    {"id": "stay"}
+   ],
+   "later": {
+    "id_cpns": "if (roll('id_cpns') < .12) { bump('id_cpns', .9, M('trk.id_cpns')); layM = (layM || 1) * .1; penM = (penM || 1) * 1.3; happy += 4; log(M('log.id_cpnsOk'), 'good') } else log(M('log.id_cpnsNo'), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "The civil-service exam",
+     ".x": "Your parents want you to sit the CPNS civil-service exam. A government job means security for life, they say.",
+     ".try": "Take a prep course and sit the exam",
+     ".try.s": "About {a} for the course, and your evenings.",
+     ".try.h": "Only about one in eight applicants gets a post. Those who do earn a little less, but almost never lose their job, and get a better pension.",
+     ".stay": "Stay in the private sector",
+     ".stay.s": "Keep building your career.",
+     "trk.id_cpns": "A civil-service post",
+     "trk.id_cpnsP": "CPNS prep course",
+     "log.id_cpnsOk": "You passed the CPNS exam and start as a civil servant.",
+     "log.id_cpnsNo": "You didn’t pass the CPNS exam this year."
+    },
+    "zh": {
+     ".t": "公务员考试",
+     ".x": "爸妈希望你去考CPNS公务员。他们说，铁饭碗一辈子都安稳。",
+     ".try": "上补习班，去考",
+     ".try.s": "补习费大约{a}，晚上都要读书。",
+     ".try.h": "大约八个人只有一个考上。考上的人薪水稍低，但几乎不会失业，退休金也比较好。",
+     ".stay": "留在私人企业",
+     ".stay.s": "继续发展你的事业。",
+     "trk.id_cpns": "公务员职位",
+     "trk.id_cpnsP": "公务员考试补习",
+     "log.id_cpnsOk": "你考上CPNS，开始当公务员了。",
+     "log.id_cpnsNo": "你今年没考上CPNS。"
+    },
+    "zht": {
+     ".t": "公務員考試",
+     ".x": "爸媽希望你去考CPNS公務員。他們說，鐵飯碗一輩子都安穩。",
+     ".try": "上補習班，去考",
+     ".try.s": "補習費大約{a}，晚上都要讀書。",
+     ".try.h": "大約八個人只有一個考上。考上的人薪水稍低，但幾乎不會失業，退休金也比較好。",
+     ".stay": "留在私人企業",
+     ".stay.s": "繼續發展你的事業。",
+     "trk.id_cpns": "公務員職位",
+     "trk.id_cpnsP": "公務員考試補習",
+     "log.id_cpnsOk": "你考上CPNS，開始當公務員了。",
+     "log.id_cpnsNo": "你今年沒考上CPNS。"
+    }
+   }
+  },
+  {
+   "id": "id_kos",
+   "src": "Millions of workers commute into Jakarta every day from Bogor, Depok, Tangerang and Bekasi by KRL train, bus and motorbike (BPS Jabodetabek Commuter Survey, 2019). Rent for a kos room near the office versus a house further out, and the health and happiness effects of long commutes, are an ESTIMATE.",
+   "age": [22, 35],
+   "weight": 0.4,
+   "when": {"working": true, "house": false, "abroad": false},
+   "def": "stay",
+   "tarot": "move",
+   "art": {"draw": "city", "bg": "ya"},
+   "opts": [
+    {"id": "kos", "sub": {"a": "MN(.12 * base)"}, "hint": true, "do": "T('id_kos', {kind: 'custom', label: M('trk.id_kos')}); rec('id_kos', .12 * base, 5, .3); happy += 2"},
+    {"id": "far", "sub": {"a": "MN(.06 * base)"}, "hint": true, "do": "T('id_kos', {kind: 'custom', label: M('trk.id_far')}); rec('id_kos', -.06 * base, 5, -.5); happy -= 2"},
+    {"id": "stay"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Near the office, or far away?",
+     ".x": "Your commute takes an hour each way. You could rent a kos room near the office, or move further out where rent is cheaper.",
+     ".kos": "A kos near the office",
+     ".kos.s": "About {a} a year more in rent.",
+     ".kos.h": "Happiness +2 and a little more Health: two hours a day back.",
+     ".far": "A house in Bekasi",
+     ".far.s": "About {a} a year less in rent, and a long train ride.",
+     ".far.h": "Happiness −2, Health a little lower each year.",
+     ".stay": "Stay where you are",
+     ".stay.s": "An hour each way.",
+     "trk.id_kos": "A room near work",
+     "trk.id_far": "Rent saved by living further out"
+    },
+    "zh": {
+     ".t": "住公司附近，还是住远一点？",
+     ".x": "你通勤单程要一小时。可以在公司附近租个套房（kos），也可以搬到更远、房租更便宜的地方。",
+     ".kos": "租公司附近的套房",
+     ".kos.s": "房租每年多大约{a}。",
+     ".kos.h": "幸福感 +2，健康稍微好一点：每天多出两小时。",
+     ".far": "搬去勿加泗的房子",
+     ".far.s": "房租每年少大约{a}，但要坐很久的火车。",
+     ".far.h": "幸福感 −2，健康每年少一点。",
+     ".stay": "维持现状",
+     ".stay.s": "单程一小时。",
+     "trk.id_kos": "公司附近的套房",
+     "trk.id_far": "住远一点省下的房租"
+    },
+    "zht": {
+     ".t": "住公司附近，還是住遠一點？",
+     ".x": "你通勤單程要一小時。可以在公司附近租個套房（kos），也可以搬到更遠、房租更便宜的地方。",
+     ".kos": "租公司附近的套房",
+     ".kos.s": "房租每年多大約{a}。",
+     ".kos.h": "幸福感 +2，健康稍微好一點：每天多出兩小時。",
+     ".far": "搬去勿加泗的房子",
+     ".far.s": "房租每年少大約{a}，但要坐很久的火車。",
+     ".far.h": "幸福感 −2，健康每年少一點。",
+     ".stay": "維持現狀",
+     ".stay.s": "單程一小時。",
+     "trk.id_kos": "公司附近的套房",
+     "trk.id_far": "住遠一點省下的房租"
+    }
+   }
+  },
+  {
+   "id": "id_motor",
+   "src": "Indonesians bought about 6.3 million motorbikes in 2024, mostly on credit from finance companies (AISI). A Rp20 million motorbike ≈ 0.62 of the game’s typical wage; a small down payment (Rp1 million) and three years of instalments come to about Rp30 million in all (finance company tables, 2025: ESTIMATE).",
+   "age": [18, 30],
+   "weight": 0.45,
+   "when": {"working": true, "car": false},
+   "def": "wait",
+   "tarot": "bnpl",
+   "art": {"draw": "moto", "bg": "ya"},
+   "opts": [
+    {"id": "credit", "sub": {"a": "MN(.03 * base)", "b": "MN(.3 * base)"}, "hint": true, "do": "pay(.03 * base); T('id_motor', {kind: 'custom', label: M('trk.id_motor')}); rec('id_motor', .3 * base, 3); happy += 2"},
+    {"id": "cash", "sub": {"a": "MN(.62 * base)"}, "ok": "liquid() >= .62 * base || M('kid.cash', {a: MN(Math.max(0, liquid()))})", "hint": true, "do": "spend('id_motor', .62 * base, 'trk.id_motor2'); happy += 2"},
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A motorbike of your own",
+     ".x": "Everyone at work rides to the office. A dealer offers a new motorbike with a Rp1 million down payment.",
+     ".credit": "Buy it on credit",
+     ".credit.s": "{a} down, then about {b} a year for three years.",
+     ".credit.h": "Happiness +2; you pay about half as much again as the cash price.",
+     ".cash": "Pay cash",
+     ".cash.s": "About {a}.",
+     ".cash.h": "Happiness +2, no interest.",
+     ".wait": "Keep taking the angkot",
+     ".wait.s": "Slower, but no payments.",
+     "trk.id_motor": "Motorbike instalments",
+     "trk.id_motor2": "A motorbike"
+    },
+    "zh": {
+     ".t": "买一辆自己的摩托车",
+     ".x": "同事都骑车上班。车行说新摩托车只要一百万印尼盾头期款就能骑走。",
+     ".credit": "分期买",
+     ".credit.s": "头期款{a}，然后三年里每年大约{b}。",
+     ".credit.h": "幸福感 +2；总共多付大约一半的车价。",
+     ".cash": "付现金",
+     ".cash.s": "大约{a}。",
+     ".cash.h": "幸福感 +2，没有利息。",
+     ".wait": "继续搭小巴",
+     ".wait.s": "慢一点，但不用付分期。",
+     "trk.id_motor": "摩托车分期",
+     "trk.id_motor2": "摩托车"
+    },
+    "zht": {
+     ".t": "買一台自己的機車",
+     ".x": "同事都騎車上班。車行說新機車只要一百萬印尼盾頭期款就能騎走。",
+     ".credit": "分期買",
+     ".credit.s": "頭期款{a}，然後三年裡每年大約{b}。",
+     ".credit.h": "幸福感 +2；總共多付大約一半的車價。",
+     ".cash": "付現金",
+     ".cash.s": "大約{a}。",
+     ".cash.h": "幸福感 +2，沒有利息。",
+     ".wait": "繼續搭小巴",
+     ".wait.s": "慢一點，但不用付分期。",
+     "trk.id_motor": "機車分期",
+     "trk.id_motor2": "機車"
+    }
+   }
+  },
+  {
+   "id": "id_bpu",
+   "src": "BPJS Ketenagakerjaan for workers without an employer (BPU): work-accident (JKK) and death (JKM) cover from Rp16,800 a month (PP 44/2015), about Rp200,000 a year ≈ 0.006 of the game’s typical wage; JKK pays treatment for work accidents and cash for lost days. The share of bills it saves is an ESTIMATE.",
+   "age": [22, 50],
+   "weight": 0.4,
+   "when": {"working": true, "selfEmployed": true},
+   "def": "no",
+   "tarot": "insure",
+   "art": {"draw": "health", "bg": "mi"},
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(.006 * base)"}, "hint": true, "do": "T('id_bpu', {kind: 'ghost', label: M('trk.id_bpu')}); rec('id_bpu', .006 * base, 30); medCut = (medCut || 1) * .9"},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Accident cover for yourself",
+     ".x": "Working for yourself, nobody covers you if you get hurt on the job. BPJS Ketenagakerjaan offers accident and death cover from Rp16,800 a month.",
+     ".join": "Sign up",
+     ".join.s": "About {a} a year.",
+     ".join.h": "Covers treatment and lost days after a work accident.",
+     ".no": "Skip it",
+     ".no.s": "You’re careful.",
+     ".no.h": "Accident bills would be yours alone.",
+     "trk.id_bpu": "BPJS accident cover"
+    },
+    "zh": {
+     ".t": "自雇者的意外保障",
+     ".x": "自己做的话，工作受伤没人保障。BPJS就业社保有意外和身故保障，每月一万六千八百印尼盾起。",
+     ".join": "加入",
+     ".join.s": "每年大约{a}。",
+     ".join.h": "工作意外的医疗费和休息期间的收入都有保障。",
+     ".no": "不加入",
+     ".no.s": "你很小心。",
+     ".no.h": "意外的账单要自己付。",
+     "trk.id_bpu": "BPJS意外保障"
+    },
+    "zht": {
+     ".t": "自僱者的意外保障",
+     ".x": "自己做的話，工作受傷沒人保障。BPJS就業社保有意外和身故保障，每月一萬六千八百印尼盾起。",
+     ".join": "加入",
+     ".join.s": "每年大約{a}。",
+     ".join.h": "工作意外的醫療費和休息期間的收入都有保障。",
+     ".no": "不加入",
+     ".no.s": "你很小心。",
+     ".no.h": "意外的帳單要自己付。",
+     "trk.id_bpu": "BPJS意外保障"
+    }
+   }
+  },
+  {
+   "id": "id_ptsl",
+   "src": "Land certificates: since 2017 the PTSL programme registers land and issues certificates free of the main fees, village by village (ATR/BPN); land without a certificate is more often disputed, and brokers (calo) charge to speed things up. The fee and dispute odds are an ESTIMATE.",
+   "age": [35, 60],
+   "weight": 0.4,
+   "who": {"role": "parent"},
+   "def": "ptsl",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "opts": [
+    {"id": "ptsl", "hint": true, "do": "happy -= 1"},
+    {"id": "calo", "sub": {"a": "MN(.1 * base)"}, "do": "spend('id_calo', .1 * base, 'trk.id_calo')"},
+    {"id": "leave", "hint": true, "next": {"event": "id_ptsl2", "in": [3, 8], "p": 0.3}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The family land",
+     ".x": "Your parents’ land in the village has never had a certificate, only an old letter from the village head. This year the PTSL programme is registering land in their village for free.",
+     ".ptsl": "Register it through PTSL",
+     ".ptsl.s": "Free, with several trips home and long queues.",
+     ".ptsl.h": "Happiness −1 from the hassle; the land is safe.",
+     ".calo": "Pay a broker to handle it",
+     ".calo.s": "About {a}.",
+     ".leave": "Leave it for now",
+     ".leave.s": "Everyone in the village knows it’s theirs.",
+     ".leave.h": "Land without a certificate is more often disputed.",
+     "trk.id_calo": "A broker for the land certificate"
+    },
+    "zh": {
+     ".t": "家里的地",
+     ".x": "爸妈在村里的地一直没有地契，只有村长写的一封旧信。今年PTSL计划在他们村免费登记土地。",
+     ".ptsl": "通过PTSL登记",
+     ".ptsl.s": "免费，但要回去好几趟，排很久的队。",
+     ".ptsl.h": "麻烦一点，幸福感 −1；土地有了保障。",
+     ".calo": "花钱请中介办",
+     ".calo.s": "大约{a}。",
+     ".leave": "先不管",
+     ".leave.s": "村里人都知道那是他们的地。",
+     ".leave.h": "没有地契的土地比较容易起纠纷。",
+     "trk.id_calo": "办地契的中介费"
+    },
+    "zht": {
+     ".t": "家裡的地",
+     ".x": "爸媽在村裡的地一直沒有地契，只有村長寫的一封舊信。今年PTSL計畫在他們村免費登記土地。",
+     ".ptsl": "透過PTSL登記",
+     ".ptsl.s": "免費，但要回去好幾趟，排很久的隊。",
+     ".ptsl.h": "麻煩一點，幸福感 −1；土地有了保障。",
+     ".calo": "花錢請代辦處理",
+     ".calo.s": "大約{a}。",
+     ".leave": "先不管",
+     ".leave.s": "村裡人都知道那是他們的地。",
+     ".leave.h": "沒有地契的土地比較容易起糾紛。",
+     "trk.id_calo": "辦地契的代辦費"
+    }
+   }
+  },
+  {
+   "id": "id_ptsl2",
+   "src": "Land disputes over uncertified plots are common and slow to resolve in court (ATR/BPN; Mahkamah Agung case statistics). Amounts are an ESTIMATE; famSpent lowers what your parents leave you.",
+   "chain": true,
+   "def": "give",
+   "tarot": "inh",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "opts": [
+    {"id": "court", "sub": {"a": "MN(.3 * base)"}, "hint": true, "do": "spend('id_tanah', .3 * base, 'trk.id_tanah'); happy -= 3; if (roll('id_ptsl2') >= .6) famSpent = (famSpent || 0) + 1.5"},
+    {"id": "give", "hint": true, "do": "famSpent = (famSpent || 0) + .8; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A neighbour claims the land",
+     ".x": "A neighbour’s son has a certificate for part of your parents’ land, issued when nobody was looking.",
+     ".court": "Take it to court",
+     ".court.s": "About {a} in legal fees.",
+     ".court.h": "Happiness −3. More than half win, but losing costs the whole plot.",
+     ".give": "Let that part go",
+     ".give.s": "Keep the peace in the village.",
+     ".give.h": "Happiness −2; your parents will have less to leave you.",
+     "trk.id_tanah": "Legal fees for a land dispute"
+    },
+    "zh": {
+     ".t": "邻居说地是他的",
+     ".x": "邻居的儿子拿出一张地契，上面有你爸妈的一部分地，是趁没人注意时办的。",
+     ".court": "打官司",
+     ".court.s": "律师费大约{a}。",
+     ".court.h": "幸福感 −3。一半以上会赢，但输了整块地都没了。",
+     ".give": "那一块就算了",
+     ".give.s": "维持村里的和气。",
+     ".give.h": "幸福感 −2；爸妈能留给你的会变少。",
+     "trk.id_tanah": "土地纠纷律师费"
+    },
+    "zht": {
+     ".t": "鄰居說地是他的",
+     ".x": "鄰居的兒子拿出一張地契，上面有你爸媽的一部分地，是趁沒人注意時辦的。",
+     ".court": "打官司",
+     ".court.s": "律師費大約{a}。",
+     ".court.h": "幸福感 −3。一半以上會贏，但輸了整塊地都沒了。",
+     ".give": "那一塊就算了",
+     ".give.s": "維持村裡的和氣。",
+     ".give.h": "幸福感 −2；爸媽能留給你的會變少。",
+     "trk.id_tanah": "土地糾紛律師費"
+    }
+   }
   }
  ]
 }

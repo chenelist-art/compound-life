@@ -345,6 +345,773 @@
      ".none.h": "以後拿獎學金的機會較小。"
     }
    }
+  },
+  {
+   "id": "vn_bond",
+   "src": "Corporate bonds sold at bank counters: in the Van Thinh Phat case, 25 bond issues with no real backing were sold through SCB staff to 35,824 investors, who were owed about 30,000 billion dong (≈ US$1.2 billion) when payments stopped in October 2022 (Ministry of Public Security investigation and 2024 court rulings, via VOH and VietnamFinance); by late 2024 about 8,000 billion had been repaid. Decree 65/2022 then limited private bonds to professional investors. Odds and recovery are an ESTIMATE.",
+   "age": [30, 60],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> .5 * base"}},
+   "def": "dep",
+   "tarot": "scam",
+   "art": {"draw": "shares", "bg": "mi"},
+   "let": {"a": "Math.min(2 * base, .6 * liquid())"},
+   "opts": [
+    {"id": "bond", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('vn_bond', a, {rate: .06}, 'trk.vn_bond')", "next": {"event": "vn_bond2", "in": [1, 3], "p": 0.35}},
+    {"id": "dep", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('vn_dep', a, {rate: .01}, 'trk.vn_dep')"}
+   ],
+   "later": {
+    "vn_bondBack": "cash += x.a; log(M('log.vn_bondBack', {a: MN(x.a)}), 'good')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "A bond at the bank",
+     ".x": "Your term deposit has matured. The bank clerk suggests a company bond instead: 10% a year, “just like a deposit, only better”.",
+     ".bond": "Buy the bond",
+     ".bond.s": "{a} at 10% a year.",
+     ".bond.h": "A bond is a loan to the company, not a deposit: if the company fails, you may get little back.",
+     ".dep": "Renew the deposit",
+     ".dep.s": "{a} at about 5% a year.",
+     ".dep.h": "About 1% a year above inflation, and deposits are insured.",
+     "trk.vn_bond": "A company bond",
+     "trk.vn_dep": "Term deposit",
+     "log.vn_bondBack": "The court-ordered repayment for your bond arrives: {a}."
+    },
+    "zh": {
+     ".t": "银行柜台的债券",
+     ".x": "你的定存到期了。银行职员建议你改买一家公司的债券：年息10%，“跟定存一样，只是更好”。",
+     ".bond": "买债券",
+     ".bond.s": "{a}，年息10%。",
+     ".bond.h": "债券是借钱给公司，不是存款：公司倒了，你可能拿不回多少。",
+     ".dep": "续存定存",
+     ".dep.s": "{a}，年息大约5%。",
+     ".dep.h": "扣除通胀后每年大约1%，存款也有保险。",
+     "trk.vn_bond": "公司债券",
+     "trk.vn_dep": "定期存款",
+     "log.vn_bondBack": "法院判决的债券赔偿款到了：{a}。"
+    },
+    "zht": {
+     ".t": "銀行櫃檯的債券",
+     ".x": "你的定存到期了。銀行行員建議你改買一家公司的債券：年息10%，「跟定存一樣，只是更好」。",
+     ".bond": "買債券",
+     ".bond.s": "{a}，年息10%。",
+     ".bond.h": "債券是借錢給公司，不是存款：公司倒了，你可能拿不回多少。",
+     ".dep": "續存定存",
+     ".dep.s": "{a}，年息大約5%。",
+     ".dep.h": "扣除通膨後每年大約1%，存款也有保險。",
+     "trk.vn_bond": "公司債券",
+     "trk.vn_dep": "定期存款",
+     "log.vn_bondBack": "法院判決的債券賠償款到了：{a}。"
+    }
+   }
+  },
+  {
+   "id": "vn_bond2",
+   "src": "After the Van Thinh Phat arrests, bondholders waited years for court-ordered repayments; some sold their claims at a deep discount (news reports, 2022–2025). Recovery shares are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.vn_bond && lots.vn_bond.v > 0"},
+   "def": "wait",
+   "tarot": "scam",
+   "art": {"draw": "bill", "bg": "co"},
+   "let": {"v": "lots.vn_bond.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "wait", "hint": true, "do": "lots.vn_bond.v = 0; happy -= 3; later(age + 4, 'vn_bondBack', {a: .3 * v})"},
+    {"id": "sell", "sub": {"a": "MN(.1 * v)"}, "hint": true, "do": "lots.vn_bond.v = 0; lots.vn_bond.tout += .1 * v; cash += .1 * v; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The issuer has been arrested",
+     ".x": "The company’s chairwoman has been arrested and interest payments have stopped. Your {a} is frozen.",
+     ".wait": "Register your claim and wait",
+     ".wait.s": "The case may take years.",
+     ".wait.h": "Happiness −3. Bondholders got back about a third, years later.",
+     ".sell": "Sell your claim to a debt buyer",
+     ".sell.s": "About {a} now.",
+     ".sell.h": "Happiness −2: at least it’s over."
+    },
+    "zh": {
+     ".t": "发行公司老板被捕了",
+     ".x": "这家公司的董事长被捕了，利息也停发了。你的{a}被冻结。",
+     ".wait": "登记求偿，等着",
+     ".wait.s": "官司可能要好几年。",
+     ".wait.h": "幸福感 −3。债权人几年后大约拿回三分之一。",
+     ".sell": "把债权卖给收债公司",
+     ".sell.s": "现在拿大约{a}。",
+     ".sell.h": "幸福感 −2：至少结束了。"
+    },
+    "zht": {
+     ".t": "發行公司老闆被捕了",
+     ".x": "這家公司的董事長被捕了，利息也停發了。你的{a}被凍結。",
+     ".wait": "登記求償，等著",
+     ".wait.s": "官司可能要好幾年。",
+     ".wait.h": "幸福感 −3。債權人幾年後大約拿回三分之一。",
+     ".sell": "把債權賣給收債公司",
+     ".sell.s": "現在拿大約{a}。",
+     ".sell.h": "幸福感 −2：至少結束了。"
+    }
+   }
+  },
+  {
+   "id": "vn_land",
+   "src": "Land fever: in 2021–22 plot prices in many provinces rose about 10% a month, in places doubling or tripling within one or two months, driven by rumours of new roads and planning changes (Vietnam Real Estate Brokers Association; Ministry of Construction, via VietnamNet), before prices and sales fell from late 2022 (CafeF; VNDirect). Sizes and odds are an ESTIMATE.",
+   "age": [28, 50],
+   "weight": 0.4,
+   "when": {"stats": {"liquid": "> 1 * base"}},
+   "def": "no",
+   "tarot": "bubble",
+   "art": {"draw": "keyhome", "bg": "ya"},
+   "let": {"a": "Math.min(3 * base, .7 * liquid())"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('vn_land', a, {rate: .02}, 'trk.vn_land')", "next": {"event": "vn_land2", "in": [1, 2], "p": 0.5}},
+    {"id": "no"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Land fever",
+     ".x": "Everyone in your village is talking about a new expressway. Plots near the planned exit have doubled in a few months, and a broker says they will double again.",
+     ".buy": "Buy a plot",
+     ".buy.s": "{a}.",
+     ".buy.h": "Prices driven by rumours often fall back.",
+     ".no": "Stay out",
+     ".no.s": "Watch from the side.",
+     "trk.vn_land": "A plot of land"
+    },
+    "zh": {
+     ".t": "土地热",
+     ".x": "村里人都在谈新的高速公路。预定出口附近的地几个月就翻了一倍，中介说还会再翻一倍。",
+     ".buy": "买一块地",
+     ".buy.s": "{a}。",
+     ".buy.h": "靠传言炒起来的价格常常会跌回去。",
+     ".no": "不跟",
+     ".no.s": "在旁边看。",
+     "trk.vn_land": "一块地"
+    },
+    "zht": {
+     ".t": "土地熱",
+     ".x": "村裡人都在談新的高速公路。預定出口附近的地幾個月就翻了一倍，仲介說還會再翻一倍。",
+     ".buy": "買一塊地",
+     ".buy.s": "{a}。",
+     ".buy.h": "靠傳言炒起來的價格常常會跌回去。",
+     ".no": "不跟",
+     ".no.s": "在旁邊看。",
+     "trk.vn_land": "一塊地"
+    }
+   }
+  },
+  {
+   "id": "vn_land2",
+   "src": "After the 2022 cooling, plot prices fell and many buyers could not sell (CafeF; VietnamNet). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.vn_land && lots.vn_land.v > 0"},
+   "def": "hold",
+   "tarot": "bubble",
+   "art": {"draw": "keyhome", "bg": "co"},
+   "let": {"v": "lots.vn_land.v"},
+   "vars": {"a": "MN(v)"},
+   "opts": [
+    {"id": "hold", "hint": true, "do": "lots.vn_land.v = .8 * v; happy -= 1"},
+    {"id": "sell", "sub": {"a": "MN(.7 * v)"}, "hint": true, "do": "lots.vn_land.v = 0; lots.vn_land.tout += .7 * v; cash += .7 * v; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The fever breaks",
+     ".x": "The expressway exit has moved to another commune. Nobody is buying, and the broker no longer answers his phone.",
+     ".hold": "Hold on",
+     ".hold.s": "Wait for the market to come back.",
+     ".hold.h": "The plot is worth about a fifth less for now.",
+     ".sell": "Sell for what you can get",
+     ".sell.s": "About {a}.",
+     ".sell.h": "Happiness −2."
+    },
+    "zh": {
+     ".t": "土地热退烧了",
+     ".x": "高速公路出口改到别的乡了。没人要买，中介也不接电话了。",
+     ".hold": "先撑着",
+     ".hold.s": "等市场回温。",
+     ".hold.h": "这块地眼下少值大约两成。",
+     ".sell": "能卖多少算多少",
+     ".sell.s": "大约{a}。",
+     ".sell.h": "幸福感 −2。"
+    },
+    "zht": {
+     ".t": "土地熱退燒了",
+     ".x": "高速公路出口改到別的鄉了。沒人要買，仲介也不接電話了。",
+     ".hold": "先撐著",
+     ".hold.s": "等市場回溫。",
+     ".hold.h": "這塊地眼下少值大約兩成。",
+     ".sell": "能賣多少算多少",
+     ".sell.s": "大約{a}。",
+     ".sell.h": "幸福感 −2。"
+    }
+   }
+  },
+  {
+   "id": "vn_bancas",
+   "src": "Insurance sold through banks: a 2023 Ministry of Finance inspection of four life insurers found many violations, including misleading advice; borrowers complained of being pressed to buy life insurance to get loans, and about 70% of policies sold through banks were cancelled after the first year (MoF, via Vietnam News, 2023), losing most of what was paid. The Law on Insurance Business 2022 bars tying insurance to other services. ₫20 million a year ≈ 0.41 of the game’s typical wage; values are an ESTIMATE.",
+   "age": [26, 45],
+   "weight": 0.4,
+   "when": {"working": true},
+   "def": "refuse",
+   "tarot": "agent",
+   "art": {"draw": "bill", "bg": "wa"},
+   "opts": [
+    {"id": "buy", "sub": {"a": "MN(.41 * base)"}, "hint": true, "do": "yearly('vn_life', {amt: .41 * base, until: age + 15}, {rate: 0, lock: age + 15}, 'trk.vn_life')", "next": {"event": "vn_bancas2", "in": [1, 2], "p": 0.7}},
+    {"id": "refuse", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A loan with strings?",
+     ".x": "You’re signing for a bank loan. The officer says approval would be “much faster” if you also buy the bank partner’s life insurance.",
+     ".buy": "Buy the policy",
+     ".buy.s": "About {a} a year for fifteen years.",
+     ".buy.h": "Most of the first years’ premiums go on charges; stopping early loses them.",
+     ".refuse": "Say no and ask for the loan anyway",
+     ".refuse.s": "An awkward moment.",
+     ".refuse.h": "Banks may not make a loan depend on insurance; the loan goes through.",
+     "trk.vn_life": "A life policy from the bank"
+    },
+    "zh": {
+     ".t": "贷款附带条件？",
+     ".x": "你在签银行贷款。行员说，如果顺便买银行合作的寿险，核准会“快很多”。",
+     ".buy": "买保单",
+     ".buy.s": "十五年里每年大约{a}。",
+     ".buy.h": "前几年的保费大多是费用；提早解约就没了。",
+     ".refuse": "拒绝，照样申请贷款",
+     ".refuse.s": "场面有点尴尬。",
+     ".refuse.h": "银行不能把贷款跟保险绑在一起；贷款照样通过。",
+     "trk.vn_life": "银行卖的寿险"
+    },
+    "zht": {
+     ".t": "貸款附帶條件？",
+     ".x": "你在簽銀行貸款。行員說，如果順便買銀行合作的壽險，核准會「快很多」。",
+     ".buy": "買保單",
+     ".buy.s": "十五年裡每年大約{a}。",
+     ".buy.h": "前幾年的保費大多是費用；提早解約就沒了。",
+     ".refuse": "拒絕，照樣申請貸款",
+     ".refuse.s": "場面有點尷尬。",
+     ".refuse.h": "銀行不能把貸款跟保險綁在一起；貸款照樣通過。",
+     "trk.vn_life": "銀行賣的壽險"
+    }
+   }
+  },
+  {
+   "id": "vn_bancas2",
+   "src": "Policies cancelled in the first years return only a small part of premiums paid (insurer surrender value tables; MoF 2023 inspection). The 20% surrender value is an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.vn_life && lots.vn_life.v > 0"},
+   "def": "cancel",
+   "tarot": "agent",
+   "art": {"draw": "bill", "bg": "mi"},
+   "let": {"v": "lots.vn_life.v"},
+   "vars": {"a": "MN(v)", "b": "MN(.2 * v)"},
+   "opts": [
+    {"id": "cancel", "sub": {"a": "MN(.2 * v)"}, "hint": true, "do": "lots.vn_life.v = 0; lots.vn_life.tout += .2 * v; cash += .2 * v; stopYearly('vn_life'); happy -= 2"},
+    {"id": "keep", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The premiums are heavy",
+     ".x": "The loan is paid off, but the insurance premiums go on. You have paid in {a}; cancelling now returns only {b}.",
+     ".cancel": "Cancel the policy",
+     ".cancel.s": "About {a} back.",
+     ".cancel.h": "Happiness −2; no more premiums.",
+     ".keep": "Keep paying",
+     ".keep.s": "Fifteen years in all.",
+     ".keep.h": "It pays back roughly what you put in, with no growth after inflation."
+    },
+    "zh": {
+     ".t": "保费负担很重",
+     ".x": "贷款还清了，保费却还要继续缴。你已经缴了{a}；现在解约只能拿回{b}。",
+     ".cancel": "解约",
+     ".cancel.s": "大约拿回{a}。",
+     ".cancel.h": "幸福感 −2；不用再缴保费。",
+     ".keep": "继续缴",
+     ".keep.s": "总共十五年。",
+     ".keep.h": "最后大约拿回你缴的钱，扣掉通胀没有增值。"
+    },
+    "zht": {
+     ".t": "保費負擔很重",
+     ".x": "貸款還清了，保費卻還要繼續繳。你已經繳了{a}；現在解約只能拿回{b}。",
+     ".cancel": "解約",
+     ".cancel.s": "大約拿回{a}。",
+     ".cancel.h": "幸福感 −2；不用再繳保費。",
+     ".keep": "繼續繳",
+     ".keep.s": "總共十五年。",
+     ".keep.h": "最後大約拿回你繳的錢，扣掉通膨沒有增值。"
+    }
+   }
+  },
+  {
+   "id": "vn_xemay",
+   "src": "Directive 20/CT-TTg (12 July 2025) told Hanoi to have no petrol or diesel motorbikes inside Ring Road 1 from 1 July 2026 and inside Ring Road 2 from 2028, with other cities to follow (via Tap chi Toa an and Luat Minh Khue). An electric scooter costs about ₫18–25 million, about 0.45 of the game’s typical wage (dealer prices, 2025: ESTIMATE); running-cost savings are an ESTIMATE.",
+   "age": [22, 55],
+   "weight": 0.3,
+   "when": {"car": false},
+   "def": "keep",
+   "tarot": "car2",
+   "art": {"draw": "moto", "bg": "mi"},
+   "opts": [
+    {"id": "ev", "sub": {"a": "MN(.45 * base)"}, "hint": true, "do": "spend('vn_ev', .45 * base, 'trk.vn_ev'); T('vn_evS', {kind: 'custom', label: M('trk.vn_evS')}); rec('vn_evS', -.02 * base, 10); happy += 1"},
+    {"id": "bus", "sub": {"a": "MN(.2 * base)"}, "hint": true, "do": "cash += .2 * base; T('vn_bus', {kind: 'custom', label: M('trk.vn_bus')}); rec('vn_bus', -.01 * base, 10, .2); happy -= 1"},
+    {"id": "keep", "hint": true, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Petrol motorbikes banned",
+     ".x": "The city is banning petrol motorbikes from the centre, where you work. The ban will spread outwards over the next few years.",
+     ".ev": "Buy an electric scooter",
+     ".ev.s": "About {a}.",
+     ".ev.h": "Cheaper to run than petrol.",
+     ".bus": "Sell the bike and take the metro and buses",
+     ".bus.s": "About {a} from the sale.",
+     ".bus.h": "Happiness −1 at first; a little more walking and less spending.",
+     ".keep": "Keep the old bike and park outside the zone",
+     ".keep.s": "A walk at each end.",
+     ".keep.h": "Happiness −1.",
+     "trk.vn_ev": "An electric scooter",
+     "trk.vn_evS": "Fuel saved",
+     "trk.vn_bus": "Money saved without a motorbike"
+    },
+    "zh": {
+     ".t": "禁行汽油摩托车",
+     ".x": "城市要禁止汽油摩托车进入市中心，而你就在那里上班。往后几年禁区还会往外扩大。",
+     ".ev": "买电动摩托车",
+     ".ev.s": "大约{a}。",
+     ".ev.h": "用车成本比汽油车低。",
+     ".bus": "卖掉摩托车，改搭地铁和公交",
+     ".bus.s": "卖车大约拿到{a}。",
+     ".bus.h": "一开始幸福感 −1；多走点路，也少花点钱。",
+     ".keep": "留着旧车，停在禁区外",
+     ".keep.s": "每趟都要走一段。",
+     ".keep.h": "幸福感 −1。",
+     "trk.vn_ev": "电动摩托车",
+     "trk.vn_evS": "省下的油钱",
+     "trk.vn_bus": "不骑车省下的钱"
+    },
+    "zht": {
+     ".t": "禁行汽油機車",
+     ".x": "城市要禁止汽油機車進入市中心，而你就在那裡上班。往後幾年禁區還會往外擴大。",
+     ".ev": "買電動機車",
+     ".ev.s": "大約{a}。",
+     ".ev.h": "用車成本比汽油車低。",
+     ".bus": "賣掉機車，改搭捷運和公車",
+     ".bus.s": "賣車大約拿到{a}。",
+     ".bus.h": "一開始幸福感 −1；多走點路，也少花點錢。",
+     ".keep": "留著舊車，停在禁區外",
+     ".keep.s": "每趟都要走一段。",
+     ".keep.h": "幸福感 −1。",
+     "trk.vn_ev": "電動機車",
+     "trk.vn_evS": "省下的油錢",
+     "trk.vn_bus": "不騎車省下的錢"
+    }
+   }
+  },
+  {
+   "id": "vn_bhxhtn",
+   "src": "Voluntary social insurance: you pay 22% of an income you choose; from 1 July 2025 the state pays 20% of the contribution on the rural poverty line for most people (more for poor and near-poor households) for up to 10 years, and a pension needs 15 years of contributions (Law on Social Insurance 2024; Decree 159/2025, via Bao Lao Cai and Lsvn). Contributions on ₫3 million a month ≈ ₫7.9 million a year ≈ 0.16 of the game’s typical wage. The pension it pays is an ESTIMATE.",
+   "age": [25, 50],
+   "weight": 0.45,
+   "when": {"working": true, "selfEmployed": true},
+   "def": "none",
+   "tarot": "scheme",
+   "art": {"draw": "penjar", "bg": "co"},
+   "opts": [
+    {"id": "join", "sub": {"a": "MN(.16 * base)"}, "hint": true, "do": "penScheme('vn_bhxhtn', .16 * base, 20, .2 * base, sex === 'm' ? 62 : 60)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Voluntary social insurance",
+     ".x": "Working for yourself, you have no pension. You could join voluntary social insurance: 22% of an income you choose, with a small state top-up.",
+     ".join": "Join, on ₫3 million a month",
+     ".join.s": "About {a} a year for twenty years.",
+     ".join.h": "A monthly pension for life from retirement age.",
+     ".none": "Not now",
+     ".none.s": "Save on your own.",
+     "trk.vn_bhxhtn": "Voluntary social insurance"
+    },
+    "zh": {
+     ".t": "自愿社会保险",
+     ".x": "自己做生意没有退休金。你可以参加自愿社会保险：按你自选收入的22%缴费，国家还补贴一点。",
+     ".join": "参加，以每月三百万越南盾为基数",
+     ".join.s": "二十年里每年大约{a}。",
+     ".join.h": "到退休年龄起每月领退休金，领到终老。",
+     ".none": "暂时不参加",
+     ".none.s": "自己存钱。",
+     "trk.vn_bhxhtn": "自愿社会保险"
+    },
+    "zht": {
+     ".t": "自願社會保險",
+     ".x": "自己做生意沒有退休金。你可以參加自願社會保險：按你自選收入的22%繳費，國家還補貼一點。",
+     ".join": "參加，以每月三百萬越南盾為基數",
+     ".join.s": "二十年裡每年大約{a}。",
+     ".join.h": "到退休年齡起每月領退休金，領到終老。",
+     ".none": "暫時不參加",
+     ".none.s": "自己存錢。",
+     "trk.vn_bhxhtn": "自願社會保險"
+    }
+   }
+  },
+  {
+   "id": "vn_wedding",
+   "src": "Wedding envelopes: guests at Vietnamese weddings give cash (tiền mừng), often ₫500,000–1,000,000 each in cities, which pays back much of the feast (news reports, 2024–25). Feast costs, guest numbers and how much comes back are an ESTIMATE.",
+   "age": [24, 34],
+   "weight": 0.45,
+   "when": {"partner": ["dating", "living"]},
+   "def": "mid",
+   "tarot": "wed",
+   "art": {"draw": "feast", "bg": "mi"},
+   "opts": [
+    {"id": "big", "sub": {"a": "MN(2 * base)"}, "hint": true, "rel": 3, "do": "pay(2 * base); const g = (roll('vn_wedding') < .5 ? 1.8 : 1.4) * base; cash += g; const tq = T('vn_wed', {kind: 'custom', label: M('trk.vn_wed')}); tq.v += g - 2 * base; happy += 2"},
+    {"id": "mid", "sub": {"a": "MN(.8 * base)"}, "rel": 1, "do": "pay(.8 * base); cash += .65 * base; const tq = T('vn_wed', {kind: 'custom', label: M('trk.vn_wed')}); tq.v += -.15 * base; happy += 1"},
+    {"id": "small", "sub": {"a": "MN(.2 * base)"}, "hint": true, "rel": -2, "do": "pay(.2 * base); cash += .1 * base; const tq = T('vn_wed', {kind: 'custom', label: M('trk.vn_wed')}); tq.v += -.1 * base"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "How big a wedding?",
+     ".x": "You and your partner are planning to marry. Your parents have a list of three hundred guests, and every guest will bring an envelope.",
+     ".big": "Forty tables for everyone",
+     ".big.s": "About {a} for the feast; the envelopes pay much of it back.",
+     ".big.h": "Happiness +2; the families are proud. Envelopes cover 70–90%.",
+     ".mid": "Fifteen tables",
+     ".mid.s": "About {a} for the feast; envelopes pay much of it back.",
+     ".small": "Close family only",
+     ".small.s": "About {a}.",
+     ".small.h": "Fewer envelopes, and some relatives feel left out.",
+     "trk.vn_wed": "The wedding, after envelopes"
+    },
+    "zh": {
+     ".t": "婚礼要办多大？",
+     ".x": "你和伴侣准备结婚了。爸妈列了三百个宾客，每个人都会包红包。",
+     ".big": "办四十桌，大家都请",
+     ".big.s": "喜宴大约{a}；红包能收回一大部分。",
+     ".big.h": "幸福感 +2；两家都有面子。红包能抵七到九成。",
+     ".mid": "办十五桌",
+     ".mid.s": "喜宴大约{a}；红包能收回一大部分。",
+     ".small": "只请自家人",
+     ".small.s": "大约{a}。",
+     ".small.h": "红包少了，有些亲戚觉得被冷落。",
+     "trk.vn_wed": "扣掉红包后的婚礼开销"
+    },
+    "zht": {
+     ".t": "婚禮要辦多大？",
+     ".x": "你和伴侶準備結婚了。爸媽列了三百個賓客，每個人都會包紅包。",
+     ".big": "辦四十桌，大家都請",
+     ".big.s": "喜宴大約{a}；紅包能收回一大部分。",
+     ".big.h": "幸福感 +2；兩家都有面子。紅包能抵七到九成。",
+     ".mid": "辦十五桌",
+     ".mid.s": "喜宴大約{a}；紅包能收回一大部分。",
+     ".small": "只請自家人",
+     ".small.s": "大約{a}。",
+     ".small.h": "紅包少了，有些親戚覺得被冷落。",
+     "trk.vn_wed": "扣掉紅包後的婚禮開銷"
+    }
+   }
+  },
+  {
+   "id": "vn_scamjob",
+   "src": "“Light work, high pay” (việc nhẹ lương cao): Vietnam’s border guards and police have brought back thousands of citizens lured by such offers to online-scam compounds in Cambodia, e.g. 362 in five handovers by February 2025 and hundreds more later in the year (via Tuoi Tre, Dan Tri and VNA); families are often asked to pay for their release. Amounts are an ESTIMATE.",
+   "age": [18, 28],
+   "weight": 0.3,
+   "when": {"abroad": false},
+   "def": "no",
+   "tarot": "scam2",
+   "art": {"draw": "passport", "bg": "co"},
+   "opts": [
+    {"id": "go", "hint": true, "next": {"event": "vn_scamjob2", "in": 1, "p": 1}},
+    {"id": "no", "hint": true}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Light work, high pay",
+     ".x": "Someone on Facebook offers you a job in Cambodia: typing at a computer for $1,500 a month, flight paid, no experience needed.",
+     ".go": "Take the job",
+     ".go.s": "They will meet you at the border.",
+     ".go.h": "Offers like this are a common trap: people are held and made to run online scams.",
+     ".no": "Turn it down",
+     ".no.s": "It sounds too good to be true.",
+     ".no.h": "There is no such job."
+    },
+    "zh": {
+     ".t": "轻松工作，高薪",
+     ".x": "有人在脸书上找你去柬埔寨工作：坐在电脑前打字，月薪1,500美元，包机票，不需要经验。",
+     ".go": "接下这份工作",
+     ".go.s": "他们会在边境接你。",
+     ".go.h": "这种工作常常是陷阱：人会被扣留，被迫做网络诈骗。",
+     ".no": "拒绝",
+     ".no.s": "好得不像真的。",
+     ".no.h": "根本没有这种工作。"
+    },
+    "zht": {
+     ".t": "輕鬆工作，高薪",
+     ".x": "有人在臉書上找你去柬埔寨工作：坐在電腦前打字，月薪1,500美元，包機票，不需要經驗。",
+     ".go": "接下這份工作",
+     ".go.s": "他們會在邊境接你。",
+     ".go.h": "這種工作常常是陷阱：人會被扣留，被迫做網路詐騙。",
+     ".no": "拒絕",
+     ".no.s": "好得不像真的。",
+     ".no.h": "根本沒有這種工作。"
+    }
+   }
+  },
+  {
+   "id": "vn_scamjob2",
+   "src": "People held in scam compounds have been freed through police and embassy action or after families paid; most return with nothing (Vietnamese police and border guards, 2023–2025). Amounts are an ESTIMATE.",
+   "chain": true,
+   "def": "police",
+   "tarot": "scam2",
+   "art": {"draw": "passport", "bg": "mi"},
+   "let": {"a": ".6 * base"},
+   "vars": {"a": "MN(a)"},
+   "opts": [
+    {"id": "police", "hint": true, "rel": 2, "do": "tmpPay('vn_held', .3, 1, 'trk.vn_held'); happy -= 6; health -= 2"},
+    {"id": "pay", "sub": {"a": "MN(a)"}, "hint": true, "do": "pay(a); tmpPay('vn_held', .5, 1, 'trk.vn_held'); bond('parent', 2); happy -= 5; health -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "No way out",
+     ".x": "There was no typing job. Your passport has been taken and you are kept in a guarded building. They say you can leave if your family pays {a}.",
+     ".police": "Get word to your family to call the police and the embassy",
+     ".police.s": "It may take months.",
+     ".police.h": "Happiness −6, Health −2; a lost year of pay, but no money to them.",
+     ".pay": "Your family pays",
+     ".pay.s": "{a}, borrowed from relatives.",
+     ".pay.h": "Home sooner. Happiness −5, Health −1.",
+     "trk.vn_held": "A year lost abroad"
+    },
+    "zh": {
+     ".t": "无路可走",
+     ".x": "根本没有打字的工作。你的护照被收走，被关在有人看守的大楼里。他们说家人付{a}才放你走。",
+     ".police": "设法通知家人去报警、找大使馆",
+     ".police.s": "可能要好几个月。",
+     ".police.h": "幸福感 −6，健康 −2；损失一年收入，但不用付钱给他们。",
+     ".pay": "家人付钱",
+     ".pay.s": "{a}，跟亲戚借来的。",
+     ".pay.h": "比较快回家。幸福感 −5，健康 −1。",
+     "trk.vn_held": "在国外失去的一年"
+    },
+    "zht": {
+     ".t": "無路可走",
+     ".x": "根本沒有打字的工作。你的護照被收走，被關在有人看守的大樓裡。他們說家人付{a}才放你走。",
+     ".police": "設法通知家人去報警、找大使館",
+     ".police.s": "可能要好幾個月。",
+     ".police.h": "幸福感 −6，健康 −2；損失一年收入，但不用付錢給他們。",
+     ".pay": "家人付錢",
+     ".pay.s": "{a}，跟親戚借來的。",
+     ".pay.h": "比較快回家。幸福感 −5，健康 −1。",
+     "trk.vn_held": "在國外失去的一年"
+    }
+   }
+  },
+  {
+   "id": "vn_thue",
+   "src": "Household businesses: Resolution 68-NQ/TW (May 2025) ended lump-sum tax (thuế khoán) by 2026, so household businesses declare revenue, and those above ₫1 billion a year must issue e-invoices from cash registers from June 2025 (Decree 70/2025). Accounting costs, the tax difference and the odds of an audit are an ESTIMATE.",
+   "age": [28, 55],
+   "weight": 0.4,
+   "when": {"working": true, "selfEmployed": true},
+   "def": "declare",
+   "tarot": "scheme",
+   "art": {"draw": "tax", "bg": "ya"},
+   "opts": [
+    {"id": "declare", "sub": {"a": "MN(.03 * base)"}, "hint": true, "do": "T('vn_acc', {kind: 'custom', label: M('trk.vn_acc')}); rec('vn_acc', .03 * base, 10)"},
+    {"id": "hide", "hint": true, "do": "if (roll('vn_thue') < .35) later(age + 2, 'vn_thueFine', {})"}
+   ],
+   "later": {
+    "vn_thueFine": "pay(.3 * base); log(M('log.vn_thueFine', {a: MN(.3 * base)}), 'bad')"
+   },
+   "i18n": {
+    "en": {
+     ".t": "No more lump-sum tax",
+     ".x": "The flat yearly tax for small businesses is ending. From now on you must declare your real revenue, with electronic invoices.",
+     ".declare": "Declare properly, with an accountant’s help",
+     ".declare.s": "About {a} a year for the software and accountant.",
+     ".declare.h": "No surprises later.",
+     ".hide": "Keep taking cash and declare less",
+     ".hide.s": "No extra cost now.",
+     ".hide.h": "About a third of those who under-declare are fined later.",
+     "trk.vn_acc": "Accounting and e-invoices",
+     "log.vn_thueFine": "A tax audit finds undeclared revenue: back tax and a fine of {a}."
+    },
+    "zh": {
+     ".t": "定额税取消了",
+     ".x": "小商户的定额税要取消了。以后要申报实际营收，还要开电子发票。",
+     ".declare": "好好申报，请会计帮忙",
+     ".declare.s": "软件和会计每年大约{a}。",
+     ".declare.h": "以后不会有麻烦。",
+     ".hide": "继续收现金，少报一点",
+     ".hide.s": "现在不用多花钱。",
+     ".hide.h": "少报的人大约三分之一之后会被罚款。",
+     "trk.vn_acc": "会计和电子发票",
+     "log.vn_thueFine": "税务稽查发现漏报营收：补税加罚款{a}。"
+    },
+    "zht": {
+     ".t": "定額稅取消了",
+     ".x": "小商戶的定額稅要取消了。以後要申報實際營收，還要開電子發票。",
+     ".declare": "好好申報，請會計幫忙",
+     ".declare.s": "軟體和會計每年大約{a}。",
+     ".declare.h": "以後不會有麻煩。",
+     ".hide": "繼續收現金，少報一點",
+     ".hide.s": "現在不用多花錢。",
+     ".hide.h": "少報的人大約三分之一之後會被罰款。",
+     "trk.vn_acc": "會計和電子發票",
+     "log.vn_thueFine": "稅務稽查發現漏報營收：補稅加罰款{a}。"
+    }
+   }
+  },
+  {
+   "id": "vn_margin",
+   "src": "Margin trading: about 1.5 million new securities accounts were opened in 2021 as first-time (“F0”) investors piled in (Vietnam Securities Depository), and the VN-Index then fell about 33% in 2022 (HOSE), triggering waves of margin calls. Broker margin rates (about 12–14% a year) and the size of the fall are an ESTIMATE.",
+   "age": [23, 45],
+   "weight": 0.4,
+   "when": {"working": true, "stats": {"liquid": "> .3 * base"}},
+   "def": "none",
+   "tarot": "tip",
+   "art": {"draw": "shares", "bg": "co"},
+   "let": {"a": "Math.min(.6 * base, .5 * liquid())"},
+   "opts": [
+    {"id": "margin", "sub": {"a": "MN(a)", "b": "MN(2 * a)"}, "hint": true, "do": "debt += a; cash += a; putIn('vn_mg', 2 * a, {}, 'trk.vn_mg')", "next": {"event": "vn_margin2", "in": [1, 3], "p": 0.5}},
+    {"id": "plain", "sub": {"a": "MN(a)"}, "hint": true, "do": "putIn('vn_stk', a, {}, 'trk.vn_stk')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Buying on margin",
+     ".x": "The stock market is booming and your friends are all trading. Your broker offers to lend you as much again as you put in.",
+     ".margin": "Invest, and borrow as much again",
+     ".margin.s": "{a} of your own and {a} borrowed: {b} in stocks.",
+     ".margin.h": "Gains and losses are doubled, and the loan charges interest. A big fall can force you to sell.",
+     ".plain": "Invest only your own money",
+     ".plain.s": "{a} in an index fund.",
+     ".plain.h": "Rises and falls with the market.",
+     ".none": "Stay out",
+     ".none.s": "It looks like a bubble.",
+     "trk.vn_mg": "Stocks bought on margin",
+     "trk.vn_stk": "Index fund"
+    },
+    "zh": {
+     ".t": "融资买股",
+     ".x": "股市大涨，朋友都在炒股。券商说可以借你跟本金一样多的钱。",
+     ".margin": "投资，再借同样多的钱",
+     ".margin.s": "自己出{a}，再借{a}：买{b}的股票。",
+     ".margin.h": "赚赔都会加倍，借款还要付利息。大跌时可能被迫卖出。",
+     ".plain": "只用自己的钱",
+     ".plain.s": "{a}买指数基金。",
+     ".plain.h": "跟着市场涨跌。",
+     ".none": "不进场",
+     ".none.s": "看起来像泡沫。",
+     "trk.vn_mg": "融资买的股票",
+     "trk.vn_stk": "指数基金"
+    },
+    "zht": {
+     ".t": "融資買股",
+     ".x": "股市大漲，朋友都在炒股。券商說可以借你跟本金一樣多的錢。",
+     ".margin": "投資，再借同樣多的錢",
+     ".margin.s": "自己出{a}，再借{a}：買{b}的股票。",
+     ".margin.h": "賺賠都會加倍，借款還要付利息。大跌時可能被迫賣出。",
+     ".plain": "只用自己的錢",
+     ".plain.s": "{a}買指數基金。",
+     ".plain.h": "跟著市場漲跌。",
+     ".none": "不進場",
+     ".none.s": "看起來像泡沫。",
+     "trk.vn_mg": "融資買的股票",
+     "trk.vn_stk": "指數基金"
+    }
+   }
+  },
+  {
+   "id": "vn_margin2",
+   "src": "Margin calls: when prices fall, brokers demand more money or sell the shares (Vietnam securities rules; news reports, 2022). Sizes are an ESTIMATE.",
+   "chain": true,
+   "when": {"test": "!!lots.vn_mg && lots.vn_mg.v > 0"},
+   "def": "sell",
+   "tarot": "crash",
+   "art": {"draw": "gauge", "bg": "mi"},
+   "let": {"v": "lots.vn_mg.v"},
+   "vars": {"a": "MN(.3 * v)"},
+   "opts": [
+    {"id": "sell", "hint": true, "do": "lots.vn_mg.v = 0; lots.vn_mg.tout += .65 * v; cash += .65 * v; happy -= 3"},
+    {"id": "topup", "sub": {"a": "MN(.3 * v)"}, "ok": "liquid() >= .3 * v || M('kid.cash', {a: MN(Math.max(0, liquid()))})", "hint": true, "do": "pay(.3 * v); lots.vn_mg.v = .65 * v; happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Margin call",
+     ".x": "The market has fallen by a third. Your broker calls: put in {a} by tomorrow or your shares will be sold.",
+     ".sell": "Let them sell",
+     ".sell.s": "What’s left comes back to you.",
+     ".sell.h": "Happiness −3; you sell at the bottom and still owe the loan.",
+     ".topup": "Put in more money",
+     ".topup.s": "{a} from your savings.",
+     ".topup.h": "Happiness −2; you keep the shares and wait for a recovery."
+    },
+    "zh": {
+     ".t": "追缴保证金",
+     ".x": "股市跌了三分之一。券商打电话来：明天以前补{a}，不然就要卖掉你的股票。",
+     ".sell": "让他们卖",
+     ".sell.s": "剩下的钱还给你。",
+     ".sell.h": "幸福感 −3；在低点卖掉，借款还是要还。",
+     ".topup": "补钱进去",
+     ".topup.s": "从存款拿{a}。",
+     ".topup.h": "幸福感 −2；保住股票，等市场回升。"
+    },
+    "zht": {
+     ".t": "追繳保證金",
+     ".x": "股市跌了三分之一。券商打電話來：明天以前補{a}，不然就要賣掉你的股票。",
+     ".sell": "讓他們賣",
+     ".sell.s": "剩下的錢還給你。",
+     ".sell.h": "幸福感 −3；在低點賣掉，借款還是要還。",
+     ".topup": "補錢進去",
+     ".topup.s": "從存款拿{a}。",
+     ".topup.h": "幸福感 −2；保住股票，等市場回升。"
+    }
+   }
+  },
+  {
+   "id": "vn_nhaxh",
+   "src": "Social housing: Decision 338/QĐ-TTg (April 2023) set a goal of over one million social homes by 2030; they sell at capped prices to lower-income buyers, by lottery when oversubscribed, and cannot be resold for five years (Law on Housing 2023). The price discount, the odds of winning and the loan rate are an ESTIMATE.",
+   "age": [26, 40],
+   "weight": 0.4,
+   "when": {"working": true, "house": false, "stats": {"salary": "< 2.5 * base"}},
+   "def": "rent",
+   "tarot": "home",
+   "art": {"draw": "keyhome", "bg": "mi"},
+   "let": {"P": "price()", "liq": "liquid()"},
+   "opts": [
+    {"id": "apply", "ok": "liq >= .23 * .65 * P || M('e.home.need', { n: MN(.23 * .65 * P), h: MN(liq) })", "hint": true, "do": "if (roll('vn_nhaxh') < .35) { buyAt(.65 * P, { val: .8 * P, dp: .2, fee: .03, r: .02, n: 25, lk: 'trk.vn_nhaxh', fixed: true }); happy += 3 } else happy -= 1"},
+    {"id": "rent"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Social housing",
+     ".x": "A social housing block near your work is taking applications from people on modest incomes, at about two-thirds of market prices. There are many more applicants than flats.",
+     ".apply": "Apply and enter the lottery",
+     ".apply.s": "If you win, a 20% down payment and a cheap loan.",
+     ".apply.h": "About a third of applicants win a flat.",
+     ".rent": "Keep renting",
+     ".rent.s": "No paperwork.",
+     "trk.vn_nhaxh": "A social housing flat"
+    },
+    "zh": {
+     ".t": "社会住房",
+     ".x": "你公司附近有一栋社会住房开放中低收入者申请，价钱大约是市价的三分之二。申请的人比房子多得多。",
+     ".apply": "申请，参加抽签",
+     ".apply.s": "抽中的话，付两成头期款，还有低利贷款。",
+     ".apply.h": "大约三分之一的申请人能抽中。",
+     ".rent": "继续租房",
+     ".rent.s": "不用办手续。",
+     "trk.vn_nhaxh": "社会住房"
+    },
+    "zht": {
+     ".t": "社會住宅",
+     ".x": "你公司附近有一棟社會住宅開放中低收入者申請，價錢大約是市價的三分之二。申請的人比房子多得多。",
+     ".apply": "申請，參加抽籤",
+     ".apply.s": "抽中的話，付兩成頭期款，還有低利貸款。",
+     ".apply.h": "大約三分之一的申請人能抽中。",
+     ".rent": "繼續租房",
+     ".rent.s": "不用辦手續。",
+     "trk.vn_nhaxh": "社會住宅"
+    }
+   }
   }
  ]
 }
