@@ -518,13 +518,15 @@ function divorce(s,by,L){const p=s.pt;if(!p||!s.married)return;const k=divC(s),B
  if(kids.length)T(s,'support',{kind:'custom',label:M('trk.support'),note:M('note.support0')});
  const loss=before-netWorth(s),t=T(s,'div'+p.n,{kind:'custom',label:M('trk.divorce')});t.v-=loss;t.note=M('note.divorce',{a:MN(loss)});
  ptEnd(s);s.happy=clamp(s.happy-12,0,100);rl(s,-4);heal(s,4,8);L&&L(M('log.divorce',{a:MN(loss)}),'bad')}
-/* the Life choices panel: what makes sense right now, each {id, ok} (ok is true, or why it can't be done this year) */
-function relActs(s){if(s.dead||s.age<18)return[];const p=s.pt,a=s.age,o=[];
- if(!p){if(a<70)o.push({id:'look',ok:s.look===a?M('lc.look.on'):true});return o}
- if(p.st==='date')o.push({id:'move',ok:true});
- if(p.st!=='wed')o.push({id:'wed',ok:true});
- if(p.st!=='date'&&a<=45&&s.kids.length<5)o.push({id:'baby',ok:s.tryAt===a?M('lc.baby.on'):s.kids.some(b=>b>a)?M('lc.baby.due'):true});
- o.push({id:p.st==='wed'?'div':'break',ok:true});return o}
+/* the Life choices panel: every choice, each {id, ok} (ok is true, or why it can't be done now: you need to be dating first…) */
+function relActs(s){if(s.dead)return[];const p=s.pt,a=s.age,w=p&&p.st==='wed',k=M('lc.r.kid');
+ if(a<18)return['look','move','wed','baby','break'].map(id=>({id,ok:k}));
+ const no=!p&&M('lc.r.date');
+ return[{id:'look',ok:p?M('lc.r.have'):a>=70?M('lc.r.old'):s.look===a?M('lc.look.on'):true},
+  {id:'move',ok:no||(w?M('lc.r.wed'):p.st==='live'?M('lc.r.live'):true)},
+  {id:'wed',ok:no||(w?M('lc.r.wed'):true)},
+  {id:'baby',ok:!p?M('lc.r.pt'):p.st==='date'?M('lc.r.move'):a>45?M('lc.r.b45'):s.kids.length>=5?M('lc.r.b5'):s.tryAt===a?M('lc.baby.on'):s.kids.some(b=>b>a)?M('lc.baby.due'):true},
+  w?{id:'div',ok:true}:{id:'break',ok:p?true:M('lc.r.single')}]}
 /* do one of them now (the mirror life replays them from s.acts). Proposing brings up the wedding card at once */
 function relAct(s,id,L){const p=s.pt,a=s.age,x=relActs(s).find(o=>o.id===id);if(!x||x.ok!==true)return false;s.acts.push([a,id]);
  if(id==='look'){spend(s,'look',.02*s.base,'trk.look');s.look=a;L&&L(M('log.rel.look'),'')}

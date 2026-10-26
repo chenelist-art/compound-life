@@ -490,7 +490,8 @@ tbody tr:hover td{background:var(--washi)}
 .lc-btn{display:grid;gap:1px;text-align:left;padding:7px 10px;border:var(--outline);border-radius:16px;background:var(--washi);cursor:pointer;transition:transform .15s,box-shadow .15s}
 .lc-btn:hover:not([disabled]){transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--charcoal)}
 .lc-btn[disabled]{cursor:default;border-style:dashed}
-.lc-btn.arm{background:var(--coral)}
+.lc-btn[disabled] .lc-n{opacity:.55}
+.lc-go{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:4px}
 .lc-n{font-size:15px;line-height:1.25}
 .lc-s{font-size:12px;line-height:1.35}
 @media (min-width:1200px){.frail{max-height:calc(100vh - 100px);overflow:auto}}

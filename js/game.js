@@ -58,11 +58,11 @@ function reveal(ci,sex){
   step();
   $('#rgo').onclick=()=>startLife(ci,seed,life.sex);
 }
-function backToSetup(){texClear();closeReplay(true);closeMoment();G.moq=[];G.moThen=null;clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
+function backToSetup(){texClear();closeReplay(true);closeMoment();lcHide();G.moq=[];G.moThen=null;clearTimeout(G.timer);clearTimeout(G.hindT);G.hind=null;G.s=null;R=null;$('#game').hidden=true;$('#gstat').hidden=true;$('#gctrlLive').hidden=true;$('#setup').hidden=false;$('#setupForm').hidden=false;$('#roulette').hidden=true;renderPast();setupBg();window.scrollTo(0,0)}
 
 /* ---------- life loop ---------- */
 function startLife(ci,seed,sex){
-  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},lcArm:null,ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},ppl:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
+  Object.assign(G,{ci,s:newLife(ci,seed,sex,diff),t:newLife(ci,seed,sex,diff),foc:{},lc:null,ea:{},mirror:null,hs:[[0,0]],ht:[[0,0]],marks:[],log:[],playing:true,pending:null,ended:false,proj:null,nextF:null,pix:{},ppl:{},cheer:0,wasM:false,nKids:0,moq:[],mom:null,moThen:null,salPrev:0,promoAt:null,hover:null,slotMode:null,th:{},mode:diff,hind:null,hinds:[],peers:null,peakInc:0,dec:[]});
   const s=G.s;G.t.auto=true;G.snapS=snap(s);
   addLog(M('log.born',{c:{k:'_c',ci},fam:M('fam.'+s.fam)}),'good');
   addLog(M('log.wage',{a:MN(s.base),le:s.le}),'');
@@ -78,7 +78,7 @@ function addLog(m,k,a){G.log.push({a:a===undefined?G.s.age:a,m,k:k||''});if(G.lo
 function resolveTwin(){const tw=G.t;if(tw.dead)return;let g=0,ev;while((ev=dueEvents(tw)[0])&&g++<30){const id=ev.mirror&&G.s.done[ev.id]?G.s.done[ev.id]:ev.def;applyOpt(tw,ev,id)}}
 function recordTh(){const s=G.s,a=s.dead?s.deathAge+1:s.age;for(const id in s.trk){const v=trkView(s,s.trk[id]).v;const h=G.th[id]||(G.th[id]=[]);if(h.length&&h[h.length-1][0]===a)h[h.length-1][1]=v;else h.push([a,v])}}
 function advance(){
-  const s=G.s;if(!s||G.ended||G.pending||G.hind||G.mom)return 'stop';
+  const s=G.s;if(!s||G.ended||G.pending||G.hind||G.mom||G.lc)return 'stop';
   const ev=dueEvents(s)[0];if(ev){showDecision(ev);return 'ev'}
   /* a new focus picked during the year starts now */
   if(G.nextF&&s.age>=18&&!s.retired){s.focus=G.nextF;G.nextF=null;addLog(M('log.focus',{x:M('f.'+s.focus)}),'choice')}
@@ -94,8 +94,8 @@ function advance(){
   if(flushMoments(()=>{render();schedule()}))return 'moment';
   return 'ok';
 }
-function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended||G.mom||G.lcArm)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
-function skipAhead(){if(G.hind)endHind();if(G.pending||G.ended||G.mom)return;clearTimeout(G.timer);let g=0,r;do{r=advance()}while(r==='ok'&&g++<150);if(r==='ok'){render();schedule()}}
+function schedule(){clearTimeout(G.timer);if(!G.s||!G.playing||G.pending||G.hind||G.ended||G.mom||G.lc)return;const d=G.s.age<12?Math.min(160,SPEEDS[speedI]/3):SPEEDS[speedI];G.timer=setTimeout(()=>{const r=advance();if(r==='ok'){render();schedule()}},d)}
+function skipAhead(){if(G.lc)return;if(G.hind)endHind();if(G.pending||G.ended||G.mom)return;clearTimeout(G.timer);let g=0,r;do{r=advance()}while(r==='ok'&&g++<150);if(r==='ok'){render();schedule()}}
 function showDecision(ev){
   const s=G.s;clearTimeout(G.timer);
   if(ev.pre&&!s['pre_'+ev.id]){ev.pre(s);s['pre_'+ev.id]=1;if(ev.preLog)addLog(ev.preLog(s),'bad');recordTh()}
@@ -129,7 +129,7 @@ function choose(id){
 }
 function next(){if(flushMoments(next))return;const nx=dueEvents(G.s)[0];if(nx){showDecision(nx);return}render();schedule()}
 function showHind(h){G.hind=h;G.hindEnd=Date.now()+HIND_MS;render();const b=$('#hcont');if(b)b.focus({preventScroll:true});clearTimeout(G.hindT);G.hindT=setTimeout(endHind,HIND_MS)}
-function endHind(){if(!G.hind)return;clearTimeout(G.hindT);G.hind=null;next()}
+function endHind(){if(!G.hind||G.lc)return;clearTimeout(G.hindT);G.hind=null;next()}
 function level(nw,B){let L=0;for(const x of TH)if(nw>=x*B)L++;return L}
 function checkMilestones(){
   const s=G.s,m=s.milestones;
@@ -418,9 +418,10 @@ function updFocus(){
     b.setAttribute('aria-pressed',String(cur));b.classList.toggle('next',next);b.disabled=s.retired;
     b.querySelector('.fc-tag').textContent=next?t(s.age<18?'g.fAt18':'g.fNext'):cur&&!s.retired?t('g.current'):''});
 }
-/* Life choices: love and family, decided whenever you like while the life runs (only what makes sense right now). It sits
-   under the focus cards on wide screens, and opens from a tab on the bottom bar on smaller ones. Breaking up and divorcing
-   ask for a second tap. Easy also shows what each choice does (hints); outcomes stay hidden otherwise */
+/* Life choices: love and family, whenever you like while the life runs. It sits under the focus cards on wide screens, and
+   opens from a tab on the bottom bar on smaller ones. Every choice is listed; the ones that don't make sense right now are
+   greyed out with the reason. A choice opens its own card over the game and time stands still until you choose or cancel
+   (no timer); breaking up and divorcing ask "Are you sure?" inside the card. Easy also shows what each choice does (hints) */
 const HEART='<svg viewBox="0 0 16 14" aria-hidden="true" focusable="false"><path d="M8 13 C2 9 0.5 6 1.5 3.5 C2.6 1 6 0.6 8 3.4 C10 0.6 13.4 1 14.5 3.5 C15.5 6 14 9 8 13 Z"/></svg>';
 function buildLife(){
   let el=$('#lcWrap');if(!el){el=document.createElement('section');el.id='lcWrap';el.className='fr-life';$('#frail').appendChild(el)}
@@ -428,7 +429,7 @@ function buildLife(){
   el.innerHTML=`<button type="button" class="lc-tab" id="lcTab" aria-expanded="false" aria-controls="lcBody">${HEART}<span>${esc(t('lc.t'))}</span></button>
   <div class="lc-body" id="lcBody"><h3 id="lcT">${esc(t('lc.t'))}</h3><p class="lc-st" id="lcSt" aria-live="polite"></p><div class="lc-acts" id="lcActs"></div></div>`;
   $('#lcActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)lifeAct(b.dataset.a)});
-  $('#lcTab').onclick=()=>{const o=!el.classList.contains('open');el.classList.toggle('open',o);$('#lcTab').setAttribute('aria-expanded',String(o));if(o)G.lcKey=null;updLife()};
+  $('#lcTab').onclick=()=>{const o=!el.classList.contains('open');el.classList.toggle('open',o);$('#lcTab').setAttribute('aria-expanded',String(o));updLife()};
   G.lcKey=null;updLife()}
 function lcStatus(s){if(s.age<18)return t('lc.kid');const p=s.pt,sp=I18N.lang==='en'?' ':'';let x;
   if(!p)x=t('lc.st.single');
@@ -443,26 +444,51 @@ function lcHint(s,id){if(G.mode!=='easy')return null;const sp=I18N.lang==='en'?'
   return ['look','move','break','div'].includes(id)?t('lc.'+id+'.h'):null}
 function updLife(){
   const s=G.s,el=$('#lcWrap');if(!s||!el)return;
-  /* while a card or a moment is open the buttons stay, greyed out */
-  const busy=!!(G.ended||G.pending||G.hind||G.mom||s.dead),acts=relActs(s);
-  $('#lcSt').textContent=lcStatus(s)+(busy&&!G.ended&&s.age>=18?(I18N.lang==='en'?' ':'')+t('lc.busy'):'');
-  $('#lcTab').classList.toggle('has',!busy&&acts.some(a=>a.ok===true));
-  const html=acts.map(a=>{const dis=busy||a.ok!==true,arm=G.lcArm===a.id,sub=a.ok!==true?tr(a.ok):arm?t('lc.sure'):withHint(lcSub(s,a.id),lcHint(s,a.id));
-    return `<button type="button" class="lc-btn${arm?' arm':''}" data-a="${a.id}"${dis?' disabled':''}><span class="lc-n">${esc(t('lc.'+a.id))}</span><span class="lc-s">${esc(sub)}</span></button>`}).join('');
-  /* rebuild only when something changed, so a click (or the keyboard focus) isn't lost as the years go by */
-  if(html!==G.lcKey){G.lcKey=html;$('#lcActs').innerHTML=html}}
+  const off=!!(G.ended||s.dead),acts=relActs(s);
+  $('#lcSt').textContent=lcStatus(s);
+  $('#lcTab').classList.toggle('has',!off&&acts.some(a=>a.ok===true));
+  /* the buttons are made once and then only updated, so a click (or the keyboard focus) isn't lost as the years go by */
+  const ids=acts.map(a=>a.id).join();
+  if(ids!==G.lcKey){G.lcKey=ids;$('#lcActs').innerHTML=acts.map(a=>`<button type="button" class="lc-btn" data-a="${a.id}"><span class="lc-n"></span><span class="lc-s"></span></button>`).join('')}
+  for(const a of acts){const b=$('#lcActs').querySelector(`[data-a="${a.id}"]`),dis=off||a.ok!==true,n=t('lc.'+a.id),sub=a.ok!==true?tr(a.ok):withHint(lcSub(s,a.id),lcHint(s,a.id));
+    if(b.disabled!==dis)b.disabled=dis;const N=b.firstChild,S=b.lastChild;if(N.textContent!==n)N.textContent=n;if(S.textContent!==sub)S.textContent=sub}}
+/* the card a Life choice opens: its drawing, what it costs, and go ahead / Cancel */
+const LC_ART={look:'dating',move:'together',wed:'married',baby:'trying',break:'breakup',div:'divorce'},LC_BIG=new Set(['break','div']);
+function lcPt(s){const p=typeof pplOf==='function'&&pplOf(s,'pt')[0];return p?M(p.n):M('lc.yourPt')}
+function lcCardHTML(){const s=G.s,o=G.lc,id=o.id,q=esc(t('lc.'+id+'.q',{n:lcPt(s)}));
+  return Art.card({cls:'mo-card lc-card',c:LC_BIG.has(id)?'mi':'ya',num:Art.roman(s.age),label:q,name:esc(t('lc.t')),win:Art.momentWin(LC_ART[id],'mo-win'),
+    body:`<h2 class="mo-t" id="lcCT">${o.sure?esc(t('lc.sure.t')):q}</h2><p class="mo-x">${esc(o.sure?t('lc.sure.x'):withHint(lcSub(s,id),lcHint(s,id)))}</p>
+    <div class="lc-go"><button class="btn${LC_BIG.has(id)?' btn-ghost':' btn-accent'}" id="lcYes" type="button">${esc(t(o.sure?'lc.yes':'lc.'+id+'.go'))}</button><button class="btn btn-ghost" id="lcNo" type="button">${esc(t('lc.cancel'))}</button></div>`})}
+function paintLc(){const el=$('#lcCard');if(!G.lc||!el)return;el.innerHTML=lcCardHTML();$('#lcYes').onclick=lcYes;$('#lcNo').onclick=lcCancel;
+  /* for a break-up or a divorce the safe button has the focus */
+  (LC_BIG.has(G.lc.id)?$('#lcNo'):$('#lcYes')).focus({preventScroll:true})}
 function lifeAct(id){
-  const s=G.s;if(!s||G.ended||G.pending||G.hind||G.mom||RPY.el)return;
-  /* breaking up and divorcing need a second tap within a few seconds */
-  /* (time stands still while it waits) */
-  if((id==='break'||id==='div')&&G.lcArm!==id){G.lcArm=id;clearTimeout(G.timer);clearTimeout(G.lcArmT);G.lcArmT=setTimeout(()=>{G.lcArm=null;updLife();schedule()},4000);updLife();return}
-  G.lcArm=null;clearTimeout(G.lcArmT);
-  const had=new Set(Object.keys(s.trk)),age=s.age;
-  if(!relAct(s,id,(m,k)=>addLog(m,k)))return;
+  const s=G.s;if(!s||G.ended||G.mom||G.lc||RPY.el||s.dead)return;
+  const x=relActs(s).find(a=>a.id===id);if(!x||x.ok!==true)return;
+  /* time stops, and so does a hindsight card's countdown (it picks up again if you cancel) */
+  clearTimeout(G.timer);clearTimeout(G.hindT);
+  G.lc={id,sure:false,hind:G.hind?Math.max(2000,G.hindEnd-Date.now()):0};
+  $('#lcWrap').classList.remove('open');$('#lcTab').setAttribute('aria-expanded','false');
+  let el=$('#lcCard');
+  if(!el){el=document.createElement('div');el.id='lcCard';el.className='moment';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','lcCT');document.body.appendChild(el)}
+  for(const c of document.body.children)if(c!==el)c.inert=true;
+  el.hidden=false;paintLc();updLife()}
+function lcHide(){G.lc=null;const el=$('#lcCard');if(!el)return;el.hidden=true;el.innerHTML='';for(const c of document.body.children)c.inert=false}
+function lcCancel(){const o=G.lc;if(!o)return;lcHide();
+  if(G.hind){G.hindEnd=Date.now()+o.hind;G.hindT=setTimeout(endHind,o.hind)}
+  updLife();schedule();const b=$('#lcActs [data-a="'+o.id+'"]');if(b&&b.offsetParent&&!b.disabled)b.focus({preventScroll:true})}
+function lcYes(){const o=G.lc;if(!o)return;
+  if(LC_BIG.has(o.id)&&!o.sure){o.sure=true;paintLc();return}
+  const s=G.s,id=o.id,had=new Set(Object.keys(s.trk)),age=s.age;
+  if(!relAct(s,id,(m,k)=>addLog(m,k))){lcCancel();return}
+  lcHide();
   /* kept for the life replay; the wedding is recorded by its own card */
   if(id!=='wed'){G.dec.push({id:'p_'+id,age,title:M('lc.'+id),label:M('lc.'+id),pick:id,def:null,trk:id==='baby'?['kids']:Object.keys(s.trk).filter(k=>!had.has(k)),rows:[]});G.marks.push({a:age,t:M('lc.'+id)})}
-  $('#lcWrap').classList.remove('open');$('#lcTab').setAttribute('aria-expanded','false');
-  lifeMoments();recordTh();clearTimeout(G.timer);next()}
+  lifeMoments();recordTh();clearTimeout(G.timer);
+  /* a card that was open is dealt again, since things have changed (it may no longer make sense after a break-up) */
+  if(G.pending){G.pending=null;G.proj=null;G.slotMode=null}
+  if(G.hind){clearTimeout(G.hindT);G.hind=null}
+  next()}
 function spark(id,v){
   const h=G.th[id]||[];const c=cls(v)||'flat';
   if(h.length<2)return `<svg class="spark" viewBox="0 0 64 26" aria-hidden="true"><line class="z" x1="0" y1="13" x2="64" y2="13"/><circle class="${c}" cx="60" cy="13" r="2.5"/></svg>`;
@@ -792,12 +818,13 @@ cvEl.addEventListener('pointermove',ev=>{const g=G._cx;if(!g)return;const r=cvEl
 cvEl.addEventListener('pointerleave',()=>{G.hover=null;drawChart()});
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(G.s)render();else setupBg()},120)});
 window.addEventListener('langchange',()=>{fillCountries();renderPast();revealText();document.title=t('g.title');
-  if(G.s){buildFocus();buildLife();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);texLang();rpText();paintMoment()}});
+  if(G.s){buildFocus();buildLife();renderSlot(true);render();if(G.ended)drawSeal($('#certSeal'),netWorth(G.s),G.s.base,G.s.deathAge,true);if(!$('#toast').hidden&&G.toastMsg)$('#toast').textContent=tr(G.toastMsg);texLang();rpText();paintMoment();paintLc()}});
 
 /* ---------- controls ---------- */
 $('#play').addEventListener('click',()=>{if(G.ended)return;G.playing=!G.playing;$('#play').textContent=t(G.playing?'g.pause':'g.play');schedule()});
 $('#skip').addEventListener('click',()=>skipAhead());
 document.addEventListener('keydown',e=>{
+  if(G.lc){if(e.key==='Escape'){e.preventDefault();lcCancel()}return}
   if(G.mom){if(e.key===' '||e.key==='Enter'||e.key==='Escape'){e.preventDefault();endMoment()}return}
   if(RPY.el){if(e.key==='Escape'){e.preventDefault();closeReplay()}else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();rpGo(RPY.i+(e.key==='ArrowRight'?1:-1))}return}
   if(!G.s||e.target.closest('input,select,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
