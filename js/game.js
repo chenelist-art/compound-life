@@ -164,15 +164,16 @@ function endLife(){texClear();G.ended=true;G.pending=null;clearTimeout(G.timer);
 /* diary lines that are big moments, and the card each one opens (the line under the title is the diary line itself) */
 const MOMENT={'log.laidOff':'fired','log.layVol':'package','log.car.auto':'auto','log.bizFail':'bizfail','log.car.fail':'bizfail','log.coinDown':'crypto','log.burst':'burst',
   'log.broke':'broke','log.divorce':'divorce','log.car.injEnd':'injury','log.promo':'promo','log.car.up':'careerup','log.grad':'grad','log.bizOk':'bizup','log.car.ok':'bizup',
-  'log.car.exit':'exit','log.child':'child','log.retire':'retired','log.rel.move':'together','log.rel.break':'breakup','log.rel.left':'left','log.rel.try':'trying','log.ppl.dieP':'loss'};
+  'log.car.exit':'exit','log.child':'child','log.retire':'retired','log.rel.move':'together','log.rel.break':'breakup','log.rel.left':'left','log.rel.try':'trying','log.ppl.dieP':'loss',
+  'log.mig.no':'refused','log.mig.pr':'pr','log.mig.cit':'citizen'};
 /* decision cards that open with a big moment: the moment shows first, then the decision */
 const MO_EV={crash:1,ill:1,inh:1};
-const MO_BAD=new Set(['loss','fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury','breakup','left']);
+const MO_BAD=new Set(['refused','loss','fired','package','auto','bizfail','crypto','crash','burst','broke','divorce','ill','injury','breakup','left']);
 /* moments that bring a partner or a child: hearts instead of sparkles, and the partner walks in */
 const LOVE=new Set(['married','child','dating','together']),PT_IN=new Set(['dating']),PT_OUT=new Set(['breakup','left','divorce']);
 /* smaller events stay as a toast, so the game isn't stopped every year */
 const SMALL=new Set(['log.car.trained','log.car.trainFail','log.loanPaid','log.illRec','log.illOk','log.depEnd','log.layNo','log.bizSold','log.boom','log.boomUp','log.coinUp','log.coinBig','log.car.inj','log.rel.look','log.rel.preg','log.rel.noBaby',
-  'log.leftSchool','log.road','log.dis.flood','log.dis.storm','log.dis.drought','log.dis.droughtFarm']);
+  'log.leftSchool','log.road','log.mig.prNo','log.mig.citNo','log.mig.stay','log.mig.stNo','log.dis.flood','log.dis.storm','log.dis.drought','log.dis.droughtFarm']);
 let moOn=store.get('cl-moments')!==false;
 function setMo(on){moOn=on;document.querySelectorAll('#mo0 button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.mo==='1')===on)));store.set('cl-moments',on)}
 document.querySelectorAll('#mo0 button').forEach(b=>b.addEventListener('click',()=>setMo(b.dataset.mo==='1')));
@@ -181,6 +182,7 @@ const num=x=>x&&typeof x==='object'&&'m' in x?x.m:0;
 /* the money line: a text key with {a} (signed) or {b} (no sign), the amount, and whether it is a gain (pos) or neither (flat) */
 function moMoney(kind,m){const s=G.s,v=m&&m.v||{},sal=Math.max(s.lastSal||0,salary(s))||s.base,raise=salary(s)-(G.salPrev||0);
   switch(kind){
+    case 'moved':case 'home':return s.mvCost?{k:'mo.n.move',v:-s.mvCost}:null;
     case 'fired':case 'package':return{k:'mo.n.pay6',v:-.5*sal};
     case 'auto':return{k:'mo.n.sev',v:num(v.a)};
     case 'bizfail':return m.k==='log.bizFail'?{k:'mo.n.gone',v:-num(v.a)}:{k:'mo.n.noInc'};
@@ -214,8 +216,9 @@ function moment(kind,line,title){const s=G.s;if(!s||G.ended||G.moq.some(x=>x.kin
 function deathMo(){const s=G.s,nw=netWorth(s);return{kind:'death',tone:'end',age:s.deathAge,title:M('mo.death.t',{a:s.deathAge}),
   line:s.illDeath?M('mo.die.ill',{x:M('ill.'+s.illDeath)}):M(s.deathAge>=Math.max(70,s.le-3)?'mo.die.old':'mo.die.soon'),money:{k:nw<0?'mo.n.debt':'mo.n.leave',v:nw,flat:1}}}
 /* moments that show in the life itself rather than in the diary: a wedding, a new job, the last mortgage payment */
-const snap=s=>({m:!!s.married,p:s.pt?s.pt.n:0,j:s.job?s.job.tk:null,h:s.house?s.house.mort:-1});
+const snap=s=>({m:!!s.married,p:s.pt?s.pt.n:0,j:s.job?s.job.tk:null,h:s.house?s.house.mort:-1,c:s.lc});
 function lifeMoments(){const s=G.s,a=G.snapS||snap(s),b=snap(s);G.snapS=b;
+  if(b.c!==a.c){const k=b.c===s.ci?'home':'moved';moment(k,M('mo.'+k+'.x'),M('mo.'+k+'.t',{c:{k:'_c',ci:b.c}}))}
   if(b.p&&b.p!==a.p)moment('dating');
   if(b.m&&!a.m)moment('married',M('mo.married.x'));
   if(b.j&&b.j!==a.j)moment('hired',M(s.job.train>s.age?'mo.hired.tx':'mo.hired.x',{x:M('car.a.'+s.job.id)}));
@@ -234,6 +237,7 @@ function moPose(o){const ps=Object.assign({},Pixel.stateOf(G.s));
   else if(o.tone==='bad'){ps.face=o.kind==='ill'?'sick':'sad';if(o.kind==='ill')ps.ill='gown';if(o.kind==='broke')ps.emote='sweat'}
   else ps.face='happy';
   /* the partner walks in for a new love, and walks away at a break-up or a divorce */
+  if(o.kind==='moved'||o.kind==='home')ps.bag=true;
   if(PT_IN.has(o.kind))Object.assign(ps,{partner:true,pmove:'in'});else if(PT_OUT.has(o.kind))Object.assign(ps,{partner:true,pmove:'out'});
   return ps}
 function paintMoment(){const o=G.mom,el=$('#moment');if(!o||!el)return;el.dataset.kind=o.kind;el.innerHTML=moHTML(o);
@@ -254,7 +258,7 @@ function render(){
   const age=s.dead?s.deathAge:s.age;
   $('#age').textContent=age;
   const job=s.study?t('g.studying',{x:s.study.label}):s.retired?t('g.retired'):(s.biz&&s.biz.mode==='full'&&s.biz.ok&&!s.biz.sold)?t('g.biz'):s.job?jobTxt(s):s.age<18?t('g.child'):'';
-  $('#where').textContent=t('g.where',{c:I18N.cname(s.abroad!=null?s.abroad:s.ci),s:M((s.age<18?'sex.kid.':'sex.')+s.sex),f:M('famS.'+s.fam),j:job?' · '+job:''});
+  $('#where').textContent=t('g.where',{c:I18N.cname(s.lc),s:M((s.age<18?'sex.kid.':'sex.')+s.sex),f:M('famS.'+s.fam),j:job?' · '+job:''});
   const nw=netWorth(s),tv=netWorth(tw);
   $('#nw').textContent=fm(nw);$('#nw').className='nw'+(nw<0?' loss':'');window.fitText&&fitText($('#nw'));
   $('#nwsub').innerHTML=(s.age>=18?esc(t('g.income',{a:MN(s.lastInc)})):'')+esc(t('g.twin',{a:MN(tv)}));
@@ -281,7 +285,7 @@ function render(){
 /* the people strip: partner, children, parents, siblings, best friend, boss, mentor; the bar is how close you are */
 const PPL_MAX=9,pplGroup=rk=>rk==='pt'?'g-pt':rk.startsWith('kid')?'g-kid':rk==='mother'||rk==='father'?'g-par':'';
 function renderPpl(L){const el=$('#ppl');if(!el)return;el.setAttribute('aria-label',t('ppl.h'));
-  const li=L.slice(0,PPL_MAX).map(p=>{const r=t('ppl.c.'+p.rk),n=t(p.n),a=t('ppl.age',{a:p.x}),b=t('ppl.bond',{n:p.b}),aw=p.away?' · '+t('ppl.away'):'';
+  const li=L.slice(0,PPL_MAX).map(p=>{const r=t('ppl.c.'+p.rk),n=t(p.n),a=t('ppl.age',{a:p.x}),b=t('ppl.bond',{n:p.b}),aw=p.away?' · '+t('ppl.away'):p.far?' · '+t('ppl.far'):'';
     return `<li class="pp ${pplGroup(p.rk)}" aria-label="${esc(r+' '+n+', '+a+aw+', '+b)}"><span class="pp-r" aria-hidden="true">${esc(r)}</span><span class="pp-n" aria-hidden="true">${esc(n)}</span><span class="pp-a" aria-hidden="true">${esc(a+aw)}</span><span class="pp-b" aria-hidden="true"><i style="width:${p.b}%"></i></span></li>`}).join('');
   el.innerHTML=li+(L.length>PPL_MAX?`<li class="pp-more">${esc(t('ppl.more',{n:L.length-PPL_MAX}))}</li>`:'')}
 /* "Mother Siti (58), Big sister Mei (30)…" for the replay */
@@ -291,8 +295,8 @@ function pplAt(a){let k=-1;for(const x in G.ppl)if(+x<=a&&+x>k)k=+x;return G.ppl
 function jobTxt(s){const j=M('car.'+s.job.id);return s.job.train>s.age?t('g.train',{j}):CAR[s.job.id].gr>0?t('g.joblvl',{j,n:s.level}):t('g.job1',{j})}
 /* where you stand: world and country wealth ranks from the data in engine.js */
 const pctTxt=p=>p>=99.95?'99.9':p>=99?p.toFixed(1):String(Math.max(1,Math.round(p)));
-function rankWorld(nw,ci){const p=worldPct(ci==null?G.s.ci:ci,nw);return p<=0?t('g.rkWorld0'):t('g.rkWorld',{p:pctTxt(p)})}
-function rankCountry(nw,ci){ci=ci==null?G.s.ci:ci;const p=countryPct(ci,nw),c=I18N.cname(ci);if(p>=50){const top=100-p;return t('g.rkTop',{p:top<1?Math.max(.1,top).toFixed(1):String(Math.round(top)),c})}return t('g.rkBottom',{p:String(Math.max(1,Math.round(p))),c})}
+function rankWorld(nw,ci){const p=worldPct(ci==null?G.s.lc:ci,nw);return p<=0?t('g.rkWorld0'):t('g.rkWorld',{p:pctTxt(p)})}
+function rankCountry(nw,ci){ci=ci==null?G.s.lc:ci;const p=countryPct(ci,nw),c=I18N.cname(ci);if(p>=50){const top=100-p;return t('g.rkTop',{p:top<1?Math.max(.1,top).toFixed(1):String(Math.round(top)),c})}return t('g.rkBottom',{p:String(Math.max(1,Math.round(p))),c})}
 /* four other babies born in the same second: random countries weighted by births, same rules, default choices */
 function bornWithYou(){const s=G.s,tot=C.reduce((a,c)=>a+c[2],0),out=[];
   for(let i=0;i<4;i++){let u=mb(hsh(s.seed,'peer',i))()*tot,ci=0;for(;ci<C.length-1;ci++){u-=C[ci][2];if(u<=0)break}
@@ -438,7 +442,7 @@ function lcStatus(s){if(s.age<18)return t('lc.kid');const p=s.pt,sp=I18N.lang===
   const n=s.kids.filter(b=>b<=s.age).length;if(n)x+=sp+t('lc.kids',{n});return x}
 function lcSub(s,id){const B=s.base;switch(id){
   case 'look':return M('lc.look.s',{a:MN(.02*B)});case 'baby':return M('lc.baby.s',{a:MN(.15*B)});
-  case 'div':return M('lc.div.s',{a:MN(divC(s)[0]*B)});default:return M('lc.'+id+'.s')}}
+  case 'div':return M('lc.div.s',{a:MN(divC(s)[0]*B)});case 'back':return M('lc.back.s',{c:{k:'_c',ci:s.ci}});default:return M('lc.'+id+'.s')}}
 function lcHint(s,id){if(G.mode!=='easy')return null;const sp=I18N.lang==='en'?' ':'';
   if(id==='baby'){let h=t('lc.baby.h',{p:Math.round(babyP(s.age)*100)});if(s.sex==='f'&&CHILDPEN[workCode(s)]>0&&!s.kids.length)h+=sp+t('e.kids.h',{p:CHILDPEN[workCode(s)]});return h}
   return ['look','move','break','div'].includes(id)?t('lc.'+id+'.h'):null}
@@ -453,9 +457,9 @@ function updLife(){
   for(const a of acts){const b=$('#lcActs').querySelector(`[data-a="${a.id}"]`),dis=off||a.ok!==true,n=t('lc.'+a.id),sub=a.ok!==true?tr(a.ok):withHint(lcSub(s,a.id),lcHint(s,a.id));
     if(b.disabled!==dis)b.disabled=dis;const N=b.firstChild,S=b.lastChild;if(N.textContent!==n)N.textContent=n;if(S.textContent!==sub)S.textContent=sub}}
 /* the card a Life choice opens: its drawing, what it costs, and go ahead / Cancel */
-const LC_ART={look:'dating',move:'together',wed:'married',baby:'trying',break:'breakup',div:'divorce'},LC_BIG=new Set(['break','div']);
+const LC_ART={look:'dating',move:'together',wed:'married',baby:'trying',break:'breakup',div:'divorce',mig:'moved',back:'home'},LC_BIG=new Set(['break','div','back']);
 function lcPt(s){const p=typeof pplOf==='function'&&pplOf(s,'pt')[0];return p?M(p.n):M('lc.yourPt')}
-function lcCardHTML(){const s=G.s,o=G.lc,id=o.id,q=esc(t('lc.'+id+'.q',{n:lcPt(s)}));
+function lcCardHTML(){const s=G.s,o=G.lc,id=o.id,q=esc(t('lc.'+id+'.q',{n:lcPt(s),c:{k:'_c',ci:s.ci}}));
   return Art.card({cls:'mo-card lc-card',c:LC_BIG.has(id)?'mi':'ya',num:Art.roman(s.age),label:q,name:esc(t('lc.t')),win:Art.momentWin(LC_ART[id],'mo-win'),
     body:`<h2 class="mo-t" id="lcCT">${o.sure?esc(t('lc.sure.t')):q}</h2><p class="mo-x">${esc(o.sure?t('lc.sure.x'):withHint(lcSub(s,id),lcHint(s,id)))}</p>
     <div class="lc-go"><button class="btn${LC_BIG.has(id)?' btn-ghost':' btn-accent'}" id="lcYes" type="button">${esc(t(o.sure?'lc.yes':'lc.'+id+'.go'))}</button><button class="btn btn-ghost" id="lcNo" type="button">${esc(t('lc.cancel'))}</button></div>`})}
@@ -482,8 +486,8 @@ function lcYes(){const o=G.lc;if(!o)return;
   const s=G.s,id=o.id,had=new Set(Object.keys(s.trk)),age=s.age;
   if(!relAct(s,id,(m,k)=>addLog(m,k))){lcCancel();return}
   lcHide();
-  /* kept for the life replay; the wedding is recorded by its own card */
-  if(id!=='wed'){G.dec.push({id:'p_'+id,age,title:M('lc.'+id),label:M('lc.'+id),pick:id,def:null,trk:id==='baby'?['kids']:Object.keys(s.trk).filter(k=>!had.has(k)),rows:[]});G.marks.push({a:age,t:M('lc.'+id)})}
+  /* kept for the life replay; the wedding and the move are recorded by their own cards */
+  if(id!=='wed'&&id!=='mig'){G.dec.push({id:'p_'+id,age,title:M('lc.'+id),label:M('lc.'+id),pick:id,def:null,trk:id==='baby'?['kids']:Object.keys(s.trk).filter(k=>!had.has(k)),rows:[]});G.marks.push({a:age,t:M('lc.'+id)})}
   lifeMoments();recordTh();clearTimeout(G.timer);
   /* a card that was open is dealt again, since things have changed (it may no longer make sense after a break-up) */
   if(G.pending){G.pending=null;G.proj=null;G.slotMode=null}
@@ -513,12 +517,12 @@ function endHTML(){
   const d=nw-tv,fam=M('fam.'+s.fam);
   const story=Math.abs(d)<1?esc(t('g.level')):d>0?esc(t('g.ahead',{a:'\u0001'})).replace('\u0001',`<b class="gain">${fm(d)}</b>`):esc(t('g.behind',{a:'\u0001'})).replace('\u0001',`<b class="loss">${fm(-d)}</b>`);
   const rel=Math.abs(d)<1?M('g.relLevel'):d>0?M('g.relAhead',{a:MN(d)}):M('g.relBehind',{a:MN(-d)});
-  const wp=worldPct(s.ci,nw);
+  const wp=worldPct(s.lc,nw);
   const gr=G.grade||lifeScore(s);
   const share=t('g.share',{c:cn,fam,a:s.deathAge,nw:MN(nw),rel,best:best[0]?M('g.best',{x:best[0].tk.label,v:MS(best[0].v)}):''})+(wp>0?t('g.shareW',{p:pctTxt(wp)}):'')+t('g.shareG',{g:gr.grade});
   /* you and the four babies born in the same second, ranked by how rich each life got at its peak (wealth at death mostly
      shows how much was spent in retirement) */
-  const crowd=[{me:1,ci:s.ci,fam:s.fam,sex:s.sex,age:s.deathAge,nw,top:Math.max(0,peak[1]),topAge:peak[0]}].concat(G.peers||[]).map(p=>Object.assign(p,{w:worldPct(p.ci,p.top)}));
+  const crowd=[{me:1,ci:s.ci,fam:s.fam,sex:s.sex,age:s.deathAge,nw,top:Math.max(0,peak[1]),topAge:peak[0]}].concat(G.peers||[]).map(p=>Object.assign(p,{w:worldPct(p.me?s.lc:p.ci,p.top)}));
   const order=crowd.slice().sort((a,b)=>b.w-a.w||b.top-a.top);
   const peersH=crowd.map(p=>`<li class="${p.me?'me':''}"><span class="pk">${esc(t('g.peerRank',{n:order.indexOf(p)+1}))}</span><b>${esc(p.me?t('g.you'):I18N.cname(p.ci))}</b><span class="muted">${esc(p.me?cn:'')}${p.me?' · ':''}${esc(t('sex.kid.'+p.sex))} · ${esc(t('famS.'+p.fam))} · ${esc(t('g.peerAge',{a:p.age}))}</span><span class="pnw num">${fm(p.top)}</span><span class="pw">${esc(t('g.peerPeak',{a:p.topAge}))}</span><span class="pw">${esc(rankWorld(p.top,p.ci))}</span></li>`).join('');
   const stand=`<section class="stand"><h4>${esc(t('g.standT'))}</h4>
@@ -548,11 +552,12 @@ function endHTML(){
    typical result from the 40 futures saved when you chose. You move on yourself (buttons, swipe, ←/→).
    The ending fades the screen to charcoal for "Was it all worth it?", the one dark moment in the design, then back to light. */
 const RP=[['child',['hobby','allow','tuition','phone1','pocket','friends','peer','loot']],['school',['edu','summer','teen','trip','cn_gaokao','in_coach','et_exam','de_ausb','sg_ns','ng_nysc'],'edu'],
-  ['job',['job','save','nego','scheme','abroad','jp_shukatsu','cn_city','cn_kaogong','br_concurso','my_jb','in_gulf','pk_gulf','id_pmi','bd_gulf','mx_h2','ph_ofw','vn_xkld','ng_japa','bd_city','vn_city'],'job'],['love',['wed','date','p_move'],'wed'],['home',['home','bubble','move','sg_bto','cn_house','my_first','us_fha','gb_shared','de_buy','id_flpp','br_mcmv','mx_infonavit','ph_house','et_condo'],'home'],['kids',['p_baby'],'p_baby'],
+  ['job',['job','save','nego','scheme','abroad','jp_shukatsu','cn_city','cn_kaogong','br_concurso','my_jb','in_gulf','pk_gulf','id_pmi','bd_gulf','mx_h2','ph_ofw','vn_xkld','ng_japa','bd_city','vn_city'],'job'],['love',['wed','date','p_move'],'wed'],['move',['mig_how','et_dv2'],'mig_how'],['home',['home','bubble','move','sg_bto','cn_house','my_first','us_fha','gb_shared','de_buy','id_flpp','br_mcmv','mx_infonavit','ph_house','et_condo'],'home'],['kids',['p_baby'],'p_baby'],
   ['crisis',['ill','dep','crash','layoff','debt','divorce','p_div','p_break','scam','scam2','us_medbill','my_flood','in_flood','ng_flood','pk_flood','id_flood','bd_flood','br_flood','mx_storm','ph_typhoon','vn_typhoon','ng_infl','pk_infl','et_infl']],['old',['will','travel','downsize','move2','gtrip','grandkid','charity','annuity','reverse','club','funeral']]];
 const RPX={date:'no'}; // choices that mean the stage never happened
 /* a try for a baby only makes a page when a baby came of it (its story is the children's passbook line) */
-const rpOk=d=>d.id!=='p_baby'||G.s.kids.includes(d.age+1);
+/* and a visa application only when it ended in a move */
+const rpOk=d=>d.id==='p_baby'?G.s.kids.includes(d.age+1):d.id==='mig_how'||d.id==='et_dv2'?d.trk.some(k=>{const t=G.s.trk[k];return/^mig\d/.test(k)&&t&&t.label&&/^trk\.mig(End)?$/.test(t.label.k)}):true;
 const RPY={};
 const decVal=d=>d.trk.length?d.trk.reduce((a,id)=>a+(G.s.trk[id]?trkView(G.s,G.s.trk[id]).v:0),0):null;
 const nwAt=a=>{let v=0;for(const p of G.hs)if(p[0]<=a)v=p[1];return v};

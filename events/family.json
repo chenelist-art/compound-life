@@ -494,7 +494,7 @@
    "def": "yes",
    "tarot": {"en": "The Lovers", "zh": "恋人", "zht": "戀人"},
    "art": "date",
-   "vars": {"x": "M('car.a.' + meetCar)", "n": "meetName ? M(meetName) : M('.someone')"},
+   "vars": {"x": "M('car.a.' + meetCar)", "n": "meetName ? M(meetName) : M('.someone')", "f": "meetC != null && meetC !== lc ? M('.from', {c: {k: '_c', ci: meetC}}) : ''"},
    "again": "delete done.date; meetAt = null",
    "opts": [
     {"id": "yes", "sub": {"a": "MN(.04 * base)"}, "hint": true, "rel": 3, "do": "startDating()"},
@@ -503,7 +503,8 @@
    "i18n": {
     "en": {
      ".t": "You met someone",
-     ".x": "You've met {n}, and you really like them. They work as {x}. Dating takes time and a little money.",
+     ".x": "You've met {n}, and you really like them.{f} They work as {x}. Dating takes time and a little money.",
+     ".from": " They're from {c}.",
      ".yes": "Start dating",
      ".yes.s": "Dinners, trips and small gifts: about {a} a year.",
      ".yes.h": "Happiness +3.",
@@ -513,7 +514,8 @@
     },
     "zh": {
      ".t": "你遇见了一个人",
-     ".x": "你遇见了{n}，很喜欢对方。对方是{x}。谈恋爱要花时间，也要花一点钱。",
+     ".x": "你遇见了{n}，很喜欢对方。{f}对方是{x}。谈恋爱要花时间，也要花一点钱。",
+     ".from": "对方来自{c}。",
      ".yes": "开始交往",
      ".yes.s": "吃饭、出游和小礼物：每年大约{a}。",
      ".yes.h": "幸福感 +3。",
@@ -523,7 +525,8 @@
     },
     "zht": {
      ".t": "你遇見了一個人",
-     ".x": "你遇見了{n}，很喜歡對方。對方是{x}。談戀愛要花時間，也要花一點錢。",
+     ".x": "你遇見了{n}，很喜歡對方。{f}對方是{x}。談戀愛要花時間，也要花一點錢。",
+     ".from": "對方來自{c}。",
      ".yes": "開始交往",
      ".yes.s": "吃飯、出遊和小禮物：每年大約{a}。",
      ".yes.h": "幸福感 +3。",

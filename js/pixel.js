@@ -192,6 +192,8 @@ const GOWN={sh:MI,pa:MI};
 /* a baby carried in front of a parent: a small round bundle with a sleepy face */
 function bundle(sc,cx,y,c){sprite(sc,l=>{l.blob(cx-4,y,9,8,c,2.2);l.blob(cx-3,y,7,6,WH,2.4)},l=>{l.pat(cx-2,y+2,['#...#']);l.px(cx,y+4,CO);l.pat(cx-1,y-1,['.#','#.'])})}
 function house(sc){sprite(sc,l=>{l.rect(1,34,13,11,YA);for(let i=0;i<7;i++)l.rect(i,33-i,15-2*i,1,CO);l.rect(6,38,3,7,MI);l.rect(2,36,3,3,MI);l.rect(10,36,3,3,MI)},l=>{l.px(8,41,YA);l.px(3,37,WH);l.px(11,37,WH)})}
+/* a suitcase on moving day */
+function suitcase(sc){sprite(sc,l=>{l.rect(35,36,10,9,CO);l.rect(37,33,6,1,CO);l.rect(37,34,1,2,CO);l.rect(42,34,1,2,CO)},l=>{l.rect(35,39,10,1,YA);l.px(36,44,CH);l.px(43,44,CH)})}
 function car(sc){sprite(sc,l=>{l.blob(33,37,15,7,CO,3);l.blob(36,33,9,7,CO,2.6);l.rect(37,35,3,2,WH);l.rect(41,35,3,2,WH)},l=>{l.rect(35,43,3,2,CH);l.rect(43,43,3,2,CH);l.px(46,39,YA)})}
 /* tiny charcoal digits for "+2" when there are more children than hands */
 const DIG={'+':['000','010','111','010','000'],0:['111','101','101','101','111'],1:['010','110','010','010','111'],2:['111','001','111','100','111'],3:['111','001','111','001','111'],4:['101','101','111','001','001'],5:['111','100','111','001','111'],6:['111','100','111','101','111'],7:['111','001','010','010','010'],8:['111','101','111','101','111'],9:['111','101','111','001','111']};
@@ -215,7 +217,7 @@ function faceOf(st,fr){if(st.face)return st.face;if(st.sleep)return 'peace';if(f
  if(fr.blink&&(k==='normal'||k==='sad'))k='blink';return k}
 function scene(st,fr){const sc=buf();fr=fr||{};
  sprite(sc,l=>l.rect(0,FY+2,W,H-FY-2,WA));
- if(st.house)house(sc);if(st.vehicle)car(sc);
+ if(st.house)house(sc);if(st.bag)suitcase(sc);else if(st.vehicle)car(sc);
  const stg=stageOf(st.age),ks=st.kids||[],grown=stg==='adult'||stg==='elder',couple=st.partner&&grown,sad=st.mood==='sad'||st.dep;
  /* pmove: the partner walks in from the right (a new love) or walks away (a break-up); fr.pm is how far off they are */
  const leave=couple&&st.pmove==='out',both=couple&&!leave,mainX=couple?17:24,partX=30+(fr.pm||0),sq=s=>s||0,up=fr.up||0;
@@ -251,7 +253,9 @@ function stateOf(s){const age=s.dead?s.deathAge:s.age,nw=netWorth(s),B=s.base,h=
   study:!!s.study,partner:!!s.pt,kids:s.kids.map(b=>age-b).filter(a=>a>=0),
   wealth:nw<.5*B?0:nw<10*B?1:2,house:!!s.house,vehicle:!!s.car,mood:h>=70?'happy':h>=35?'flat':'sad',
   ill:s.illAge===s.age&&!s.dead?'gown':sick(s)?'band':null,dep:depressed(s),sleep:!!s.dead,
-  broke:!s.dead&&(s.debt>.3*B||nw+s.sloan<-.25*B),retired:!!s.retired&&!s.dead}}
+  broke:!s.dead&&(s.debt>.3*B||nw+s.sloan<-.25*B),retired:!!s.retired&&!s.dead,
+  /* moving day (the year you moved, and the next one) */
+  bag:s.movedAt!=null&&age>=s.movedAt&&age-s.movedAt<=1&&!s.dead}}
 
 /* ---------- animation: soft squash-and-stretch, blinking, a head tilt now and then, emotes, a jump at big moments ---------- */
 const SQ=[0,0,1,1,0,0,-1,-1];

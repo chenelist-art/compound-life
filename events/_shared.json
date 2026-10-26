@@ -1,6 +1,18 @@
 {
  "about": "Shared parts: option sets several events use (\"use\" in an event), and consequences several events schedule.",
  "templates": {
+  "migto": {
+   "key": "migto",
+   "about": "Where to move: one option per country (the best-paid first); picking one brings the route card (mig_how) the same year. Used by mig and mig_idea, which add their own 'stay'.",
+   "opts": [
+    {"each": "migDest()", "as": "d", "id": "C[d][1]", "label": "M('e.migto.go', {c: {k: '_c', ci: d}})", "sub": "M('e.migto.go.s', {a: MN(C[d][3]), b: MN(base), h: C[d][5]})", "do": "next('mig_how', 0, {d: d, o: 0})"}
+   ],
+   "i18n": {
+    "en": {".go": "{c}", ".go.s": "A typical wage there: {a} a year (here {b}). A home costs about {h} years of it."},
+    "zh": {".go": "{c}", ".go.s": "那里的一般年薪：{a}（这里{b}）。买房约要{h}年的薪水。"},
+    "zht": {".go": "{c}", ".go.s": "那裡的一般年薪：{a}（這裡{b}）。買房約要{h}年的薪水。"}
+   }
+  },
   "flood": {
    "key": "flood",
    "about": "Floods and storms: insure, prepare or do nothing, for the next ten years. Whether one reaches you comes from the real yearly rate where you live (hazards in js/engine.js, EM-DAT); this card sets how much of the damage you pay (prot). aid: government aid when hit (× typical wage); prem: yearly premium; prep: cost of preparing.",

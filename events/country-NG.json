@@ -70,45 +70,40 @@
   },
   {
    "id": "ng_japa",
-   "src": "Japa: UK Skilled Worker visa £719 (up to 3 years, from Oct 2023) and the Immigration Health Surcharge £1,035 a year (Mayer Brown; Edwin Coe). With flights and a deposit, about £6,000, at market exchange rates ≈ 6 years of a Nigerian typical wage (ESTIMATE). Pay and costs in the UK are ESTIMATES from the two countries' typical wages.",
+   "src": "Japa: UK Skilled Worker visa £1,519 for over three years (from 9 Apr 2025), the Immigration Health Surcharge £1,035 a year, and English at B2 from 8 Jan 2026 (gov.uk). The visa itself goes through the moving rules (MIG.GB in js/engine.js, sources there).",
    "age": [24, 38],
    "weight": 0.45,
-   "when": {"canWorkAbroad": true, "test": "edLv() >= 1"},
+   "when": {"canWorkAbroad": true, "test": "edLv() >= 1 && migCan()"},
    "def": "stay",
    "tarot": "abroad",
    "art": {"draw": "passport", "bg": "mi"},
-   "let": {"gi": "countryIndex('GB')", "f": "6 * base", "sal": "salary()"},
+   "let": {"gi": "countryIndex('GB')", "pa": "payThere(countryIndex('GB'))"},
    "opts": [
-    {
-     "id": "go",
-     "sub": {"a": "MN(6 * sal)", "f": "MN(f)"},
-     "ok": "liquid() >= f || M('e.home.need', { n: MN(f), h: MN(liquid()) })",
-     "do": "pay(f); abroad = gi; costMul = 5; happy -= 4; rl(-5); bump('abroad', 6, M('trk.abroad', { c: { k: '_c', ci: gi } })); trk.abroad.v -= f"
-    },
+    {"id": "go", "sub": {"a": "MN(pa)"}, "do": "next('mig_how', 0, {d: gi, o: 1})"},
     {"id": "stay"}
    ],
    "i18n": {
     "en": {
      ".t": "Japa",
-     ".x": "Many young Nigerians are moving abroad (“japa”). A UK employer offers to sponsor you for a Skilled Worker visa. The visa fee was £719 for up to three years and the Immigration Health Surcharge is £1,035 a year; then come flights and a deposit on a flat.",
-     ".go": "Move to the UK",
-     ".go.s": "Pay of about {a} a year, but living costs about five times higher. Visa, health surcharge, flights and a deposit: about {f}. Far from family: Happiness −4.",
+     ".x": "Many young Nigerians are moving abroad (“japa”). A UK employer offers to sponsor you for a Skilled Worker visa. The visa costs £1,519 for over three years, the Immigration Health Surcharge £1,035 a year, and you need an English test; then come flights and a deposit on a flat.",
+     ".go": "Apply to move to the UK",
+     ".go.s": "Pay of about {a} a year there. The visa's requirements and fees come next.",
      ".stay": "Stay in Nigeria",
      ".stay.s": "Your life stays as it is."
     },
     "zh": {
      ".t": "出走（Japa）",
-     ".x": "很多尼日利亚年轻人移居海外（“japa”）。一位英国雇主愿意担保你申请技术工作签证。三年内的签证费是£719，移民健康附加费每年£1,035，还有机票和租房押金。",
-     ".go": "搬去英国",
-     ".go.s": "年薪约{a}，但生活费约高五倍。签证、健康附加费、机票和押金约{f}。远离家人：幸福感 −4。",
+     ".x": "许多尼日利亚年轻人正在出国（“japa”）。一家英国雇主愿意为你担保技术工人签证。签证三年以上要£1,519，移民健康附加费每年£1,035，还要考英语；然后是机票和租房押金。",
+     ".go": "申请搬去英国",
+     ".go.s": "在那里年薪约{a}。签证的条件和费用见下一张卡。",
      ".stay": "留在尼日利亚",
      ".stay.s": "生活照旧。"
     },
     "zht": {
      ".t": "出走（Japa）",
-     ".x": "很多奈及利亞年輕人移居海外（「japa」）。一位英國僱主願意擔保你申請技術工作簽證。三年內的簽證費是£719，移民健康附加費每年£1,035，還有機票和租房押金。",
-     ".go": "搬去英國",
-     ".go.s": "年薪約{a}，但生活費約高五倍。簽證、健康附加費、機票和押金約{f}。遠離家人：幸福感 −4。",
+     ".x": "許多奈及利亞年輕人正在出國（「japa」）。一家英國雇主願意為你擔保技術工人簽證。簽證三年以上要£1,519，移民健康附加費每年£1,035，還要考英文；然後是機票和租屋押金。",
+     ".go": "申請搬去英國",
+     ".go.s": "在那裡年薪約{a}。簽證的條件和費用見下一張卡。",
      ".stay": "留在奈及利亞",
      ".stay.s": "生活照舊。"
     }

@@ -5,7 +5,7 @@
    SOURCES for the amounts the country cards use are in each card's "src" in events/country-*.json. */
 
 /* ---------- shared mechanics (country cards and more) ---------- */
-const CC=s=>C[s.ci][1];
+const CC=s=>C[s.lc][1];
 /* country cards are dealt a little more often than general ones (DENSITY in engine.js), so each life gets a few */
 const CDENS=.8;
 const kidAge=s=>s.kids.map(b=>s.age-b).filter(x=>x>=0);
@@ -13,8 +13,9 @@ const hasKid=(s,a,b)=>kidAge(s).some(x=>x>=a&&x<=b);
 /* no employer's schemes: your own business, creative or gig work, farming, or no job */
 const selfEmp=s=>!s.job||['own','creative'].includes(CAR[s.job.id].f)||s.job.id==='farm';
 const byFam=(s,o)=>o[s.fam];
-/* a contract abroad can start: working, not abroad or on a contract already, not retired, not still training */
-const ctrWhen=s=>job(s)&&s.abroad==null&&!s.ctr&&!s.retired&&!(s.job.train>s.age);
+/* a contract abroad can start: working, living where you were born and not applying to move, not on a contract already, not
+   retired, not still training */
+const ctrWhen=s=>job(s)&&s.lc===s.ci&&!s.migApp&&!s.ctr&&!s.retired&&!(s.job.train>s.age);
 /* move part of your free savings into a savings product */
 function putIn(s,src,a,props,lk){a=Math.min(a,liquid(s));if(!(a>0))return 0;pay(s,a);mkLot(s,src,props,lk);addLot(s,src,a);return a}
 /* a yearly contribution into a lot: amt a year (or p × pay), plus bonus × it (a government top-up, an employer's share,
@@ -66,6 +67,8 @@ function fgtsBal(s){const f=s.fgts;return .08*Math.max(s.lastSal,s.base)*Math.mi
 function cLaid(s,L){const f=s.fgts;if(!f||!s.job)return;const b=fgtsBal(s),v=(f.mode==='resc'?1.4:.4)*b;f.since=s.age;s.cash+=v;const t=s.trk.br_fgts;if(t){t.v+=v;t.note=M('note.fgts',{a:MN(v)})}L&&L(M('log.fgts',{a:MN(v)}),'good')}
 /* follow-up cards ("three years later…"): event `id` (an event with "chain": true) comes up `yrs` years from now (a number,
    or [from, to] for a random year in between); `data` is kept for it and its scripts read it as `chain` */
+/* a follow-up card that can come back clears itself (in its own scripts, chain is its data, not this list) */
+function unchain(s,id){if(s.chain)delete s.chain[id]}
 function next(s,id,yrs,data){if(!s.chain)s.chain={};if(s.chain[id]||s.done[id])return;
  const y=Array.isArray(yrs)?yrs[0]+Math.floor(evR(s,'nextAt'+id)()*(yrs[1]-yrs[0]+1)):yrs||0;s.chain[id]={at:s.age+y,d:data||{}}}
 
@@ -86,12 +89,15 @@ Object.assign(LATER,{
  /* skill, study and work */ addSkill,startStudy,startCert,learnLuck,edLv,pickCareer,endCareer,offerSwitch,carStartPay,carLock,carHint,startBiz,
  /* home, car, family */ buy,buyAt,homeFirst,wed,startDating,kidWin,famCost,famPay,famNote,
  /* places and schemes */ contract,cityMove,medPlan,penClaim,penScheme,abroadTo,
+ /* moving to another country (engine.js): can you apply now, where to, what a route asks for (ok, the line under it, the Easy
+    hint), applying, a job offer's country, pay there; then renewing a visa, permanent residence and citizenship */
+  migCan,migDest,migOk,migSub,migHint,migApply,migOfferTo,payThere,speaks,usdG,migRenew,migPRApply,migCitApply,
  /* health */ treat,illYou,survP,depFee,depStart,
  /* markets */ crashSell,crashTrack,crashPct,
  /* real-world chances (js/data.js): disP(years, kind) a disaster reaching you, uniRate() a university place */ disP,uniRate,
  /* reading the life */ salary,skill,liquid,eqTot,mktTot,netWorth,netOf,price,rent,eduCost,inhAmt,bizP,negoP,efTarget,slPay,fgtsBal,
   CC,kidAge,hasKid,selfEmp,byFam,mentorFit,LNY,relP,ctrWhen,
- /* consequences and people */ later,rl,heal,next,
+ /* consequences and people */ later,rl,heal,next,unchain,
  /* randomness: evR('key') is a sequence of random numbers, the same for this life, year and key (see engine.js) */ evR};
  for(const k in S){const f=S[k];V[k]=(c,...a)=>f(c.s,...a)}
  const PURE={MN,MS,clamp,amort,carPay,mPay,inR,upFront,yrPay,setRate,isMkt,String,Number,
@@ -111,6 +117,8 @@ Object.assign(LATER,{
  V.divorce=(c,by)=>divorce(c.s,by,c.L);
  V.splitUp=(c,by)=>splitUp(c.s,by,c.L);
  V.cLaid=c=>cLaid(c.s,c.L);
+ /* moving back home (a visa you let run out) */
+ V.migBack=c=>migBack(c.s,c.L);
  /* people (js/people.js): Who(p) "Your sister Mei", who(p) "your sister Mei", name(p) "Mei"; folks() your parents; sibs() your
     brothers and sisters; people('sib') a list, person('friend') one or null; bond(p or a role, change); bondOf(id) */
  V.Who=(c,p)=>pplWho(c.s,p,1);V.who=(c,p)=>pplWho(c.s,p,0);V.name=(c,p)=>M(p.n);
@@ -119,4 +127,4 @@ Object.assign(LATER,{
  V.bond=(c,x,d)=>pplBond(c.s,x,d);V.bondOf=(c,id)=>{const p=pplGet(c.s,id);return p?p.bond:null};
  V.parentsPass=c=>pplParentsPass(c.s);V.kidFee=c=>pplKidFee(c.s);
  const K=ES.CONST;K.Math={min:Math.min,max:Math.max,floor:Math.floor,ceil:Math.ceil,round:Math.round,abs:Math.abs,exp:Math.exp,log:Math.log,sqrt:Math.sqrt,pow:Math.pow,PI:Math.PI};
- K.C=C;K.CAR=CAR;K.ILLT=ILLT;K.SCH=SCH;K.SK=SK;K.DENSITY=DENSITY;K.CDENS=CDENS}
+ K.C=C;K.MIG=MIG;K.MIGK=MIGK;K.CAR=CAR;K.ILLT=ILLT;K.SCH=SCH;K.SK=SK;K.DENSITY=DENSITY;K.CDENS=CDENS}

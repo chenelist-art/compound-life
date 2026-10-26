@@ -16,7 +16,8 @@ edits: the site loads `gen/`, not these files.
 | File | What's in it |
 |---|---|
 | `childhood.json`, `career.json`, `money.json`, `home.json`, `family.json`, `health.json`, `later-life.json` | the general deck, by theme |
-| `country-MY.json` … `country-VN.json` | cards only for lives born in that country (`"country": "MY"` at the top) |
+| `country-MY.json` … `country-VN.json` | cards only for lives in that country (`"country": "MY"` at the top): born there, or moved there |
+| `migration.json` | moving to another country: where to, which legal route, visa renewals, permanent residence, citizenship, visits home, money sent home, parents (the rules are `MIG` in `js/engine.js`) |
 | `people.json` | cards about the people in your life (a sibling's wedding, a child's university fees, a parent's funeral…) |
 | `_shared.json` | option sets several events share (`templates`) and consequences several events schedule (`later`) |
 | `_names.json` | given names by country and sex, in English, Simplified and Traditional Chinese |
@@ -102,13 +103,13 @@ All the checks listed must hold. Anything else goes in `test`, an expression.
 
 | Check | Example | Meaning |
 |---|---|---|
-| `country` | `"MY"` or `["MY", "SG"]` | born in |
+| `country` | `"MY"` or `["MY", "SG"]` | living in (where you were born, until you move) |
 | `family` | `["poor", "working"]` | poor, working, middle, rich |
 | `sex` | `"f"` | f or m |
 | `age` | `[18, 63]` | age now |
 | `working` | `true` | has a career, not studying, not retired |
 | `job`, `studying`, `retired` | `true` / `false` | has a career / is studying / has retired |
-| `house`, `car`, `insured`, `married`, `abroad` | `true` / `false` | |
+| `house`, `car`, `insured`, `married`, `abroad` | `true` / `false` | `abroad`: living outside the country you were born in |
 | `partner` | `["living", "married"]` | single, dating, living, married |
 | `kids` | `true` or `[1, 2]` | has children / how many |
 | `kidAge` | `[0, 1]` | has a child aged 0 to 1 |
@@ -143,6 +144,8 @@ They look like JavaScript but can only touch the life being played:
 | `famPay(id, a)`, `famNote()` | your family pays `a` (in typical wages) for you as a child: a poor or working family borrows it and you help repay it over five years from 22; a better-off one pays from savings, so your inheritance is smaller. `id` is the event (its title names the passbook line). `famNote()` is the line to add under the option (`{b}`) that says they would borrow |
 | `later(age, 'kind', {…})` | a consequence in a later year (see below) |
 | `next('event', years, {…})` | a follow-up card (see below) |
+| `unchain('event')` | in a follow-up card's `again`, lets it be scheduled again (inside its scripts `chain` is its own data) |
+| `migApply(d, route, offer)`, `migOk`, `migSub`, `migHint`, `migDest()`, `migCan()`, `migOfferTo()`, `payThere(d)`, `usdG(x)`, `migRenew()`, `migPRApply()`, `migCitApply()`, `migBack()` | moving abroad (`js/engine.js`): apply to country index `d` by `'sk'`, `'inv'`, `'st'`, `'fam'` (or `'dv'`), what it asks for, where you could go, a job offer's country, your pay there, US$ in game money where you live; renewing, permanent residence, citizenship, going home |
 | `rl(d)` | change Relationships |
 | `roll('key')` | a random number 0–1, the same for this life, year and key (so the 40 futures differ) |
 | `log(M('log.x'), 'good')` | a diary line (in consequences) |

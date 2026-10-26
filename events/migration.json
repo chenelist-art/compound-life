@@ -1,0 +1,181 @@
+{
+ "about": "Moving to another country: where to go, which legal route to take (skilled worker, investor, study, family), and life as a migrant (visa renewals, permanent residence, citizenship, visits home, money sent home, bringing parents over). The rules, thresholds and their sources are in MIG in js/engine.js; these cards only ask the questions.",
+ "events": [
+  {
+   "id": "mig_idea",
+   "src": "How often people think of moving is a game rule (ESTIMATE). The routes and their requirements: MIG in js/engine.js.",
+   "age": [22, 45],
+   "weight": 0.9,
+   "when": {"test": "migCan()"},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "ya"},
+   "use": "migto",
+   "opts": [{"id": "stay"}],
+   "i18n": {
+    "en": {".t": "A life somewhere else?", ".x": "A school friend moved abroad years ago and loves it. You catch yourself wondering whether you could build a life in another country. Wages and prices there are no secret; getting in is the hard part.", ".stay": "Stay where I am", ".stay.s": "Your family, your friends, your language."},
+    "zh": {".t": "去别处生活？", ".x": "一位老同学多年前移居海外，过得很好。你忍不住想：自己能不能在另一个国家重新开始？那里的薪水和物价都查得到，难的是怎么进去。", ".stay": "留在这里", ".stay.s": "你的家人、朋友和语言都在这里。"},
+    "zht": {".t": "去別處生活？", ".x": "一位老同學多年前移居海外，過得很好。你忍不住想：自己能不能在另一個國家重新開始？那裡的薪水和物價都查得到，難的是怎麼進去。", ".stay": "留在這裡", ".stay.s": "你的家人、朋友和語言都在這裡。"}
+   }
+  },
+  {
+   "id": "mig",
+   "src": "Comes up when you choose Move abroad in the Life choices panel (relAct in js/engine.js).",
+   "when": {"test": "!!askMig"},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "mi"},
+   "again": "delete done.mig; askMig = 0",
+   "use": "migto",
+   "opts": [{"id": "stay"}],
+   "i18n": {
+    "en": {".t": "Where to?", ".x": "Pick a country to see what it asks of people moving there.", ".stay": "Not now", ".stay.s": "Stay where you are."},
+    "zh": {".t": "去哪里？", ".x": "选一个国家，看看移居那里需要什么条件。", ".stay": "暂时不了", ".stay.s": "留在原地。"},
+    "zht": {".t": "去哪裡？", ".x": "選一個國家，看看移居那裡需要什麼條件。", ".stay": "暫時不了", ".stay.s": "留在原地。"}
+   }
+  },
+  {
+   "id": "mig_how",
+   "src": "The four legal routes, with each country's requirements, fees, waiting times and chances: MIG in js/engine.js (sources there).",
+   "chain": true,
+   "def": "wait",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "wa"},
+   "let": {"d": "chain.d", "o": "chain.o"},
+   "vars": {"c": "{k: '_c', ci: d}"},
+   "again": "delete done.mig_how; unchain('mig_how')",
+   "opts": [
+    {"id": "sk", "sub": "migSub(d, 'sk', o)", "hint": "migHint(d, 'sk', o)", "ok": "migOk(d, 'sk', o)", "do": "migApply(d, 'sk', o)"},
+    {"id": "inv", "sub": "migSub(d, 'inv', o)", "hint": "migHint(d, 'inv', o)", "ok": "migOk(d, 'inv', o)", "do": "migApply(d, 'inv', o)"},
+    {"id": "st", "sub": "migSub(d, 'st', o)", "hint": "migHint(d, 'st', o)", "ok": "migOk(d, 'st', o)", "do": "migApply(d, 'st', o)"},
+    {"id": "fam", "sub": "migSub(d, 'fam', o)", "hint": "migHint(d, 'fam', o)", "ok": "migOk(d, 'fam', o)", "do": "migApply(d, 'fam', o)"},
+    {"id": "wait"}
+   ],
+   "i18n": {
+    "en": {".t": "Applying to move", ".x": "{c} lets people in a few legal ways, each with its own fees and rules. An application takes time, and it can be turned down.", ".sk": "As a skilled worker", ".inv": "As an investor", ".st": "Study there first", ".fam": "To join your partner's family", ".wait": "Not now", ".wait.s": "Keep the idea for later."},
+    "zh": {".t": "申请移居", ".x": "{c}有几种合法的移居途径，各有各的费用和条件。申请要花时间，也可能被拒。", ".sk": "以技术人才身份", ".inv": "以投资者身份", ".st": "先去那里读书", ".fam": "以伴侣家属身份", ".wait": "暂时不了", ".wait.s": "这个念头先放着。"},
+    "zht": {".t": "申請移居", ".x": "{c}有幾種合法的移居途徑，各有各的費用和條件。申請要花時間，也可能被拒。", ".sk": "以技術人才身分", ".inv": "以投資者身分", ".st": "先去那裡讀書", ".fam": "以伴侶家屬身分", ".wait": "暫時不了", ".wait.s": "這個念頭先放著。"}
+   }
+  },
+  {
+   "id": "mig_renew",
+   "src": "Work and family permits are renewed every few years; one is refused when its reason is gone (no job, no partner): game rule from the routes in MIG (js/engine.js). The fee is an ESTIMATE.",
+   "when": {"test": "!!mig && mig.st === 'visa' && mig.renew <= age && !mig.out"},
+   "def": "renew",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "mi"},
+   "vars": {"c": "{k: '_c', ci: lc}"},
+   "again": "delete done.mig_renew",
+   "opts": [
+    {"id": "renew", "sub": {"a": "MN(usdG(MIGK.renew))"}, "do": "migRenew()"},
+    {"id": "leave", "do": "migBack()"}
+   ],
+   "i18n": {
+    "en": {".t": "Your visa is up for renewal", ".x": "Your permit to live in {c} runs out soon. Renewing means forms, fees and proof that the reason you came still holds.", ".renew": "Renew it", ".renew.s": "Fees about {a}.", ".leave": "Go back home", ".leave.s": "Let it run out and move back."},
+    "zh": {".t": "签证要续签了", ".x": "你在{c}的居留许可快到期了。续签要填表、交费，还要证明当初来这里的理由仍然成立。", ".renew": "续签", ".renew.s": "费用约{a}。", ".leave": "回家乡", ".leave.s": "让它到期，搬回去。"},
+    "zht": {".t": "簽證要續簽了", ".x": "你在{c}的居留許可快到期了。續簽要填表、繳費，還要證明當初來這裡的理由仍然成立。", ".renew": "續簽", ".renew.s": "費用約{a}。", ".leave": "回家鄉", ".leave.s": "讓它到期，搬回去。"}
+   }
+  },
+  {
+   "id": "mig_pr",
+   "src": "Years before permanent residence and the chance of getting it: MIG in js/engine.js. The fee is an ESTIMATE (a US green card application, I-485, is $1,440: USCIS fee rule, 1 Apr 2024).",
+   "when": {"test": "!!mig && mig.st === 'visa' && mig.prAt <= age && !mig.prApp && !mig.out"},
+   "def": "apply",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "ya"},
+   "vars": {"c": "{k: '_c', ci: lc}"},
+   "again": "delete done.mig_pr",
+   "opts": [
+    {"id": "apply", "sub": {"a": "MN(usdG(MIGK.prFee))"}, "do": "migPRApply()"},
+    {"id": "later", "do": "mig.prAt = age + 2"}
+   ],
+   "i18n": {
+    "en": {".t": "Permanent residence", ".x": "You have lived in {c} long enough to apply to stay for good. Permanent residents no longer need their visa renewed.", ".apply": "Apply", ".apply.s": "Fees about {a}; the answer comes next year.", ".later": "Not yet", ".later.s": "Ask again in two years."},
+    "zh": {".t": "永久居留", ".x": "你在{c}住得够久，可以申请永久居留了。永久居民不用再续签签证。", ".apply": "申请", ".apply.s": "费用约{a}；明年会有结果。", ".later": "还不急", ".later.s": "两年后再说。"},
+    "zht": {".t": "永久居留", ".x": "你在{c}住得夠久，可以申請永久居留了。永久居民不用再續簽簽證。", ".apply": "申請", ".apply.s": "費用約{a}；明年會有結果。", ".later": "還不急", ".later.s": "兩年後再說。"}
+   }
+  },
+  {
+   "id": "mig_cit",
+   "src": "Years before citizenship, its chance and whether you may keep your old citizenship: MIG in js/engine.js. The fee is an ESTIMATE (a US N-400 is $760: USCIS fee rule, 1 Apr 2024).",
+   "when": {"test": "!!mig && mig.st !== 'cit' && mig.st !== 'student' && mig.citAt <= age && !mig.citApp && !mig.out && (mig.st === 'pr' || MIG[C[mig.d][1]].np != null)"},
+   "def": "keep",
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "wa"},
+   "let": {"q": "MIG[C[lc][1]]"},
+   "vars": {"c": "{k: '_c', ci: lc}"},
+   "again": "delete done.mig_cit",
+   "opts": [
+    {"id": "apply", "sub": {"a": "MN(usdG(MIGK.citFee))", "x": "q.dual ? M('.dual') : M('.give', {c: {k: '_c', ci: ci}})"}, "do": "migCitApply()"},
+    {"id": "keep", "do": "mig.citAt = age + 4"}
+   ],
+   "i18n": {
+    "en": {".t": "Becoming a citizen", ".x": "You can now apply for citizenship of {c}: a test, an oath, and a passport if it goes well.", ".apply": "Apply for citizenship", ".apply.s": "Fees about {a}. {x}", ".dual": "You can keep your old citizenship too.", ".give": "You would have to give up your citizenship of {c}.", ".keep": "Not now", ".keep.s": "Stay as you are."},
+    "zh": {".t": "入籍", ".x": "你现在可以申请{c}国籍了：要考试、宣誓，顺利的话能拿到护照。", ".apply": "申请入籍", ".apply.s": "费用约{a}。{x}", ".dual": "原来的国籍也可以保留。", ".give": "你要放弃{c}国籍。", ".keep": "暂时不了", ".keep.s": "维持现状。"},
+    "zht": {".t": "入籍", ".x": "你現在可以申請{c}國籍了：要考試、宣誓，順利的話能拿到護照。", ".apply": "申請入籍", ".apply.s": "費用約{a}。{x}", ".dual": "原來的國籍也可以保留。", ".give": "你要放棄{c}國籍。", ".keep": "暫時不了", ".keep.s": "維持現狀。"}
+   }
+  },
+  {
+   "id": "mig_visit",
+   "src": "A return flight home costs about US$1,200 a person (ESTIMATE); closeness and Happiness changes are game rules.",
+   "when": {"test": "!!mig && mig.visitAt <= age && !mig.out"},
+   "who": {"role": "parent", "test": "p.far", "pick": "closest"},
+   "def": "call",
+   "tarot": "abroad",
+   "art": "abroad",
+   "let": {"n": "1 + (pt && pt.st !== 'date' ? 1 : 0) + Math.min(kids.length, 2)", "f": "n * usdG(MIGK.fly)"},
+   "vars": {"p": "folks()", "c": "{k: '_c', ci: ci}"},
+   "again": "delete done.mig_visit",
+   "opts": [
+    {"id": "fly", "sub": {"a": "MN(f)"}, "rel": 2, "do": "spend('mig_visit', f, 'trk.migVisit'); bond('parent', 6); happy += 2; mig.visitAt = age + 2 + Math.floor(roll('visit') * 2)"},
+    {"id": "call", "do": "bond('parent', -2); happy -= 1; mig.visitAt = age + 2"}
+   ],
+   "i18n": {
+    "en": {".t": "A trip home?", ".x": "It's been a while since you saw {p}. The holidays are coming, and flights back to {c} are filling up.", ".fly": "Fly home for the holidays", ".fly.s": "Flights for everyone: about {a}.", ".call": "Call on video instead", ".call.s": "Free, but it isn't the same.", "trk.migVisit": "Trips home"},
+    "zh": {".t": "回家一趟？", ".x": "你好久没见到{p}了。假期快到了，飞回{c}的机票越来越紧。", ".fly": "假期飞回家", ".fly.s": "全家机票约{a}。", ".call": "改成视频通话", ".call.s": "不用钱，但感觉不一样。", "trk.migVisit": "回乡探亲"},
+    "zht": {".t": "回家一趟？", ".x": "你好久沒見到{p}了。假期快到了，飛回{c}的機票越來越緊。", ".fly": "假期飛回家", ".fly.s": "全家機票約{a}。", ".call": "改成視訊通話", ".call.s": "不用錢，但感覺不一樣。", "trk.migVisit": "返鄉探親"}
+   }
+  },
+  {
+   "id": "mig_remit",
+   "src": "Migrants from poorer countries often send part of their pay home (World Bank, Migration and Development Briefs); the shares offered are an ESTIMATE.",
+   "when": {"test": "!!mig && mig.remitAt === age"},
+   "who": {"role": "parent", "pick": "closest"},
+   "def": "none",
+   "tarot": "abroad",
+   "art": {"draw": "ctr", "bg": "ya"},
+   "let": {"w": "Math.max(salary(), base)"},
+   "vars": {"p": "folks()"},
+   "opts": [
+    {"id": "p10", "sub": {"a": "MN(.1 * w)"}, "rel": 3, "do": "rec('migRemit', .1 * w, 30); T('migRemit', {kind: 'custom', label: M('trk.migRemit')}); bond('parent', 8); happy += 1"},
+    {"id": "p5", "sub": {"a": "MN(.05 * w)"}, "rel": 1, "do": "rec('migRemit', .05 * w, 30); T('migRemit', {kind: 'custom', label: M('trk.migRemit')}); bond('parent', 4)"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {".t": "Money for home", ".x": "Pay here goes much further back home, and {p} could use the help.", ".p10": "Send a tenth of your pay", ".p10.s": "About {a} a year.", ".p5": "Send a little", ".p5.s": "About {a} a year.", ".none": "Not for now", ".none.s": "Settle in first."},
+    "zh": {".t": "寄钱回家", ".x": "这里的薪水在家乡很经花，{p}也用得上这份帮助。", ".p10": "每年寄回薪水的十分之一", ".p10.s": "每年约{a}。", ".p5": "寄一点就好", ".p5.s": "每年约{a}。", ".none": "暂时不寄", ".none.s": "先安顿下来。"},
+    "zht": {".t": "寄錢回家", ".x": "這裡的薪水在家鄉很好用，{p}也用得上這份幫助。", ".p10": "每年寄回薪水的十分之一", ".p10.s": "每年約{a}。", ".p5": "寄一點就好", ".p5.s": "每年約{a}。", ".none": "暫時不寄", ".none.s": "先安頓下來。"}
+   }
+  },
+  {
+   "id": "mig_folks",
+   "src": "Whether parents can join you, and as what (a permanent resident or a citizen), is MIG.folks in js/engine.js; the fees and the yearly cost of their keep are an ESTIMATE.",
+   "when": {"test": "!!mig && !mig.folks && !mig.out && age - mig.at >= 3 && (MIG[C[mig.d][1]].folks === 'pr' && (mig.st === 'pr' || mig.st === 'cit') || MIG[C[mig.d][1]].folks === 'cit' && mig.st === 'cit')"},
+   "who": {"role": "parent", "test": "p.far", "pick": "closest"},
+   "def": "stay",
+   "tarot": "abroad",
+   "art": "abroad",
+   "let": {"f": "usdG(3000)", "y": ".25 * base"},
+   "vars": {"p": "folks()"},
+   "opts": [
+    {"id": "bring", "sub": {"a": "MN(f)", "b": "MN(y)"}, "rel": 3, "do": "pay(f); rec('migFolks', y, 15); T('migFolks', {kind: 'custom', label: M('trk.migFolks')}); for (const q of people('parent')) { q.far = 0; q.came = true } bond('parent', 12); happy += 3; mig.folks = 1"},
+    {"id": "stay", "do": "mig.folks = -1"}
+   ],
+   "i18n": {
+    "en": {".t": "Bring your parents over?", ".x": "You can now sponsor {p} to come and live near you.", ".bring": "Sponsor them", ".bring.s": "Fees and flights about {a}, then about {b} a year for their keep.", ".stay": "Keep visiting instead", ".stay.s": "They stay where their friends are."},
+    "zh": {".t": "接父母过来？", ".x": "你现在可以担保{p}过来，住在你附近。", ".bring": "担保他们过来", ".bring.s": "费用和机票约{a}，之后每年生活开销约{b}。", ".stay": "还是常回去看看", ".stay.s": "他们留在朋友身边。"},
+    "zht": {".t": "接父母過來？", ".x": "你現在可以擔保{p}過來，住在你附近。", ".bring": "擔保他們過來", ".bring.s": "費用和機票約{a}，之後每年生活開銷約{b}。", ".stay": "還是常回去看看", ".stay.s": "他們留在朋友身邊。"}
+   }
+  }
+ ]
+}

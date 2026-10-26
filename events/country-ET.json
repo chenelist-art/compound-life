@@ -580,30 +580,42 @@
   },
   {
    "id": "et_dv2",
-   "src": "Selected entrants must apply and pay visa and medical fees, and travel at their own cost (US State Department). Pay and cost multiples in the United States are an ESTIMATE. Amounts are compared with Br10,000 a month (Br120,000 a year), between the civil-service minimum of Br6,000 and degree-holder entry pay of Br11,500 from September 2025 (Federal Civil Service Commission, via AllAfrica, Aug 2025): an ESTIMATE of a typical wage.",
+   "src": "Selected entrants must apply and pay visa and medical fees, and travel at their own cost (US State Department); an immigrant visa gives a green card on arrival. The fees and the chance the interview goes through (90%) are an ESTIMATE; the move goes through the moving rules (MIG.US in js/engine.js).",
    "chain": true,
-   "when": {"canWorkAbroad": true},
+   "when": {"test": "migCan()"},
    "def": "stay",
    "tarot": "abroad",
    "art": {"draw": "passport", "bg": "wa"},
-   "vars": {"a": "MN(4 * salary())"},
-   "use": "ctr",
-   "with": {"m": 4, "cm": 1.3, "yrs": 15, "fee": 2, "remit": 0.5},
+   "let": {"us": "countryIndex('US')"},
+   "vars": {"a": "MN(payThere(us) || C[us][3])"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(usdG(900))"}, "do": "migApply(us, 'dv', 1)"},
+    {"id": "stay"}
+   ],
    "i18n": {
     "en": {
      ".t": "You were selected",
      ".x": "You check the State Department website and can hardly believe it: you have been selected for a US immigrant visa. Work there could pay about {a} a year.",
-     "trk.et_dv2": "A new life in the United States"
+     ".go": "Apply for the immigrant visa",
+     ".go.s": "Visa and medical fees about {a}; the interview is next year, then the flight.",
+     ".stay": "Stay in Ethiopia",
+     ".stay.s": "Your family and your life are here."
     },
     "zh": {
      ".t": "你中签了",
      ".x": "你上美国国务院网站一查，简直不敢相信：你中了美国移民签证。在那边工作年薪大约{a}。",
-     "trk.et_dv2": "在美国的新生活"
+     ".go": "申请移民签证",
+     ".go.s": "签证和体检费用约{a}；明年面谈，然后出发。",
+     ".stay": "留在埃塞俄比亚",
+     ".stay.s": "你的家人和生活都在这里。"
     },
     "zht": {
      ".t": "你中籤了",
      ".x": "你上美國國務院網站一查，簡直不敢相信：你中了美國移民簽證。在那邊工作年薪大約{a}。",
-     "trk.et_dv2": "在美國的新生活"
+     ".go": "申請移民簽證",
+     ".go.s": "簽證和體檢費用約{a}；明年面談，然後出發。",
+     ".stay": "留在衣索比亞",
+     ".stay.s": "你的家人和生活都在這裡。"
     }
    }
   },

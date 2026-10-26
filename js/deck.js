@@ -19,13 +19,14 @@ const STAT={health:s=>s.health,happy:s=>s.happy,rel:s=>s.rel,skill:s=>skill(s),c
 const CMP={'<':(a,b)=>a<b,'<=':(a,b)=>a<=b,'>':(a,b)=>a>b,'>=':(a,b)=>a>=b,'==':(a,b)=>a===b,'!=':(a,b)=>a!==b};
 const flag=f=>b=>s=>!!f(s)===b;
 const COND={
- country:v=>{const l=list(v);return s=>l.includes(C[s.ci][1])},
+ /* the country you live in: where you were born, until you move */
+ country:v=>{const l=list(v);return s=>l.includes(C[s.lc][1])},
  family:v=>{const l=list(v);return s=>l.includes(s.fam)},
  sex:v=>s=>s.sex===v,
  age:([a,b])=>s=>s.age>=a&&s.age<=b,
  working:flag(s=>job(s)),job:flag(s=>s.job),studying:flag(s=>s.study),retired:flag(s=>s.retired),
  house:flag(s=>s.house),car:flag(s=>s.car),insured:flag(s=>s.insured),married:flag(s=>s.married),
- abroad:flag(s=>s.abroad!=null),selfEmployed:flag(s=>selfEmp(s)),canWorkAbroad:flag(s=>ctrWhen(s)),
+ abroad:flag(s=>s.lc!==s.ci),selfEmployed:flag(s=>selfEmp(s)),canWorkAbroad:flag(s=>ctrWhen(s)),
  partner:v=>{const l=list(v);return s=>l.includes(ptState(s))},
  kids:v=>typeof v==='boolean'?s=>(s.kids.length>0)===v:s=>s.kids.length>=v[0]&&s.kids.length<=v[1],
  kidAge:([a,b])=>s=>hasKid(s,a,b),

@@ -276,57 +276,41 @@
   },
   {
    "id": "abroad",
+   "src": "Which country the offer comes from: migOfferTo in js/engine.js (an ESTIMATE). The visa that follows goes through the moving rules (MIG in js/engine.js).",
    "age": [26, 35],
    "weight": 0.45,
-   "when": {"working": true, "abroad": false, "test": "!ctr"},
+   "when": {"working": true, "abroad": false, "test": "!ctr && migCan() && skill() >= 30"},
    "def": "stay",
    "tarot": {"en": "Three of Wands", "zh": "权杖三", "zht": "權杖三"},
    "art": "abroad",
-   "let": {
-    "di": "abroadTo()",
-    "ratio": "C[di][3] / base",
-    "m": "clamp(.8 * ratio, 1.3, 3)",
-    "cm": "clamp(.7 * ratio, 1.2, 2.6)",
-    "sal": "salary()"
-   },
-   "vars": {"c": "{k: '_c', ci: abroadTo()}"},
+   "let": {"di": "migOfferTo()", "sal": "salary()", "pa": "payThere(di)"},
+   "vars": {"c": "{k: '_c', ci: di}"},
    "opts": [
-    {
-     "id": "go",
-     "label": "M('.go', { c: { k: '_c', ci: di } })",
-     "sub": {
-      "c": "{ k: '_c', ci: di }",
-      "a": "MN(m * sal)",
-      "b": "MN(sal)",
-      "p": "Math.round((cm - 1) * 100)",
-      "m": "MN(.2 * base)"
-     },
-     "do": "pay(.2 * base); abroad = di; costMul = cm; happy -= 4; bump('abroad', m, M('trk.abroad', { c: { k: '_c', ci: di } }))"
-    },
+    {"id": "go", "label": "M('.go', {c: {k: '_c', ci: di}})", "sub": {"a": "MN(pa)", "b": "MN(sal)"}, "do": "next('mig_how', 0, {d: di, o: 1})"},
     {"id": "stay"}
    ],
    "i18n": {
     "en": {
      ".t": "A job abroad",
-     ".x": "A company in {c} offers you a job. You would be far from your family and friends.",
-     ".go": "Move to {c}",
-     ".go.s": "Pay of {a} a year (you earn {b} now). Rent and daily costs are about {p}% higher. Moving costs {m}. Happiness −4.",
+     ".x": "A company in {c} offers you a job and will sponsor your work visa. You would be far from your family and friends.",
+     ".go": "Apply to move to {c}",
+     ".go.s": "Pay of about {a} a year there (you earn {b} now). The visa's fees and rules come next.",
      ".stay": "Stay at home",
      ".stay.s": "Your life stays as it is."
     },
     "zh": {
      ".t": "海外工作",
-     ".x": "{c}的一家公司给你一份工作。你会离家人和朋友很远。",
-     ".go": "搬去{c}",
-     ".go.s": "年薪{a}（你现在是{b}）。房租和日常开销大约高{p}%。搬家要花{m}。幸福感 −4。",
+     ".x": "{c}的一家公司想聘请你，并愿意为你担保工作签证。你会离家人和朋友很远。",
+     ".go": "申请搬去{c}",
+     ".go.s": "在那里年薪约{a}（你现在是{b}）。签证的费用和条件见下一张卡。",
      ".stay": "留在国内",
      ".stay.s": "生活照旧。"
     },
     "zht": {
      ".t": "海外工作",
-     ".x": "{c}的一家公司給你一份工作。你會離家人和朋友很遠。",
-     ".go": "搬去{c}",
-     ".go.s": "年薪{a}（你現在是{b}）。房租和日常開銷大約高{p}%。搬家要花{m}。幸福感 −4。",
+     ".x": "{c}的一家公司想聘請你，並願意為你擔保工作簽證。你會離家人和朋友很遠。",
+     ".go": "申請搬去{c}",
+     ".go.s": "在那裡年薪約{a}（你現在是{b}）。簽證的費用和條件見下一張卡。",
      ".stay": "留在國內",
      ".stay.s": "生活照舊。"
     }

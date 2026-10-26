@@ -45,7 +45,7 @@ function pplSync(s){const P=s.ppl;if(!P)return null;let msg=null;const code=work
 /* one year for everyone (from tick, at your age a) */
 function pplYear(s,a,L){if(!s.ppl)return;const lg=(m,k)=>{L&&L(m,k)};const bm=pplSync(s);if(bm)lg(bm,'');const le=C[s.ci][4],code=workCode(s);
  /* someone you'll meet: their name and sex are known before the date card */
- if(s.meetAt===a+1&&!s.pt&&!s.meetName){s.meetSex=pplR(s,'meetSex')<.9?(s.sex==='f'?'m':'f'):s.sex;s.meetName=pplName(s,s.meetSex,code,'meet'+a)}
+ if(s.meetAt===a+1&&!s.pt&&!s.meetName){s.meetSex=pplR(s,'meetSex')<.9?(s.sex==='f'?'m':'f'):s.sex;s.meetName=pplName(s,s.meetSex,s.meetC!=null?C[s.meetC][1]:code,'meet'+a)}
  /* a best friend from school, and a new one now and then if you have none */
  const fr=s.ppl.find(p=>p.r==='friend'&&pplHere(s,p));
  if(!fr&&a>=6&&a<=70&&(a===6||pplR(s,'newFriend')<.12)){const sex=pplR(s,'frSex')<.7?s.sex:(s.sex==='f'?'m':'f');const f=pplAdd(s,{r:'friend',sex,n:pplName(s,sex,code,'fr'+s.pplN),d:a<18?0:Math.round((pplR(s,'frAge')-.5)*6)});lg(M('log.ppl.friend',{n:M(f.n)}),'good')}
@@ -66,7 +66,7 @@ function pplYear(s,a,L){if(!s.ppl)return;const lg=(m,k)=>{L&&L(m,k)};const bm=pp
   if(p.r==='boss'&&pplR(s,'bossGo'+p.id)<.07){p.gone=true;continue}
   if(p.r==='mentor'&&a>=p.at+8){p.gone=true;continue}
   /* closeness drifts toward its level: higher with good Relationships and the People focus, lower when far away */
-  const tg=BOND[p.r]+(s.rel-50)*.3-(p.away?10:0);p.bond=clamp(p.bond+(tg-p.bond)*.05+(s.focus==='people'&&a>=18&&!s.study?1:0),0,100);
+  const tg=BOND[p.r]+(s.rel-50)*.3-(p.away||p.far?10:0);p.bond=clamp(p.bond+(tg-p.bond)*.05+(s.focus==='people'&&a>=18&&!s.study?1:0),0,100);
   if(p.r==='friend'&&a>=18&&p.bond<15){p.gone=true;lg(M('log.ppl.apart',{p:pplWho(s,p,0)}),'bad')}}
  pplSync(s)}
 
@@ -99,6 +99,6 @@ function pplParentsPass(s){for(const p of pplOf(s,'parent'))p.dead=s.age}
 function pplClosest(s){let b=null;for(const p of s.ppl||[])if(pplHere(s,p)&&p.r!=='boss'&&p.r!=='mentor'&&p.r!=='kid'&&(!b||p.bond>b.bond))b=p;return b}
 /* the people shown next to your pixel character and in the replay: partner, children, parents, siblings, friend, boss, mentor */
 const PPL_ORDER={pt:0,kid:1,mother:2,father:3,sib:4,friend:5,boss:6,mentor:7};
-function pplView(s){return(s.ppl||[]).filter(p=>pplHere(s,p)).sort((a,b)=>PPL_ORDER[a.r]-PPL_ORDER[b.r]||b.d-a.d).map(p=>({id:p.id,n:p.n,rk:pplRk(s,p),x:s.age+p.d,b:Math.round(p.bond),away:!!p.away}))}
+function pplView(s){return(s.ppl||[]).filter(p=>pplHere(s,p)).sort((a,b)=>PPL_ORDER[a.r]-PPL_ORDER[b.r]||b.d-a.d).map(p=>({id:p.id,n:p.n,rk:pplRk(s,p),x:s.age+p.d,b:Math.round(p.bond),away:!!p.away,far:!!p.far&&!p.away}))}
 /* a child's university fees: the education fund's figure, or the same estimate (60% of a degree), and any bursary */
 function pplKidFee(s){return(s.kidFee||s.uni*s.base*.6)*(s.kidFeeM||1)}

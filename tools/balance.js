@@ -1,12 +1,16 @@
 /* Balance test: plays many lives with three bots and checks how hard the game is.
    node tools/balance.js                 bots on every difficulty, 500 lives each
    node tools/balance.js normal 500 opt  also: for every decision, how often each option was the best one
+   node tools/balance.js normal 300 move also: the mover bot on the same lives as born, given US$500,000 at 25, and made highly skilled at
+                                         22 (+20 Skill, a degree and a master's), to see how much money and Skill help to move abroad
    Bots (each life is played by all three, from the same birth):
    - smart: always invests (saves 30%, puts bonuses and windfalls in the market), studies (degree, courses, Learn focus
      until 30), buys insurance, never gambles; otherwise takes the cheapest option and the best-paid steady career
    - random: a random option on every card, and now and then a random focus
    - default: the default option on every card, Balance focus all life
    - mixed: each life gets its own care level, from reckless to careful, and mixes the three bots accordingly
+   - mover: the mixed bot, but it tries to move abroad whenever a card offers it and now and then from the Life choices
+     panel (a random country, any route it qualifies for), and keeps renewing and applying once there
    "Best option" (opt): at each decision of a mixed-bot life, every option is played out to the end of that same life
    (same luck, same later choices) and the one with the highest life score wins; ties share the win. */
 const fs=require('fs'),path=require('path'),vm=require('vm');
@@ -14,7 +18,7 @@ const ROOT=path.join(__dirname,'..');
 const ctx={console};vm.createContext(ctx);
 /* ENGINE=path runs another copy of engine.js, for example an older one to compare against. The events come from gen/ (node tools/build.js) */
 for(const f of[path.join(ROOT,'js/i18n.js'),path.join(ROOT,'gen/en.js'),path.join(ROOT,'js/data.js'),process.env.ENGINE||path.join(ROOT,'js/engine.js'),path.join(ROOT,'js/people.js'),path.join(ROOT,'js/script.js'),path.join(ROOT,'js/verbs.js'),path.join(ROOT,'gen/events.js'),path.join(ROOT,'js/deck.js')])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
-const E=vm.runInContext(`({C,EV,CAR,newLife,tick,yearRand,dueEvents,applyOpt,netWorth,clone,mb,hsh,carStartPay,lifeScore,salary,skill,evOpts:typeof evOpts==='function'?evOpts:(s,ev)=>ev.opts(s)})`,ctx);
+const E=vm.runInContext(`({C,EV,CAR,newLife,tick,yearRand,dueEvents,applyOpt,netWorth,clone,mb,hsh,carStartPay,lifeScore,salary,skill,relActs,relAct,evOpts:typeof evOpts==='function'?evOpts:(s,ev)=>ev.opts(s)})`,ctx);
 const args=process.argv.slice(2),DIFFS=['easy','normal','hard'];
 const onlyD=args.find(a=>DIFFS.includes(a)),N=+(args.find(a=>/^\d+$/.test(a))||500),OPT=args.includes('opt');
 const FOC=['learn','grind','hustle','balance','people'];
@@ -22,7 +26,7 @@ const FOC=['learn','grind','hustle','balance','people'];
 /* ---------- bots ---------- */
 const SMART={hobby:['code','music'],allow:['bank'],tuition:['yes','free'],phone1:['wait'],pocket:['fund'],loot:['skip'],teen:['school'],
  summer:['exam'],edu:['uni','dip'],switch:['stay'],cc:['full'],move:['share'],bnpl:['skip'],efund:['build'],nego:['ask'],holiday:['skip'],
- insure:['yes'],lend:['no'],car:['none'],gym:['run'],mlm:['no'],abroad:['go'],phone:['keep'],tip:['skip'],pet:['no'],scam:['no'],
+ insure:['yes'],lend:['no'],car:['none'],gym:['run'],mlm:['no'],phone:['keep'],tip:['skip'],pet:['no'],scam:['no'],
  bonus:['inv'],cert:['mba','cert'],agent:['term'],wed:['reg'],gold:['index'],health:['yes'],home:['buy','small'],rates:['fix'],
  edufund:['fund'],biz:['no'],crash:['buy','hold'],layoff:['take'],bubble:['sell','hold'],idle:['inv'],parents:['sib'],divorce:['counsel'],
  roof:['fix'],car2:['keep'],fire:['keep'],pivot:['re'],life:['frugal'],inh:['inv'],ret:['65'],charity:['no'],glide:['mix'],ltc:['yes'],
@@ -46,6 +50,15 @@ const BOTS={
 const care=s=>E.mb(E.hsh(s.seed,"care"))();
 const mix=(s,k)=>{const u=E.mb(E.hsh(s.seed,"mx",k,s.age))(),c=care(s);return u<c?"smart":u<c+(1-c)/2?"random":"default"};
 BOTS.mixed={pick:(s,ev,os)=>BOTS[mix(s,ev.id)].pick(s,ev,os),focus:s=>BOTS[mix(s,"focus")].focus(s)};
+/* mover: tries to move abroad at every chance (cards offering it, and about one year in twelve from the panel, 22 to 50) */
+const MOVE_GO=new Set(['mig_idea','mig','abroad','ng_japa','et_dv2']),MOVE_STAY={mig_renew:'renew',mig_pr:'apply',mig_cit:'apply'};
+BOTS.mover={pick(s,ev,os){const r=E.mb(E.hsh(s.seed,'mv',ev.id,s.age))();
+  /* like most people who move, it aims for a better-paid country (the best-paid ones if none pays more) */
+  if(MOVE_GO.has(ev.id)){let go=os.filter(o=>o.id!=='stay');const up=go.filter(o=>{const i=E.C.findIndex(c=>c[1]===o.id);return i<0||E.C[i][3]>s.base});go=up.length?up:go.slice(0,4);if(go.length)return go[Math.floor(r*go.length)].id}
+  if(ev.id==='mig_how'){const go=os.filter(o=>o.id!=='wait');if(go.length)return go[Math.floor(r*go.length)].id}
+  if(MOVE_STAY[ev.id]&&os.some(o=>o.id===MOVE_STAY[ev.id]))return MOVE_STAY[ev.id];return BOTS.mixed.pick(s,ev,os)},
+ focus:s=>BOTS.mixed.focus(s),
+ year(s){if(s.age>=22&&s.age<=50&&E.mb(E.hsh(s.seed,'mvp',s.age))()<.08&&E.relActs(s).some(a=>a.id==='mig'&&a.ok===true))E.relAct(s,'mig',null)}};
 
 /* ---------- playing a life ---------- */
 const open=(s,ev)=>E.evOpts(s,ev).filter(o=>o.ok===undefined||o.ok===true);
@@ -61,6 +74,8 @@ function play(s,bot,hook,rec){let g=0;
    const os=open(s,ev);if(hook&&os.length>1)hook(s,ev,os);E.applyOpt(s,ev,bot.pick(s,ev,os))}
   if(s.dead)break;
   if(s.age>=18&&!s.retired){const f=bot.focus(s);if(f)s.focus=f}
+  if(bot.year){bot.year(s);let k2=0,ev2;while(!s.dead&&(ev2=E.dueEvents(s)[0])&&k2++<40)E.applyOpt(s,ev2,bot.pick(s,ev2,open(s,ev2)))}
+  if(s.age===25)s.sk25=E.skill(s);
   const nw0=E.netWorth(s);E.tick(s,E.yearRand(s.seed,s.age),L);
   if(rec){const nw=E.netWorth(s),B=s.base;if(nw0>0&&nw0-nw>=Math.max(B,nw0/3))rec.crash=1;if(s.debt>=1.5*B)rec.debt=1}}
  if(rec&&s.done.ill)rec.ill=1;return s}
@@ -73,10 +88,11 @@ const SETBACK={'log.laidOff':'layoff','log.car.auto':'layoff','log.divorce':'div
 const med=a=>{const b=a.slice().sort((x,y)=>x-y);return b.length?b[b.length>>1]:0};
 const pc=(n,d)=>d?Math.round(100*n/d)+'%':'-';
 const money=v=>{const a=Math.abs(v),s=v<0?'-':'';return a>=1e6?s+'$'+(a/1e6).toFixed(1)+'M':a>=1e3?s+'$'+Math.round(a/1e3)+'k':s+'$'+Math.round(a)};
-function bots(dk,n){const R={smart:[],random:[],default:[],mixed:[]};
+function bots(dk,n){const R={smart:[],random:[],default:[],mixed:[],mover:[]};
  for(let i=0;i<n;i++){const seed=E.hsh('bal',i)>>>0;
   for(const b in R){const rec={},s=play(born(seed,dk),BOTS[b],null,rec),sc=E.lifeScore(s);
-   R[b].push({nw:E.netWorth(s),nwB:E.netWorth(s)/s.base,mean:s.acc.an?s.acc.nw/s.acc.an:0,sc,age:s.deathAge,illD:!!s.illDeath,rec,any:SERIOUS.some(k=>rec[k])})}}
+   R[b].push({nw:E.netWorth(s),nwB:E.netWorth(s)/s.base,mean:s.acc.an?s.acc.nw/s.acc.an:0,sc,age:s.deathAge,illD:!!s.illDeath,rec,any:SERIOUS.some(k=>rec[k]),
+    tries:s.migTry||[],fam:s.fam,sk25:s.sk25||0,moved:(s.moves||0)>0,settled:Object.entries(s.lived||{}).some(([k,y])=>k!==E.C[s.ci][1]&&y>=5)})}}
  return R}
 function report(dk,R){
  console.log(`\n=== ${dk.toUpperCase()} · ${R.smart.length} lives per bot ===`);
@@ -88,6 +104,10 @@ function report(dk,R){
  console.log(`smart beats default: ${pc(win('smart','default',x=>x.sc.total),n)} by life score, ${pc(win('smart','default',x=>x.nwB),n)} by final net worth`);
  const kinds=SERIOUS.concat(['divorce','biz','broke']);
  for(const b in R)console.log(`setbacks, ${b}: `+kinds.map(k=>k+' '+pc(R[b].filter(x=>x.rec[k]).length,R[b].length)).join(', ')+` · serious (first four) ${pc(R[b].filter(x=>x.any).length,R[b].length)}`);
+ /* moving abroad: how many lives moved, how many lived 5+ years abroad, how many applications were granted, and how often
+    lives born well-off, and the most skilled at 25 (before most moves), lived abroad 5+ years */
+ for(const b in R){const r=R[b],T=[].concat(...r.map(x=>x.tries)),sk=r.map(x=>x.sk25).sort((a,b)=>a-b)[Math.floor(.75*r.length)],mv=f=>{const a=r.filter(f);return pc(a.filter(x=>x.settled).length,a.length)+' of '+a.length};
+  console.log(`moving abroad, ${b}: moved ${pc(r.filter(x=>x.moved).length,r.length)} of lives, 5+ years abroad ${pc(r.filter(x=>x.settled).length,r.length)}, ${pc(T.filter(x=>x.ok).length,T.length)} of ${T.length} applications granted · 5+ years abroad: born rich or middle-class ${mv(x=>x.fam==='rich'||x.fam==='middle')} vs poor or working ${mv(x=>x.fam==='poor'||x.fam==='working')} · top quarter by Skill at 25 ${mv(x=>x.sk25>=sk)} vs the rest ${mv(x=>x.sk25<sk)}`)}
 }
 
 /* ---------- which option is best ---------- */
@@ -112,8 +132,18 @@ function optionStudy(dk,n,only,verbose){const st={},TOL=.005,W=vm.runInContext('
  console.log(`${ok} of ${rows.length} decisions have every option best in at least 15% of lives (${near} at 10% or more); options seen in fewer than 20 lives are not judged`);
  return rows}
 
-module.exports={E,BOTS,play,born,bots,report,optionStudy};
+/* ---------- moving abroad: the same lives, richer or more skilled ---------- */
+function moveStudy(dk,n){const usdG=vm.runInContext('usdG',ctx),V={'as born':null,'US$100k at 25':s=>{if(s.age===25)s.cash+=usdG(s,1e5)},'US$500k at 25':s=>{if(s.age===25)s.cash+=usdG(s,5e5)},
+  'skilled at 22':s=>{if(s.age===22){s.skillSrc.base+=20;s.ma=1;if(!s.study)s.done.edu='uni'}}},out={};
+ for(const k in V){const bot=Object.assign({},BOTS.mover,{year(s){if(V[k])V[k](s);BOTS.mover.year(s)}});let mv=0,st=0;
+  for(let i=0;i<n;i++){const s=play(born(E.hsh('mv',i)>>>0,dk),bot);if(s.moves)mv++;if(Object.entries(s.lived||{}).some(([c,y])=>c!==E.C[s.ci][1]&&y>=5))st++}
+  out[k]=[mv,st]}
+ console.log(`
+=== MOVING ABROAD · ${dk.toUpperCase()} · ${n} lives played by the mover bot (tries at every chance) ===`);
+ for(const k in out)console.log(`${k.padEnd(15)} moved ${pc(out[k][0],n).padStart(4)} · lived abroad 5+ years ${pc(out[k][1],n).padStart(4)}`)}
+module.exports={E,BOTS,play,born,bots,report,optionStudy,moveStudy};
 if(require.main===module){const t0=Date.now();
  for(const dk of onlyD?[onlyD]:DIFFS)report(dk,bots(dk,N));
+ if(args.includes('move'))moveStudy(onlyD||'normal',Math.min(N,500));
  if(OPT)optionStudy(onlyD||'normal',Math.min(N,300),(args.find(a=>a.startsWith('only='))||'').slice(5).split(',').filter(Boolean).length?(args.find(a=>a.startsWith('only='))).slice(5).split(','):null,args.includes('v'));
  console.log(`\n(${((Date.now()-t0)/1000).toFixed(1)} s)`)}

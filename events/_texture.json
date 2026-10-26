@@ -103,7 +103,7 @@
    {"id": "y_filling", "cat": "health", "fx": {"cash": -0.015}, "en": "A filling at the dentist. Not fun, and not cheap.", "zh": "去牙医那补了一颗牙，不好受，也不便宜。", "zht": "去看牙醫補了一顆牙，不好受，也不便宜。"},
    {"id": "y_eatwell", "cat": "family", "who": {"role": "parent"}, "en": "{P} sent you a long voice message about eating properly.", "zh": "{P}给你发了一条长长的语音，叮嘱你好好吃饭。", "zht": "{P}傳了一則長長的語音訊息，叮嚀你要好好吃飯。"},
    {"id": "y_license", "cat": "family", "who": {"role": "sib", "age": [17,40]}, "en": "{P} passed their driving test on the fourth try.", "zh": "{P}第四次终于考过了驾照。", "zht": "{P}第四次終於考到駕照了。"},
-   {"id": "y_homecook", "cat": "family", "who": {"role": "parent", "pick": "closest"}, "fx": {"bond": 3}, "en": "You went home for a long weekend and {p} cooked all your favourites.", "zh": "你回家过了个长周末，{p}做了你爱吃的所有菜。", "zht": "你回家過了個長週末，{p}煮了你愛吃的所有菜。"},
+   {"id": "y_homecook", "cat": "family", "when": {"abroad": false}, "who": {"role": "parent", "pick": "closest"}, "fx": {"bond": 3}, "en": "You went home for a long weekend and {p} cooked all your favourites.", "zh": "你回家过了个长周末，{p}做了你爱吃的所有菜。", "zht": "你回家過了個長週末，{p}煮了你愛吃的所有菜。"},
    {"id": "y_earlybed", "cat": "health", "en": "You discovered that going to bed early is actually wonderful.", "zh": "你发现早点睡觉原来这么美好。", "zht": "你發現早點睡覺原來這麼美好。"},
    {"id": "y_umbrella", "cat": "weather", "en": "A sudden downpour, and you lost your fifth umbrella of the year.", "zh": "一场突如其来的大雨中，你丢了今年第五把伞。", "zht": "一場突如其來的大雨裡，你弄丟了今年第五把傘。"},
    {"id": "y_oven", "cat": "weather", "en": "A heatwave turned your room into an oven. You slept on the floor.", "zh": "热浪把你的房间变成了蒸笼，你只好睡在地板上。", "zht": "熱浪把你的房間變成了蒸籠，你只好睡在地板上。"},

@@ -129,13 +129,13 @@ const INFL_MED={};for(const k in RD.infl){const l=[...RD.infl[k]].sort((a,b)=>a-
 const smam=(k,sex)=>(sex==='f'?RD.smamF:RD.smamM)[k];
 const smamD=s=>smam(C[s.ci][1],s.sex)-RDA[s.sex==='f'?'smamF':'smamM'];
 /* layoffs where you work, relative to the 17-country average */
-const layC=s=>RD.unemp[C[s.abroad!=null?s.abroad:s.ci][1]]/RDA.unemp;
+const layC=s=>RD.unemp[C[s.lc][1]]/RDA.unemp;
 /* how many children a life nobody steers aims for: the country's children per woman, rounded up or down at random */
 function kidGoal(s){if(s.kidGoal==null){const T=RD.tfr[C[s.ci][1]];s.kidGoal=Math.floor(T)+(mb(hsh(s.seed,'kidGoal'))()<T%1?1:0)}return s.kidGoal}
 /* the chance of a university place after school (see above) */
 const uniRate=s=>{const k=C[s.ci][1];return Math.min(1,RD.tert[k]/Math.min(100,RD.lsec[k]))};
 /* the chance a disaster reaches you within yrs years where you live: floods and storms ('fs'), or one kind of RD.disasters */
-function disP(s,yrs,kind){const z=RD.disasters[C[s.abroad!=null?s.abroad:s.ci][1]],a=(kind?z[kind]:z.flood+z.storm)/1e5;return 1-Math.pow(1-a,yrs)}
+function disP(s,yrs,kind){const z=RD.disasters[C[s.lc][1]],a=(kind?z[kind]:z.flood+z.storm)/1e5;return 1-Math.pow(1-a,yrs)}
 function logInterp(tab,x){if(x>=tab[tab.length-1][0])return tab[tab.length-1][1];for(let i=1;i<tab.length;i++)if(x<tab[i][0]){const[a,p]=tab[i-1],[b,q]=tab[i];return p+(q-p)*Math.log(x/a)/Math.log(b/a)}}
 /* PPP dollars in the game → US dollars at market exchange rates, using your home country's price level */
 function toUSD(ci,v){const p=PPP[C[ci][1]];return v*p[0]/p[1]}
@@ -172,7 +172,7 @@ function addSkill(s,k,pts,label){pts*=Math.max(0,1-skill(s)/120);s.skillSrc[k]=(
 /* pay multipliers from raises, a job abroad or going part-time */
 function pm(s){let m=1;for(const k in s.bump)m*=s.bump[k];return m}
 /* a woman's pay: the country's gender pay gap, and the child penalty for ten years after her first child */
-const workCode=s=>C[s.abroad!=null?s.abroad:s.ci][1];
+const workCode=s=>C[s.lc][1];
 const momYears=(s,a)=>{if(!s.kids.length)return false;const b=Math.min(...s.kids);return a>=b&&a<b+10};
 function gapM(s){return s.sex==='f'?1-Math.max(0,PAYGAP[workCode(s)])/100:1}
 function sexPay(s){return s.sex==='f'?gapM(s)*(momYears(s,s.age)?1-CHILDPEN[workCode(s)]/100:1):1}
@@ -206,7 +206,7 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
   crashAge:34+Math.floor(r()*17),inheritAge:46+Math.floor(r()*14),
   done:{},trk:{},earned:0,outUntil:0,sold:0,lastSal:0,lastInc:0,pivoted:false,pivotYear:-1,
   cutDebt:false,debtSeen:-99,noDeath:false,milestones:{},brokeLogged:0,
-  plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,abroad:null,scheme:null,ilp:null,
+  plan:{},spare:{},lastDec:4,later:[],rec:[],bump:{},costMul:1,rentMul:1,rentUntil:0,habit:0,efund:0,lc:ci,mig:null,migApp:null,migWait:0,scheme:null,ilp:null,
   kidEdu:null,kidFee:0,famSpent:0,annu:0,ret2:null,layAt:-1,layVol:false,screen:false,ltc:false,insMul:1,
   rel:50,offUntil:0,uncle:false,refN:0,lonely:0,
   pt:null,ptN:0,meetAt:null,meetCar:null,look:-1,tryAt:null,ask:null,heal:null,acts:[],hist:{},chain:{},
@@ -259,7 +259,7 @@ function later(s,age,k,x){s.later.push(Object.assign({age,k},x||{}))}
 function bump(s,id,m,label,nk){s.bump[id]=(s.bump[id]||1)*m;const t=T(s,id,{kind:'custom',label});t.note=M(nk||'note.bump',{p:Math.round((s.bump[id]-1)*100)})}
 function setRate(h,rate,age){h.rate=rate;if(h.mort>0)h.pay=amort(h.mort,rate,Math.max(1,(h.end||age+20)-age))}
 function efTarget(s){return .5*(.5*s.base*(s.costMul||1)+rent(s))}
-function abroadTo(s){return C.findIndex(c=>c[1]===(C[s.ci][1]==='SG'?'US':'SG'))}
+function abroadTo(s){return C.findIndex(c=>c[1]===(C[s.lc][1]==='SG'?'US':'SG'))}
 const negoP=s=>clamp(.3+skill(s)*.006,.2,.65);
 const SCH={US:{lot:'k401',lk:'trk.k401',match:.05,rel:0,rate:null,ps:[0,.05,.1]},MY:{lot:'epf',lk:'trk.epf',match:0,rel:0,rate:.03,ps:[0,.05,.1]},SG:{lot:'cpf',lk:'trk.cpf',match:0,rel:.1,rate:.02,ps:[0,.05]}};
 const O=(id,lk,sub,go,ok)=>{const o={id,label:typeof lk==='string'?M(lk):lk,sub,go};if(ok!==undefined)o.ok=ok;return o};
@@ -444,10 +444,10 @@ function careerEnd(s,L){const j=s.job,c=CAR[j.id],a=s.age,r=evR(s,'carEnd'),nm=M
    makes promotions rarer, slowly lowers Health and halves what your focus does. */
 const ILLT={best:{c:2.5,m:3,h:10,y:2,p:.9},std:{c:.6,m:5,h:15,y:3,p:.8},skip:{c:0,m:7,h:22,y:4,p:.35}};
 function illP(s){const h=s.health,hp=h>=50?.002+(100-h)*.00004:h>=30?.004+(50-h)*.001:.024+(30-h)*.004;
- return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))*RD.ncd[C[s.ci][1]]/RDA.ncd}
+ return hp*clamp(.25+(s.age-30)*.03,.25,2.5)*(1+.03*Math.min(25,s.grindY+.5*s.hustleYears))*RD.ncd[C[s.lc][1]]/RDA.ncd}
 /* which serious illness: cancer, a heart attack or a stroke, in proportion to the country's death rates from each at your age */
-function illKind(s,u){const d=RD.deaths[C[s.ci][1]][s.age<50?'15-49':s.age<70?'50-69':'70+'],x=u*(d.cancer+d.heart+d.stroke);return x<d.cancer?'cancer':x<d.cancer+d.heart?'heart':'stroke'}
-function survP(s,k){const ci=s.abroad!=null?s.abroad:s.ci;return clamp(ILLT[k].p+(s.health-50)*.005+(C[ci][4]-75)*.008-Math.max(0,s.age-60)*.006+(s.screen?.05:0),.05,.97)}
+function illKind(s,u){const d=RD.deaths[C[s.lc][1]][s.age<50?'15-49':s.age<70?'50-69':'70+'],x=u*(d.cancer+d.heart+d.stroke);return x<d.cancer?'cancer':x<d.cancer+d.heart?'heart':'stroke'}
+function survP(s,k){const ci=s.lc;return clamp(ILLT[k].p+(s.health-50)*.005+(C[ci][4]-75)*.008-Math.max(0,s.age-60)*.006+(s.screen?.05:0),.05,.97)}
 const illYou=(s,k)=>ILLT[k].c*s.base*(s.insured?.15:1)*(s.medCut||1);
 const illNote=t=>M('note.ill',{a:MN(t.paid),b:MN(t.lost)});
 function treat(s,k){const b=ILLT[k].c*s.base,you=illYou(s,k);pay(s,you);
@@ -486,8 +486,8 @@ const babyP=a=>a<30?.85:a<35?.75:a<40?.55:a<45?.3:.1;
    estimates of a contested divorce: lawyers cost most in the US and the UK, little where most couples divorce by
    agreement (Japan, China) */
 const DIVC={US:[.6,.15],GB:[.5,.12],DE:[.4,.13],SG:[.5,.12],JP:[.1,.06],MY:[.3,.1],CN:[.2,.1],IN:[.3,.08],BR:[.3,.1],MX:[.3,.1]};
-const divC=s=>DIVC[C[s.ci][1]]||[.25,.08];
-function startDating(s){const n=s.ptN=(s.ptN||0)+1,r=evR(s,'pt'+n);s.pt={n,st:'date',car:s.meetCar||ptCar(s,r),q:.75+.5*r(),exp:Math.max(0,Math.round((s.age-21)*.8)),at:s.age};s.happy+=3}
+const divC=s=>DIVC[C[s.lc][1]]||[.25,.08];
+function startDating(s){const n=s.ptN=(s.ptN||0)+1,r=evR(s,'pt'+n);s.pt={n,st:'date',car:s.meetCar||ptCar(s,r),q:.75+.5*r(),exp:Math.max(0,Math.round((s.age-21)*.8)),at:s.age,c:s.meetC!=null?s.meetC:s.lc};s.happy+=3}
 /* their pay: the career's typical multiple for the country, their luck and experience (half a year's pay in a layoff year) */
 function ptPay(s){const p=s.pt;if(!p||p.st==='date'||p.ret)return 0;return s.base*carR(s,p.car)*p.q*Math.pow(1+.015*Math.min(p.exp,25),D(s).pay)*(p.lay===s.age?.5:1)}
 /* their passbook line opens when you move in or marry */
@@ -520,21 +520,23 @@ function divorce(s,by,L){const p=s.pt;if(!p||!s.married)return;const k=divC(s),B
  ptEnd(s);s.happy=clamp(s.happy-12,0,100);rl(s,-4);heal(s,4,8);L&&L(M('log.divorce',{a:MN(loss)}),'bad')}
 /* the Life choices panel: every choice, each {id, ok} (ok is true, or why it can't be done now: you need to be dating first…) */
 function relActs(s){if(s.dead)return[];const p=s.pt,a=s.age,w=p&&p.st==='wed',k=M('lc.r.kid');
- if(a<18)return['look','move','wed','baby','break'].map(id=>({id,ok:k}));
+ if(a<18)return['look','move','wed','baby','break','mig'].map(id=>({id,ok:k}));
  const no=!p&&M('lc.r.date');
  return[{id:'look',ok:p?M('lc.r.have'):a>=70?M('lc.r.old'):s.look===a?M('lc.look.on'):true},
   {id:'move',ok:no||(w?M('lc.r.wed'):p.st==='live'?M('lc.r.live'):true)},
   {id:'wed',ok:no||(w?M('lc.r.wed'):true)},
   {id:'baby',ok:!p?M('lc.r.pt'):p.st==='date'?M('lc.r.move'):a>45?M('lc.r.b45'):s.kids.length>=5?M('lc.r.b5'):s.tryAt===a?M('lc.baby.on'):s.kids.some(b=>b>a)?M('lc.baby.due'):true},
-  w?{id:'div',ok:true}:{id:'break',ok:p?true:M('lc.r.single')}]}
+  w?{id:'div',ok:true}:{id:'break',ok:p?true:M('lc.r.single')},s.lc!==s.ci?{id:'back',ok:true}:{id:'mig',ok:migWhy(s)}]}
 /* do one of them now (the mirror life replays them from s.acts). Proposing brings up the wedding card at once */
-function relAct(s,id,L){const p=s.pt,a=s.age,x=relActs(s).find(o=>o.id===id);if(!x||x.ok!==true)return false;s.acts.push([a,id]);
+function relAct(s,id,L){const a=s.age,x=relActs(s).find(o=>o.id===id);if(!x||x.ok!==true)return false;const p=s.pt;s.acts.push([a,id]);
  if(id==='look'){spend(s,'look',.02*s.base,'trk.look');s.look=a;L&&L(M('log.rel.look'),'')}
  else if(id==='move'){p.st='live';ptLine(s);rl(s,3);s.happy+=3;L&&L(M('log.rel.move'),'good')}
  else if(id==='wed')s.ask='wed';
  else if(id==='baby'){s.tryAt=a;L&&L(M('log.rel.try'),'good')}
  else if(id==='break')splitUp(s,'me',L);
  else if(id==='div')divorce(s,'me',L);
+ else if(id==='mig')s.askMig=1;
+ else if(id==='back')migBack(s,L);
  if(typeof pplSync==='function')pplSync(s);return true}
 /* lives nobody steers (the autopilot twin, the simulated futures, the babies born with you, the balance bots) follow a
    typical path (see "real-world chances"): marry from about four years before the country's average age at first marriage, after
@@ -563,7 +565,7 @@ const byIx=(a,b)=>a.ix-b.ix;
    so late-life cards are not used up early */
 function pullForward(s){if(s.age<6||s.age-s.lastDec<2)return null;let best=null,bd=1e9;
  for(const[src,w]of [[s.plan,0],[s.spare,.5]]){const cand=[];for(const id in src){const e=EVBY[id];if(e)cand.push(e)}cand.sort(byIx);
-  for(const e of cand){const a=src[e.id];if(!e.win||s.done[e.id]||s.age<e.win[0]||s.age>e.win[1]||(src===s.plan&&a<=s.age))continue;
+  for(const e of cand){const a=src[e.id];if(!e.win||s.done[e.id]||(e.only&&!e.only(s))||s.age<e.win[0]||s.age>e.win[1]||(src===s.plan&&a<=s.age))continue;
    const d=Math.abs(a-s.age)+w;if(d<bd&&(!e.when||e.when(s))){best=e;bd=d}}}
  if(best)s.plan[best.id]=s.age;return best}
 /* the cards due this year, in deck order: planned ones from this life's plan, and those that come with the situation */
@@ -622,7 +624,7 @@ function slForgive(s,a,L){const q=s.sloanInc;if(!(a>=q.end||q.pslf&&a>=q.pslf&&s
  const t=T(s,'sloanW',{kind:'custom',label:M('trk.sloanW')});t.v+=w;t.note=M('note.sloanW',{a:MN(w)});L&&L(M('log.sloanW',{a:MN(w)}),'good')}
 /* the state pension in retirement: about 18% of a typical wage, from s.penAt (if set) and times s.penM; s.penX adds a scheme's
    own pension {a a year, at age, tk passbook line}. The difference from the usual pension shows on the card's passbook line */
-function statePen(s,a){const b=.18*s.base;let v=a>=(s.penAt||0)?b*(s.penM||1):0;const t=s.penTk&&s.trk[s.penTk];if(t&&v!==b){t.v+=v-b;t.got=(t.got||0)+v-b;t.note=M('note.penC',{a:MS(t.got)})}
+function statePen(s,a){const b=.18*penMix(s);let v=a>=(s.penAt||0)?b*(s.penM||1):0;const t=s.penTk&&s.trk[s.penTk];if(t&&v!==b){t.v+=v-b;t.got=(t.got||0)+v-b;t.note=M('note.penC',{a:MS(t.got)})}
  const x=s.penX;if(x&&a>=x.at){v+=x.a;const t2=s.trk[x.tk];if(t2){t2.v+=x.a;t2.saved=(t2.saved||0)+x.a;t2.note=M('note.penX',{a:MN(t2.paid||0),b:MN(t2.saved)})}}return v}
 /* what a health scheme saved on a bill goes on its passbook line */
 function medSaved(s,x){const t=s.medTk&&s.trk[s.medTk];if(!t||!(x>0))return;t.v+=x;t.saved=(t.saved||0)+x;t.note=M(t.nk||'note.med',{a:MN(t.paid||0),b:MN(t.saved)})}
@@ -649,7 +651,7 @@ function kidFees(s,a,L){if(!s.kidEdu)return;for(const b of s.kids){if(a!==b+18||
    for a home you own, 15% for a rented one (as the flood cards always did), less with cover (12%) or preparation (50%) from a
    flood card and with that card's government aid; a drought costs 4% of a typical wage in food and water, and farmers lose a
    quarter of a year's pay; a serious road injury costs Health and a hospital bill of 10% of a typical wage (insurance pays 85%) */
-function hazards(s,a,L){const k=C[s.abroad!=null?s.abroad:s.ci][1],B=s.base,z=RD.disasters[k],r=evR(s,'haz'),u=r()*1e5;
+function hazards(s,a,L){const k=C[s.lc][1],B=s.base,z=RD.disasters[k],r=evR(s,'haz'),u=r()*1e5;
  const pay2=x=>{if(s.retired)payRet(s,x);else pay(s,x)};
  if(u<z.flood+z.storm){const kind=u<z.flood?'flood':'storm',full=(s.house?.45:.15)*B,pr=s.prot&&a<s.prot.until?s.prot:null,loss=full*(pr?[1,.5,.12][pr.lv]:1),aid=(s.prot?s.prot.aid:0)*B;
   pay2(loss);s.cash+=aid;s.happy=clamp(s.happy-5,0,100);s.health=clamp(s.health-2,3,100);
@@ -670,6 +672,7 @@ function tick(s,yr,L){
  if(s.outUntil&&a===s.outUntil){const amt=Math.min(Math.max(0,s.cash),s.sold);s.cash-=amt;addLot(s,'auto',amt);L&&L(M('log.buyBack',{a:MN(amt)}),'')}
  if(s.later.length){for(const x of s.later)if(!x.done&&a>=x.age){x.done=1;LATER[x.k](s,x,L)}s.later=s.later.filter(x=>!x.done)}
  if(s.dead)return out; // a serious illness can end a life at the start of the year
+ migStart(s,a);
  kidFees(s,a,L);
  /* depression halves what your focus does; therapy is paid as you go */
  const dp=depressed(s),fk=dp?.5:1;
@@ -679,7 +682,7 @@ function tick(s,yr,L){
  for(const k in s.lots){const l=s.lots[k];l.v*=1+lotR(l,r,yr)}
  /* cash loses 1% a year, plus inflation above the country's usual level (see "real-world chances"); not in a year an inflation
     card already took its loss (inflYr) */
- if(s.cash>0){const k=C[s.abroad!=null?s.abroad:s.ci][1],h=RD.infl[k],y=h[Math.floor(evR(s,'infl')()*h.length)],sur=s.inflYr===a?0:Math.max(0,y-INFL_MED[k])/100;
+ if(s.cash>0){const k=C[s.lc][1],h=RD.infl[k],y=h[Math.floor(evR(s,'infl')()*h.length)],sur=s.inflYr===a?0:Math.max(0,y-INFL_MED[k])/100;
   if(s.efund&&s.trk.efund)s.trk.efund.v+=.015*s.cash;s.cash*=(s.efund?1:.99)*(1-sur)}
  for(const id in s.trk){const t=s.trk[id];if(t.kind==='ghost')t.g*=1+r;else if(t.kind==='crash'){t.hold*=1+r;t.sell*=(a<s.crashAge+3?.99:1+r)}}
  if(s.house)s.house.value*=1+.012+yr.hs*.05+D(s).rise;
@@ -693,10 +696,11 @@ function tick(s,yr,L){
    if(d>=0)s.cash+=d;else pay(s,-d);out.saved=d;const t=s.trk.ns;if(t){t.v-=Math.max(0,carStartPay(s,'civ')-al);t.paid+=al;t.note=M('note.ns',{a:MN(t.paid)})}
   }else if(s.study){
    const st=s.study,part=st.pt*B;s.earned+=part;out.gross=part;
-   const t=s.trk.sk_edu;if(t)t.cost+=Math.max(0,carStartPay(s,'civ')-part);
+   const t=s.trk['sk_'+(st.src||'edu')];if(t)t.cost+=Math.max(0,carStartPay(s,'civ')-part);
    const d=part-.35*B+pt.net-pt.cost;if(d>=0){s.cash+=d;out.saved=d}else{const fc=Math.min(Math.max(0,s.cash),-d);s.cash-=fc;s.sloan+=-d-fc;out.saved=d}
-   addSkill(s,'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
-   if(a+1>=st.end){s.study=null;s.sloanPay=s.sloan>0?slPay(s):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
+   addSkill(s,st.src||'edu',st.gain,st.label);if(fo==='learn')addSkill(s,'learn',fk,M('trk.learn'));
+   /* a degree abroad: a master's, or the bachelor's you didn't do at home */
+   if(a+1>=st.end){if(st.k==='ma')s.ma=1;else if(st.ab)s.done.edu='uni';s.study=null;s.sloanPay=s.sloan>0?slPay(s):0;L&&L(M('log.grad',{x:s.sloan>0?M('log.gradLoan',{a:MN(s.sloan)}):M('log.gradNo')}),'good')}
   }else if(!s.retired){
    if(s.job)careerStart(s,yr,L);
    const sal=s.job?salary(s):0;s.lastSal=sal;
@@ -738,7 +742,7 @@ function tick(s,yr,L){
    /* on Normal and Hard, spending creeps up with take-home pay above a typical wage */
    const hs=housing(s),liv=.5*B*cm+D(s).creep*Math.max(0,net-pt.net-B);
    let fixed=liv+hs+pt.cost;
-   {const at=s.abroad!=null&&s.trk.abroad?s.trk.abroad:s.ctr?s.trk[s.ctr]:null;if(at&&cm!==1)at.v-=(liv+(s.house?0:hs))*(1-1/cm)}
+   {const at=s.ctr?s.trk[s.ctr]:null;if(at&&cm!==1)at.v-=(liv+(s.house?0:hs))*(1-1/cm)}
    const kc=kidsCost(s,a);if(kc){fixed+=kc;const t=s.trk.kids;if(t){t.cost+=kc;t.v-=kc;t.note=M('note.kids',{c:MN(t.cost)})}}
    fixed+=s.car?.05*B:.03*B;
    const ct=s.car&&s.trk[s.car.trk||'car'];
@@ -762,6 +766,7 @@ function tick(s,yr,L){
    if(s.cutDebt&&s.debt<=0)s.cutDebt=false;
    if(s.debt>0&&s.cash>.2*B){const p=Math.min(s.debt,s.cash-.2*B);s.cash-=p;s.debt-=p}
    if(s.debt<1)s.debt=0;
+   if(employed){const w=s.wy||(s.wy={}),k=C[s.lc][1];w[k]=(w[k]||0)+1}
    s.earned+=gross;out.gross=gross;out.saved=saved;
   }else{
    let side=0;if(s.biz&&s.biz.mode==='side'&&s.biz.ok&&!s.biz.sold)side=s.biz.inc;
@@ -777,6 +782,7 @@ function tick(s,yr,L){
    if(d>=0){s.cash+=d;out.saved=d}else{const short=payRet(s,-d);out.saved=d;if(short>0){s.happy-=4;s.acc.bad++;if(!s.brokeLogged){s.brokeLogged=1;L&&L(M('log.broke'),'bad')}
     if(s.rel>=40&&evR(s,'helpBroke')()<(s.rel-30)/100){const h=.5*short;s.cash+=h;helped(s,h);L&&L(helpMsg(s,'log.helpBroke',h),'good')}}}
   }
+  if(s.mig)migEnd(s,a,out);
   // body and mind
   if(a>=40)s.health-=.7;if(a>=65)s.health-=.6;
   /* while recovering from a serious illness you can't build Health back up */
@@ -798,6 +804,8 @@ function tick(s,yr,L){
    if(s.retired)payRet(s,c);else pay(s,c);const t=T(s,'shock',{kind:'custom',label:M('trk.shock'),n:0,paid:0});t.n++;t.paid+=c;t.v-=c;t.note=M('note.shock',{n:t.n,a:MN(t.paid)});L&&L(M('log.shock.'+k,{a:MN(c)}),'bad')}
   const nw=netWorth(s);let tg=48+9*Math.log10(1+Math.min(D(s).wcap,Math.max(0,nw)/B))-(s.debt>.3*B?10:0)+(s.pt?{date:2,live:3,wed:4}[s.pt.st]:a<40?1.5:0)+[0,4,5,5][Math.min(3,s.kids.length)]+(s.health-60)/8;
   tg+=(s.rel-50)/12;
+  /* the first years in a new country: culture shock and homesickness */
+  tg-=migMood(s,a);
   /* a break-up or divorce hurts, then fades over a few years */
   if(s.heal&&a<s.heal.until)tg-=s.heal.d*(s.heal.until-a)/s.heal.yrs;
   /* on Normal and Hard, saving a big share of your pay means a tighter budget */
@@ -820,6 +828,7 @@ function tick(s,yr,L){
   if(s.retired)dr+=.5;else if(!s.study){const fd={people:4,balance:1.5,learn:0,grind:-1,hustle:-.6}[fo]||0;dr+=fd>0?fd*fk:fd;
    /* long-hours careers (the ones that cost Happiness) leave less time for people on Normal and Hard */
    if(job(s)&&CAR[s.job.id].hp<0)dr+=.5*CAR[s.job.id].hp*(D(s).toll-1)}
+  dr-=migRel(s,a);
   rl(s,4*dr);
   if(s.married&&s.rel<25&&!s.later.some(x=>x.k==='div')&&evR(s,'lowrel')()<.04)later(s,a+1,'div',{p:1});
   /* a partner may end it: dating couples more often than those living together (a marriage ends through LATER.div) */
@@ -829,7 +838,7 @@ function tick(s,yr,L){
    if(ok){s.kids.push(a+1);const t=T(s,'kids',{kind:'custom',cost:0});t.label=M('trk.kids',{n:s.kids.length});if(!t.cost)t.note=M('note.kidsDue')}
    L&&L(M(ok?'log.rel.preg':'log.rel.noBaby'),ok?'good':'')}}
   /* meeting someone while single: the 'date' card comes up next year */
-  if(!s.pt&&a<70&&s.meetAt==null&&evR(s,'meet')()<meetP(s,a)){s.meetAt=a+1;s.meetCar=ptCar(s,evR(s,'meetCar'))}
+  if(!s.pt&&a<70&&s.meetAt==null&&evR(s,'meet')()<meetP(s,a)){s.meetAt=a+1;s.meetCar=ptCar(s,evR(s,'meetCar'));s.meetC=meetFrom(s)}
   if(s.auto)autoRel(s,a);
   // skills for next year
   if(a>=45&&s.done.pivot==='stay'&&!s.retired)s.skillSrc.base=Math.max(0,s.skillSrc.base-.8);
@@ -855,6 +864,283 @@ function tick(s,yr,L){
  s.age++;
  return out;
 }
+
+/* ---------- moving to another country ----------
+   Only legal routes, set as each country really runs them (sources below). Fees and money thresholds are in US dollars; game
+   money is PPP dollars, so a US$ amount becomes game money at the market exchange rate where your money is (usdG), which is
+   why the same visa costs a Nigerian many more years of pay than a German. All amounts are approximate. The routes:
+   sk   skilled worker: ed 2 a degree, 3 a master's; sk lowest Skill; pay lowest yearly pay there (× that country's typical
+        wage in C: its threshold ÷ its PPP factor ÷ that wage); lang a language test; odds the chance the visa is granted once an
+        employer applies (quotas, lotteries); find how readily employers there sponsor someone from abroad (1 usual); fee what
+        you pay yourself (US$); y the years it takes [from, to]
+   inv  investor or wealthy route: usd the amount; lock the years it must stay invested (0: you only show you have it); st what
+        it gives ('pr' permanent residence, 'visa' a renewable permit); mgr it also asks for management experience or a master's
+   st   study: fee tuition and live living costs a year (US$); you must show you have them for the whole course; n the years of a master's (a
+        bachelor's takes 3–4); stay the chance of staying on to work afterwards (post-study work permits, then a job); odds
+        the chance of a student visa (80% unless given; less without the language); universities ask for Skill 30
+   fam  family: married to (or two years living with) someone from there; inc their lowest income there (× typical wage); lang
+        a language test; pr years to permanent residence on this route; st 'pr' when it is given on arrival; gap years from
+        then to citizenship
+   pr   years from arriving before you can apply for permanent residence (null: no route for most people) and prP its chance;
+   gap  years as a permanent resident before citizenship; np years from arriving when naturalising doesn't need permanent
+        residence first (null both: almost never granted); citP its chance; dual: you may keep your old citizenship;
+   folks what you must be to bring your parents over ('pr', 'cit', or null: almost never granted)
+   The chances (odds, find, stay, prP, citP) are ESTIMATES from each country's rules and the approval figures where any are
+   published. SOURCES (fetched October 2026 unless noted):
+   US  F-1 student visas: 36% refused in FY2023 (State Department, Report of the Visa Office, via Shorelight). H-1B: a bachelor's at least, an employer petition; FY2026 about 120,000 selected from about 344,000 eligible registrations
+       (USCIS); from FY2027 the selection is weighted by wage level (DHS final rule, 29 Dec 2025, effective 27 Feb 2026); a
+       $100,000 payment for new petitions for workers abroad (Presidential proclamation, 19 Sep 2025). The master's is our
+       reading of "toughest": the advanced-degree cap and the weighting favour it. EB-5: $800,000 in a targeted employment area,
+       $1,050,000 elsewhere (EB-5 Reform and Integrity Act of 2022); I-526E fee $11,160 (USCIS fee rule, 1 Apr 2024). Students:
+       average out-of-state tuition and fees at public four-year colleges $30,780 in 2024-25 (College Board, Trends in College
+       Pricing 2024); OPT for 1–3 years after. Spouses: I-130 $675, DS-260 $325, I-864 at 125% of the poverty guideline
+       ($21,150 for two people, HHS 2025). Citizenship 5 years after a green card, 3 if married to a citizen (INA 316, 319)
+   GB  Skilled Worker: RQF 6 jobs, £41,700 or the going rate from 22 Jul 2025, English B2 from 8 Jan 2026, visa £1,519 for over
+       three years plus the Immigration Health Surcharge £1,035 a year (gov.uk; DavidsonMorris; Imperial College HR notice,
+       21 Apr 2026). Investor visa closed 17 Feb 2022 (Home Office). Graduate Route 2 years. Spouse: £29,000 income from
+       11 Apr 2024, English A1, £1,938. Settlement after 5 years (the government proposes 10 under "earned settlement",
+       consultation from Nov 2025, not in force when written); citizenship a year later
+   DE  EU Blue Card: a recognised degree and €50,700 in 2026, €45,934.20 in shortage occupations (Bundesagentur für Arbeit,
+       Issue 03/2026); settlement after 27 months (21 with B1 German); citizenship after 5 years and dual citizenship allowed
+       (Staatsangehörigkeitsmodernisierungsgesetz, 27 Jun 2024; the 3-year route was dropped in 2025). No investor visa
+       (self-employment, §21 AufenthG, needs a business plan). Public universities charge no tuition (semester fees about
+       €300); students show €11,904 a year in a blocked account (2025) and get 18 months to find a job after. Spouses: A1 German
+   JP  Engineer/Specialist in Humanities/International Services: a degree and a job offer; permanent residence normally after
+       10 years (Immigration Services Agency); naturalisation after 5 years, giving up other nationalities (Nationality Act
+       art. 5). Business Manager: ¥30 million in capital, one full-time employee and 3 years of management or a master's from
+       16 Oct 2025 (Baker McKenzie, Feb 2026; Morgan Lewis, Sep 2025). National university tuition ¥535,800 a year (MEXT)
+   SG  Employment Pass: S$5,600 a month from 1 Jan 2025 and 40 COMPASS points (Ministry of Manpower, via 3E Accounting and
+       others); Global Investor Programme S$10 million in a new or growing business (EDB, revised 2023); permanent residence
+       has no published approval rate; citizenship after 2 years as a PR, giving up other citizenships
+   MY  Employment Pass Category III from RM5,000 a month (ESTIMATE of the June 2025 revision); MM2H Platinum: RM5 million fixed
+       deposit and a RM200,000 fee, may work and apply for permanent residence (Malay Mail, 14 Mar 2024; NST, Dec 2023; the
+       sources disagree on the Silver and Gold tiers); citizenship 10 of 12 years and Malay (Federal Constitution art. 19)
+   CN  Category B work permit: a degree and 2 years' experience; permanent residence after 4 years in an approved post, or for
+       US$2 million invested for 3 years (US$0.5–1 million in central and western regions) with a clean tax record (2004
+       Measures on foreigners' permanent residence); naturalisation is in the law but almost never granted
+   IN  Employment visa: pay above US$25,000 a year (Ministry of Home Affairs); Permanent Residency Status for investors: ₹10 crore
+       within 18 months or ₹25 crore within 36, and jobs for 20 residents (MHA, 2016); naturalisation after 11 of 14 years
+       (Citizenship Act 1955, Third Schedule); no dual citizenship
+   ID  Golden visa: US$350,000 in government bonds, listed shares or funds for 5 years, application Rp13 million (2023-24;
+       Asean Briefing; KPMG Flash Alert 2024-017); KITAS work permits need a degree and 5 years' experience; naturalisation after
+       5 years (Law 12/2006)
+   PH  Alien Employment Permit after a labour market test (DOLE); Special Investor's Resident Visa US$75,000 (EO 226, BOI);
+       13(a) visas for spouses of Filipinos; naturalisation after 10 years (Revised Naturalization Law, CA 473)
+   VN  Work permits for experts: a degree and 3 years' experience (Decree 152/2020); investor visas DT3 from VND 3 billion
+       (Law 51/2019); permanent residence after 3 years (Law 47/2014); naturalisation after 5 years (Nationality Law 2008)
+   BR  Residence for work with a job offer (Lei 13.445/2017); investors R$500,000 in a Brazilian company (CNIg RN 13/2017);
+       public universities free; naturalisation after 4 years, 1 if married to a Brazilian (Lei 13.445 art. 65)
+   MX  Permanent residence by economic solvency: about US$298,000 in savings or US$7,400 a month (2026, set in UMA, consulates
+       vary 5–10%: Mexperience; Global Citizen Solutions); temporary residents may switch to permanent after 4 years (Ley de
+       Migración art. 54); naturalisation after 5 years, 2 if married to a Mexican (Ley de Nacionalidad art. 20)
+   NG  Work through an employer's expatriate quota and CERPAC; no residence-by-investment route; naturalisation after 15 years
+       (Constitution s.27)
+   PK  Work visas through an employer; naturalisation after 5 years (Pakistan Citizenship Act 1951) is rare
+   BD  BIDA work permits through an employer; permanent residence for investors from US$200,000 (BIDA policy 2023 via LegalSeba;
+       older guides say US$75,000; a 2016 cabinet decision set US$1 million for citizenship: The Daily Star)
+   ET  Work permits only where no Ethiopian is available (Proclamation 1156/2019); foreign investors US$200,000 (Investment
+       Proclamation 1180/2020); naturalisation after 4 years and Amharic (Proclamation 378/2003)
+   Fees, tuition and living costs not named above, the years to permanent residence in the poorer countries and every chance
+   are ESTIMATES. */
+const MIG={
+ US:{sk:{ed:3,sk:42,odds:.3,find:.5,fee:4000,y:[1,2]},inv:{usd:8e5,lock:5,st:'pr',odds:.7,fee:25000,y:[2,3]},
+  st:{fee:30780,live:18000,n:2,stay:.35,odds:.64},fam:{inc:.76,fee:1500,y:[1,2],odds:.9,st:'pr',gap:3},pr:6,prP:.7,gap:5,citP:.9,dual:1,folks:'cit'},
+ GB:{sk:{ed:2,sk:38,pay:2.35,lang:1,odds:.85,find:1,fee:5700,y:[1,1]},inv:null,
+  st:{fee:25000,live:16000,n:1,stay:.4},fam:{inc:1.64,lang:1,fee:5600,y:[1,1],odds:.9},pr:5,prP:.85,gap:1,citP:.9,dual:1,folks:null},
+ DE:{sk:{ed:2,sk:35,pay:2.3,odds:.9,find:.8,fee:800,y:[1,1]},inv:null,
+  st:{fee:700,live:12900,n:2,stay:.55},fam:{lang:1,fee:100,y:[1,1],odds:.9},pr:3,prP:.85,np:5,citP:.8,dual:1,folks:null},
+ JP:{sk:{ed:2,sk:38,odds:.8,find:.6,fee:400,y:[1,1]},inv:{usd:228000,lock:3,st:'visa',odds:.6,fee:6000,y:[1,1],mgr:1},
+  st:{fee:4100,live:9100,n:2,stay:.45},fam:{fee:300,y:[1,1],odds:.85},pr:10,prP:.6,np:5,citP:.6,dual:0,folks:null},
+ SG:{sk:{ed:3,sk:42,pay:2.57,odds:.75,find:.7,fee:300,y:[1,1]},inv:{usd:7.25e6,lock:5,st:'pr',odds:.5,fee:7300,y:[1,2]},
+  st:{fee:32600,live:14500,n:1,stay:.3},fam:{fee:200,y:[1,1],odds:.8},pr:2,prP:.35,gap:2,citP:.5,dual:0,folks:'cit'},
+ MY:{sk:{ed:2,sk:32,pay:2.85,odds:.65,find:.7,fee:300,y:[1,1]},inv:{usd:1.14e6,lock:5,st:'visa',odds:.8,fee:45000,y:[1,1]},
+  st:{fee:4500,live:4100,n:2,stay:.2},fam:{fee:150,y:[1,1],odds:.85},pr:5,prP:.1,np:12,citP:.05,dual:0,folks:null},
+ CN:{sk:{ed:2,sk:35,odds:.65,find:.5,fee:300,y:[1,1]},inv:{usd:2e6,lock:3,st:'pr',odds:.3,fee:3000,y:[2,3]},
+  st:{fee:4450,live:4450,n:2,stay:.15},fam:{fee:200,y:[1,1],odds:.85,pr:5},pr:4,prP:.05,citP:0,dual:0,folks:null},
+ IN:{sk:{ed:2,sk:35,pay:21.3,odds:.7,find:.6,fee:300,y:[1,1]},inv:{usd:1.27e6,lock:5,st:'pr',odds:.6,fee:1000,y:[1,1]},
+  st:{fee:4000,live:3000,n:2,stay:.15},fam:{fee:200,y:[1,1],odds:.85,pr:2},pr:null,np:12,citP:.3,dual:0,folks:null},
+ ID:{sk:{ed:2,sk:32,odds:.65,find:.6,fee:1500,y:[1,1]},inv:{usd:35e4,lock:5,st:'visa',odds:.8,fee:800,y:[1,1]},
+  st:{fee:3000,live:4000,n:2,stay:.2},fam:{fee:500,y:[1,1],odds:.85,pr:2},pr:4,prP:.6,np:5,citP:.4,dual:0,folks:null},
+ PH:{sk:{ed:2,sk:30,odds:.6,find:.7,fee:800,y:[1,1]},inv:{usd:75000,lock:5,st:'pr',odds:.8,fee:300,y:[1,1]},
+  st:{fee:3500,live:5000,n:2,stay:.2},fam:{fee:500,y:[1,1],odds:.9,pr:1},pr:5,prP:.3,np:10,citP:.2,dual:0,folks:null},
+ VN:{sk:{ed:2,sk:32,odds:.65,find:.6,fee:400,y:[1,1]},inv:{usd:129000,lock:3,st:'visa',odds:.7,fee:300,y:[1,1]},
+  st:{fee:2500,live:4000,n:2,stay:.2},fam:{fee:200,y:[1,1],odds:.85,pr:3},pr:3,prP:.2,np:5,citP:.3,dual:0,folks:null},
+ BR:{sk:{ed:2,sk:30,odds:.75,find:.7,fee:300,y:[1,1]},inv:{usd:96800,lock:3,st:'pr',odds:.8,fee:1000,y:[1,1]},
+  st:{fee:0,live:6000,n:2,stay:.3},fam:{fee:200,y:[1,1],odds:.9,st:'pr',gap:1},pr:2,prP:.85,np:4,citP:.7,dual:1,folks:'pr'},
+ MX:{sk:{ed:2,sk:28,odds:.8,find:.7,fee:400,y:[1,1]},inv:{usd:298000,lock:0,st:'pr',odds:.85,fee:400,y:[1,1]},
+  st:{fee:4000,live:6000,n:2,stay:.35},fam:{fee:300,y:[1,1],odds:.9,pr:2,gap:2},pr:4,prP:.9,np:5,citP:.7,dual:0,folks:'pr'},
+ NG:{sk:{ed:2,sk:30,odds:.6,find:.5,fee:1000,y:[1,1]},inv:null,
+  st:{fee:2000,live:3000,n:2,stay:.1},fam:{fee:300,y:[1,1],odds:.85},pr:10,prP:.2,np:15,citP:.3,dual:0,folks:null},
+ PK:{sk:{ed:2,sk:30,odds:.55,find:.5,fee:500,y:[1,1]},inv:null,
+  st:{fee:2000,live:3000,n:2,stay:.1},fam:{fee:200,y:[1,1],odds:.85,pr:2},pr:null,np:5,citP:.1,dual:0,folks:null},
+ BD:{sk:{ed:2,sk:30,odds:.55,find:.5,fee:500,y:[1,1]},inv:{usd:2e5,lock:5,st:'pr',odds:.6,fee:500,y:[1,1]},
+  st:{fee:2500,live:3000,n:2,stay:.1},fam:{fee:200,y:[1,1],odds:.85},pr:null,np:5,citP:.1,dual:0,folks:null},
+ ET:{sk:{ed:2,sk:30,odds:.5,find:.5,fee:600,y:[1,1]},inv:{usd:2e5,lock:5,st:'visa',odds:.6,fee:1000,y:[1,1]},
+  st:{fee:2000,live:3000,n:2,stay:.1},fam:{fee:200,y:[1,1],odds:.85},pr:3,prP:.3,np:4,citP:.3,dual:0,folks:null}};
+/* the language spoken at work (English counts for India, Pakistan, Nigeria, the Philippines and Singapore; Malay and
+   Indonesian are close enough to count as one) */
+const MLANG={US:'en',GB:'en',SG:'en',NG:'en',PH:'en',IN:'en',PK:'en',MY:'ms',ID:'ms',CN:'zh',JP:'ja',DE:'de',BR:'pt',MX:'es',VN:'vi',BD:'bn',ET:'am'};
+/* game rules (ESTIMATES): the first years after a move your qualifications aren't fully recognised (pay −15%, −30% for doctors,
+   lawyers, nurses and teachers, who must re-qualify) and, if you don't speak the language, another −15%; both fade over five
+   years. Culture shock and homesickness cost Happiness for four years, a new place costs Relationships. Moving costs about
+   US$4,000 (flights, a deposit, shipping), a flight home about US$1,200 each. Some careers can't move with you */
+const MIGK={qual:.15,lang:.15,fade:5,move:4000,fly:1200,renew:600,prFee:1500,citFee:800};
+const REGJ={doc:1,law:1,nurse:1,teach:1},NOMOVE={civ:1,farm:1,hawker:1,shop:1,prop:1,ins:1};
+const cc=i=>C[i][1],cx=i=>({k:'_c',ci:i});
+/* a country's PPP dollars in US dollars; US$ → game money where your money is now; one country's money in another's */
+const fxF=i=>{const p=PPP[cc(i)];return p[0]/p[1]};
+const usdG=(s,x)=>x/fxF(s.lc);
+const fxMove=(a,b)=>fxF(a)/fxF(b);
+/* you speak the language there: it's your own, it's English and you studied a lot (Skill 40+), or you lived there five years */
+function speaks(s,d){const L=MLANG[cc(d)];return L===MLANG[cc(s.ci)]||(L==='en'&&skill(s)>=40)||((s.lived||{})[cc(d)]||0)>=5}
+/* a master's: from studying abroad, an MBA, or a doctor's or lawyer's training */
+const edOf=s=>s.ma||(s.cert&&s.cert.kind==='mba'&&s.age>=s.cert.end)||(s.job&&(s.job.id==='doc'||s.job.id==='law')&&!(s.job.train>s.age))?3:edLv(s);
+/* what you (or your partner) would earn there in the same career */
+function there(s,d,f){const o=[s.lc,s.base],b=s.bump.migPay;s.lc=d;s.base=C[d][3];delete s.bump.migPay;const v=f();s.lc=o[0];s.base=o[1];if(b!=null)s.bump.migPay=b;return v}
+const payThere=(s,d)=>job(s)?there(s,d,()=>salary(s)):0;
+/* a partner from that country you are married to, or have lived with for two years */
+const ptFrom=(s,d)=>!!s.pt&&s.pt.c===d&&(s.pt.st==='wed'||s.pt.st==='live'&&s.age-s.pt.from>=2);
+/* you can apply now: an adult living where you were born, not already applying or waiting after a refusal, not on a contract
+   abroad, in National Service or studying */
+const migCan=s=>migWhy(s)===true;
+function migWhy(s){if(s.age<18)return M('lc.r.kid');if(s.lc!==s.ci)return M('lc.r.away');if(s.migApp)return M('lc.r.migApp',{c:cx(s.migApp.d),a:s.migApp.at});
+ if(s.migWait>s.age)return M('lc.r.migWait',{a:s.migWait});if(s.ctr)return M('lc.r.ctr');if(s.nsUntil>s.age)return M('lc.r.ns');if(s.study)return M('lc.r.study');return true}
+/* where you could go: every other country, the best-paid first */
+const migDest=s=>C.map((c,i)=>i).filter(i=>i!==s.lc).sort((a,b)=>C[b][3]-C[a][3]);
+/* which country a job offer comes from: one where pay is clearly higher, likelier the more people move there and if you
+   speak the language (an ESTIMATE of where offers come from) */
+const MIGW={US:5,GB:3,DE:3,SG:2,JP:2,MY:1,CN:1};
+function migOfferTo(s){const r=evR(s,'offerTo'),own=s.base,c=C.map((x,i)=>i).filter(i=>i!==s.lc&&C[i][3]>=1.2*own),pool=c.length?c:C.map((x,i)=>i).filter(i=>i!==s.lc&&MIGW[cc(i)]);
+ const w=pool.map(i=>(MIGW[cc(i)]||.3)*(speaks(s,i)?2:1)),tot=w.reduce((a,b)=>a+b,0);let u=r()*tot;for(let k=0;k<pool.length;k++){u-=w[k];if(u<=0)return pool[k]}return pool[0]}
+/* until 30 a well-off family helps pay for studying abroad, as it does for a degree at home (eduCost): all of it if rich, half if
+   middle-class (a game rule; what they pay comes out of your inheritance, see famPay in js/verbs.js) */
+/* a course abroad: a master's, or a bachelor's (3–4 years) if you have no degree */
+const stYrs=(s,q)=>edLv(s)<2?(q.n>1?4:3):q.n;
+const famHelp=s=>s.age>30?0:s.fam==='rich'?1:s.fam==='middle'?.5:0;
+/* what a route asks for: [{m (what), ok (you have it), hard (needed to apply at all)}] */
+function migReqs(s,d,r,offer){const q=(MIG[cc(d)]||{})[r],o=[],add=(k,v,ok,hard)=>o.push({m:M('mig.q.'+k,v),ok:!!ok,hard:hard!==false});if(!q)return o;
+ const lang=()=>add('lang',{x:M('lang.'+MLANG[cc(d)])},speaks(s,d));
+ if(r==='sk'){add(q.ed>2?'ma':'deg',{},edOf(s)>=q.ed);add('sk',{n:q.sk},skill(s)>=q.sk);add('job',{},job(s)&&!NOMOVE[s.job.id]);
+  if(q.pay)add('pay',{a:MN(q.pay*C[d][3])},payThere(s,d)>=q.pay*C[d][3]);if(q.lang)lang();add('offer',{},!!offer,false)}
+ else if(r==='inv'){const need=usdG(s,q.usd);add(q.lock?'inv':'show',{a:MN(need),n:q.lock},liquid(s)>=need);if(q.mgr)add('mgr',{},edOf(s)>=3||skill(s)>=45)}
+ else if(r==='st'){add('school',{},!s.leftAt);add('sk',{n:30},skill(s)>=30);add('age',{n:40},s.age<=40);if(edLv(s)<2)add('place',{},s.uniPlace||skill(s)>=26);const need=usdG(s,q.fee+q.live)*stYrs(s,q)*(1-famHelp(s));add(famHelp(s)?'fundsF':'funds',{a:MN(need)},liquid(s)>=need)}
+ else if(r==='fam'){add('pt',{c:cx(d)},ptFrom(s,d));if(q.inc)add('ptPay',{a:MN(q.inc*C[d][3])},ptFrom(s,d)&&there(s,d,()=>ptPay(s))>=q.inc*C[d][3]);if(q.lang)lang()}
+ return o}
+/* true, or why you can't apply this way */
+function migOk(s,d,r,offer){const q=(MIG[cc(d)]||{})[r];if(!q)return M(cc(d)==='GB'&&r==='inv'?'mig.none.invGB':'mig.none.'+r,{c:cx(d)});
+ const miss=migReqs(s,d,r,offer).find(x=>x.hard&&!x.ok);return miss?M('mig.need',{x:miss.m}):true}
+/* the chance it works out (hidden; Easy shows it as a hint) */
+function migP(s,d,r,offer){if(r==='dv')return .9;const q=(MIG[cc(d)]||{})[r];if(!q)return 0;
+ if(r==='sk'){const f=offer?1:clamp((.05+.008*(skill(s)-q.sk)+(job(s)&&CAR[s.job.id].f==='office'?.04:0))*q.find,.02,.35)*(speaks(s,d)?1:.45);return f*q.odds}
+ return r==='st'?(q.odds||.8)*(speaks(s,d)?1:.8):q.odds}
+const migYrs=(d,r)=>(r==='dv'?null:((MIG[cc(d)]||{})[r]||{}).y)||[1,1];
+const migFee=(s,d,r)=>usdG(s,r==='dv'?900:r==='st'?500:MIG[cc(d)][r].fee);
+/* the line under a route: fees, how long, and each requirement met (✓) or missed (✗) */
+function migSub(s,d,r,offer){const q=MIG[cc(d)][r];if(!q)return M('mig.sub0');const y=migYrs(d,r),l=migReqs(s,d,r,offer).map(x=>M(x.ok?'mig.ok':'mig.no',{x:x.m}));
+ const L=M('mig.l'+l.length,Object.fromEntries(l.map((x,i)=>['abcdef'[i],x]))),Y=y[0]===y[1]?M('mig.y1',{n:y[0]}):M('mig.y2',{a:y[0],b:y[1]});
+ return r==='st'?M('mig.subSt',{t:MN(usdG(s,q.fee)),l:MN(usdG(s,q.live)),y:Y,r:L}):M('mig.sub',{f:MN(migFee(s,d,r)),y:Y,r:L})}
+function migHint(s,d,r,offer){if(!MIG[cc(d)][r])return null;const p=Math.round(100*migP(s,d,r,offer));
+ return r==='st'?M('mig.hSt',{p,q:Math.round(100*MIG[cc(d)].st.stay)}):M('mig.h',{p})}
+/* apply: pay the fees (an investment goes in now and is locked), and hear back in 1–3 years */
+function migApply(s,d,r,offer){const a=s.age,f=migFee(s,d,r),n=s.migN=(s.migN||0)+1,q=MIG[cc(d)][r]||{},y=migYrs(d,r),yrs=y[0]+Math.floor(evR(s,'migY')()*(y[1]-y[0]+1));
+ pay(s,f);const t=T(s,'mig'+n,{kind:'custom',label:M('trk.migApp',{c:cx(d),a}),fees:f,fx:0,diff:0});t.v-=f;t.note=M('note.migApp',{a:MN(f)});
+ if(r==='inv'&&q.lock){const v=usdG(s,q.usd);pay(s,v);mkLot(s,'migInv',{rate:.01,lock:a+yrs+q.lock},'trk.migInv');addLot(s,'migInv',v)}
+ s.migApp={d,r,n,at:a+yrs,p:migP(s,d,r,offer)};later(s,a+yrs,'migRes',{});
+ /* kept for tools/balance.js: who applied (savings in years of a typical wage, Skill) and how it went */
+ (s.migTry||(s.migTry=[])).push({n,r,d,w:liquid(s)/s.base,sk:skill(s),ok:0})}
+/* the people you leave behind are far away (closeness drifts lower, see pplYear); a parent you bring over is near again */
+function pplFar(s,far){for(const p of s.ppl||[])if(['mother','father','sib','friend'].includes(p.r)&&!p.came)p.far=far?1:0}
+/* the money values in a passbook line, which change with the exchange rate when you move */
+const TRK_M=['v','gain','cost','per','spent','g','paid','saved','lost','hold','sell','prem','got','recv','cov','fees','fx','diff'];
+/* the move itself: sell what can't come along, change your money at market rates, then prices, pay, health care and lifespan
+   follow the new country (lifespan only part of the way: more the younger you move, an ESTIMATE), its country cards are dealt
+   (replan), and the people you leave behind are far away */
+function moveTo(s,d,how,L,n){const from=s.lc,f=fxMove(from,d),bR=C[d][3]/s.base,a=s.age,back=d===s.ci,nw0=netWorth(s);
+ if(s.house){const h=s.house;s.cash+=.97*h.value-h.mort;const t=s.trk.home;if(t)t.note=M('note.homeMoved',{a:MN(h.value)});s.house=null}
+ if(s.biz&&!s.biz.sold){if(s.biz.ok){const v=(s.biz.mode==='full'?2:1)*s.biz.inc;addLot(s,'bizsale',v);const t=s.trk.biz;if(t){t.v+=v;t.note=M('note.bizSold',{a:MN(v)})}}else{const t=s.trk.biz;if(t)t.note=M('note.bizMoved')}s.biz.sold=true;s.biz.done=true}
+ if(s.study)s.study=null;
+ s.cash*=f;s.debt*=f;s.sloan*=f;s.sloanPay*=f;s.efund*=f;s.pension*=f;s.lastSal*=f;s.lastInc*=f;s.annu*=f;
+ for(const k in s.lots){const l=s.lots[k];l.v*=f;l.tin*=f;l.tout*=f}
+ if(s.crypto)s.crypto.stake*=f;if(s.car&&s.car.bal){s.car.bal*=f;s.car.pay*=f}if(s.ret2)s.ret2.inc*=f;
+ for(const id in s.trk){const t=s.trk[id];for(const k of TRK_M)if(typeof t[k]==='number')t[k]*=f}
+ /* yearly costs you signed up for are local: they follow the new prices */
+ for(const r of s.rec)r.amt*=bR;s.kidFee*=bR;if(s.ilp)s.ilp.amt*=bR;
+ const sx=s.sex==='f'?0:1,leOf=i=>C[i][4]+LE_SEX[cc(i)][sx]-LE_SEX[cc(i)][2];
+ s.le=Math.round(s.le+(leOf(d)-leOf(from))*clamp(1-a/90,0,1));s.hm*=C[d][5]/C[from][5];s.uni=C[d][6];s.base=C[d][3];s.lc=d;
+ /* the old country's schemes stop (what is in their accounts stays yours) */
+ s.scheme=null;s.dca=[];s.prot=null;s.rateAdj=0;s.layM=1;s.ppM=1;s.rentUntil=0;s.hWait=0;if(s.medTk){stopRec(s,s.medTk);s.medTk=null}s.medCut=1;
+ /* a partner you are only dating stays behind; one you live with comes along, and so do the children */
+ if(s.pt&&s.pt.st==='date'&&s.pt.c!==d)splitUp(s,'me',L);
+ if(s.job&&!(how==='sk'&&!NOMOVE[s.job.id]&&!(s.job.train>a)&&!back))endCareer(s,'move',a-1);
+ s.moves=(s.moves||0)+1;s.movedAt=a;
+ const k=n||(s.mig&&s.mig.n)||(s.migN=(s.migN||0)+1),t=T(s,'mig'+k,{kind:'custom',fees:0,fx:0,diff:0}),mv=usdG(s,MIGK.move);pay(s,mv);
+ t.fees=(t.fees||0)+mv;t.fx=(t.fx||0)+netWorth(s)+mv-nw0;t.v=(t.diff||0)+t.fx-t.fees;s.mvCost=back?mv:t.fees;
+ if(back){const m=s.mig;t.label=M('trk.migEnd',{c:cx(from),a:m?m.at:a,b:a});t.note=M('note.mig',{a:MN(t.fees),x:MS(t.fx),d:MS(t.diff||0)});
+  s.mig=null;s.back=a;delete s.bump.migPay;stopRec(s,'migRemit');pplFar(s,false);s.happy=clamp(s.happy-2,0,100)}
+ else{const q=MIG[cc(d)],st=how==='st'?'student':how==='dv'?'pr':how==='inv'?q.inv.st:how==='fam'&&q.fam.st?q.fam.st:'visa',
+   prY=how==='fam'&&q.fam.pr!=null?q.fam.pr:q.pr;
+  s.mig={d,from,at:a,how,st,n:k,renew:a+3,prAt:prY!=null?a+prY:99,prN:0,citAt:q.np!=null?a+q.np:99,citN:0,visitAt:a+2,
+   pen:how==='st'?0:MIGK.qual*(s.job&&REGJ[s.job.id]?2:1),sp:speaks(s,d)?1:0};
+  if(st==='pr')migPRGot(s);
+  t.label=M('trk.mig',{c:cx(d),a});t.note=M('note.mig',{a:MN(t.fees),x:MS(t.fx),d:MS(0)});pplFar(s,true);
+  if(how==='st'){const sq=q.st,ba=edLv(s)<2,yrs=stYrs(s,sq),tu=usdG(s,sq.fee)*yrs,fh=famHelp(s);pay(s,(1-fh)*tu);if(fh)famPay(s,'mig_how',fh*tu/s.base);
+   s.study={end:a+yrs,gain:(ba?6.5:5)*learnLuck(s,'study'),pt:.25,label:M(ba?'lbl.uniAb':'lbl.maAb',{c:cx(d)}),k:ba?'uni':'ma',ab:1,src:'ab'};
+   T(s,'sk_ab',{kind:'skill',label:s.study.label}).cost+=tu;later(s,a+yrs-1,'migStay',{})}
+  if(pplOf(s,'parent').length&&C[s.ci][3]<C[d][3])s.mig.remitAt=a+1}
+ replan(s);if(typeof pplSync==='function')pplSync(s)}
+/* permanent residence: no more renewals; citizenship comes gap years later (or earlier by naturalisation) */
+function migPRGot(s){const m=s.mig,q=MIG[cc(m.d)],g=m.how==='fam'&&q.fam.gap!=null?q.fam.gap:q.gap;m.st='pr';m.prGot=s.age;if(g!=null)m.citAt=Math.min(m.citAt,s.age+g)}
+/* a country's cards are dealt again: cards only for the old country's lives that haven't come up go, the new country's come in
+   for the years ahead, at the same chances as at birth (planLife) */
+function replan(s){const r=evR(s,'replan');for(const e of EV){if(!e.win||!e.only||s.done[e.id])continue;
+ if(!e.only(s)){delete s.plan[e.id];delete s.spare[e.id];continue}if(s.plan[e.id]!=null||s.spare[e.id]!=null)continue;
+ const lo=Math.max(e.win[0],s.age+1),hi=e.win[1];if(lo>hi)continue;const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p),age=lo+Math.floor(r()*(hi-lo+1));
+ if(r()<p*(p<1?(e.dens||DENSITY):1))s.plan[e.id]=age;else if(p>0)s.spare[e.id]=age}}
+/* the start of each year: the pay held back fades, the years you've lived in each country (for languages) and worked there
+   (for state pensions) add up */
+function migStart(s,a){const k=cc(s.lc);(s.lived||(s.lived={}))[k]=(s.lived[k]||0)+1;const m=s.mig;if(!m)return;
+ const y=a-m.at,fd=clamp(1-y/MIGK.fade,0,1),p=(m.pen+(m.sp?0:MIGK.lang))*fd;
+ if(p>.001){s.bump.migPay=1-p;if(job(s))T(s,'migPay',{kind:'custom',label:M('trk.migPay')})}else if(s.bump.migPay!=null)delete s.bump.migPay}
+/* the end of each year abroad: what you saved compared with what you'd have saved at home in the same life (your saving
+   scaled to the typical wage there, without the pay held back: an ESTIMATE), on the move's passbook line */
+function migEnd(s,a,out){const m=s.mig;if(!m||a<=m.at)return;const t=s.trk['mig'+m.n];if(!t)return;
+ const hm=out.saved*C[m.from][3]/s.base/(s.bump.migPay||1),d=out.saved-hm;t.diff+=d;t.v+=d;t.note=M('note.mig',{a:MN(t.fees),x:MS(t.fx),d:MS(t.diff)})}
+/* where someone you meet is from: usually where you live; abroad, often someone from home too; at home, now and then someone
+   from another country (an ESTIMATE; the other country is drawn by births) */
+function meetFrom(s){const r=evR(s,'meetC'),u=r();if(s.lc!==s.ci){if(u<.7)return s.lc;if(u<.9)return s.ci}else if(u>=.04)return s.lc;
+ const o=C.map((c,i)=>i).filter(i=>i!==s.lc&&i!==s.ci),tot=o.reduce((a,i)=>a+C[i][2],0);let v=r()*tot;for(const i of o){v-=C[i][2];if(v<=0)return i}return o[0]}
+/* Happiness and Relationships in the first years: culture shock and homesickness (more without the language), and no friends yet */
+const migMood=(s,a)=>{const m=s.mig;if(!m)return 0;const y=a-m.at;return(m.sp?4:7)*clamp(1-y/4,0,1)+(y<10&&pplOf(s,'parent').some(p=>p.far)?1.5:0)};
+const migRel=(s,a)=>s.mig&&a-s.mig.at<4?.7:0;
+/* a state pension from each country you worked in, for the years you worked there, changed into today's money (statePen) */
+function penMix(s){const w=s.wy,ks=w?Object.keys(w):[];if(!ks.length||ks.length===1&&ks[0]===cc(s.lc))return s.base;let n=0,v=0;for(const k in w){const i=C.findIndex(c=>c[1]===k);n+=w[k];v+=w[k]*C[i][3]*fxMove(i,s.lc)}return n?v/n:s.base}
+/* renewing a visa: refused if the reason for it is gone (no job on a work visa, no partner on a family visa) */
+function migRenew(s){const m=s.mig;if(!m)return;pay(s,usdG(s,MIGK.renew));m.renew=s.age+3;
+ const lost=(m.how==='sk'&&!job(s)&&!s.retired)||(m.how==='fam'&&!s.pt);
+ if(lost&&evR(s,'migRen')()>=.3){m.out=1;s.jobAt=s.age+2;later(s,s.age+1,'migOut',{why:'ren'})}}
+function migPRApply(s){const m=s.mig;if(!m)return;pay(s,usdG(s,MIGK.prFee));m.prApp=1;m.prN++;later(s,s.age+1,'migPR',{})}
+function migCitApply(s){const m=s.mig;if(!m)return;pay(s,usdG(s,MIGK.citFee));m.citApp=1;m.citN++;later(s,s.age+1,'migCit',{})}
+/* moving back home, from the Life choices panel */
+function migBack(s,L){if(!s.mig||s.lc===s.ci)return;const c=s.lc;moveTo(s,s.ci,'back',L);L&&L(M('log.mig.back',{c:cx(s.ci),b:cx(c)}),'')}
+Object.assign(LATER,{
+ /* the answer to an application: you move, or wait two or three years before trying again (an investment is yours again) */
+ migRes:(s,x,L)=>{const A=s.migApp;if(!A||s.dead)return;s.migApp=null;
+  const p=A.p*(A.r==='sk'&&!job(s)?0:1)*(A.r==='fam'&&!ptFrom(s,A.d)?0:1);
+  if(evR(s,'migRes')()<p){const tr=(s.migTry||[]).find(x=>x.n===A.n);if(tr)tr.ok=1;moveTo(s,A.d,A.r,L,A.n);L&&L(M('log.mig.go',{c:cx(A.d)}),'good');return}
+  s.migWait=s.age+2+(evR(s,'migW')()<.5?1:0);const t=s.trk['mig'+A.n];if(t){t.label=M('trk.migNo',{c:cx(A.d),a:A.at-1});t.note=M('note.migNo',{a:MN(t.fees)})}
+  const l=s.lots.migInv;if(l&&A.r==='inv')l.lock=0;L&&L(M('log.mig.no',{c:cx(A.d),a:s.migWait}),'bad')},
+ /* the last year of studying abroad: a job and a work permit to stay, or home when the course ends */
+ migStay:(s,x,L)=>{const m=s.mig;if(!m||m.st!=='student')return;const q=MIG[cc(m.d)];
+  if(evR(s,'migStay')()<q.st.stay*(speaks(s,m.d)?1:.6)*clamp(.7+skill(s)/100,.7,1.3)){m.st='visa';m.how='sk';m.renew=s.age+3;m.prAt=q.pr!=null?Math.max(m.prAt,s.age+q.pr):99;L&&L(M('log.mig.stay',{c:cx(m.d)}),'good')}
+  else{m.out=1;s.jobAt=s.study?s.study.end+1:s.age+2;later(s,s.study?s.study.end:s.age+1,'migOut',{why:'st'});L&&L(M('log.mig.stNo',{c:cx(m.d)}),'')}},
+ migOut:(s,x,L)=>{if(!s.mig)return;const c=s.lc;moveTo(s,s.ci,'back',L);L&&L(M(x.why==='st'?'log.mig.outSt':'log.mig.outRen',{c:cx(s.ci),b:cx(c)}),'bad')},
+ migPR:(s,x,L)=>{const m=s.mig;if(!m)return;m.prApp=0;const q=MIG[cc(m.d)];
+  if(evR(s,'migPR')()<q.prP*(job(s)||s.retired||m.how!=='sk'?1:.5)*(speaks(s,m.d)?1:.7)){migPRGot(s);s.happy=clamp(s.happy+3,0,100);L&&L(M('log.mig.pr',{c:cx(m.d)}),'good')}
+  else{m.prAt=m.prN>=3?99:s.age+2;L&&L(M('log.mig.prNo',{c:cx(m.d)}),'bad')}},
+ migCit:(s,x,L)=>{const m=s.mig;if(!m)return;m.citApp=0;const q=MIG[cc(m.d)];
+  if(evR(s,'migCit')()<q.citP*(speaks(s,m.d)?1:.5)){m.st='cit';s.happy=clamp(s.happy+3,0,100);L&&L(M('log.mig.cit',{c:cx(m.d)}),'good')}
+  else{m.citAt=m.citN>=3?99:s.age+3;L&&L(M('log.mig.citNo',{c:cx(m.d)}),'bad')}}
+});
 
 /* ---------- the end grade ----------
    Game rules, not data. Four equal parts, each shown 0–100:
