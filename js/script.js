@@ -181,7 +181,7 @@ function script(src,scope){if(typeof src!=='string')fail('expected a script (tex
  for(const a of scope&&scope.args||[])X.locals.add(a);const b=stmt(parseScript(src),X);return c=>{const r=b(c);return isRet(r)?r.v:undefined}}
 
 /* what a script uses, for tools/validate.js: verbs and helpers it calls, life fields it reads or changes, message keys
-   given as plain text (M('…')), fields it creates with = (sets), consequences it schedules (later(age, '…')) and follow-up cards (next('…')) */
+   given as plain text (M('…'), memory('…')), fields it creates with = (sets), consequences it schedules (later(age, '…')) and follow-up cards (next('…')) */
 function uses(node,scope){const vars=new Set(scope&&scope.vars||[]),fns=new Set(scope&&scope.fns||[]),loc=new Set(scope&&scope.args||[]);
  const out={calls:new Set(),reads:new Set(),writes:new Set(),sets:new Set(),keys:[],later:[],next:[],consts:new Set()};
  const isLocal=n=>loc.has(n)||vars.has(n);
@@ -190,7 +190,7 @@ function uses(node,scope){const vars=new Set(scope&&scope.vars||[]),fns=new Set(
    case 'id':if(isLocal(n.name))return;if(hasOwn.call(CONST,n.name)){out.consts.add(n.name);return}(asTarget?out.writes:out.reads).add(n.name);return;
    case 'mem':walk(n.o,false);if(asTarget){const r=root(n);if(r.k==='id'&&!isLocal(r.name)&&!hasOwn.call(CONST,r.name))out.writes.add(r.name)}if(n.x)walk(n.x);return;
    case 'call':if(n.f.k==='id'){if(!isLocal(n.f.name))out.calls.add(n.f.name);const a=n.args;
-     if(n.f.name==='M'&&a[0]&&a[0].k==='lit')out.keys.push(a[0].v);
+     if((n.f.name==='M'||n.f.name==='memory')&&a[0]&&a[0].k==='lit')out.keys.push(a[0].v);
      if(n.f.name==='later'&&a[1]&&a[1].k==='lit')out.later.push(a[1].v);
      if(n.f.name==='next'&&a[0]&&a[0].k==='lit')out.next.push(a[0].v)}else walk(n.f);
     n.args.forEach(x=>walk(x));return;

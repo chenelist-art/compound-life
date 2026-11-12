@@ -16,9 +16,10 @@ const fs=require('fs'),path=require('path'),vm=require('vm');
 const B=require('./build.js');
 const{LANGS,ROOT,full}=B;
 
-const EVENT_KEYS=new Set(['id','src','age','weight','dens','if','when','chain','def','tarot','art','surv','care','use','with','let','fn','text','vars','hint','pre','preLog','again','opts','later','i18n','country','_file','who']);
-const OPT_KEYS=new Set(['each','as','max','id','let','show','label','sub','hint','ok','rel','bond','do','next','grp']);
-const WHO_KEYS=new Set(['role','age','test','pick','dead']),WHO_ROLES=['mother','father','parent','sib','friend','pt','kid','boss','mentor'];
+const EVENT_KEYS=new Set(['id','src','age','weight','dens','if','when','chain','def','tarot','art','surv','care','use','with','let','fn','text','vars','hint','pre','preLog','again','opts','later','i18n','country','_file','who','life']);
+const OPT_KEYS=new Set(['each','as','max','id','let','show','label','sub','hint','ok','rel','bond','val','do','next','grp']);
+const VALS=['honest','loyal','brave','kind'];
+const WHO_KEYS=new Set(['role','age','test','pick','dead','gone']),WHO_ROLES=['mother','father','parent','sib','friend','pt','kid','boss','mentor'];
 const TPL_KEYS=new Set(['key','about','defaults','let','fn','opts','later','i18n']);
 const BG=new Set(['co','ya','mi','wa','wh']);
 /* small moments: their kinds, fields and effects (fx: cash is a share of a typical wage; the rest are points) */
@@ -109,6 +110,9 @@ function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
   if(o.hint!=null){if(key)msgSpec(w+'.hint',o.hint,sc,key+'.h');else if(typeof o.hint==='string')compile(w+'.hint',o.hint,'expr',sc)}
   if(o.rel!=null&&typeof o.rel!=='number')E(w+'.rel','should be a number (how much Relationships change)');
   if(o.bond!=null){if(typeof o.bond!=='number')E(w+'.bond','should be a number (how much closeness with the card’s person changes)');else if(!scope.vars.includes('p'))E(w+'.bond','"bond" needs a "who" on the event: whose closeness?')}
+  /* the kind of person you were: never hinted, never a Relationships change you could read as the right answer */
+  if(o.val!=null){if(typeof o.val!=='object'||Array.isArray(o.val))E(w+'.val','should be {"honest": 1, …}');else for(const[k,v]of Object.entries(o.val)){if(!VALS.includes(k))E(w+'.val','values are '+VALS.join(', '));if(!(Number.isInteger(v)&&Math.abs(v)<=2&&v!==0))E(w+'.val.'+k,'should be a whole number from -2 to 2 (not 0)')}
+   if(o.hint!=null||o.rel!=null)E(w,'an option with "val" is a choice with no right answer: no "hint" or "rel" (they would show in Easy)')}
   if(o.do!=null)compile(w+'.do',o.do,'script',sc);
   for(const n of[].concat(o.next||[])){if(!n||typeof n.event!=='string'){E(w+'.next','needs {"event": id, "in": years}');continue}nextRefs.push([w+'.next',n.event]);
    if(n.in!=null&&!(Number.isFinite(n.in)||(Array.isArray(n.in)&&n.in.length===2&&n.in[0]<=n.in[1])))E(w+'.next.in','should be years, or [from, to]');
@@ -277,6 +281,9 @@ function simulate(gen,n,errors,warnings){const{ctx,run}=sandbox(gen,LANGS);run('
     texYear(s,o=>{look(o.m,'moment '+o.id);if(o.a)look(o.a,'moment '+o.id+' money');tx[o.id]=(tx[o.id]||0)+1;txY++});
     tick(s,yearRand(s.seed,s.age),(m)=>look(m,'diary'))}
     for(const t of Object.values(s.trk)){const v=trkView(s,t);look(t.label,'passbook');look(v.note,'passbook note')}
+    for(const m of s.mem||[])look(m.m,'memory');
+    for(const g of regrets(s)){look(g.t,'regret');look(g.x,'regret')}
+    for(const w of valWords(s))look(M(w.k),'values');
     if(s.dead)deaths++}catch(e){bad.push('life '+i+' (age '+s.age+'): '+(e.stack||e.message).split('\\n').slice(0,3).join(' | '))}}
   return{cards,deaths,bad,seen,raw:[...raw],miss:[...miss],noDef:[...noDef],tx,txY,yrs}})()`,ctx);
  for(const b of r.bad.slice(0,15))errors.push('simulation: '+b);if(r.bad.length>15)errors.push('simulation: …and '+(r.bad.length-15)+' more crashes');

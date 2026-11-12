@@ -3,6 +3,8 @@
  "events": [
   {
    "id": "hobby",
+   "life": true,
+   "dens": 1,
    "age": [6, 8],
    "weight": 0.9,
    "def": "none",
@@ -16,15 +18,15 @@
      "hint": true,
      "ok": "no",
      "rel": 2,
-     "do": "addSkill('child', 2, M('trk.child')); happy += 2"
+     "do": "addSkill('child', 2, M('trk.child')); happy += 2; hobby('music')"
     },
-    {"id": "sport", "sub": {"a": "MN(.6 * a)"}, "hint": true, "do": "health += 2.5; happy += 3"},
+    {"id": "sport", "sub": {"a": "MN(.6 * a)"}, "hint": true, "do": "health += 2.5; happy += 3; hobby('sport')"},
     {
      "id": "code",
      "sub": {"a": "MN(.8 * a)"},
      "hint": true,
      "ok": "no",
-     "do": "addSkill('child', 3.5, M('trk.child'))"
+     "do": "addSkill('child', 3.5, M('trk.child')); hobby('code')"
     },
     {"id": "none", "rel": 4, "do": "happy += 1"}
    ],
@@ -631,7 +633,7 @@
    "let": {"a": ".15 * base"},
    "vars": {"a": "MN(.15 * base)"},
    "opts": [
-    {"id": "ask", "sub": {"a": "MN(a)"}, "rel": 3, "do": "happy += 3; later(19, 'tripDebt', {a})"},
+    {"id": "ask", "sub": {"a": "MN(a)"}, "rel": 3, "do": "happy += 3; later(19, 'tripDebt', {a}); memory('.m', null, {}, 2)"},
     {
      "id": "work",
      "sub": {"a": "MN(a)"},
@@ -646,6 +648,7 @@
    },
    "i18n": {
     "en": {
+     ".m": "The school trip, a whole week away",
      ".t": "The school trip",
      ".x": "Your class is going away for a week. It costs {a}, which is a lot for your family.",
      ".ask": "Ask your parents to find the money",
@@ -656,6 +659,7 @@
      ".stay.s": "Free. Everyone talks about the trip for weeks."
     },
     "zh": {
+     ".m": "学校旅行，离家整整一周",
      ".t": "学校旅行",
      ".x": "全班要出去旅行一个星期，费用{a}，对你家来说不是小数目。",
      ".ask": "请爸妈想办法凑钱",
@@ -666,6 +670,7 @@
      ".stay.s": "不花钱。之后几个星期大家都在聊这趟旅行。"
     },
     "zht": {
+     ".m": "學校旅行，離家整整一週",
      ".t": "畢業旅行",
      ".x": "全班要出去旅行一個星期，費用{a}，對你家來說不是小數目。",
      ".ask": "請爸媽想辦法湊錢",
@@ -1385,18 +1390,20 @@
   },
   {
    "id": "c_swim",
+   "life": true,
    "age": [4, 6],
    "weight": 0.5,
    "def": "none",
    "tarot": "gym",
    "art": {"draw": "bridge", "bg": "mi"},
    "opts": [
-    {"id": "lessons", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "health += 2; famPay('c_swim', .02)", "next": {"event": "c_squad", "in": [4, 5], "p": 0.5}},
-    {"id": "parent", "hint": true, "rel": 1, "do": "health += 1; bond('parent', 2)"},
+    {"id": "lessons", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "health += 2; famPay('c_swim', .02); hobby('swim')", "next": {"event": "c_squad", "in": [4, 5], "p": 0.5}},
+    {"id": "parent", "hint": true, "rel": 1, "do": "health += 1; bond('parent', 2); memory('.m', person('parent'), {}, 2)"},
     {"id": "none"}
    ],
    "i18n": {
     "en": {
+     ".m": "Learning to swim with {p}",
      ".t": "Learning to swim",
      ".x": "The local pool runs swimming lessons for children.",
      ".lessons": "Swimming lessons",
@@ -1409,6 +1416,7 @@
      ".none.s": "Maybe later."
     },
     "zh": {
+     ".m": "{p}教你游泳",
      ".t": "学游泳",
      ".x": "附近的泳池开了儿童游泳班。",
      ".lessons": "报游泳班",
@@ -1421,6 +1429,7 @@
      ".none.s": "以后再说。"
     },
     "zht": {
+     ".m": "{p}教你游泳",
      ".t": "學游泳",
      ".x": "附近的游泳池開了兒童游泳班。",
      ".lessons": "報游泳班",
@@ -1442,8 +1451,8 @@
    "tarot": "gym",
    "art": {"draw": "bridge", "bg": "ya"},
    "opts": [
-    {"id": "train", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "health += 4; skillSrc.base = Math.max(0, skillSrc.base - 1); happy += 1; famPay('c_squad', .15); later(18, 'c_squad', {})"},
-    {"id": "quit", "do": "happy += 1"}
+    {"id": "train", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "health += 4; skillSrc.base = Math.max(0, skillSrc.base - 1); happy += 1; famPay('c_squad', .15); later(18, 'c_squad', {}); hobbyKeep('swim', 3)"},
+    {"id": "quit", "do": "happy += 1; hobbyStop('swim')"}
    ],
    "later": {
     "c_squad": "if (roll('c_squad') < .06 + health / 1000) { cash += .2 * base; T('c_squad', {kind: 'custom', label: M('trk.c_squad'), v: .2 * base}); log(M('log.c_squad', {a: MN(.2 * base)}), 'good') }"
@@ -1486,14 +1495,15 @@
   },
   {
    "id": "c_piano",
+   "life": true,
    "age": [4, 7],
    "weight": 0.45,
    "def": "none",
    "tarot": "hobby",
    "art": "hobby",
    "opts": [
-    {"id": "buy", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1.5, M('trk.child')); happy += 1; famPay('c_piano', .15); next('c_piano13', 13 - age, {})"},
-    {"id": "keys", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); famPay('c_piano', .05); if (roll('c_piano') < .5) next('c_piano13', 13 - age, {})"},
+    {"id": "buy", "sub": {"a": "MN(.12 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1.5, M('trk.child')); happy += 1; famPay('c_piano', .15); next('c_piano13', 13 - age, {}); hobby('piano')"},
+    {"id": "keys", "sub": {"a": "MN(.02 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); famPay('c_piano', .05); if (roll('c_piano') < .5) next('c_piano13', 13 - age, {}); hobby('piano')"},
     {"id": "none", "do": "happy += 1"}
    ],
    "i18n": {
@@ -1542,9 +1552,9 @@
    "tarot": "hobby",
    "art": "hobby",
    "opts": [
-    {"id": "exam", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); happy -= 1; famPay('c_piano13', .06); later(16, 'c_piano', {})"},
-    {"id": "sell", "show": "done.c_piano === 'buy'", "sub": {"a": "MN(.05 * base)"}, "do": "cash += .05 * base; T('c_pianoS', {kind: 'custom', label: M('trk.c_pianoS'), v: .05 * base})"},
-    {"id": "fun", "do": "happy += 2"}
+    {"id": "exam", "sub": {"a": "MN(.03 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 1, M('trk.child')); happy -= 1; famPay('c_piano13', .06); later(16, 'c_piano', {}); hobbyKeep('piano', 3)"},
+    {"id": "sell", "show": "done.c_piano === 'buy'", "sub": {"a": "MN(.05 * base)"}, "do": "cash += .05 * base; T('c_pianoS', {kind: 'custom', label: M('trk.c_pianoS'), v: .05 * base}); hobbyStop('piano')"},
+    {"id": "fun", "do": "happy += 2; hobbyKeep('piano', 6)"}
    ],
    "later": {
     "c_piano": "if (roll('c_pianoT') < .7) { cash += .06 * base; earned += .06 * base; T('c_pianoT', {kind: 'custom', label: M('trk.c_pianoT'), v: .06 * base}); log(M('log.c_piano', {a: MN(.06 * base)}), 'good') }"
@@ -2074,13 +2084,14 @@
   },
   {
    "id": "c_chess",
+   "life": true,
    "age": [7, 10],
    "weight": 0.4,
    "def": "none",
    "tarot": "tuition",
    "art": {"draw": "exam", "bg": "ya"},
    "opts": [
-    {"id": "chess", "sub": {"a": "MN(.01 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2, M('trk.child')); famPay('c_chess', .02)", "next": {"event": "c_olymp", "in": [2, 3], "p": 0.4}},
+    {"id": "chess", "sub": {"a": "MN(.01 * base)", "b": "famNote()"}, "hint": true, "do": "addSkill('child', 2, M('trk.child')); famPay('c_chess', .02); hobby('chess')", "next": {"event": "c_olymp", "in": [2, 3], "p": 0.4}},
     {"id": "maths", "hint": true, "do": "addSkill('child', 1.5, M('trk.child'))", "next": {"event": "c_olymp", "in": [2, 3], "p": 0.3}},
     {"id": "none", "do": "happy += 1"}
    ],
@@ -3802,6 +3813,7 @@
   },
   {
    "id": "t_band",
+   "life": true,
    "age": [13, 16],
    "weight": 0.45,
    "def": "no",
@@ -3809,8 +3821,8 @@
    "art": "hobby",
    "let": {"a": ".01 * base"},
    "opts": [
-    {"id": "ask", "sub": {"a": "MN(.015 * base)", "b": "famNote()"}, "hint": true, "do": "happy += 2; famPay('t_band', .015)", "next": {"event": "t_busk", "in": [1, 3], "p": 0.5}},
-    {"id": "own", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "spend('t_band', a, 'trk.t_band'); happy += 2", "next": {"event": "t_busk", "in": [1, 3], "p": 0.5}},
+    {"id": "ask", "sub": {"a": "MN(.015 * base)", "b": "famNote()"}, "hint": true, "do": "happy += 2; famPay('t_band', .015); hobby('guitar')", "next": {"event": "t_busk", "in": [1, 3], "p": 0.5}},
+    {"id": "own", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "spend('t_band', a, 'trk.t_band'); happy += 2; hobby('guitar')", "next": {"event": "t_busk", "in": [1, 3], "p": 0.5}},
     {"id": "no"}
    ],
    "i18n": {
@@ -3862,9 +3874,9 @@
    "tarot": "hobby",
    "art": "hobby",
    "opts": [
-    {"id": "gigs", "hint": true, "do": "happy += 2; later(age + 1, 't_busk', {})"},
-    {"id": "teach", "sub": {"a": "MN(.03 * base)"}, "do": "cash += .03 * base; earned += .03 * base; const tq = T('t_busk', {kind: 'custom', label: M('trk.t_busk')}); tq.v += .03 * base"},
-    {"id": "fun", "do": "happy += 1"}
+    {"id": "gigs", "hint": true, "do": "happy += 2; later(age + 1, 't_busk', {}); hobbyKeep('guitar', 4)"},
+    {"id": "teach", "sub": {"a": "MN(.03 * base)"}, "do": "cash += .03 * base; earned += .03 * base; const tq = T('t_busk', {kind: 'custom', label: M('trk.t_busk')}); tq.v += .03 * base; hobbyKeep('guitar', 3)"},
+    {"id": "fun", "do": "happy += 1; hobbyKeep('guitar', 2)"}
    ],
    "later": {
     "t_busk": "const v = (roll('t_busk') < .3 ? .05 : .015) * base; cash += v; earned += v; const tq = T('t_busk', {kind: 'custom', label: M('trk.t_busk')}); tq.v += v; log(M('log.t_busk', {a: MN(v)}), 'good')"
@@ -5009,6 +5021,7 @@
   },
   {
    "id": "t_craft",
+   "life": true,
    "age": [14, 16],
    "weight": 0.35,
    "def": "no",
@@ -5017,8 +5030,8 @@
    "let": {"a": ".01 * base"},
    "vars": {"a": "MN(a)"},
    "opts": [
-    {"id": "sell", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "pay(a); later(age + 1, 't_craft', {a})"},
-    {"id": "no"}
+    {"id": "sell", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "do": "pay(a); later(age + 1, 't_craft', {a}); hobby('craft')"},
+    {"id": "no", "do": "hobby('craft')"}
    ],
    "later": {
     "t_craft": "const u = roll('t_craft'), v = (u < .4 ? 3 : u < .75 ? 1.2 : .3) * x.a; cash += v; earned += v; log(M('log.t_craft', {a: MN(v)}), v > x.a ? 'good' : 'bad')"
@@ -5867,12 +5880,13 @@
    "let": {"a": ".03 * base"},
    "vars": {"a": "MN(a)"},
    "opts": [
-    {"id": "ask", "sub": {"b": "famNote()"}, "hint": true, "rel": 3, "do": "happy += 3; famPay('t_trip2', .03)"},
-    {"id": "own", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "rel": 3, "do": "spend('t_trip2', a, 'trk.t_trip2'); happy += 3"},
+    {"id": "ask", "sub": {"b": "famNote()"}, "hint": true, "rel": 3, "do": "happy += 3; famPay('t_trip2', .03); memory('.m', null, {}, 2)"},
+    {"id": "own", "sub": {"a": "MN(a)"}, "ok": "cash >= a || M('kid.cash', {a: MN(Math.max(0, cash))})", "hint": true, "rel": 3, "do": "spend('t_trip2', a, 'trk.t_trip2'); happy += 3; memory('.m', null, {}, 2)"},
     {"id": "no", "rel": -1}
    ],
    "i18n": {
     "en": {
+     ".m": "A trip with a friend’s family",
      ".t": "A trip with a friend’s family",
      ".x": "A friend’s family invites you on their skiing holiday. Your share would be about {a}.",
      ".ask": "Ask your parents to pay",
@@ -5886,6 +5900,7 @@
      "trk.t_trip2": "Skiing with a friend’s family"
     },
     "zh": {
+     ".m": "和朋友一家出去旅行",
      ".t": "跟朋友家去旅行",
      ".x": "朋友家邀你一起去滑雪度假，你要分摊大约{a}。",
      ".ask": "请爸妈出钱",
@@ -5899,6 +5914,7 @@
      "trk.t_trip2": "跟朋友家去滑雪"
     },
     "zht": {
+     ".m": "和朋友一家出去旅行",
      ".t": "跟朋友家去旅行",
      ".x": "朋友家邀你一起去滑雪度假，你要分攤大約{a}。",
      ".ask": "請爸媽出錢",

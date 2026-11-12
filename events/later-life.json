@@ -63,17 +63,19 @@
     {
      "id": "world",
      "sub": {"a": "MN(.3 * base)"},
-     "do": "spend('travel', .3 * base, 'trk.travelBig'); happy += 6"
+     "do": "spend('travel', .3 * base, 'trk.travelBig'); happy += 6; memory('.m', null, {}, 3); dreamDone('travel')"
     },
     {
      "id": "modest",
      "sub": {"a": "MN(.08 * base)"},
-     "do": "spend('travel', .08 * base, 'trk.travel'); happy += 3"
+     "do": "spend('travel', .08 * base, 'trk.travel'); happy += 3; memory('.m2', null, {}, 2)"
     },
     {"id": "home"}
    ],
    "i18n": {
     "en": {
+     ".m": "Seeing the world after you retired",
+     ".m2": "Trips close to home after you retired",
      ".t": "Travelling in retirement",
      ".x": "You finally have time to see the world.",
      ".world": "A trip around the world",
@@ -86,6 +88,8 @@
      "trk.travel": "Retirement trips"
     },
     "zh": {
+     ".m": "退休后去看世界",
+     ".m2": "退休后在附近走走",
      ".t": "退休去旅行",
      ".x": "你终于有时间去看看世界了。",
      ".world": "环游世界",
@@ -98,6 +102,8 @@
      "trk.travel": "退休旅行"
     },
     "zht": {
+     ".m": "退休後去看世界",
+     ".m2": "退休後在附近走走",
      ".t": "退休去旅行",
      ".x": "你終於有時間去看看世界了。",
      ".world": "環遊世界",

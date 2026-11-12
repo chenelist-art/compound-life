@@ -1,0 +1,3221 @@
+{
+ "about": "Life, not money (all \"life\": true, so they take some of the money cards’ places: MONEYW in js/engine.js). People reaching out, whom you can answer or ignore until you drift apart (js/people.js: canCall, callOk, talk, ignore, mend); festivals in each country; making peace.",
+ "events": [
+  {
+   "life": true,
+   "id": "call_mum",
+   "when": {"test": "canCall('mum')"},
+   "who": {"role": "mother", "age": [35,105], "test": "callOk(p)"},
+   "def": "later",
+   "again": "delete done.call_mum; called('mum')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "long", "do": "talk(p, 8); happy -= 1"},
+    {"id": "later", "do": "talk(p, 3)"},
+    {"id": "ring", "hint": true, "do": "ignore(p, 6)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Mum calls",
+     ".x": "{P} calls. It’s been a while, and this is a busy week.",
+     ".long": "Talk for an hour",
+     ".long.s": "The evening you’d planned is gone. Happiness −1.",
+     ".later": "Call back at the weekend",
+     ".later.s": "A shorter call, a few days later.",
+     ".ring": "Let it ring",
+     ".ring.s": "You’ll call another time.",
+     ".ring.h": "Ignore someone often enough and they stop calling."
+    },
+    "zh": {
+     ".t": "妈妈来电",
+     ".x": "{P}打来电话。你们有一阵子没好好聊了，而这周正忙。",
+     ".long": "聊上一个小时",
+     ".long.s": "原本的安排泡汤了。幸福感 −1。",
+     ".later": "周末再打回去",
+     ".later.s": "过几天，聊得短一些。",
+     ".ring": "让它响着",
+     ".ring.s": "下次再打吧。",
+     ".ring.h": "常常不接，对方就不再打来了。"
+    },
+    "zht": {
+     ".t": "媽媽來電",
+     ".x": "{P}打來電話。你們有一陣子沒好好聊了，而這週正忙。",
+     ".long": "聊上一個小時",
+     ".long.s": "原本的安排泡湯了。幸福感 −1。",
+     ".later": "週末再回撥",
+     ".later.s": "過幾天，聊得短一些。",
+     ".ring": "讓它響著",
+     ".ring.s": "下次再打吧。",
+     ".ring.h": "常常不接，對方就不再打來了。"
+    }
+   },
+   "tarot": "parents",
+   "art": {"draw": "call", "bg": "co"}
+  },
+  {
+   "life": true,
+   "id": "call_dad",
+   "when": {"test": "canCall('dad')"},
+   "who": {"role": "father", "age": [35,105], "test": "callOk(p)"},
+   "def": "quick",
+   "again": "delete done.call_dad; called('dad')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "listen", "do": "talk(p, 8); happy -= 1"},
+    {"id": "quick", "do": "talk(p, 3)"},
+    {"id": "later", "hint": true, "do": "ignore(p, 5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A call from your father",
+     ".x": "{P} calls about nothing in particular: the weather, the neighbours, a story you’ve heard many times.",
+     ".listen": "Listen properly, and ask about the story",
+     ".listen.s": "Half an hour you meant to spend on something else. Happiness −1.",
+     ".quick": "A quick chat",
+     ".quick.s": "Five minutes, then you have to go.",
+     ".later": "“I’ll call you back”",
+     ".later.s": "You mean to.",
+     ".later.h": "Ignore someone often enough and they stop calling."
+    },
+    "zh": {
+     ".t": "爸爸的电话",
+     ".x": "{P}打来电话，没什么特别的事：天气、邻居，还有一个你听过很多遍的故事。",
+     ".listen": "认真听，还追问那个故事",
+     ".listen.s": "原本打算做别的事的半个小时。幸福感 −1。",
+     ".quick": "简单聊几句",
+     ".quick.s": "五分钟后你就得挂了。",
+     ".later": "“我待会儿打给你”",
+     ".later.s": "你是真心这么想的。",
+     ".later.h": "常常不回，对方就不再打来了。"
+    },
+    "zht": {
+     ".t": "爸爸的電話",
+     ".x": "{P}打來電話，沒什麼特別的事：天氣、鄰居，還有一個你聽過很多遍的故事。",
+     ".listen": "認真聽，還追問那個故事",
+     ".listen.s": "原本打算做別的事的半個小時。幸福感 −1。",
+     ".quick": "簡單聊幾句",
+     ".quick.s": "五分鐘後你就得掛了。",
+     ".later": "「我等一下打給你」",
+     ".later.s": "你是真心這麼想的。",
+     ".later.h": "常常不回，對方就不再打來了。"
+    }
+   },
+   "tarot": "carers",
+   "art": {"draw": "call", "bg": "ya"}
+  },
+  {
+   "life": true,
+   "id": "parent_visit",
+   "when": {"test": "canCall('visit')"},
+   "who": {"role": "parent", "age": [62,105], "test": "callOk(p)", "pick": "oldest"},
+   "def": "video",
+   "again": "delete done.parent_visit; called('visit')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.01 * base)"}, "do": "pay(.01 * base); talk(p, 12); memory('.m', p)"},
+    {"id": "video", "do": "talk(p, 3)"},
+    {"id": "next", "hint": true, "do": "ignore(p, 6)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "When are you coming?",
+     ".x": "{P} asks when you’ll next visit. The trip takes a day each way.",
+     ".go": "Go and stay for a week",
+     ".go.s": "About {a}, and a week of your holiday.",
+     ".video": "A long video call instead",
+     ".video.s": "No travelling.",
+     ".next": "“Not this year”",
+     ".next.s": "There’s always next year.",
+     ".next.h": "They will ask less often.",
+     ".m": "A week at home with {p}"
+    },
+    "zh": {
+     ".t": "什么时候回来？",
+     ".x": "{P}问你下次什么时候回去看看。路上单程就要一天。",
+     ".go": "回去住一个星期",
+     ".go.s": "大约{a}，外加一周的假期。",
+     ".video": "改成长长的视频通话",
+     ".video.s": "不用奔波。",
+     ".next": "“今年就算了”",
+     ".next.s": "反正还有明年。",
+     ".next.h": "对方会越来越少开口。",
+     ".m": "回家陪{p}住了一个星期"
+    },
+    "zht": {
+     ".t": "什麼時候回來？",
+     ".x": "{P}問你下次什麼時候回去看看。路上單程就要一天。",
+     ".go": "回去住一個星期",
+     ".go.s": "大約{a}，外加一週的假期。",
+     ".video": "改成長長的視訊通話",
+     ".video.s": "不用奔波。",
+     ".next": "「今年就算了」",
+     ".next.s": "反正還有明年。",
+     ".next.h": "對方會越來越少開口。",
+     ".m": "回家陪{p}住了一個星期"
+    }
+   },
+   "tarot": "move2",
+   "art": {"draw": "carer", "bg": "mi"}
+  },
+  {
+   "life": true,
+   "id": "parent_tech",
+   "when": {"test": "canCall('tech')"},
+   "who": {"role": "parent", "age": [58,105], "test": "callOk(p)"},
+   "def": "phone",
+   "again": "delete done.parent_tech; called('tech')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "go", "do": "talk(p, 7); happy -= 1"},
+    {"id": "phone", "do": "talk(p, 2)"},
+    {"id": "later", "hint": true, "do": "ignore(p, 4)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The new phone",
+     ".x": "{P} can’t work out the new phone and asks if you could come over and help.",
+     ".go": "Go over and set it up together",
+     ".go.s": "An afternoon, and the same questions three times. Happiness −1.",
+     ".phone": "Talk them through it on the phone",
+     ".phone.s": "It takes patience.",
+     ".later": "“Ask the neighbours’ kid”",
+     ".later.s": "They’ll figure it out.",
+     ".later.h": "They will ask less often."
+    },
+    "zh": {
+     ".t": "新手机",
+     ".x": "{P}搞不懂新手机怎么用，问你能不能过来帮忙。",
+     ".go": "过去一起把它弄好",
+     ".go.s": "一个下午，同样的问题问三遍。幸福感 −1。",
+     ".phone": "在电话里一步步教",
+     ".phone.s": "需要一点耐心。",
+     ".later": "“去问问邻居家的孩子吧”",
+     ".later.s": "总会弄明白的。",
+     ".later.h": "对方会越来越少开口。"
+    },
+    "zht": {
+     ".t": "新手機",
+     ".x": "{P}搞不懂新手機怎麼用，問你能不能過來幫忙。",
+     ".go": "過去一起把它弄好",
+     ".go.s": "一個下午，同樣的問題問三遍。幸福感 −1。",
+     ".phone": "在電話裡一步步教",
+     ".phone.s": "需要一點耐心。",
+     ".later": "「去問問鄰居家的孩子吧」",
+     ".later.s": "總會弄明白的。",
+     ".later.h": "對方會越來越少開口。"
+    }
+   },
+   "tarot": "phone1",
+   "art": {"draw": "call", "bg": "mi"}
+  },
+  {
+   "life": true,
+   "id": "sib_bday",
+   "when": {"test": "canCall('sib')"},
+   "who": {"role": "sib", "age": [30,80], "test": "(age + p.d) % 10 === 0 && callOk(p)"},
+   "def": "call",
+   "again": "delete done.sib_bday; called('sib')",
+   "vars": {"y": "age + p.d", "P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.01 * base)"}, "do": "pay(.01 * base); talk(p, 10); memory('.m', p, {y: age + p.d})"},
+    {"id": "call", "do": "talk(p, 3)"},
+    {"id": "forget", "hint": true, "do": "ignore(p, 7)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A big birthday",
+     ".x": "{P} turns {y}. The party is three hours away, on a weekend you’d hoped to rest.",
+     ".go": "Go to the party",
+     ".go.s": "About {a} for the trip and a present.",
+     ".call": "Call on the day",
+     ".call.s": "A few lines of “Happy Birthday” down the phone.",
+     ".forget": "It slips your mind",
+     ".forget.s": "You remember a week later.",
+     ".forget.h": "Forget often enough and you drift apart.",
+     ".m": "{n}’s {y}th birthday party"
+    },
+    "zh": {
+     ".t": "整岁生日",
+     ".x": "{P}{y}岁了。生日聚会在三小时车程外，偏偏是你本想好好休息的周末。",
+     ".go": "去参加聚会",
+     ".go.s": "路费加礼物大约{a}。",
+     ".call": "当天打个电话",
+     ".call.s": "在电话里唱几句生日歌。",
+     ".forget": "一不小心忘了",
+     ".forget.s": "一个星期后你才想起来。",
+     ".forget.h": "忘得多了，人就疏远了。",
+     ".m": "{n}的{y}岁生日聚会"
+    },
+    "zht": {
+     ".t": "整歲生日",
+     ".x": "{P}{y}歲了。生日派對在三小時車程外，偏偏是你本想好好休息的週末。",
+     ".go": "去參加派對",
+     ".go.s": "路費加禮物大約{a}。",
+     ".call": "當天打個電話",
+     ".call.s": "在電話裡唱幾句生日歌。",
+     ".forget": "一不小心忘了",
+     ".forget.s": "一個星期後你才想起來。",
+     ".forget.h": "忘得多了，人就疏遠了。",
+     ".m": "{n}的{y}歲生日派對"
+    }
+   },
+   "tarot": "reunion",
+   "art": {"draw": "gift", "bg": "ya"}
+  },
+  {
+   "life": true,
+   "id": "sib_help",
+   "when": {"test": "canCall('sibh')"},
+   "who": {"role": "sib", "age": [20,75], "test": "callOk(p)"},
+   "def": "help",
+   "again": "delete done.sib_help; called('sibh')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "van", "sub": {"a": "MN(.012 * base)"}, "do": "pay(.012 * base); talk(p, 3)"},
+    {"id": "help", "do": "talk(p, 9); health -= 1"},
+    {"id": "busy", "hint": true, "do": "ignore(p, 5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Moving day",
+     ".x": "{P} is moving house this weekend and asks you to help with the boxes.",
+     ".help": "Help all weekend",
+     ".help.s": "Sore arms on Monday. Health −1.",
+     ".van": "Pay for a van and movers",
+     ".van.s": "About {a}.",
+     ".busy": "Say you’re busy",
+     ".busy.s": "You are, more or less.",
+     ".busy.h": "Say no often enough and they stop asking."
+    },
+    "zh": {
+     ".t": "搬家日",
+     ".x": "{P}这个周末搬家，请你帮忙搬箱子。",
+     ".help": "帮上一整个周末",
+     ".help.s": "周一胳膊酸痛。健康 −1。",
+     ".van": "出钱请搬家公司",
+     ".van.s": "大约{a}。",
+     ".busy": "说你没空",
+     ".busy.s": "你确实挺忙的，算是吧。",
+     ".busy.h": "拒绝得多了，对方就不再开口了。"
+    },
+    "zht": {
+     ".t": "搬家日",
+     ".x": "{P}這個週末搬家，請你幫忙搬箱子。",
+     ".help": "幫上一整個週末",
+     ".help.s": "週一手臂痠痛。健康 −1。",
+     ".van": "出錢請搬家公司",
+     ".van.s": "大約{a}。",
+     ".busy": "說你沒空",
+     ".busy.s": "你確實挺忙的，算是吧。",
+     ".busy.h": "拒絕得多了，對方就不再開口了。"
+    }
+   },
+   "tarot": "move",
+   "art": {"draw": "tools", "bg": "wa"}
+  },
+  {
+   "life": true,
+   "id": "friend_msg",
+   "when": {"test": "canCall('fmsg')"},
+   "who": {"role": "friend", "age": [20,90], "test": "callOk(p)"},
+   "def": "reply",
+   "again": "delete done.friend_msg; called('fmsg')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "meet", "sub": {"a": "MN(.005 * base)"}, "do": "pay(.005 * base); talk(p, 9); if (roll('fmsgMem') < .5) memory('.m', p, {}, 1)"},
+    {"id": "reply", "do": "talk(p, 3)"},
+    {"id": "leave", "hint": true, "do": "ignore(p, 5)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A message from a friend",
+     ".x": "{P}: “Saw this and thought of you. How are you these days?”",
+     ".meet": "Meet up this weekend",
+     ".meet.s": "Dinner, about {a}.",
+     ".reply": "Reply with a long message",
+     ".reply.s": "Twenty minutes on your phone.",
+     ".leave": "Leave it for now",
+     ".leave.s": "You’ll answer properly when you have time.",
+     ".leave.h": "Friends you keep ignoring drift out of your life.",
+     ".m": "Dinner with {n}, talking until the place closed"
+    },
+    "zh": {
+     ".t": "朋友的消息",
+     ".x": "{P}发来消息：“看到这个就想到你。最近怎么样？”",
+     ".meet": "这个周末见个面",
+     ".meet.s": "吃顿饭，大约{a}。",
+     ".reply": "回一条长长的消息",
+     ".reply.s": "在手机上打了二十分钟字。",
+     ".leave": "先放着吧",
+     ".leave.s": "等有空再好好回。",
+     ".leave.h": "一直不理的朋友，会慢慢走出你的生活。",
+     ".m": "和{n}吃饭，一直聊到店家打烊"
+    },
+    "zht": {
+     ".t": "朋友的訊息",
+     ".x": "{P}傳來訊息：「看到這個就想到你。最近怎麼樣？」",
+     ".meet": "這個週末見個面",
+     ".meet.s": "吃頓飯，大約{a}。",
+     ".reply": "回一則長長的訊息",
+     ".reply.s": "在手機上打了二十分鐘字。",
+     ".leave": "先放著吧",
+     ".leave.s": "等有空再好好回。",
+     ".leave.h": "一直不理的朋友，會慢慢走出你的生活。",
+     ".m": "和{n}吃飯，一直聊到店家打烊"
+    }
+   },
+   "tarot": "friends",
+   "art": {"draw": "call", "bg": "wa"}
+  },
+  {
+   "life": true,
+   "id": "friend_hard",
+   "when": {"test": "canCall('fhard')"},
+   "who": {"role": "friend", "age": [20,90], "test": "callOk(p)"},
+   "def": "text",
+   "again": "delete done.friend_hard; called('fhard')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "stay", "do": "talk(p, 12); happy -= 2; health -= 1; memory('.m', p)"},
+    {"id": "text", "do": "talk(p, 4)"},
+    {"id": "not", "hint": true, "do": "ignore(p, 7)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hard year",
+     ".x": "{P} has had a hard year and asks if you can talk tonight. You have an early start tomorrow.",
+     ".stay": "Stay up and listen",
+     ".stay.s": "A short night. Happiness −1, Health −1.",
+     ".text": "Send a kind message, and find time this week",
+     ".text.s": "Better than nothing.",
+     ".not": "“Not tonight, sorry”",
+     ".not.s": "A good night’s sleep.",
+     ".not.h": "Friends you keep turning away drift out of your life.",
+     ".m": "The night you stayed up with {n}"
+    },
+    "zh": {
+     ".t": "难熬的一年",
+     ".x": "{P}这一年过得很难，问你今晚能不能聊聊。你明天一早还要出门。",
+     ".stay": "熬夜陪着听",
+     ".stay.s": "睡得很少。幸福感 −1，健康 −1。",
+     ".text": "发一条暖心的消息，约这周找时间聊",
+     ".text.s": "总比什么都不做好。",
+     ".not": "“今晚不行，抱歉”",
+     ".not.s": "睡个好觉。",
+     ".not.h": "一再推开的朋友，会慢慢走出你的生活。",
+     ".m": "陪{n}聊到天亮的那一夜"
+    },
+    "zht": {
+     ".t": "難熬的一年",
+     ".x": "{P}這一年過得很辛苦，問你今晚能不能聊聊。你明天一早還要出門。",
+     ".stay": "熬夜陪著聽",
+     ".stay.s": "睡得很少。幸福感 −1，健康 −1。",
+     ".text": "傳一則暖心的訊息，約這週找時間聊",
+     ".text.s": "總比什麼都不做好。",
+     ".not": "「今晚不行，抱歉」",
+     ".not.s": "睡個好覺。",
+     ".not.h": "一再推開的朋友，會慢慢走出你的生活。",
+     ".m": "陪{n}聊到天亮的那一夜"
+    }
+   },
+   "tarot": "fsick",
+   "art": {"draw": "call", "bg": "wh"}
+  },
+  {
+   "life": true,
+   "id": "kid_call",
+   "when": {"test": "canCall('kid')"},
+   "who": {"role": "kid", "age": [19,75], "test": "callOk(p)"},
+   "def": "short",
+   "again": "delete done.kid_call; called('kid')",
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "stay", "do": "talk(p, 8); happy -= 1"},
+    {"id": "short", "do": "talk(p, 3)"},
+    {"id": "later", "hint": true, "do": "ignore(p, 6)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your child calls",
+     ".x": "{P} calls just to talk. You were about to go out.",
+     ".stay": "Stay in and talk",
+     ".stay.s": "Your plans can wait. Happiness −1.",
+     ".short": "A quick chat on the way out",
+     ".short.s": "Ten minutes.",
+     ".later": "“Can I call you tomorrow?”",
+     ".later.s": "Tomorrow gets busy too.",
+     ".later.h": "Grown-up children you keep putting off call less, then stop."
+    },
+    "zh": {
+     ".t": "孩子来电",
+     ".x": "{P}打电话来，只是想聊聊。你正要出门。",
+     ".stay": "留下来好好聊",
+     ".stay.s": "你的安排只好往后放。幸福感 −1。",
+     ".short": "边出门边聊几句",
+     ".short.s": "十分钟。",
+     ".later": "“明天再打给你好吗？”",
+     ".later.s": "明天也会很忙。",
+     ".later.h": "一再推迟，长大的孩子会越来越少打来，最后不再打来。"
+    },
+    "zht": {
+     ".t": "孩子來電",
+     ".x": "{P}打電話來，只是想聊聊。你正要出門。",
+     ".stay": "留下來好好聊",
+     ".stay.s": "你的安排只好往後放。幸福感 −1。",
+     ".short": "邊出門邊聊幾句",
+     ".short.s": "十分鐘。",
+     ".later": "「明天再打給你好嗎？」",
+     ".later.s": "明天也會很忙。",
+     ".later.h": "一再推遲，長大的孩子會越來越少打來，最後不再打來。"
+    }
+   },
+   "tarot": "grandkid",
+   "art": {"draw": "call", "bg": "ya"}
+  },
+  {
+   "life": true,
+   "id": "old_friend",
+   "when": {"age": [25,88], "test": "canCall('old')"},
+   "who": {"role": "friend", "gone": true, "pick": "closest"},
+   "def": "reply",
+   "tarot": "friends",
+   "art": {"draw": "letter", "bg": "mi"},
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "opts": [
+    {"id": "meet", "do": "mend(p, 45); happy += 1; memory('.m', p)"},
+    {"id": "reply", "do": "mend(p, 30)"},
+    {"id": "leave", "do": "callAt = age"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Is this really you?",
+     ".x": "After all these years, {p} finds you online: “Is this really you? It’s been so long.”",
+     ".meet": "Meet for coffee",
+     ".meet.s": "A whole afternoon, and a lot of catching up.",
+     ".reply": "Write back warmly",
+     ".reply.s": "A long message about the years in between.",
+     ".leave": "Leave the past in the past",
+     ".leave.s": "You don’t reply.",
+     ".m": "Coffee with {n} after all those years"
+    },
+    "zh": {
+     ".t": "真的是你吗？",
+     ".x": "多年没联系的{p}突然在网上找到了你：“真的是你吗？好久不见了。”",
+     ".meet": "约出来喝杯咖啡",
+     ".meet.s": "整整一个下午，有好多话要说。",
+     ".reply": "热情地回信",
+     ".reply.s": "一条长长的消息，说说这些年。",
+     ".leave": "过去的就让它过去吧",
+     ".leave.s": "你没有回。",
+     ".m": "多年后和{n}重逢喝咖啡"
+    },
+    "zht": {
+     ".t": "真的是你嗎？",
+     ".x": "多年沒聯絡的{p}突然在網路上找到了你：「真的是你嗎？好久不見了。」",
+     ".meet": "約出來喝杯咖啡",
+     ".meet.s": "整整一個下午，有好多話要說。",
+     ".reply": "熱情地回覆",
+     ".reply.s": "一則長長的訊息，說說這些年。",
+     ".leave": "過去的就讓它過去吧",
+     ".leave.s": "你沒有回。",
+     ".m": "多年後和{n}重逢喝咖啡"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "peace_parent",
+   "when": {"age": [22,90], "test": "canCall('peace')"},
+   "who": {"role": "parent", "test": "p.cold", "pick": "closest"},
+   "def": "letter",
+   "tarot": "parents",
+   "art": {"draw": "letter", "bg": "co"},
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "again": "delete done.peace_parent",
+   "opts": [
+    {"id": "visit", "do": "mend(p, 50); happy += 1; memory('.m', p, {}, 3)"},
+    {"id": "letter", "do": "mend(p, 35)"},
+    {"id": "not", "do": "callAt = age"}
+   ],
+   "i18n": {
+    "en": {
+     ".visit": "Go and see them",
+     ".visit.s": "A long trip, and not an easy one.",
+     ".letter": "Write a letter",
+     ".letter.s": "Some things are easier to write than to say.",
+     ".not": "Not yet",
+     ".not.s": "Maybe in a few years.",
+     ".m": "Seeing {p} again",
+     ".t": "Making peace",
+     ".x": "You haven’t really spoken to {p} in years. The family says they often ask about you."
+    },
+    "zh": {
+     ".visit": "去看看",
+     ".visit.s": "路途遥远，心里也不轻松。",
+     ".letter": "写一封信",
+     ".letter.s": "有些话写下来比说出口容易。",
+     ".not": "还没准备好",
+     ".not.s": "也许过几年吧。",
+     ".m": "再见到{p}的那天",
+     ".t": "和解",
+     ".x": "你已经好多年没和{p}好好说过话了。家里人说，对方常问起你。"
+    },
+    "zht": {
+     ".visit": "去看看",
+     ".visit.s": "路途遙遠，心裡也不輕鬆。",
+     ".letter": "寫一封信",
+     ".letter.s": "有些話寫下來比說出口容易。",
+     ".not": "還沒準備好",
+     ".not.s": "也許過幾年吧。",
+     ".m": "再見到{p}的那天",
+     ".t": "和解",
+     ".x": "你已經好多年沒和{p}好好說過話了。家裡人說，對方常問起你。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "peace_sib",
+   "when": {"age": [22,90], "test": "canCall('peace')"},
+   "who": {"role": "sib", "test": "p.cold", "pick": "closest"},
+   "def": "letter",
+   "tarot": "inhfight",
+   "art": {"draw": "letter", "bg": "ya"},
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "again": "delete done.peace_sib",
+   "opts": [
+    {"id": "visit", "do": "mend(p, 50); happy += 1; memory('.m', p, {}, 3)"},
+    {"id": "letter", "do": "mend(p, 35)"},
+    {"id": "not", "do": "callAt = age"}
+   ],
+   "i18n": {
+    "en": {
+     ".visit": "Go and see them",
+     ".visit.s": "A long trip, and not an easy one.",
+     ".letter": "Write a letter",
+     ".letter.s": "Some things are easier to write than to say.",
+     ".not": "Not yet",
+     ".not.s": "Maybe in a few years.",
+     ".m": "Seeing {p} again",
+     ".t": "Brothers and sisters",
+     ".x": "You and {p} haven’t spoken properly in years. A cousin says they would like to hear from you."
+    },
+    "zh": {
+     ".visit": "去看看",
+     ".visit.s": "路途遥远，心里也不轻松。",
+     ".letter": "写一封信",
+     ".letter.s": "有些话写下来比说出口容易。",
+     ".not": "还没准备好",
+     ".not.s": "也许过几年吧。",
+     ".m": "再见到{p}的那天",
+     ".t": "手足",
+     ".x": "你和{p}已经好多年没好好说过话了。一个表亲说，对方很想听到你的消息。"
+    },
+    "zht": {
+     ".visit": "去看看",
+     ".visit.s": "路途遙遠，心裡也不輕鬆。",
+     ".letter": "寫一封信",
+     ".letter.s": "有些話寫下來比說出口容易。",
+     ".not": "還沒準備好",
+     ".not.s": "也許過幾年吧。",
+     ".m": "再見到{p}的那天",
+     ".t": "手足",
+     ".x": "你和{p}已經好多年沒好好說過話了。一個表親說，對方很想聽到你的消息。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "peace_kid",
+   "when": {"age": [22,90], "test": "canCall('peace')"},
+   "who": {"role": "kid", "test": "p.cold", "pick": "closest"},
+   "def": "letter",
+   "tarot": "grandkid",
+   "art": {"draw": "letter", "bg": "wa"},
+   "vars": {"P": "Who(p)", "p": "who(p)"},
+   "again": "delete done.peace_kid",
+   "opts": [
+    {"id": "visit", "do": "mend(p, 50); happy += 1; memory('.m', p, {}, 3)"},
+    {"id": "letter", "do": "mend(p, 35)"},
+    {"id": "not", "do": "callAt = age"}
+   ],
+   "i18n": {
+    "en": {
+     ".visit": "Go and see them",
+     ".visit.s": "A long trip, and not an easy one.",
+     ".letter": "Write a letter",
+     ".letter.s": "Some things are easier to write than to say.",
+     ".not": "Not yet",
+     ".not.s": "Maybe in a few years.",
+     ".m": "Seeing {p} again",
+     ".t": "Your grown-up child",
+     ".x": "{P} hasn’t called in years. You hear about their life from other people."
+    },
+    "zh": {
+     ".visit": "去看看",
+     ".visit.s": "路途遥远，心里也不轻松。",
+     ".letter": "写一封信",
+     ".letter.s": "有些话写下来比说出口容易。",
+     ".not": "还没准备好",
+     ".not.s": "也许过几年吧。",
+     ".m": "再见到{p}的那天",
+     ".t": "长大的孩子",
+     ".x": "{P}已经好多年没打电话来了。你只能从别人那里听到孩子的近况。"
+    },
+    "zht": {
+     ".visit": "去看看",
+     ".visit.s": "路途遙遠，心裡也不輕鬆。",
+     ".letter": "寫一封信",
+     ".letter.s": "有些話寫下來比說出口容易。",
+     ".not": "還沒準備好",
+     ".not.s": "也許過幾年吧。",
+     ".m": "再見到{p}的那天",
+     ".t": "長大的孩子",
+     ".x": "{P}已經好多年沒打電話來了。你只能從別人那裡聽到孩子的近況。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_id",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "ID"},
+   "use": "gohome",
+   "with": {"c": 0.03},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "cny",
+   "art": {"draw": "lantern", "bg": "mi"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Lebaran at home with the whole family",
+     ".t": "Going home for Lebaran",
+     ".x": "Lebaran is coming, and millions are heading home for the holiday (mudik). {F} would love you to come too. The roads will be jammed for days."
+    },
+    "zh": {
+     ".m": "全家一起在老家过开斋节",
+     ".t": "回乡过开斋节",
+     ".x": "开斋节（Lebaran）快到了，数百万人正赶回家乡过节（mudik）。{F}很希望你也回来。路上要堵好几天。"
+    },
+    "zht": {
+     ".m": "全家一起在老家過開齋節",
+     ".t": "回鄉過開齋節",
+     ".x": "開齋節（Lebaran）快到了，數百萬人正趕回家鄉過節（mudik）。{F}很希望你也回來。路上要塞好幾天。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_in",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "IN"},
+   "use": "gohome",
+   "with": {"c": 0.04},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "cny",
+   "art": {"draw": "lantern", "bg": "ya"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Festival season at home, everyone together",
+     ".t": "Festival season",
+     ".x": "It’s festival season, and {f} would love to have everyone home. Train tickets sold out in minutes; flights cost three times the usual."
+    },
+    "zh": {
+     ".m": "节日季回家，一家人团聚",
+     ".t": "节日季",
+     ".x": "节日季到了，{f}很希望一家人都能回来。火车票几分钟就卖光了，机票是平时的三倍。"
+    },
+    "zht": {
+     ".m": "節日季回家，一家人團聚",
+     ".t": "節日季",
+     ".x": "節日季到了，{f}很希望一家人都能回來。火車票幾分鐘就賣光了，機票是平常的三倍。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_eid",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": ["PK", "BD"]},
+   "use": "gohome",
+   "with": {"c": 0.02},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "cny",
+   "art": {"draw": "feast", "bg": "mi"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Eid at home with the family",
+     ".t": "Home for the Eid holidays",
+     ".x": "The Eid holidays are coming and half the city seems to be heading home. {F} would love you to come. Bus and train tickets are hard to find."
+    },
+    "zh": {
+     ".m": "回家和家人过开斋节",
+     ".t": "回家过开斋节假期",
+     ".x": "开斋节假期快到了，好像半个城市的人都在往家赶。{F}很希望你回来。汽车票和火车票都很难买。"
+    },
+    "zht": {
+     ".m": "回家和家人過開齋節",
+     ".t": "回家過開齋節假期",
+     ".x": "開齋節假期快到了，好像半個城市的人都在往家趕。{F}很希望你回來。客運票和火車票都很難買。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_ng",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "NG"},
+   "use": "gohome",
+   "with": {"c": 0.03},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "reunion",
+   "art": {"draw": "feast", "bg": "co"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Christmas and New Year back home",
+     ".t": "Home for the holidays",
+     ".x": "December: people are travelling back to their towns and villages for Christmas and the New Year. {F} would love you to come. Fares double in December."
+    },
+    "zh": {
+     ".m": "回乡过圣诞和新年",
+     ".t": "回乡过节",
+     ".x": "十二月，人们纷纷回到自己的家乡和村子过圣诞和新年。{F}很希望你回来。十二月的车费要翻倍。"
+    },
+    "zht": {
+     ".m": "回鄉過聖誕和新年",
+     ".t": "回鄉過節",
+     ".x": "十二月，人們紛紛回到自己的家鄉和村子過聖誕和新年。{F}很希望你回來。十二月的車資要翻倍。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_et",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "ET"},
+   "use": "gohome",
+   "with": {"c": 0.02},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "summer",
+   "art": {"draw": "feast", "bg": "wa"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Enkutatash at home, the hills full of yellow flowers",
+     ".t": "Enkutatash",
+     ".x": "Enkutatash, the Ethiopian New Year, comes in September. The hills are yellow with Meskel daisies, and {f} hope the whole family will be together."
+    },
+    "zh": {
+     ".m": "在家过新年，满山黄花",
+     ".t": "埃塞俄比亚新年",
+     ".x": "九月是埃塞俄比亚新年（Enkutatash）。山坡上开满黄色的梅斯克尔雏菊，{f}盼着一家人能团聚。"
+    },
+    "zht": {
+     ".m": "在家過新年，滿山黃花",
+     ".t": "衣索比亞新年",
+     ".x": "九月是衣索比亞新年（Enkutatash）。山坡上開滿黃色的梅斯克爾雛菊，{f}盼著一家人能團聚。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_vn",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "VN"},
+   "use": "gohome",
+   "with": {"c": 0.03},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "cny",
+   "art": "cny",
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Tết at home, wrapping bánh chưng together",
+     ".t": "Tết",
+     ".x": "Tết is coming. {F} are cleaning the house and wrapping bánh chưng. Coach tickets home cost three times the usual."
+    },
+    "zh": {
+     ".m": "回家过春节，一起包粽子",
+     ".t": "春节（Tết）",
+     ".x": "春节（Tết）快到了。{F}正在打扫屋子、包粽子（bánh chưng）。回家的长途车票是平时的三倍。"
+    },
+    "zht": {
+     ".m": "回家過春節，一起包粽子",
+     ".t": "春節（Tết）",
+     ".x": "春節（Tết）快到了。{F}正在打掃屋子、包粽子（bánh chưng）。回家的客運票是平常的三倍。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_jp",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "JP"},
+   "use": "gohome",
+   "with": {"c": 0.025},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "parents",
+   "art": {"draw": "lantern", "bg": "mi"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Obon in your home town",
+     ".t": "Obon",
+     ".x": "Obon: in August families go back to their home towns to tend the family graves. {F} would love you to come. The shinkansen will be packed."
+    },
+    "zh": {
+     ".m": "回故乡过盂兰盆节",
+     ".t": "盂兰盆节",
+     ".x": "盂兰盆节：每年八月，人们回到故乡扫墓、祭祖。{F}很希望你回来。新干线会挤满人。"
+    },
+    "zht": {
+     ".m": "回故鄉過盂蘭盆節",
+     ".t": "盂蘭盆節",
+     ".x": "盂蘭盆節：每年八月，人們回到故鄉掃墓、祭祖。{F}很希望你回來。新幹線會擠滿人。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_us",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "US"},
+   "use": "gohome",
+   "with": {"c": 0.03},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "pet",
+   "art": {"draw": "feast", "bg": "ya"},
+   "vars": {"F": "Folks()", "f": "folks()"},
+   "i18n": {
+    "en": {
+     ".m": "Thanksgiving at home",
+     ".t": "Thanksgiving",
+     ".x": "Thanksgiving is in two weeks. {F} would love you to fly home. It’s the most expensive week of the year to fly."
+    },
+    "zh": {
+     ".m": "回家过感恩节",
+     ".t": "感恩节",
+     ".x": "还有两周就是感恩节了。{F}很希望你飞回家。这是一年里机票最贵的一周。"
+    },
+    "zht": {
+     ".m": "回家過感恩節",
+     ".t": "感恩節",
+     ".x": "還有兩週就是感恩節了。{F}很希望你飛回家。這是一年裡機票最貴的一週。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_xmas",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": ["GB", "DE", "BR", "PH", "MX"]},
+   "use": "gohome",
+   "with": {"c": 0.025},
+   "who": {"role": "parent"},
+   "def": "short",
+   "tarot": "pet",
+   "art": {"draw": "gift", "bg": "mi"},
+   "text": "M('.x' + CC(), {F: Folks(), f: folks()})",
+   "i18n": {
+    "en": {
+     ".m": "Christmas at home",
+     ".t": "Christmas at home",
+     ".xGB": "Christmas is coming, and {f} would love everyone round the table on the 25th. The trains are packed and the fares are high.",
+     ".xDE": "Christmas Eve is coming, and {f} would love everyone home. The ICE trains are almost fully booked.",
+     ".xBR": "The Ceia de Natal on Christmas Eve is the big family dinner, and {f} would love you there. Bus fares have doubled.",
+     ".xPH": "The Christmas season started back in September. {F} would love everyone home for Noche Buena. Flights home are nearly full.",
+     ".xMX": "The posadas have started, and {f} would love everyone home for Christmas Eve. Bus fares are up for the holidays."
+    },
+    "zh": {
+     ".m": "回家过圣诞",
+     ".t": "回家过圣诞",
+     ".xGB": "圣诞节快到了，{f}很希望二十五号全家人都能围坐在一起。火车挤满了人，票价也很高。",
+     ".xDE": "平安夜快到了，{f}很希望全家人都回来。ICE高铁几乎订满了。",
+     ".xBR": "平安夜的圣诞晚餐（Ceia de Natal）是一家人最重要的一顿饭，{f}很希望你在场。长途车票涨了一倍。",
+     ".xPH": "圣诞季从九月就开始了。{F}很希望全家人都回来吃平安夜团圆饭（Noche Buena）。回家的航班几乎满了。",
+     ".xMX": "“波萨达”（posadas）已经开始了，{f}很希望全家人都回来过平安夜。节日期间长途车票涨价了。"
+    },
+    "zht": {
+     ".m": "回家過聖誕",
+     ".t": "回家過聖誕",
+     ".xGB": "聖誕節快到了，{f}很希望二十五號全家人都能圍坐在一起。火車擠滿了人，票價也很高。",
+     ".xDE": "平安夜快到了，{f}很希望全家人都回來。ICE高鐵幾乎訂滿了。",
+     ".xBR": "平安夜的聖誕晚餐（Ceia de Natal）是一家人最重要的一頓飯，{f}很希望你在場。客運票漲了一倍。",
+     ".xPH": "聖誕季從九月就開始了。{F}很希望全家人都回來吃平安夜團圓飯（Noche Buena）。回家的航班幾乎滿了。",
+     ".xMX": "「波薩達」（posadas）已經開始了，{f}很希望全家人都回來過平安夜。節日期間客運票漲價了。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_open",
+   "age": [20,62],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": ["MY", "SG"]},
+   "who": {"role": "friend", "age": [18,80]},
+   "def": "drop",
+   "tarot": "reunion",
+   "art": {"draw": "feast", "bg": "ya"},
+   "let": {"f": "M('.f' + ['raya', 'cny', 'deepa', 'xmas'][Math.floor(roll('festOpen') * 4)])"},
+   "vars": {"P": "Who(p)", "f": "f"},
+   "opts": [
+    {"id": "go", "bond": 8, "do": "memory('.m', p, {f: f})"},
+    {"id": "drop", "bond": 4},
+    {"id": "wish", "bond": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An open house",
+     ".x": "{P} invites you to the family’s {f} open house. You’d have to swap a shift to go for the afternoon.",
+     ".fraya": "Hari Raya",
+     ".fcny": "Chinese New Year",
+     ".fdeepa": "Deepavali",
+     ".fxmas": "Christmas",
+     ".go": "Swap the shift and stay all afternoon",
+     ".go.s": "You’ll work next Sunday instead.",
+     ".drop": "Drop by for an hour after work",
+     ".drop.s": "Tired, but you go.",
+     ".wish": "Send your wishes",
+     ".wish.s": "A message with a festive sticker.",
+     ".m": "{f} at {n}’s open house"
+    },
+    "zh": {
+     ".t": "开放门户",
+     ".x": "{P}邀请你去家里的{f}开放门户。要去一下午的话，你得跟人换班。",
+     ".fraya": "开斋节",
+     ".fcny": "农历新年",
+     ".fdeepa": "屠妖节",
+     ".fxmas": "圣诞节",
+     ".go": "换班，待上一整个下午",
+     ".go.s": "下周日就得去上班了。",
+     ".drop": "下班后去坐一个小时",
+     ".drop.s": "很累，但还是去了。",
+     ".wish": "发个祝福",
+     ".wish.s": "一条配了节日贴图的消息。",
+     ".m": "在{n}家的{f}开放门户"
+    },
+    "zht": {
+     ".t": "開放門戶",
+     ".x": "{P}邀請你去家裡的{f}開放門戶。要去一下午的話，你得跟人換班。",
+     ".fraya": "開齋節",
+     ".fcny": "農曆新年",
+     ".fdeepa": "屠妖節",
+     ".fxmas": "聖誕節",
+     ".go": "換班，待上一整個下午",
+     ".go.s": "下週日就得去上班了。",
+     ".drop": "下班後去坐一個小時",
+     ".drop.s": "很累，但還是去了。",
+     ".wish": "傳個祝福",
+     ".wish.s": "一則配了節日貼圖的訊息。",
+     ".m": "在{n}家的{f}開放門戶"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_muertos",
+   "age": [25,85],
+   "weight": 0.95,
+   "dens": 1,
+   "if": {"country": "MX"},
+   "who": {"role": "parent", "dead": true},
+   "def": "small",
+   "tarot": "parents",
+   "art": {"draw": "lantern", "bg": "co"},
+   "vars": {"p": "who(p)"},
+   "opts": [
+    {"id": "all", "do": "bond('sib', 4); happy += 2; memory('.m', p, {}, 3)"},
+    {"id": "small", "do": "happy += 2"},
+    {"id": "skip"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Día de Muertos",
+     ".x": "For Día de Muertos the family builds an ofrenda: marigolds, candles, photos and the food your loved ones liked. This year it is for {p} too.",
+     ".all": "Build it with the whole family",
+     ".all.s": "A long evening of stories. Happiness +3.",
+     ".small": "A small one at home",
+     ".small.s": "A photo, a candle and a cup of coffee. Happiness +2.",
+     ".skip": "Not this year",
+     ".skip.s": "It still hurts too much.",
+     ".m": "The ofrenda for {p}"
+    },
+    "zh": {
+     ".t": "亡灵节",
+     ".x": "亡灵节到了，家人搭起祭坛（ofrenda）：万寿菊、蜡烛、照片，还有逝去亲人爱吃的菜。今年，也是为了{p}。",
+     ".all": "和全家一起布置",
+     ".all.s": "讲了一整晚的故事。幸福感 +3。",
+     ".small": "在家里布置一个小小的",
+     ".small.s": "一张照片，一根蜡烛，一杯咖啡。幸福感 +2。",
+     ".skip": "今年就不弄了",
+     ".skip.s": "还是太难过了。",
+     ".m": "为{p}搭的祭坛"
+    },
+    "zht": {
+     ".t": "亡靈節",
+     ".x": "亡靈節到了，家人搭起祭壇（ofrenda）：萬壽菊、蠟燭、照片，還有逝去親人愛吃的菜。今年，也是為了{p}。",
+     ".all": "和全家一起佈置",
+     ".all.s": "講了一整晚的故事。幸福感 +3。",
+     ".small": "在家裡佈置一個小小的",
+     ".small.s": "一張照片，一根蠟燭，一杯咖啡。幸福感 +2。",
+     ".skip": "今年就不弄了",
+     ".skip.s": "還是太難過了。",
+     ".m": "為{p}搭的祭壇"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "cn_dinner",
+   "age": [23,36],
+   "weight": 0.7,
+   "dens": 1,
+   "if": {"country": "CN"},
+   "when": {"partner": ["single", "dating"]},
+   "who": {"role": "parent"},
+   "def": "joke",
+   "tarot": "inhfight",
+   "art": {"draw": "feast", "bg": "co"},
+   "opts": [
+    {"id": "smile", "do": "happy -= 2; bond('parent', 4)"},
+    {"id": "joke"},
+    {"id": "away", "do": "happy += 1; bond('parent', -6)"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The reunion dinner",
+     ".x": "At the New Year’s Eve dinner, an aunt asks, loudly, when you’re getting married and how much you earn. The whole table goes quiet.",
+     ".smile": "Smile and answer politely",
+     ".smile.s": "Happiness −2. Your parents look relieved.",
+     ".joke": "Make a joke and change the subject",
+     ".joke.s": "Half the table laughs.",
+     ".away": "Next year, stay in the city",
+     ".away.s": "Happiness +1. Your parents will mind."
+    },
+    "zh": {
+     ".t": "年夜饭",
+     ".x": "年夜饭上，一位姑妈大声问你什么时候结婚、一个月挣多少。整桌人都安静下来。",
+     ".smile": "微笑着礼貌回答",
+     ".smile.s": "幸福感 −2。爸妈松了口气。",
+     ".joke": "开个玩笑，岔开话题",
+     ".joke.s": "一半的人笑了。",
+     ".away": "明年留在城里过年",
+     ".away.s": "幸福感 +1。爸妈会不高兴。"
+    },
+    "zht": {
+     ".t": "年夜飯",
+     ".x": "年夜飯上，一位姑媽大聲問你什麼時候結婚、一個月賺多少。整桌人都安靜下來。",
+     ".smile": "微笑著禮貌回答",
+     ".smile.s": "幸福感 −2。爸媽鬆了口氣。",
+     ".joke": "開個玩笑，岔開話題",
+     ".joke.s": "一半的人笑了。",
+     ".away": "明年留在城裡過年",
+     ".away.s": "幸福感 +1。爸媽會不高興。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "fest_far",
+   "age": [22,80],
+   "weight": 0.85,
+   "dens": 1,
+   "when": {"abroad": true},
+   "who": {"role": "parent"},
+   "def": "video",
+   "tarot": "away",
+   "art": {"draw": "passport", "bg": "co"},
+   "vars": {"f": "M('fest.n.' + C[ci][1])", "F": "Folks()"},
+   "opts": [
+    {"id": "fly", "sub": {"a": "MN(.05 * base)"}, "do": "pay(.05 * base); bond('parent', 10); happy += 2; memory('.m', null, {f: M('fest.n.' + C[ci][1])}, 2)"},
+    {"id": "video", "do": "bond('parent', 3); happy -= 1"},
+    {"id": "pass", "do": "bond('parent', -3); happy -= 2"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The holiday back home",
+     ".x": "It’s {f} back home. {F} would have loved you to be there.",
+     ".fly": "Fly home for it",
+     ".fly.s": "About {a} for the flights. Happiness +3.",
+     ".video": "Join the dinner on a video call",
+     ".video.s": "It’s the middle of the night where you are. Happiness −1.",
+     ".pass": "Let it pass quietly",
+     ".pass.s": "Happiness −2.",
+     ".m": "Flying home for {f}"
+    },
+    "zh": {
+     ".t": "家乡的节日",
+     ".x": "家乡正在过{f}。{F}多希望你也在。",
+     ".fly": "飞回去过节",
+     ".fly.s": "机票大约{a}。幸福感 +3。",
+     ".video": "视频连线一起吃团圆饭",
+     ".video.s": "你那边正是半夜。幸福感 −1。",
+     ".pass": "让它静静过去",
+     ".pass.s": "幸福感 −2。",
+     ".m": "飞回家过{f}"
+    },
+    "zht": {
+     ".t": "家鄉的節日",
+     ".x": "家鄉正在過{f}。{F}多希望你也在。",
+     ".fly": "飛回去過節",
+     ".fly.s": "機票大約{a}。幸福感 +3。",
+     ".video": "視訊連線一起吃團圓飯",
+     ".video.s": "你那邊正是半夜。幸福感 −1。",
+     ".pass": "讓它靜靜過去",
+     ".pass.s": "幸福感 −2。",
+     ".m": "飛回家過{f}"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "kid_bike",
+   "when": {"test": "roll('kid_bike') < .3"},
+   "who": {"role": "kid", "age": [4,7], "pick": "youngest"},
+   "def": "teach",
+   "tarot": "summer",
+   "art": "summer",
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "teach", "bond": 3, "do": "memory('.m', p, {}, 3)"},
+    {"id": "class", "sub": {"a": "MN(.01 * base)"}, "do": "pay(.01 * base)"},
+    {"id": "later", "bond": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Learning to ride a bike",
+     ".x": "{n} wants to learn to ride a bike. Saturday is the only free day you both have.",
+     ".teach": "Teach them yourself",
+     ".teach.s": "A whole Saturday of running behind a wobbling bike.",
+     ".class": "Pay for a weekend class",
+     ".class.s": "About {a}.",
+     ".later": "Next summer",
+     ".later.s": "There’s no hurry.",
+     ".m": "Teaching {n} to ride a bike"
+    },
+    "zh": {
+     ".t": "学骑自行车",
+     ".x": "{n}想学骑自行车。星期六是你们俩唯一都有空的日子。",
+     ".teach": "亲自教",
+     ".teach.s": "一整个星期六，跟在摇摇晃晃的车后面跑。",
+     ".class": "报一个周末班",
+     ".class.s": "大约{a}。",
+     ".later": "明年夏天再说",
+     ".later.s": "不着急。",
+     ".m": "教{n}骑自行车"
+    },
+    "zht": {
+     ".t": "學騎腳踏車",
+     ".x": "{n}想學騎腳踏車。星期六是你們倆唯一都有空的日子。",
+     ".teach": "親自教",
+     ".teach.s": "一整個星期六，跟在搖搖晃晃的車後面跑。",
+     ".class": "報一個週末班",
+     ".class.s": "大約{a}。",
+     ".later": "明年夏天再說",
+     ".later.s": "不急。",
+     ".m": "教{n}騎腳踏車"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "road_trip",
+   "age": [20,30],
+   "weight": 0.55,
+   "who": {"role": "friend", "age": [18,35]},
+   "def": "day",
+   "tarot": "car2",
+   "art": "car2",
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.04 * base)"}, "do": "pay(.04 * base); happy += 1; memory('.m', p, {}, 3)"},
+    {"id": "day", "sub": {"a": "MN(.005 * base)"}, "do": "pay(.005 * base); memory('.md', p, {}, 1)"},
+    {"id": "not", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The road trip",
+     ".x": "{P} wants one last road trip before your jobs get serious: a week, a borrowed car, no plan.",
+     ".go": "Go for the week",
+     ".go.s": "About {a} for petrol, food and cheap rooms.",
+     ".day": "A day at the sea instead",
+     ".day.s": "About {a}.",
+     ".not": "Not this year",
+     ".not.s": "Maybe next year.",
+     ".m": "A week on the road with {n}",
+     ".md": "A day at the sea with {n}"
+    },
+    "zh": {
+     ".t": "公路旅行",
+     ".x": "{P}想在工作变忙之前来一次公路旅行：一个星期，一辆借来的车，没有计划。",
+     ".go": "去一个星期",
+     ".go.s": "油钱、吃饭和便宜旅馆，大约{a}。",
+     ".day": "改成去海边玩一天",
+     ".day.s": "大约{a}。",
+     ".not": "今年就算了",
+     ".not.s": "也许明年吧。",
+     ".m": "和{n}一起在路上的一个星期",
+     ".md": "和{n}在海边的一天"
+    },
+    "zht": {
+     ".t": "公路旅行",
+     ".x": "{P}想在工作變忙之前來一次公路旅行：一個星期，一輛借來的車，沒有計畫。",
+     ".go": "去一個星期",
+     ".go.s": "油錢、吃飯和便宜旅館，大約{a}。",
+     ".day": "改成去海邊玩一天",
+     ".day.s": "大約{a}。",
+     ".not": "今年就算了",
+     ".not.s": "也許明年吧。",
+     ".m": "和{n}一起在路上的一個星期",
+     ".md": "和{n}在海邊的一天"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "parent_hosp",
+   "when": {"age": [28,75], "test": "roll('parent_hosp') < .035"},
+   "who": {"role": "parent", "age": [55,100]},
+   "def": "call",
+   "tarot": "health2",
+   "art": {"draw": "carer", "bg": "mi"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "there", "sub": {"a": "MN(.01 * base)"}, "do": "pay(.01 * base); talk(p, 10); memory('.m', p, {}, 3)"},
+    {"id": "call", "do": "talk(p, 3)"},
+    {"id": "trust", "bond": -5}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "In hospital",
+     ".x": "{P} is in hospital for a few days. Nothing serious, the doctors say, but they sound scared on the phone.",
+     ".there": "Go and be there",
+     ".there.s": "Three days off without pay: about {a}.",
+     ".call": "Call every evening",
+     ".call.s": "Ten minutes a night.",
+     ".trust": "They’re in good hands",
+     ".trust.s": "You send a message wishing them well.",
+     ".m": "Being there when {p} was in hospital"
+    },
+    "zh": {
+     ".t": "住院",
+     ".x": "{P}要住院几天。医生说不严重，可电话里听得出对方很害怕。",
+     ".there": "过去陪着",
+     ".there.s": "请三天无薪假：大约{a}。",
+     ".call": "每天晚上打电话",
+     ".call.s": "每晚十分钟。",
+     ".trust": "有医生照顾，放心吧",
+     ".trust.s": "你发了条消息，祝早日康复。",
+     ".m": "{p}住院时，你守在身边"
+    },
+    "zht": {
+     ".t": "住院",
+     ".x": "{P}要住院幾天。醫生說不嚴重，可電話裡聽得出對方很害怕。",
+     ".there": "過去陪著",
+     ".there.s": "請三天無薪假：大約{a}。",
+     ".call": "每天晚上打電話",
+     ".call.s": "每晚十分鐘。",
+     ".trust": "有醫生照顧，放心吧",
+     ".trust.s": "你傳了則訊息，祝早日康復。",
+     ".m": "{p}住院時，你守在身邊"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "kid_school",
+   "when": {"working": true, "test": "roll('kid_school') < .45"},
+   "who": {"role": "kid", "age": [5,6], "pick": "youngest"},
+   "def": "walk",
+   "tarot": "edu",
+   "art": {"draw": "schoolbag", "bg": "ya"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "walk", "do": "memory('.m', p, {}, 2)", "label": "M('.walk', {n: name(p)})"},
+    {"id": "work", "hint": true, "bond": -3, "do": "bump('kid_school', 1.01, M('trk.kidSchool'))", "sub": {"n": "name(p)"}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The first day of school",
+     ".x": "{n} starts school tomorrow. It’s at the same time as a meeting your boss asked you to lead.",
+     ".walk": "Walk {n} to the gate",
+     ".walk.s": "Someone else leads the meeting.",
+     ".work": "Lead the meeting",
+     ".work.s": "Someone else takes {n} to school.",
+     ".work.h": "The meeting goes well: pay +1%.",
+     "trk.kidSchool": "The meeting on the first day of school",
+     ".m": "Walking {n} to the first day of school"
+    },
+    "zh": {
+     ".t": "开学第一天",
+     ".x": "{n}明天开学，偏偏和上司让你主持的会议撞在同一时间。",
+     ".walk": "送{n}到校门口",
+     ".walk.s": "会议交给别人主持。",
+     ".work": "主持会议",
+     ".work.s": "由别人送{n}上学。",
+     ".work.h": "会开得很好：薪水 +1%。",
+     "trk.kidSchool": "开学那天主持的会议",
+     ".m": "送{n}去上学的第一天"
+    },
+    "zht": {
+     ".t": "開學第一天",
+     ".x": "{n}明天開學，偏偏和主管要你主持的會議撞在同一時間。",
+     ".walk": "送{n}到校門口",
+     ".walk.s": "會議交給別人主持。",
+     ".work": "主持會議",
+     ".work.s": "由別人送{n}上學。",
+     ".work.h": "會開得很好：薪水 +1%。",
+     "trk.kidSchool": "開學那天主持的會議",
+     ".m": "送{n}去上學的第一天"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "kid_match",
+   "when": {"working": true, "test": "roll('kid_match') < .12"},
+   "who": {"role": "kid", "age": [8,15]},
+   "def": "go",
+   "tarot": "gym",
+   "art": "gym",
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "go", "do": "memory('.m', p, {}, 2)"},
+    {"id": "half", "bond": 2},
+    {"id": "work", "hint": true, "bond": -4, "do": "bump('kid_match', 1.01, M('trk.kidMatch'))"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The final",
+     ".x": "{P}’s team is in the final on Saturday. Your boss wants you at a client lunch the same day.",
+     ".go": "Be at the final",
+     ".go.s": "You’ll make an excuse at work.",
+     ".half": "Leave lunch early for the second half",
+     ".half.s": "Nobody is quite happy, including you.",
+     ".work": "Go to the lunch",
+     ".work.s": "You’ll hear about the match afterwards.",
+     ".work.h": "The client signs: pay +1%.",
+     "trk.kidMatch": "The client lunch on the day of the final",
+     ".m": "Shouting from the side at {n}’s final"
+    },
+    "zh": {
+     ".t": "决赛",
+     ".x": "{P}的球队星期六打决赛。上司希望你同一天去陪客户吃午饭。",
+     ".go": "去看决赛",
+     ".go.s": "工作上你得找个理由推掉。",
+     ".half": "午饭提早离席，赶下半场",
+     ".half.s": "谁都不太满意，包括你自己。",
+     ".work": "去陪客户",
+     ".work.s": "比赛的事，事后再听说吧。",
+     ".work.h": "客户签约了：薪水 +1%。",
+     "trk.kidMatch": "决赛那天陪客户的午饭",
+     ".m": "在场边为{n}的决赛呐喊"
+    },
+    "zht": {
+     ".t": "決賽",
+     ".x": "{P}的球隊星期六打決賽。主管希望你同一天去陪客戶吃午餐。",
+     ".go": "去看決賽",
+     ".go.s": "工作上你得找個理由推掉。",
+     ".half": "午餐提早離席，趕下半場",
+     ".half.s": "誰都不太滿意，包括你自己。",
+     ".work": "去陪客戶",
+     ".work.s": "比賽的事，事後再聽說吧。",
+     ".work.h": "客戶簽約了：薪水 +1%。",
+     "trk.kidMatch": "決賽那天陪客戶的午餐",
+     ".m": "在場邊為{n}的決賽吶喊"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "kid_grad",
+   "when": {"test": "roll('kid_grad') < .25"},
+   "who": {"role": "kid", "age": [21,25]},
+   "def": "stream",
+   "tarot": "edufund",
+   "art": {"draw": "gradloan", "bg": "mi"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.015 * base)"}, "do": "pay(.015 * base); memory('.m', p, {}, 3)"},
+    {"id": "stream", "bond": 2},
+    {"id": "no", "bond": -6}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Graduation day",
+     ".x": "{P} graduates on a weekday, a day’s journey away.",
+     ".go": "Be there in the front row",
+     ".go.s": "About {a} and two days off.",
+     ".stream": "Watch the livestream",
+     ".stream.s": "From your desk, sound off.",
+     ".no": "You can’t get away",
+     ".no.s": "You send flowers.",
+     ".m": "{n}’s graduation, from the front row"
+    },
+    "zh": {
+     ".t": "毕业典礼",
+     ".x": "{P}的毕业典礼在一个工作日，离你有一天的路程。",
+     ".go": "坐在第一排",
+     ".go.s": "大约{a}，外加两天假。",
+     ".stream": "看直播",
+     ".stream.s": "在办公桌前，静音看。",
+     ".no": "实在走不开",
+     ".no.s": "你送了花。",
+     ".m": "坐在第一排看{n}毕业"
+    },
+    "zht": {
+     ".t": "畢業典禮",
+     ".x": "{P}的畢業典禮在一個平日，離你有一天的路程。",
+     ".go": "坐在第一排",
+     ".go.s": "大約{a}，外加兩天假。",
+     ".stream": "看直播",
+     ".stream.s": "在辦公桌前，靜音看。",
+     ".no": "實在走不開",
+     ".no.s": "你送了花。",
+     ".m": "坐在第一排看{n}畢業"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "anniv",
+   "when": {"age": [34,80], "partner": "married", "test": "roll('anniv') < .06"},
+   "who": {"role": "pt"},
+   "def": "cook",
+   "tarot": "wed",
+   "art": "wed",
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "trip", "sub": {"a": "MN(.03 * base)"}, "do": "pay(.03 * base); memory('.m', p, {}, 2)"},
+    {"id": "cook", "do": "memory('.mc', p, {}, 2)"},
+    {"id": "forget", "bond": -8, "do": "happy -= 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your anniversary",
+     ".x": "It’s your wedding anniversary, a round number this year. {n} has been dropping hints for weeks.",
+     ".trip": "A weekend away, just the two of you",
+     ".trip.s": "About {a}.",
+     ".cook": "Cook the meal from your first date",
+     ".cook.s": "It takes you three tries.",
+     ".forget": "Work runs late; you forget",
+     ".forget.s": "Happiness −1.",
+     ".m": "An anniversary weekend away with {n}",
+     ".mc": "Cooking your first-date meal for {n}"
+    },
+    "zh": {
+     ".t": "结婚纪念日",
+     ".x": "今年的结婚纪念日是个整数。{n}已经暗示了好几个星期。",
+     ".trip": "两个人出去过个周末",
+     ".trip.s": "大约{a}。",
+     ".cook": "做一顿你们第一次约会时吃的菜",
+     ".cook.s": "你试了三次才做成。",
+     ".forget": "工作拖晚了，你忘了",
+     ".forget.s": "幸福感 −1。",
+     ".m": "和{n}出门过结婚纪念日",
+     ".mc": "为{n}做第一次约会时的那道菜"
+    },
+    "zht": {
+     ".t": "結婚紀念日",
+     ".x": "今年的結婚紀念日是個整數。{n}已經暗示了好幾個星期。",
+     ".trip": "兩個人出去過個週末",
+     ".trip.s": "大約{a}。",
+     ".cook": "做一頓你們第一次約會時吃的菜",
+     ".cook.s": "你試了三次才做成。",
+     ".forget": "工作拖晚了，你忘了",
+     ".forget.s": "幸福感 −1。",
+     ".m": "和{n}出門過結婚紀念日",
+     ".mc": "為{n}做第一次約會時的那道菜"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "photos",
+   "age": [60,90],
+   "weight": 0.6,
+   "def": "sit",
+   "tarot": "will",
+   "art": {"draw": "scrap", "bg": "ya"},
+   "opts": [
+    {"id": "sit", "do": "happy += 1; memory('.m', null, {}, 2)"},
+    {"id": "call", "rel": 3, "do": "let q = person('friend') || person('sib'); if (q) memory('.mc', q, {}, 2); else memory('.m', null, {}, 2)"},
+    {"id": "back"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A box of old photos",
+     ".x": "Clearing a cupboard, you find a box of old photos: birthdays, school, faces you’d half forgotten.",
+     ".sit": "Sit with them all afternoon",
+     ".sit.s": "Happiness +2.",
+     ".call": "Call someone who’s in them",
+     ".call.s": "Relationships +3.",
+     ".back": "Put the box back",
+     ".back.s": "Another day.",
+     ".m": "An afternoon with the old photos",
+     ".mc": "Laughing over old photos with {n} on the phone"
+    },
+    "zh": {
+     ".t": "一盒老照片",
+     ".x": "整理柜子时，你翻出一盒老照片：生日、上学，还有一些快忘了的面孔。",
+     ".sit": "坐下来看了一整个下午",
+     ".sit.s": "幸福感 +2。",
+     ".call": "打给照片里的一个人",
+     ".call.s": "人际关系 +3。",
+     ".back": "把盒子放回去",
+     ".back.s": "改天吧。",
+     ".m": "和老照片度过的一个下午",
+     ".mc": "和{n}在电话里笑谈老照片"
+    },
+    "zht": {
+     ".t": "一盒老照片",
+     ".x": "整理櫃子時，你翻出一盒老照片：生日、上學，還有一些快忘了的面孔。",
+     ".sit": "坐下來看了一整個下午",
+     ".sit.s": "幸福感 +2。",
+     ".call": "打給照片裡的一個人",
+     ".call.s": "人際關係 +3。",
+     ".back": "把盒子放回去",
+     ".back.s": "改天吧。",
+     ".m": "和老照片度過的一個下午",
+     ".mc": "和{n}在電話裡笑談老照片"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "stars",
+   "age": [7,11],
+   "weight": 0.55,
+   "who": {"role": "parent"},
+   "def": "go",
+   "tarot": "ret",
+   "art": {"draw": "tent", "bg": "mi"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "go", "do": "memory('.m', p, {}, 2)"},
+    {"id": "sleep", "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A meteor shower",
+     ".x": "{P} wakes you in the middle of the night: there’s a meteor shower, and the sky is clear.",
+     ".go": "Go outside in your pyjamas",
+     ".go.s": "Cold feet, and a sky full of shooting stars.",
+     ".sleep": "Stay in bed",
+     ".sleep.s": "It’s warm under the covers. Happiness +1.",
+     ".m": "Watching shooting stars with {p} in the middle of the night"
+    },
+    "zh": {
+     ".t": "流星雨",
+     ".x": "{P}半夜把你叫醒：有流星雨，天空很晴朗。",
+     ".go": "穿着睡衣跑出去",
+     ".go.s": "脚冻得冰凉，满天都是流星。",
+     ".sleep": "继续睡",
+     ".sleep.s": "被窝里好暖和。幸福感 +1。",
+     ".m": "半夜和{p}一起看流星"
+    },
+    "zht": {
+     ".t": "流星雨",
+     ".x": "{P}半夜把你叫醒：有流星雨，天空很晴朗。",
+     ".go": "穿著睡衣跑出去",
+     ".go.s": "腳凍得冰涼，滿天都是流星。",
+     ".sleep": "繼續睡",
+     ".sleep.s": "被窩裡好暖和。幸福感 +1。",
+     ".m": "半夜和{p}一起看流星"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "sib_den",
+   "age": [6,11],
+   "weight": 0.6,
+   "who": {"role": "sib", "age": [4,16]},
+   "def": "build",
+   "tarot": "friends",
+   "art": {"draw": "tent", "bg": "wa"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "build", "do": "memory('.m', p, {}, 2)"},
+    {"id": "park", "bond": -2, "do": "happy += 1"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The den",
+     ".x": "{P} wants to build a den with you out of blankets and chairs, but your friends are going to the park.",
+     ".build": "Build the den",
+     ".build.s": "All afternoon, and a sign that says “no grown-ups”.",
+     ".park": "Go to the park",
+     ".park.s": "Happiness +1.",
+     ".m": "The blanket den you built with {n}"
+    },
+    "zh": {
+     ".t": "秘密基地",
+     ".x": "{P}想和你用毯子和椅子搭一个秘密基地，可你的朋友们要去公园玩。",
+     ".build": "搭秘密基地",
+     ".build.s": "忙了一下午，还挂了块“大人禁止入内”的牌子。",
+     ".park": "去公园",
+     ".park.s": "幸福感 +1。",
+     ".m": "和{n}一起用毯子搭的秘密基地"
+    },
+    "zht": {
+     ".t": "秘密基地",
+     ".x": "{P}想和你用毯子和椅子搭一個秘密基地，可你的朋友們要去公園玩。",
+     ".build": "搭秘密基地",
+     ".build.s": "忙了一下午，還掛了塊「大人禁止進入」的牌子。",
+     ".park": "去公園",
+     ".park.s": "幸福感 +1。",
+     ".m": "和{n}一起用毯子搭的秘密基地"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "kid_story",
+   "when": {"test": "roll('kid_story') < .12"},
+   "who": {"role": "kid", "age": [2,6], "pick": "youngest"},
+   "def": "one",
+   "tarot": "grandkid",
+   "art": {"draw": "blocks", "bg": "ya"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "all", "do": "happy -= 1; memory('.m', p, {}, 1)"},
+    {"id": "one", "bond": 1},
+    {"id": "not", "bond": -3}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "One more story",
+     ".x": "{n} wants one more bedtime story. You still have work to finish tonight.",
+     ".all": "Read until they fall asleep",
+     ".all.s": "The work waits until midnight. Happiness −1.",
+     ".one": "One short one",
+     ".one.s": "The shortest book on the shelf.",
+     ".not": "“Not tonight”",
+     ".not.s": "Lights out.",
+     ".m": "Bedtime stories with {n}"
+    },
+    "zh": {
+     ".t": "再讲一个故事",
+     ".x": "{n}睡前还想再听一个故事。你今晚还有工作没做完。",
+     ".all": "一直讲到孩子睡着",
+     ".all.s": "工作拖到半夜才做。幸福感 −1。",
+     ".one": "讲个短的",
+     ".one.s": "书架上最短的那本。",
+     ".not": "“今晚不讲了”",
+     ".not.s": "关灯睡觉。",
+     ".m": "给{n}讲睡前故事"
+    },
+    "zht": {
+     ".t": "再講一個故事",
+     ".x": "{n}睡前還想再聽一個故事。你今晚還有工作沒做完。",
+     ".all": "一直講到孩子睡著",
+     ".all.s": "工作拖到半夜才做。幸福感 −1。",
+     ".one": "講個短的",
+     ".one.s": "書架上最短的那本。",
+     ".not": "「今晚不講了」",
+     ".not.s": "關燈睡覺。",
+     ".m": "給{n}講睡前故事"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "parent_cook",
+   "when": {"age": [24,50], "test": "roll('parent_cook') < .04"},
+   "who": {"role": "parent", "age": [50,95]},
+   "def": "note",
+   "tarot": "parents",
+   "art": {"draw": "feast", "bg": "wa"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "learn", "do": "talk(p, 6); memory('.m', p, {}, 2)"},
+    {"id": "note", "bond": 1},
+    {"id": "later", "bond": -2}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The family recipe",
+     ".x": "{P} offers to teach you the dish you grew up with, the one nobody else makes quite right.",
+     ".learn": "Spend a weekend cooking together",
+     ".learn.s": "Measured in handfuls, not grams.",
+     ".note": "Ask them to write it down",
+     ".note.s": "A card in the post, with half the steps missing.",
+     ".later": "Another time",
+     ".later.s": "There’s plenty of time.",
+     ".m": "Cooking the family recipe with {p}"
+    },
+    "zh": {
+     ".t": "家传的菜",
+     ".x": "{P}说要教你做小时候常吃的那道菜，别人怎么做都不是那个味道。",
+     ".learn": "花一个周末一起做菜",
+     ".learn.s": "用“一把”来量，不用克。",
+     ".note": "请对方把做法写下来",
+     ".note.s": "寄来一张卡片，做法少了一半。",
+     ".later": "下次吧",
+     ".later.s": "来日方长。",
+     ".m": "和{p}一起做家传的菜"
+    },
+    "zht": {
+     ".t": "家傳的菜",
+     ".x": "{P}說要教你做小時候常吃的那道菜，別人怎麼做都不是那個味道。",
+     ".learn": "花一個週末一起做菜",
+     ".learn.s": "用「一把」來量，不用克。",
+     ".note": "請對方把做法寫下來",
+     ".note.s": "寄來一張卡片，做法少了一半。",
+     ".later": "下次吧",
+     ".later.s": "來日方長。",
+     ".m": "和{p}一起做家傳的菜"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_piano",
+   "when": {"age": [35,65], "test": "dreamOpen('piano') && roll('dbpiano') < .1"},
+   "def": "later",
+   "tarot": "hobby",
+   "art": "hobby",
+   "vars": {"a": "dreamAt('piano')"},
+   "again": "delete done.back_piano",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.015 * base)"}, "do": "pay(0.015 * base); happy += 2; dreamSet('piano', 'back'); let q = roll('clubpiano') < .4 ? joinClub('piano') : null; if (q) memory('.mb', q, {y: age - dreamAt('piano')}, 3); else memory('.m', null, {y: age - dreamAt('piano')}, 3)"},
+    {"id": "give", "do": "dreamSet('piano', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('piano')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The piano",
+     ".x": "At a friend’s house there’s a piano in the corner. Your fingers still remember a little. You last played at {a}.",
+     ".back": "Find a teacher and start again",
+     ".back.s": "A year of lessons: about {a}. Happiness +2.",
+     ".give": "Close the lid",
+     ".give.s": "Some things belong to another time.",
+     ".later": "Maybe one day",
+     ".later.s": "You play a few notes and go back to the party.",
+     ".m": "Sitting at the piano again after {y} years",
+     ".mb": "Playing for the local choir, where you met {n}"
+    },
+    "zh": {
+     ".t": "钢琴",
+     ".x": "朋友家的角落里有一架钢琴。你的手指还记得一点点。你上次弹琴是{a}岁的时候。",
+     ".back": "找个老师，重新开始",
+     ".back.s": "一年的课：大约{a}。幸福感 +2。",
+     ".give": "合上琴盖",
+     ".give.s": "有些事属于另一段时光。",
+     ".later": "也许有一天吧",
+     ".later.s": "你弹了几个音，又回到聚会里。",
+     ".m": "隔了{y}年，再次坐到钢琴前",
+     ".mb": "为社区合唱团伴奏，在那里认识了{n}"
+    },
+    "zht": {
+     ".t": "鋼琴",
+     ".x": "朋友家的角落裡有一架鋼琴。你的手指還記得一點點。你上次彈琴是{a}歲的時候。",
+     ".back": "找個老師，重新開始",
+     ".back.s": "一年的課：大約{a}。幸福感 +2。",
+     ".give": "闔上琴蓋",
+     ".give.s": "有些事屬於另一段時光。",
+     ".later": "也許有一天吧",
+     ".later.s": "你彈了幾個音，又回到聚會裡。",
+     ".m": "隔了{y}年，再次坐到鋼琴前",
+     ".mb": "為社區合唱團伴奏，在那裡認識了{n}"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_guitar",
+   "when": {"age": [35,65], "test": "dreamOpen('guitar') && roll('dbguitar') < .1"},
+   "def": "later",
+   "tarot": "hobby",
+   "art": {"draw": "guitar", "bg": "ya"},
+   "vars": {"a": "dreamAt('guitar')"},
+   "again": "delete done.back_guitar",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.01 * base)"}, "do": "pay(0.01 * base); happy += 2; dreamSet('guitar', 'back'); let q = roll('clubguitar') < .4 ? joinClub('guitar') : null; if (q) memory('.mb', q, {y: age - dreamAt('guitar')}, 3); else memory('.m', null, {y: age - dreamAt('guitar')}, 3)"},
+    {"id": "give", "do": "dreamSet('guitar', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('guitar')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your old guitar",
+     ".x": "Clearing out a cupboard, you find your old guitar in its case. You last played it at {a}.",
+     ".back": "New strings, and play again",
+     ".back.s": "About {a} for strings and a tune-up. Happiness +2.",
+     ".give": "Give it to someone who’ll play it",
+     ".give.s": "A neighbour’s kid can’t believe it.",
+     ".later": "Put it back in the cupboard",
+     ".later.s": "One day.",
+     ".m": "Playing the guitar again after {y} years",
+     ".mb": "Playing in a band again, with {n}"
+    },
+    "zh": {
+     ".t": "那把旧吉他",
+     ".x": "整理柜子时，你翻出了琴盒里的旧吉他。你上次弹它是{a}岁的时候。",
+     ".back": "换上新弦，重新弹起来",
+     ".back.s": "换弦和调音大约{a}。幸福感 +2。",
+     ".give": "送给会弹的人",
+     ".give.s": "邻居家的孩子简直不敢相信。",
+     ".later": "放回柜子里",
+     ".later.s": "总有一天。",
+     ".m": "隔了{y}年，又弹起了吉他",
+     ".mb": "又组了乐队，和{n}一起"
+    },
+    "zht": {
+     ".t": "那把舊吉他",
+     ".x": "整理櫃子時，你翻出了琴盒裡的舊吉他。你上次彈它是{a}歲的時候。",
+     ".back": "換上新弦，重新彈起來",
+     ".back.s": "換弦和調音大約{a}。幸福感 +2。",
+     ".give": "送給會彈的人",
+     ".give.s": "鄰居家的孩子簡直不敢相信。",
+     ".later": "放回櫃子裡",
+     ".later.s": "總有一天。",
+     ".m": "隔了{y}年，又彈起了吉他",
+     ".mb": "又組了樂團，和{n}一起"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_music",
+   "when": {"age": [35,65], "test": "dreamOpen('music') && roll('dbmusic') < .1"},
+   "def": "later",
+   "tarot": "team",
+   "art": {"draw": "guitar", "bg": "mi"},
+   "vars": {"a": "dreamAt('music')"},
+   "again": "delete done.back_music",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.012 * base)"}, "do": "pay(0.012 * base); happy += 2; dreamSet('music', 'back'); let q = roll('clubmusic') < .4 ? joinClub('music') : null; if (q) memory('.mb', q, {y: age - dreamAt('music')}, 3); else memory('.m', null, {y: age - dreamAt('music')}, 3)"},
+    {"id": "give", "do": "dreamSet('music', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('music')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Music again",
+     ".x": "A street musician plays a tune you learned in your after-school music class. You stopped playing at {a}.",
+     ".back": "Join an amateur orchestra",
+     ".back.s": "A second-hand instrument: about {a}. Happiness +2.",
+     ".give": "Let it stay a happy memory",
+     ".give.s": "You drop a coin in the case and walk on.",
+     ".later": "Hum it all the way home",
+     ".later.s": "Maybe one day.",
+     ".m": "Making music again after {y} years",
+     ".mb": "Playing in the amateur orchestra with {n}"
+    },
+    "zh": {
+     ".t": "重拾音乐",
+     ".x": "街头艺人奏的曲子，正是你小时候在课后音乐班学过的。你{a}岁时就不再玩音乐了。",
+     ".back": "加入业余乐团",
+     ".back.s": "二手乐器：大约{a}。幸福感 +2。",
+     ".give": "让它留作美好的回忆",
+     ".give.s": "你往琴盒里放了枚硬币，继续往前走。",
+     ".later": "一路哼着回家",
+     ".later.s": "也许有一天。",
+     ".m": "隔了{y}年，重新玩起音乐",
+     ".mb": "和{n}一起在业余乐团演奏"
+    },
+    "zht": {
+     ".t": "重拾音樂",
+     ".x": "街頭藝人奏的曲子，正是你小時候在課後音樂班學過的。你{a}歲時就不再玩音樂了。",
+     ".back": "加入業餘樂團",
+     ".back.s": "二手樂器：大約{a}。幸福感 +2。",
+     ".give": "讓它留作美好的回憶",
+     ".give.s": "你往琴盒裡放了枚硬幣，繼續往前走。",
+     ".later": "一路哼著回家",
+     ".later.s": "也許有一天。",
+     ".m": "隔了{y}年，重新玩起音樂",
+     ".mb": "和{n}一起在業餘樂團演奏"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_sport",
+   "when": {"age": [35,65], "test": "dreamOpen('sport') && roll('dbsport') < .1"},
+   "def": "later",
+   "tarot": "gym",
+   "art": "gym",
+   "vars": {"a": "dreamAt('sport')"},
+   "again": "delete done.back_sport",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.01 * base)"}, "do": "pay(0.01 * base); happy += 2; health += 2; dreamSet('sport', 'back'); let q = roll('clubsport') < .4 ? joinClub('sport') : null; if (q) memory('.mb', q, {y: age - dreamAt('sport')}, 3); else memory('.m', null, {y: age - dreamAt('sport')}, 3)"},
+    {"id": "give", "do": "dreamSet('sport', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('sport')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Back on the pitch",
+     ".x": "A neighbourhood team is one player short for Sunday mornings. You last played at {a}.",
+     ".back": "Join them",
+     ".back.s": "Boots and kit: about {a}. Sore legs on Mondays. Happiness +2, Health +2.",
+     ".give": "Cheer from the side instead",
+     ".give.s": "You’re the loudest one there.",
+     ".later": "Not with your knees",
+     ".later.s": "Maybe next season.",
+     ".m": "Playing again on Sunday mornings, {y} years later",
+     ".mb": "Sunday mornings with the team, and {n}"
+    },
+    "zh": {
+     ".t": "重回球场",
+     ".x": "社区球队周日早上还缺一个人。你上次上场是{a}岁的时候。",
+     ".back": "加入他们",
+     ".back.s": "球鞋和球衣大约{a}。每到周一腿都酸。幸福感 +2，健康 +2。",
+     ".give": "在场边加油就好",
+     ".give.s": "你是喊得最大声的那个。",
+     ".later": "膝盖不允许了",
+     ".later.s": "也许下个赛季吧。",
+     ".m": "隔了{y}年，周日早上又上场了",
+     ".mb": "周日早上的球队，还有{n}"
+    },
+    "zht": {
+     ".t": "重回球場",
+     ".x": "社區球隊週日早上還缺一個人。你上次上場是{a}歲的時候。",
+     ".back": "加入他們",
+     ".back.s": "球鞋和球衣大約{a}。每到週一腿都痠。幸福感 +2，健康 +2。",
+     ".give": "在場邊加油就好",
+     ".give.s": "你是喊得最大聲的那個。",
+     ".later": "膝蓋不允許了",
+     ".later.s": "也許下個賽季吧。",
+     ".m": "隔了{y}年，週日早上又上場了",
+     ".mb": "週日早上的球隊，還有{n}"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_swim",
+   "when": {"age": [35,65], "test": "dreamOpen('swim') && roll('dbswim') < .1"},
+   "def": "later",
+   "tarot": "gym",
+   "art": {"draw": "bridge", "bg": "mi"},
+   "vars": {"a": "dreamAt('swim')"},
+   "again": "delete done.back_swim",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.012 * base)"}, "do": "pay(0.012 * base); happy += 2; health += 3; dreamSet('swim', 'back'); let q = roll('clubswim') < .4 ? joinClub('swim') : null; if (q) memory('.mb', q, {y: age - dreamAt('swim')}, 3); else memory('.m', null, {y: age - dreamAt('swim')}, 3)"},
+    {"id": "give", "do": "dreamSet('swim', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('swim')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The pool at dawn",
+     ".x": "A sign at the pool: an early-morning swim club for adults. You last swam properly at {a}.",
+     ".back": "Join the club",
+     ".back.s": "About {a} a year, and a 6 a.m. alarm. Happiness +2, Health +3.",
+     ".give": "Swim on holiday, that’s enough",
+     ".give.s": "No alarms.",
+     ".later": "Too early for you",
+     ".later.s": "Maybe in summer.",
+     ".m": "Swimming at dawn again, {y} years later",
+     ".mb": "Early mornings at the pool with {n}"
+    },
+    "zh": {
+     ".t": "清晨的泳池",
+     ".x": "泳池贴出告示：成人晨泳俱乐部招新。你上一次好好游泳还是{a}岁的时候。",
+     ".back": "加入俱乐部",
+     ".back.s": "一年大约{a}，外加早上六点的闹钟。幸福感 +2，健康 +3。",
+     ".give": "放假时游游就够了",
+     ".give.s": "不用定闹钟。",
+     ".later": "太早了",
+     ".later.s": "也许夏天吧。",
+     ".m": "隔了{y}年，又在清晨游起泳来",
+     ".mb": "和{n}一起的清晨泳池时光"
+    },
+    "zht": {
+     ".t": "清晨的泳池",
+     ".x": "泳池貼出公告：成人晨泳俱樂部招新。你上一次好好游泳還是{a}歲的時候。",
+     ".back": "加入俱樂部",
+     ".back.s": "一年大約{a}，外加早上六點的鬧鐘。幸福感 +2，健康 +3。",
+     ".give": "放假時游游就夠了",
+     ".give.s": "不用定鬧鐘。",
+     ".later": "太早了",
+     ".later.s": "也許夏天吧。",
+     ".m": "隔了{y}年，又在清晨游起泳來",
+     ".mb": "和{n}一起的清晨泳池時光"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_chess",
+   "when": {"age": [35,65], "test": "dreamOpen('chess') && roll('dbchess') < .1"},
+   "def": "later",
+   "tarot": "tuition",
+   "art": {"draw": "exam", "bg": "wa"},
+   "vars": {"a": "dreamAt('chess')"},
+   "again": "delete done.back_chess",
+   "opts": [
+    {"id": "back", "do": "happy += 2; dreamSet('chess', 'back'); let q = roll('clubchess') < .4 ? joinClub('chess') : null; if (q) memory('.mb', q, {y: age - dreamAt('chess')}, 3); else memory('.m', null, {y: age - dreamAt('chess')}, 3)"},
+    {"id": "give", "do": "dreamSet('chess', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('chess')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The chess tables",
+     ".x": "Old men and teenagers are playing chess at the tables in the park. You last played seriously at {a}.",
+     ".back": "Sit down and play",
+     ".back.s": "You lose the first game badly. Happiness +2.",
+     ".give": "Watch for a while, and walk on",
+     ".give.s": "It’s enough to know they’re there.",
+     ".later": "Another day",
+     ".later.s": "You have somewhere to be.",
+     ".m": "Back at the chess tables, {y} years later",
+     ".mb": "Saturday chess in the park with {n}"
+    },
+    "zh": {
+     ".t": "公园里的棋桌",
+     ".x": "公园棋桌边，老人和少年在下棋。你上次认真下棋是{a}岁的时候。",
+     ".back": "坐下来下一盘",
+     ".back.s": "第一盘输得很惨。幸福感 +2。",
+     ".give": "看一会儿，继续走",
+     ".give.s": "知道他们还在那里就够了。",
+     ".later": "改天吧",
+     ".later.s": "你还有事要办。",
+     ".m": "隔了{y}年，又坐回了棋桌前",
+     ".mb": "和{n}在公园下棋的星期六"
+    },
+    "zht": {
+     ".t": "公園裡的棋桌",
+     ".x": "公園棋桌邊，老人和少年在下棋。你上次認真下棋是{a}歲的時候。",
+     ".back": "坐下來下一盤",
+     ".back.s": "第一盤輸得很慘。幸福感 +2。",
+     ".give": "看一會兒，繼續走",
+     ".give.s": "知道他們還在那裡就夠了。",
+     ".later": "改天吧",
+     ".later.s": "你還有事要辦。",
+     ".m": "隔了{y}年，又坐回了棋桌前",
+     ".mb": "和{n}在公園下棋的星期六"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_code",
+   "when": {"age": [35,65], "test": "dreamOpen('code') && roll('dbcode') < .1"},
+   "def": "later",
+   "tarot": "phone1",
+   "art": {"draw": "sidejob", "bg": "mi"},
+   "vars": {"a": "dreamAt('code')"},
+   "again": "delete done.back_code",
+   "opts": [
+    {"id": "back", "do": "happy += 2; health += -1; dreamSet('code', 'back'); let q = roll('clubcode') < .4 ? joinClub('code') : null; if (q) memory('.mb', q, {y: age - dreamAt('code')}, 3); else memory('.m', null, {y: age - dreamAt('code')}, 3)"},
+    {"id": "give", "do": "dreamSet('code', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('code')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Building something for fun",
+     ".x": "On an old disk you find the little game you programmed as a child. You stopped at {a}.",
+     ".back": "Spend your evenings building something again",
+     ".back.s": "Late nights, and the old excitement. Happiness +2, Health −1.",
+     ".give": "Show it to someone young who’s learning",
+     ".give.s": "They think it’s ancient.",
+     ".later": "Close the laptop",
+     ".later.s": "One day.",
+     ".m": "Building something just for fun again, {y} years later",
+     ".mb": "An open-source project, and a new friend: {n}"
+    },
+    "zh": {
+     ".t": "为了好玩做点东西",
+     ".x": "你在旧磁盘里翻出了小时候写的小游戏。你{a}岁时就没再写了。",
+     ".back": "晚上又开始做点东西",
+     ".back.s": "熬夜，还有当年的兴奋。幸福感 +2，健康 −1。",
+     ".give": "拿给正在学编程的年轻人看",
+     ".give.s": "他们觉得它像古董。",
+     ".later": "合上电脑",
+     ".later.s": "总有一天。",
+     ".m": "隔了{y}年，又为了好玩做起东西来",
+     ".mb": "一个开源项目，还有新朋友{n}"
+    },
+    "zht": {
+     ".t": "為了好玩做點東西",
+     ".x": "你在舊磁碟裡翻出了小時候寫的小遊戲。你{a}歲時就沒再寫了。",
+     ".back": "晚上又開始做點東西",
+     ".back.s": "熬夜，還有當年的興奮。幸福感 +2，健康 −1。",
+     ".give": "拿給正在學程式的年輕人看",
+     ".give.s": "他們覺得它像古董。",
+     ".later": "闔上電腦",
+     ".later.s": "總有一天。",
+     ".m": "隔了{y}年，又為了好玩做起東西來",
+     ".mb": "一個開源專案，還有新朋友{n}"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "back_craft",
+   "when": {"age": [35,65], "test": "dreamOpen('craft') && roll('dbcraft') < .1"},
+   "def": "later",
+   "tarot": "teen",
+   "art": {"draw": "stall", "bg": "ya"},
+   "vars": {"a": "dreamAt('craft')"},
+   "again": "delete done.back_craft",
+   "opts": [
+    {"id": "back", "sub": {"a": "MN(0.01 * base)"}, "do": "pay(0.01 * base); happy += 2; dreamSet('craft', 'back'); let q = roll('clubcraft') < .4 ? joinClub('craft') : null; if (q) memory('.mb', q, {y: age - dreamAt('craft')}, 3); else memory('.m', null, {y: age - dreamAt('craft')}, 3)"},
+    {"id": "give", "do": "dreamSet('craft', 'gone'); happy += 1"},
+    {"id": "later", "do": "dreamAsk('craft')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Making things again",
+     ".x": "A craft market in the square reminds you of the jewellery you used to make. You stopped at {a}.",
+     ".back": "Buy some materials and start again",
+     ".back.s": "About {a}. Happiness +2.",
+     ".give": "Buy something from a young maker",
+     ".give.s": "It’s lovely.",
+     ".later": "Just look around",
+     ".later.s": "Maybe one day.",
+     ".m": "Making things with your hands again, {y} years later",
+     ".mb": "A stall at the craft market, next to {n}"
+    },
+    "zh": {
+     ".t": "再动手做东西",
+     ".x": "广场上的手作市集，让你想起以前做过的首饰。你{a}岁时就不做了。",
+     ".back": "买些材料重新开始",
+     ".back.s": "大约{a}。幸福感 +2。",
+     ".give": "买一件年轻手作人的作品",
+     ".give.s": "很漂亮。",
+     ".later": "随便逛逛",
+     ".later.s": "也许有一天。",
+     ".m": "隔了{y}年，又动手做起东西来",
+     ".mb": "手作市集的摊位，旁边是{n}"
+    },
+    "zht": {
+     ".t": "再動手做東西",
+     ".x": "廣場上的手作市集，讓你想起以前做過的飾品。你{a}歲時就不做了。",
+     ".back": "買些材料重新開始",
+     ".back.s": "大約{a}。幸福感 +2。",
+     ".give": "買一件年輕手作人的作品",
+     ".give.s": "很漂亮。",
+     ".later": "隨便逛逛",
+     ".later.s": "也許有一天。",
+     ".m": "隔了{y}年，又動手做起東西來",
+     ".mb": "手作市集的攤位，旁邊是{n}"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "dream16",
+   "age": [15,17],
+   "weight": 0.85,
+   "dens": 1,
+   "def": "none",
+   "tarot": "travel",
+   "art": {"draw": "tent", "bg": "ya"},
+   "opts": [
+    {"id": "travel", "do": "wish('travel')"},
+    {"id": "write", "do": "wish('write')"},
+    {"id": "lang", "do": "wish('lang')"},
+    {"id": "none"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A dream",
+     ".x": "Lying awake one night, you think about what you’d love to do one day, whatever happens.",
+     ".travel": "See the world",
+     ".travel.s": "Somewhere far away, with a backpack.",
+     ".write": "Write a book of my own",
+     ".write.s": "Your notebook is already half full.",
+     ".lang": "Speak another language fluently",
+     ".lang.s": "Films without subtitles.",
+     ".none": "Nothing in particular",
+     ".none.s": "You fall asleep."
+    },
+    "zh": {
+     ".t": "梦想",
+     ".x": "某天夜里睡不着，你想着无论如何，有一天一定要去做的事。",
+     ".travel": "去看看世界",
+     ".travel.s": "背着背包，去很远的地方。",
+     ".write": "写一本自己的书",
+     ".write.s": "你的笔记本已经写了一半。",
+     ".lang": "说一口流利的外语",
+     ".lang.s": "看电影不用字幕。",
+     ".none": "没什么特别的",
+     ".none.s": "你睡着了。"
+    },
+    "zht": {
+     ".t": "夢想",
+     ".x": "某天夜裡睡不著，你想著無論如何，有一天一定要去做的事。",
+     ".travel": "去看看世界",
+     ".travel.s": "背著背包，去很遠的地方。",
+     ".write": "寫一本自己的書",
+     ".write.s": "你的筆記本已經寫了一半。",
+     ".lang": "說一口流利的外語",
+     ".lang.s": "看電影不用字幕。",
+     ".none": "沒什麼特別的",
+     ".none.s": "你睡著了。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "dream_trip",
+   "when": {"age": [30,62], "test": "dreamOpen('travel') && roll('dream_trip') < .12"},
+   "def": "next",
+   "again": "delete done.dream_trip",
+   "vars": {"a": "dreamAt('travel')", "b": "age"},
+   "tarot": "abroad",
+   "art": {"draw": "passport", "bg": "ya"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.08 * base)"}, "do": "pay(.08 * base); happy += 3; dreamSet('travel', 'done'); memory('.m', null, {a: dreamAt('travel')}, 3)"},
+    {"id": "next", "do": "dreamAsk('travel')"},
+    {"id": "let", "do": "dreamSet('travel', 'gone')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The trip you always talked about",
+     ".x": "At {a} you dreamed of seeing the world. You’re {b} now, and your passport is still nearly empty.",
+     ".go": "Go, this year",
+     ".go.s": "A month away: about {a}. Happiness +3.",
+     ".next": "Next year, when things calm down",
+     ".next.s": "There’s always something.",
+     ".let": "Let the dream go",
+     ".let.s": "Some dreams belong to who you were.",
+     ".m": "The trip you dreamed of at {a}"
+    },
+    "zh": {
+     ".t": "一直挂在嘴边的旅行",
+     ".x": "{a}岁时，你梦想去看看世界。如今你{b}岁了，护照上几乎还是空白。",
+     ".go": "今年就去",
+     ".go.s": "出去一个月：大约{a}。幸福感 +3。",
+     ".next": "明年吧，等忙完这阵子",
+     ".next.s": "总有忙不完的事。",
+     ".let": "放下这个梦想",
+     ".let.s": "有些梦想属于过去的你。",
+     ".m": "{a}岁时梦想的那趟旅行"
+    },
+    "zht": {
+     ".t": "一直掛在嘴邊的旅行",
+     ".x": "{a}歲時，你夢想去看看世界。如今你{b}歲了，護照上幾乎還是空白。",
+     ".go": "今年就去",
+     ".go.s": "出去一個月：大約{a}。幸福感 +3。",
+     ".next": "明年吧，等忙完這陣子",
+     ".next.s": "總有忙不完的事。",
+     ".let": "放下這個夢想",
+     ".let.s": "有些夢想屬於過去的你。",
+     ".m": "{a}歲時夢想的那趟旅行"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "dream_write",
+   "when": {"age": [30,62], "test": "dreamOpen('write') && roll('dream_write') < .12"},
+   "def": "next",
+   "again": "delete done.dream_write",
+   "vars": {"a": "dreamAt('write')", "b": "age"},
+   "tarot": "cert",
+   "art": {"draw": "scrap", "bg": "wa"},
+   "later": {"dreamBook": "memory('e.dream_write.m', null, {}, 3); happy += 3"},
+   "opts": [
+    {"id": "go", "do": "happy += 1; health -= 1; dreamSet('write', 'done'); later(age + 2, 'dreamBook', {})"},
+    {"id": "next", "do": "dreamAsk('write')"},
+    {"id": "let", "do": "dreamSet('write', 'gone')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The book you meant to write",
+     ".x": "At {a} you wanted to write a book of your own. The notebook is still in a drawer somewhere.",
+     ".go": "Write for an hour every evening",
+     ".go.s": "Two years of evenings. Happiness +1, Health −1.",
+     ".next": "When there’s more time",
+     ".next.s": "There’s always something.",
+     ".let": "Let the dream go",
+     ".let.s": "Some dreams belong to who you were.",
+     ".m": "Holding the first copy of the book you wrote"
+    },
+    "zh": {
+     ".t": "一直想写的那本书",
+     ".x": "{a}岁时，你想写一本自己的书。那本笔记本还躺在某个抽屉里。",
+     ".go": "每天晚上写一个小时",
+     ".go.s": "两年的晚上。幸福感 +1，健康 −1。",
+     ".next": "等有时间再说",
+     ".next.s": "总有忙不完的事。",
+     ".let": "放下这个梦想",
+     ".let.s": "有些梦想属于过去的你。",
+     ".m": "捧着自己写的书"
+    },
+    "zht": {
+     ".t": "一直想寫的那本書",
+     ".x": "{a}歲時，你想寫一本自己的書。那本筆記本還躺在某個抽屜裡。",
+     ".go": "每天晚上寫一個小時",
+     ".go.s": "兩年的晚上。幸福感 +1，健康 −1。",
+     ".next": "等有時間再說",
+     ".next.s": "總有忙不完的事。",
+     ".let": "放下這個夢想",
+     ".let.s": "有些夢想屬於過去的你。",
+     ".m": "捧著自己寫的書"
+    }
+   }
+  },
+  {
+   "life": true,
+   "id": "dream_lang",
+   "when": {"age": [30,62], "test": "dreamOpen('lang') && roll('dream_lang') < .12"},
+   "def": "next",
+   "again": "delete done.dream_lang",
+   "vars": {"a": "dreamAt('lang')", "b": "age"},
+   "tarot": "away",
+   "art": {"draw": "blocks", "bg": "mi"},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(.02 * base)"}, "do": "pay(.02 * base); happy += 2; dreamSet('lang', 'done'); memory('.m', null, {}, 3)"},
+    {"id": "next", "do": "dreamAsk('lang')"},
+    {"id": "let", "do": "dreamSet('lang', 'gone')"}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Another language",
+     ".x": "At {a} you dreamed of speaking another language fluently. You still remember a few words.",
+     ".go": "Evening classes, twice a week",
+     ".go.s": "About {a} for a year of classes. Happiness +2.",
+     ".next": "Maybe next year",
+     ".next.s": "There’s always something.",
+     ".let": "Let the dream go",
+     ".let.s": "Some dreams belong to who you were.",
+     ".m": "Your first real conversation in another language"
+    },
+    "zh": {
+     ".t": "另一种语言",
+     ".x": "{a}岁时，你梦想说一口流利的外语。你还记得几个单词。",
+     ".go": "晚上上课，一周两次",
+     ".go.s": "一年的课大约{a}。幸福感 +2。",
+     ".next": "也许明年吧",
+     ".next.s": "总有忙不完的事。",
+     ".let": "放下这个梦想",
+     ".let.s": "有些梦想属于过去的你。",
+     ".m": "第一次用外语真正聊了起来"
+    },
+    "zht": {
+     ".t": "另一種語言",
+     ".x": "{a}歲時，你夢想說一口流利的外語。你還記得幾個單字。",
+     ".go": "晚上上課，一週兩次",
+     ".go.s": "一年的課大約{a}。幸福感 +2。",
+     ".next": "也許明年吧",
+     ".next.s": "總有忙不完的事。",
+     ".let": "放下這個夢想",
+     ".let.s": "有些夢想屬於過去的你。",
+     ".m": "第一次用外語真正聊了起來"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_toy",
+   "age": [7,10],
+   "who": {"role": "friend", "age": [5,13]},
+   "def": "quiet",
+   "tarot": "peer",
+   "art": {"draw": "blocks", "bg": "co"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "tell", "val": {"honest": 1, "brave": 1}, "label": "M('.tell', {n: name(p)})"},
+    {"id": "quiet", "val": {"honest": -1}},
+    {"id": "give", "val": {"kind": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The broken toy",
+     ".x": "You broke {n}’s favourite toy by accident. Nobody saw.",
+     ".tell": "Tell {n} what happened",
+     ".tell.s": "Your face goes hot.",
+     ".quiet": "Put it back and say nothing",
+     ".quiet.s": "Maybe they won’t notice.",
+     ".give": "Give them your own favourite toy",
+     ".give.s": "Without saying why."
+    },
+    "zh": {
+     ".t": "弄坏的玩具",
+     ".x": "你不小心弄坏了{n}最喜欢的玩具。没有人看见。",
+     ".tell": "告诉{n}发生了什么",
+     ".tell.s": "你的脸一下子红了。",
+     ".quiet": "放回去，什么也不说",
+     ".quiet.s": "也许对方不会发现。",
+     ".give": "把自己最喜欢的玩具送给对方",
+     ".give.s": "也不说为什么。"
+    },
+    "zht": {
+     ".t": "弄壞的玩具",
+     ".x": "你不小心弄壞了{n}最喜歡的玩具。沒有人看見。",
+     ".tell": "告訴{n}發生了什麼",
+     ".tell.s": "你的臉一下子紅了。",
+     ".quiet": "放回去，什麼也不說",
+     ".quiet.s": "也許對方不會發現。",
+     ".give": "把自己最喜歡的玩具送給對方",
+     ".give.s": "也不說為什麼。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_newkid",
+   "age": [8,11],
+   "def": "wave",
+   "tarot": "friends",
+   "art": {"draw": "schoolbag", "bg": "wa"},
+   "opts": [
+    {"id": "sit", "val": {"kind": 1, "brave": 1}},
+    {"id": "wave", "val": {"kind": 1}},
+    {"id": "friends", "val": {"loyal": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The new kid",
+     ".x": "A new kid in your class is eating lunch alone. Your friends are waving you over to their table.",
+     ".sit": "Sit with the new kid",
+     ".sit.s": "Your friends look at you strangely.",
+     ".wave": "Bring the new kid to your friends’ table",
+     ".wave.s": "It’s a bit awkward at first.",
+     ".friends": "Go and sit with your friends",
+     ".friends.s": "They saved you a seat."
+    },
+    "zh": {
+     ".t": "新同学",
+     ".x": "班上的新同学一个人在吃午饭。你的朋友们正招手叫你过去。",
+     ".sit": "坐到新同学旁边",
+     ".sit.s": "朋友们奇怪地看着你。",
+     ".wave": "把新同学带到朋友那桌",
+     ".wave.s": "一开始有点尴尬。",
+     ".friends": "去和朋友们坐",
+     ".friends.s": "他们给你留了位子。"
+    },
+    "zht": {
+     ".t": "新同學",
+     ".x": "班上的新同學一個人在吃午餐。你的朋友們正招手叫你過去。",
+     ".sit": "坐到新同學旁邊",
+     ".sit.s": "朋友們奇怪地看著你。",
+     ".wave": "把新同學帶到朋友那桌",
+     ".wave.s": "一開始有點尷尬。",
+     ".friends": "去和朋友們坐",
+     ".friends.s": "他們幫你留了位子。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_cheat",
+   "age": [14,17],
+   "who": {"role": "friend", "age": [12,20]},
+   "def": "no",
+   "tarot": "mlm",
+   "art": {"draw": "exam", "bg": "co"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "tell", "val": {"honest": 1, "brave": 1, "loyal": -1}, "sub": {"n": "name(p)"}},
+    {"id": "no", "val": {"honest": 1}},
+    {"id": "look", "val": {"honest": -1, "loyal": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The answers",
+     ".x": "Someone is passing round the answers to tomorrow’s exam. Your best friend {n} already has a copy and offers it to you.",
+     ".tell": "Say no, and tell a teacher",
+     ".tell.s": "{n} will know it was you.",
+     ".no": "Say no, and keep it to yourself",
+     ".no.s": "You study until midnight instead.",
+     ".look": "Take a look",
+     ".look.s": "Everyone else is."
+    },
+    "zh": {
+     ".t": "答案",
+     ".x": "有人在传明天考试的答案。你最好的朋友{n}已经拿到一份，要分给你看。",
+     ".tell": "拒绝，并告诉老师",
+     ".tell.s": "{n}会知道是你说的。",
+     ".no": "拒绝，但不声张",
+     ".no.s": "你转而熬夜复习到半夜。",
+     ".look": "看一眼",
+     ".look.s": "大家都在看。"
+    },
+    "zht": {
+     ".t": "答案",
+     ".x": "有人在傳明天考試的答案。你最好的朋友{n}已經拿到一份，要分給你看。",
+     ".tell": "拒絕，並告訴老師",
+     ".tell.s": "{n}會知道是你說的。",
+     ".no": "拒絕，但不聲張",
+     ".no.s": "你轉而熬夜複習到半夜。",
+     ".look": "看一眼",
+     ".look.s": "大家都在看。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_shop",
+   "age": [13,16],
+   "who": {"role": "friend", "age": [11,19]},
+   "def": "quiet",
+   "tarot": "scam",
+   "art": {"draw": "stall", "bg": "mi"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "say", "val": {"brave": 1, "honest": 1}},
+    {"id": "quiet", "val": {"loyal": 1, "honest": -1}},
+    {"id": "leave", "val": {"honest": 1, "loyal": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "At the corner shop",
+     ".x": "At the corner shop {n} slips a chocolate bar into their pocket and grins at you.",
+     ".say": "“Put it back”",
+     ".say.s": "You say it quietly, but you say it.",
+     ".quiet": "Say nothing, and never mention it",
+     ".quiet.s": "It’s only chocolate.",
+     ".leave": "Walk out and go home alone",
+     ".leave.s": "You don’t want any part of it."
+    },
+    "zh": {
+     ".t": "街角小店",
+     ".x": "在街角小店里，{n}把一块巧克力塞进口袋，冲你咧嘴一笑。",
+     ".say": "“放回去”",
+     ".say.s": "你说得很小声，但你说了。",
+     ".quiet": "什么也不说，以后也不提",
+     ".quiet.s": "不过是块巧克力。",
+     ".leave": "转身走出去，一个人回家",
+     ".leave.s": "你不想沾上这件事。"
+    },
+    "zht": {
+     ".t": "街角小店",
+     ".x": "在街角小店裡，{n}把一塊巧克力塞進口袋，對你咧嘴一笑。",
+     ".say": "「放回去」",
+     ".say.s": "你說得很小聲，但你說了。",
+     ".quiet": "什麼也不說，以後也不提",
+     ".quiet.s": "不過是塊巧克力。",
+     ".leave": "轉身走出去，一個人回家",
+     ".leave.s": "你不想沾上這件事。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_rumour",
+   "age": [14,17],
+   "def": "quiet",
+   "tarot": "agent",
+   "art": {"draw": "schoolbag", "bg": "co"},
+   "opts": [
+    {"id": "stand", "val": {"brave": 1, "kind": 1}},
+    {"id": "quiet", "val": {"kind": 1}},
+    {"id": "out", "val": {"brave": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "The rumour",
+     ".x": "A rumour about a classmate is going round, and everyone is laughing. You know it isn’t true.",
+     ".stand": "Say out loud that it isn’t true",
+     ".stand.s": "The laughing stops, and some of it turns to you.",
+     ".quiet": "Tell the classmate you don’t believe it",
+     ".quiet.s": "Just the two of you.",
+     ".out": "Stay out of it",
+     ".out.s": "It will blow over."
+    },
+    "zh": {
+     ".t": "谣言",
+     ".x": "关于一个同学的谣言传开了，大家都在笑。你知道那不是真的。",
+     ".stand": "当众说这不是真的",
+     ".stand.s": "笑声停了，有些笑声转向了你。",
+     ".quiet": "私下告诉那位同学你不相信",
+     ".quiet.s": "只有你们两个知道。",
+     ".out": "不掺和",
+     ".out.s": "过几天就没事了。"
+    },
+    "zht": {
+     ".t": "謠言",
+     ".x": "關於一個同學的謠言傳開了，大家都在笑。你知道那不是真的。",
+     ".stand": "當眾說這不是真的",
+     ".stand.s": "笑聲停了，有些笑聲轉向了你。",
+     ".quiet": "私下告訴那位同學你不相信",
+     ".quiet.s": "只有你們兩個知道。",
+     ".out": "不蹚渾水",
+     ".out.s": "過幾天就沒事了。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_cover",
+   "age": [22,55],
+   "when": {"working": true},
+   "def": "quiet",
+   "tarot": "save2",
+   "art": "save2",
+   "opts": [
+    {"id": "truth", "val": {"honest": 1, "loyal": -1}},
+    {"id": "quiet", "val": {"loyal": 1, "honest": -1}},
+    {"id": "share", "val": {"kind": 1, "brave": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Who made the mistake?",
+     ".x": "A coworker’s mistake has cost the team a client. Your boss asks who did it. Your coworker looks at you.",
+     ".truth": "Tell the truth",
+     ".truth.s": "Your coworker won’t look at you for weeks.",
+     ".quiet": "Say nothing",
+     ".quiet.s": "The question hangs in the air, then passes.",
+     ".share": "Take part of the blame",
+     ".share.s": "“We both missed it.”"
+    },
+    "zh": {
+     ".t": "是谁出的错？",
+     ".x": "同事的失误让团队丢了一个客户。上司问是谁做的。那位同事看着你。",
+     ".truth": "说实话",
+     ".truth.s": "那位同事好几个星期都不看你。",
+     ".quiet": "什么也不说",
+     ".quiet.s": "问题悬在半空，然后过去了。",
+     ".share": "替对方担下一部分责任",
+     ".share.s": "“我们俩都没注意到。”"
+    },
+    "zht": {
+     ".t": "是誰出的錯？",
+     ".x": "同事的失誤讓團隊丟了一個客戶。主管問是誰做的。那位同事看著你。",
+     ".truth": "說實話",
+     ".truth.s": "那位同事好幾個星期都不看你。",
+     ".quiet": "什麼也不說",
+     ".quiet.s": "問題懸在半空，然後過去了。",
+     ".share": "替對方擔下一部分責任",
+     ".share.s": "「我們倆都沒注意到。」"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_truth",
+   "age": [22,70],
+   "who": {"role": "friend", "age": [20,72]},
+   "def": "ask",
+   "tarot": "agent",
+   "art": {"draw": "letter", "bg": "ya"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "honest", "val": {"honest": 1, "brave": 1}},
+    {"id": "back", "val": {"loyal": 1, "honest": -1}},
+    {"id": "ask", "val": {"kind": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A hard truth",
+     ".x": "{P} wants to quit and open a café, and asks what you really think. You think it will struggle.",
+     ".honest": "Say it gently, but honestly",
+     ".honest.s": "A long silence on the other end.",
+     ".back": "Back them all the way",
+     ".back.s": "“If anyone can do it, you can.”",
+     ".ask": "Ask questions, and don’t judge",
+     ".ask.s": "You let them find the answer themselves."
+    },
+    "zh": {
+     ".t": "逆耳之言",
+     ".x": "{P}想辞职开一家咖啡馆，问你真心怎么看。你觉得会很难撑下去。",
+     ".honest": "温和但坦白地说",
+     ".honest.s": "电话那头沉默了很久。",
+     ".back": "全力支持",
+     ".back.s": "“要是有谁能做到，那一定是你。”",
+     ".ask": "多问问，不评判",
+     ".ask.s": "让对方自己找到答案。"
+    },
+    "zht": {
+     ".t": "逆耳之言",
+     ".x": "{P}想辭職開一家咖啡館，問你真心怎麼看。你覺得會很難撐下去。",
+     ".honest": "溫和但坦白地說",
+     ".honest.s": "電話那頭沉默了很久。",
+     ".back": "全力支持",
+     ".back.s": "「要是有誰能做到，那一定是你。」",
+     ".ask": "多問問，不評判",
+     ".ask.s": "讓對方自己找到答案。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_promise",
+   "age": [24,60],
+   "who": {"role": "sib", "age": [18,70]},
+   "def": "keep",
+   "tarot": "fwed",
+   "art": {"draw": "keyhome", "bg": "wa"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "keep", "val": {"loyal": 2}},
+    {"id": "explain", "val": {"honest": 1, "loyal": -1}},
+    {"id": "excuse", "val": {"honest": -1, "loyal": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A promise",
+     ".x": "Months ago you promised {p} you’d help paint their new flat this weekend. Now a friend offers you a spare ticket to something you’ve waited years to see, on the same day.",
+     ".keep": "Keep your promise",
+     ".keep.s": "Paint in your hair, and the ticket goes to someone else.",
+     ".explain": "Explain, and go to the show",
+     ".explain.s": "“I’ll make it up to you.”",
+     ".excuse": "Say you’re ill, and go",
+     ".excuse.s": "Nobody will know."
+    },
+    "zh": {
+     ".t": "一个承诺",
+     ".x": "几个月前，你答应{p}这个周末去帮忙粉刷新家。现在朋友多出一张票，正是你等了好多年想看的，偏偏在同一天。",
+     ".keep": "信守承诺",
+     ".keep.s": "头发上沾了油漆，票给了别人。",
+     ".explain": "说明原因，去看演出",
+     ".explain.s": "“我以后补偿你。”",
+     ".excuse": "说自己病了，然后去了",
+     ".excuse.s": "没人会知道。"
+    },
+    "zht": {
+     ".t": "一個承諾",
+     ".x": "幾個月前，你答應{p}這個週末去幫忙粉刷新家。現在朋友多出一張票，正是你等了好多年想看的，偏偏在同一天。",
+     ".keep": "信守承諾",
+     ".keep.s": "頭髮上沾了油漆，票給了別人。",
+     ".explain": "說明原因，去看演出",
+     ".explain.s": "「我以後補償你。」",
+     ".excuse": "說自己病了，然後去了",
+     ".excuse.s": "沒人會知道。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_stand",
+   "age": [24,60],
+   "when": {"working": true},
+   "def": "after",
+   "tarot": "insure",
+   "art": {"draw": "suit", "bg": "co"},
+   "opts": [
+    {"id": "now", "val": {"brave": 2, "kind": 1}},
+    {"id": "after", "val": {"kind": 1}},
+    {"id": "report", "val": {"honest": 1, "brave": 1}},
+    {"id": "let", "val": {"brave": -1, "loyal": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "In the meeting",
+     ".x": "In a meeting, your boss mocks a junior colleague’s accent. A few people laugh. The colleague goes quiet.",
+     ".now": "Say something, right there",
+     ".now.s": "The room goes very still.",
+     ".after": "Find the colleague afterwards",
+     ".after.s": "“That wasn’t OK. Are you all right?”",
+     ".report": "Report it quietly",
+     ".report.s": "You write down exactly what was said.",
+     ".let": "Let it go",
+     ".let.s": "It’s just how the boss is."
+    },
+    "zh": {
+     ".t": "会议上",
+     ".x": "会议上，上司拿一位年轻同事的口音开玩笑。有几个人笑了。那位同事不说话了。",
+     ".now": "当场说点什么",
+     ".now.s": "会议室一下子安静下来。",
+     ".after": "会后去找那位同事",
+     ".after.s": "“那样不对。你还好吗？”",
+     ".report": "私下反映这件事",
+     ".report.s": "你把原话一字一句记下来。",
+     ".let": "算了",
+     ".let.s": "上司就是这样的人。"
+    },
+    "zht": {
+     ".t": "會議上",
+     ".x": "會議上，主管拿一位年輕同事的口音開玩笑。有幾個人笑了。那位同事不說話了。",
+     ".now": "當場說點什麼",
+     ".now.s": "會議室一下子安靜下來。",
+     ".after": "會後去找那位同事",
+     ".after.s": "「那樣不對。你還好嗎？」",
+     ".report": "私下反映這件事",
+     ".report.s": "你把原話一字一句記下來。",
+     ".let": "算了",
+     ".let.s": "主管就是這樣的人。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_found",
+   "age": [18,75],
+   "def": "desk",
+   "tarot": "tip",
+   "art": {"draw": "wallet", "bg": "mi"},
+   "opts": [
+    {"id": "track", "val": {"kind": 1, "honest": 1}},
+    {"id": "desk", "val": {"honest": 1}},
+    {"id": "leave", "val": {"kind": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Left on the train",
+     ".x": "On the train you find a bag with a laptop, a diary and a name tag. Your stop is next.",
+     ".track": "Find the owner yourself",
+     ".track.s": "An evening of emails and phone calls.",
+     ".desk": "Hand it to the station staff",
+     ".desk.s": "You miss the next train.",
+     ".leave": "Leave it where it is",
+     ".leave.s": "Someone else will hand it in."
+    },
+    "zh": {
+     ".t": "落在车上的包",
+     ".x": "你在火车上发现一个包，里面有笔记本电脑、一本日记和一张名牌。下一站就是你要下的站。",
+     ".track": "自己去找失主",
+     ".track.s": "一个晚上都在发邮件、打电话。",
+     ".desk": "交给车站工作人员",
+     ".desk.s": "你错过了下一班车。",
+     ".leave": "留在原地",
+     ".leave.s": "会有别人交上去的。"
+    },
+    "zht": {
+     ".t": "落在車上的包",
+     ".x": "你在火車上發現一個包，裡面有筆電、一本日記和一張名牌。下一站就是你要下的站。",
+     ".track": "自己去找失主",
+     ".track.s": "一個晚上都在寄信、打電話。",
+     ".desk": "交給車站工作人員",
+     ".desk.s": "你錯過了下一班車。",
+     ".leave": "留在原地",
+     ".leave.s": "會有別人交上去的。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_secret",
+   "age": [18,55],
+   "who": {"role": "sib", "age": [18,60]},
+   "when": {"test": "people('parent').length > 0"},
+   "def": "urge",
+   "tarot": "cosign",
+   "art": {"draw": "letter", "bg": "co"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "keep", "val": {"loyal": 1, "honest": -1}},
+    {"id": "tell", "val": {"honest": 1, "loyal": -1}},
+    {"id": "urge", "val": {"kind": 1}, "label": "M('.urge', {n: name(p)})", "sub": {"n": "name(p)"}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A secret",
+     ".x": "{P} has lost their job and hasn’t told your parents. Today your parents ask you straight out if something is wrong.",
+     ".keep": "Keep the secret",
+     ".keep.s": "“Everything’s fine.”",
+     ".tell": "Tell them, gently",
+     ".tell.s": "They deserve to know.",
+     ".urge": "Buy time, and push {n} to tell them",
+     ".urge.s": "You call {n} that evening."
+    },
+    "zh": {
+     ".t": "一个秘密",
+     ".x": "{P}丢了工作，还没告诉爸妈。今天爸妈直接问你是不是出了什么事。",
+     ".keep": "守住秘密",
+     ".keep.s": "“一切都好。”",
+     ".tell": "温和地告诉他们",
+     ".tell.s": "他们有权知道。",
+     ".urge": "先拖一拖，劝{n}自己说",
+     ".urge.s": "你当晚就打电话给{n}。"
+    },
+    "zht": {
+     ".t": "一個秘密",
+     ".x": "{P}丟了工作，還沒告訴爸媽。今天爸媽直接問你是不是出了什麼事。",
+     ".keep": "守住秘密",
+     ".keep.s": "「一切都好。」",
+     ".tell": "溫和地告訴他們",
+     ".tell.s": "他們有權知道。",
+     ".urge": "先拖一拖，勸{n}自己說",
+     ".urge.s": "你當晚就打電話給{n}。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_ref",
+   "age": [30,62],
+   "when": {"working": true},
+   "def": "fair",
+   "tarot": "glide",
+   "art": {"draw": "letter", "bg": "mi"},
+   "opts": [
+    {"id": "fair", "val": {"honest": 1}},
+    {"id": "glow", "val": {"kind": 1, "honest": -1}},
+    {"id": "decline", "val": {"brave": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "A reference",
+     ".x": "A colleague who often let the team down asks you for a reference. They need this job; they have a family to support.",
+     ".fair": "Write a fair one, good and bad",
+     ".fair.s": "It takes three drafts.",
+     ".glow": "Write a glowing one",
+     ".glow.s": "Everyone deserves a second chance.",
+     ".decline": "Tell them, kindly, that you can’t",
+     ".decline.s": "A hard conversation over coffee."
+    },
+    "zh": {
+     ".t": "推荐信",
+     ".x": "一位常常拖累团队的同事请你写推荐信。对方很需要这份工作，家里还要养。",
+     ".fair": "如实写，好坏都写",
+     ".fair.s": "改了三稿。",
+     ".glow": "写一封满是赞美的",
+     ".glow.s": "每个人都该有第二次机会。",
+     ".decline": "委婉地说你写不了",
+     ".decline.s": "一杯咖啡，一场艰难的谈话。"
+    },
+    "zht": {
+     ".t": "推薦信",
+     ".x": "一位常常拖累團隊的同事請你寫推薦信。對方很需要這份工作，家裡還要養。",
+     ".fair": "如實寫，好壞都寫",
+     ".fair.s": "改了三稿。",
+     ".glow": "寫一封滿是讚美的",
+     ".glow.s": "每個人都該有第二次機會。",
+     ".decline": "委婉地說你寫不了",
+     ".decline.s": "一杯咖啡，一場艱難的談話。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_credit",
+   "age": [23,55],
+   "when": {"working": true},
+   "who": {"role": "boss"},
+   "def": "later",
+   "tarot": "credit",
+   "art": "credit",
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "speak", "val": {"brave": 1, "honest": 1}},
+    {"id": "later", "val": {"honest": 1, "loyal": 1}, "label": "M('.later', {n: name(p)})"},
+    {"id": "let", "val": {"loyal": 1, "brave": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "Your idea",
+     ".x": "At a big meeting, {p} presents your idea as their own. Everyone is impressed.",
+     ".speak": "Speak up in the meeting",
+     ".speak.s": "“I’m glad you liked my proposal.”",
+     ".later": "Talk to {n} privately afterwards",
+     ".later.s": "Behind a closed door.",
+     ".let": "Let it go",
+     ".let.s": "It’s good for the team."
+    },
+    "zh": {
+     ".t": "你的点子",
+     ".x": "在一场重要会议上，{p}把你的点子当成自己的提了出来。大家都很佩服。",
+     ".speak": "在会上说出来",
+     ".speak.s": "“很高兴大家喜欢我的提案。”",
+     ".later": "会后私下找{n}谈",
+     ".later.s": "关起门来谈。",
+     ".let": "算了",
+     ".let.s": "反正对团队有好处。"
+    },
+    "zht": {
+     ".t": "你的點子",
+     ".x": "在一場重要會議上，{p}把你的點子當成自己的提了出來。大家都很佩服。",
+     ".speak": "在會上說出來",
+     ".speak.s": "「很高興大家喜歡我的提案。」",
+     ".later": "會後私下找{n}談",
+     ".later.s": "關起門來談。",
+     ".let": "算了",
+     ".let.s": "反正對團隊有好處。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_kidpt",
+   "age": [45,85],
+   "who": {"role": "kid", "age": [20,40], "test": "!p.wed"},
+   "def": "life",
+   "tarot": "will",
+   "art": {"draw": "feast", "bg": "co"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "honest", "val": {"honest": 1, "brave": 1}},
+    {"id": "support", "val": {"loyal": 1}},
+    {"id": "life", "val": {"kind": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "What do you really think?",
+     ".x": "{P} asks what you really think of the person they’re planning to marry. You have doubts.",
+     ".honest": "Tell them your doubts",
+     ".honest.s": "Carefully, and once.",
+     ".support": "“If you’re happy, I’m happy”",
+     ".support.s": "You keep the doubts to yourself.",
+     ".life": "“It’s your life, and I’ll be there either way”",
+     ".life.s": "You give them the question back."
+    },
+    "zh": {
+     ".t": "你真心怎么看？",
+     ".x": "{P}问你，对自己打算结婚的那个人真心怎么看。你心里有些疑虑。",
+     ".honest": "说出你的疑虑",
+     ".honest.s": "小心地，只说一次。",
+     ".support": "“你开心，我就开心”",
+     ".support.s": "疑虑留在自己心里。",
+     ".life": "“这是你的人生，无论怎样我都在”",
+     ".life.s": "你把问题交还给孩子。"
+    },
+    "zht": {
+     ".t": "你真心怎麼看？",
+     ".x": "{P}問你，對自己打算結婚的那個人真心怎麼看。你心裡有些疑慮。",
+     ".honest": "說出你的疑慮",
+     ".honest.s": "小心地，只說一次。",
+     ".support": "「你開心，我就開心」",
+     ".support.s": "疑慮留在自己心裡。",
+     ".life": "「這是你的人生，無論怎樣我都在」",
+     ".life.s": "你把問題交還給孩子。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_oldwrong",
+   "age": [55,85],
+   "who": {"role": "friend", "age": [45,95]},
+   "def": "rest",
+   "tarot": "inh",
+   "art": {"draw": "letter", "bg": "wa"},
+   "vars": {"P": "Who(p)", "p": "who(p)", "n": "name(p)"},
+   "opts": [
+    {"id": "tell", "val": {"honest": 2, "brave": 1}, "label": "M('.tell', {n: name(p)})"},
+    {"id": "rest", "val": {"kind": 1}},
+    {"id": "make", "val": {"kind": 1, "loyal": 1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "An old wrong",
+     ".x": "Decades ago you let {n} take the blame for something you did. They have never mentioned it.",
+     ".tell": "Tell {n} the truth, at last",
+     ".tell.s": "Your hands shake a little.",
+     ".rest": "Let it rest",
+     ".rest.s": "Some things are better left alone.",
+     ".make": "Say nothing, but be a better friend",
+     ".make.s": "You call more often."
+    },
+    "zh": {
+     ".t": "一桩旧事",
+     ".x": "几十年前，你让{n}替你背了一次黑锅。对方从来没提过。",
+     ".tell": "终于向{n}说出真相",
+     ".tell.s": "你的手有点发抖。",
+     ".rest": "就让它过去吧",
+     ".rest.s": "有些事不提也罢。",
+     ".make": "不说，但做个更好的朋友",
+     ".make.s": "你更常打电话了。"
+    },
+    "zht": {
+     ".t": "一樁舊事",
+     ".x": "幾十年前，你讓{n}替你背了一次黑鍋。對方從來沒提過。",
+     ".tell": "終於向{n}說出真相",
+     ".tell.s": "你的手有點發抖。",
+     ".rest": "就讓它過去吧",
+     ".rest.s": "有些事不提也罷。",
+     ".make": "不說，但做個更好的朋友",
+     ".make.s": "你更常打電話了。"
+    }
+   }
+  },
+  {
+   "life": true,
+   "weight": 0.5,
+   "dens": 1,
+   "id": "d_bus",
+   "age": [18,45],
+   "def": "sit",
+   "tarot": "insure",
+   "art": {"draw": "city", "bg": "mi"},
+   "opts": [
+    {"id": "step", "val": {"brave": 2, "kind": 1}},
+    {"id": "sit", "val": {"kind": 1, "brave": 1}},
+    {"id": "driver", "val": {"brave": 1}},
+    {"id": "away", "val": {"brave": -1}}
+   ],
+   "i18n": {
+    "en": {
+     ".t": "On the bus",
+     ".x": "On a late bus, someone keeps pestering a young passenger, who looks frightened. Nobody does anything.",
+     ".step": "Tell them to leave the passenger alone",
+     ".step.s": "Your voice is louder than you expected.",
+     ".sit": "Sit next to the passenger and chat, as if you were old friends",
+     ".sit.s": "“There you are! How was your day?”",
+     ".driver": "Go and tell the driver",
+     ".driver.s": "The bus pulls over.",
+     ".away": "Look out of the window",
+     ".away.s": "It isn’t your business."
+    },
+    "zh": {
+     ".t": "公交车上",
+     ".x": "深夜的公交车上，有人一直纠缠一位年轻乘客，对方看起来很害怕。没有人出声。",
+     ".step": "叫那人别再纠缠",
+     ".step.s": "你的声音比你以为的还大。",
+     ".sit": "坐到那位乘客旁边，装作老朋友聊起天来",
+     ".sit.s": "“原来你在这儿！今天过得怎样？”",
+     ".driver": "去告诉司机",
+     ".driver.s": "车靠边停了下来。",
+     ".away": "望向窗外",
+     ".away.s": "不关你的事。"
+    },
+    "zht": {
+     ".t": "公車上",
+     ".x": "深夜的公車上，有人一直糾纏一位年輕乘客，對方看起來很害怕。沒有人出聲。",
+     ".step": "叫那人別再糾纏",
+     ".step.s": "你的聲音比你以為的還大。",
+     ".sit": "坐到那位乘客旁邊，裝作老朋友聊起天來",
+     ".sit.s": "「原來你在這裡！今天過得怎樣？」",
+     ".driver": "去告訴司機",
+     ".driver.s": "車靠邊停了下來。",
+     ".away": "望向窗外",
+     ".away.s": "不關你的事。"
+    }
+   }
+  }
+ ]
+}

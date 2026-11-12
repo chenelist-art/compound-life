@@ -337,6 +337,7 @@ tbody tr:hover td{background:var(--washi)}
 .pp-n{overflow-wrap:anywhere}
 .pp-a{font-size:12px;font-variant-numeric:tabular-nums}
 .pp-b{flex:1 0 100%;height:7px;margin-top:3px;border:2px solid var(--charcoal);border-radius:999px;overflow:hidden;background:var(--washi)}
+.pp.pp-cold{border-style:dashed;opacity:.62}
 .pp-b i{display:block;height:100%;background:var(--coral)}
 .pp.g-pt{background:var(--yamabuki)} .pp.g-kid{background:var(--wakatake)} .pp.g-par{background:var(--mizu)}
 .pp-more{align-self:center;font-size:13px;padding:3px 10px;border:2.5px dashed var(--charcoal);border-radius:14px}
@@ -581,6 +582,29 @@ tbody tr:hover td{background:var(--washi)}
 .g-parts{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .pgrade{display:inline-block;min-width:1.6em;margin-right:8px;text-align:center;border:2px solid var(--charcoal);border-radius:999px;font-size:12.5px;line-height:1.5}
 @media (max-width:700px){.g-parts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* the scrapbook (memories): plain for now */
+.scrap{margin:18px 0}
+.scrap h4{font-size:16px;margin-bottom:2px}
+.scrap ul{list-style:none;margin:8px 0 0;padding:0}
+.scrap li{display:flex;gap:12px;align-items:baseline;padding:5px 0;border-bottom:2px dashed var(--charcoal)}
+.scrap li:last-child{border-bottom:0}
+.scrap-a{flex:0 0 3.2em;font-variant-numeric:tabular-nums;font-size:13px}
+.rp-mem{margin-top:8px}
+.rp-mem h4{font-size:14px;margin:0}
+.rp-mem ul{margin:2px 0 0;padding-left:18px;font-size:14px}
+.past-mem{display:block;font-size:12px;opacity:.8}
+/* the kind of person you were: words, plain for now */
+.vals{margin:18px 0}
+.vals h4{font-size:16px;margin-bottom:6px}
+.val-w{font-size:17px;margin:8px 0 0}
+.val-ex{font-size:13px;margin:2px 0 0;opacity:.8}
+/* things left unsaid: plain for now */
+.regs{margin:18px 0}
+.regs h4{font-size:16px;margin-bottom:2px}
+.regs ul{list-style:none;margin:8px 0 0;padding:0}
+.regs li{padding:6px 0}
+.regs li b{display:block;font-size:16px}
+.regs li span{font-size:14px}
 .elists{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .elists h4{font-size:16px;margin-bottom:8px}
 .elists ul{list-style:none;margin:0;padding:0}

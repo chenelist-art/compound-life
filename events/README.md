@@ -19,6 +19,7 @@ edits: the site loads `gen/`, not these files.
 | `country-MY.json` … `country-VN.json` | cards only for lives in that country (`"country": "MY"` at the top): born there, or moved there |
 | `migration.json` | moving to another country: where to, which legal route, visa renewals, permanent residence, citizenship, visits home, money sent home, parents (the rules are `MIG` in `js/engine.js`) |
 | `people.json` | cards about the people in your life (a sibling's wedding, a child's university fees, a parent's funeral…) |
+| `life.json` | cards about life rather than money (all `"life": true`): people reaching out, festivals, making peace, memories, dreams that come back, choices with no right answer (see Life cards) |
 | `_shared.json` | option sets several events share (`templates`) and consequences several events schedule (`later`) |
 | `_names.json` | given names by country and sex, in English, Simplified and Traditional Chinese |
 | `../i18n/en.json`, `zh.json`, `zht.json` | the rest of the game's text (buttons, passbook, diary lines…) |
@@ -77,6 +78,7 @@ three options, and "mid" is the default (what the autopilot twin picks and what 
 | `use`, `with` | take the options from a template in `_shared.json`: `"use": "flood", "with": {"prem": .006, "prep": .01}` |
 | `later` | consequences that arrive in a later year (see Consequences) |
 | `src` | where the facts and figures come from (country cards must have one; mark guesses as ESTIMATE) |
+| `life` | `true`: a card about life, not money. It keeps its full chance while every other optional card is dealt less often (`MONEYW` in `js/engine.js`), so a life has as many decisions as before and about a third are life cards |
 | `i18n` | the text, in `en`, `zh` and `zht` (see Text) |
 
 ## Options
@@ -90,6 +92,7 @@ three options, and "mid" is the default (what the autopilot twin picks and what 
 | `show` | leave the option out when this is false |
 | `rel` | moves Relationships by this much (the change shows in Easy) |
 | `bond` | changes how close you are to the card's person (`who`) by this much (closeness is 0–100) |
+| `val` | a choice with no right answer: what it says about you, `{"honest": 1, "loyal": -1}` (honest, loyal, brave, kind; −2 to 2). Never shown while you play and never part of the grade; the end card puts it into words. An option with `val` can't have a `hint` or `rel` |
 | `do` | the script: what happens when it is picked |
 | `next` | a follow-up card: `{"event": "lend_back", "in": [2, 4], "p": 0.5, "data": {"a": "a"}}` |
 | `label` | only when the label isn't `e.<event>.<id>`: an expression |
@@ -147,6 +150,9 @@ They look like JavaScript but can only touch the life being played:
 | `unchain('event')` | in a follow-up card's `again`, lets it be scheduled again (inside its scripts `chain` is its own data) |
 | `migApply(d, route, offer)`, `migOk`, `migSub`, `migHint`, `migDest()`, `migCan()`, `migOfferTo()`, `payThere(d)`, `usdG(x)`, `migRenew()`, `migPRApply()`, `migCitApply()`, `migBack()` | moving abroad (`js/engine.js`): apply to country index `d` by `'sk'`, `'inv'`, `'st'`, `'fam'` (or `'dv'`), what it asks for, where you could go, a job offer's country, your pay there, US$ in game money where you live; renewing, permanent residence, citizenship, going home |
 | `rl(d)` | change Relationships |
+| `memory('.m', p, {…}, w)` | a memory for the scrapbook (end card, replay, past lives): `.m` is this event's text, `p` the person in it (or `null`; the text gets `{n}`, `{p}`, `{P}`), `w` how much it mattered (1–3). +1 Happiness, a little closeness |
+| `canCall('key')`, `callOk(p)`, `called('key')`, `talk(p, d)`, `ignore(p, d)`, `mend(p, b)` | keeping in touch (`js/people.js`): a reach-out card may come this year (one every three years at most, the same card every eight; `called` in its `again`), this person would reach out now (fewer calls the more you ignore them), you answered (closeness +d), you didn't (closeness −d; three in a row and a friend drifts away, family becomes distant), back in touch after drifting apart |
+| `hobby('guitar')`, `hobbyKeep(k, years)`, `hobbyStop(k)`, `wish('travel')`, `dreamOpen(k)`, `dreamAt(k)`, `dreamSet(k, st)`, `dreamAsk(k)`, `dreamDone(k)`, `joinClub(k)` | dreams (`js/people.js`): a hobby starts (it stops by itself between 13 and the mid-twenties, later with `hobbyKeep`), a dream at 16, it can come back now, the age you stopped, `'back'`/`'gone'`/`'done'`, "not now", it came true another way, a band or club (returns the new friend) |
 | `roll('key')` | a random number 0–1, the same for this life, year and key (so the 40 futures differ) |
 | `log(M('log.x'), 'good')` | a diary line (in consequences) |
 | `M('.key', {…})`, `MN(a)`, `MS(a)` | text to show (`.key` is this event's own), money, signed money |
@@ -188,6 +194,7 @@ A card about someone says so with `who`:
 | `test` | an expression about them, as `p`: `p.wed` (married), `p.eng` (engaged), `p.ret` (retired), `p.away` (abroad), `p.d > 0` (older than you), `p.bond > 60` |
 | `pick` | if several fit: first (default), oldest, youngest or closest |
 | `dead` | `true` to choose among those who have passed away (`p.dead` is your age when they did) |
+| `gone` | `true` to choose among friends you drifted apart from (for reconnecting) |
 
 The person is `p` in the card's text and scripts: `"vars": {"p": "Who(p)"}` with `".x": "{p} is getting married."` gives
 "Your big sister Mei is getting married." / "你的姐姐美玲要结婚了。". The helpers: `Who(p)` / `who(p)` ("Your sister Mei" /
@@ -195,6 +202,29 @@ The person is `p` in the card's text and scripts: `"vars": {"p": "Who(p)"}` with
 sisters), `people('sib')` (a list), `person('friend')` (one, or null), `bond(p, 5)` or `bond('parent', 5)` (closeness), and a
 script can change what happened to them: `p.wed = true`. Put their name in passbook lines too:
 `T('sibwed', {kind: 'ghost', label: M('trk.sibWed', {p: name(p)})})`. Never use he or she for a partner.
+
+## Life cards
+
+About a third of each life's decisions are about life rather than money. They live in `life.json` with `"life": true` (the
+childhood hobby cards are marked too). A few patterns:
+
+- **Reach-out cards** (`call_mum`, `friend_msg`…) have no `age`: `"when": {"test": "canCall('mum')"}`, `"who": {"role": "mother",
+  "test": "callOk(p)"}`, `"again": "delete done.call_mum; called('mum')"`. Answering is `talk(p, 8)` and usually costs a little
+  (Happiness, time, a small fare); ignoring is `ignore(p, 6)` with an Easy hint that people stop calling. Someone ignored three
+  times in a row (closeness under 50) drifts away: a friend leaves your life (`gone`, `apart`), family turns `cold`. The diary
+  says so, the people strip shows them as distant, and `peace_*` / `old_friend` cards (with `mend`) can bring them back.
+- **Cards about a child, partner or parent at a certain age** (`kid_bike` for a child of 4–7) also have no `age`: a chance each
+  year it fits, `"when": {"test": "roll('kid_bike') < .3"}`, so most parents meet them.
+- **Memories**: call `memory('.m', p)` in the option that makes one, with `.m` in the event's text. Births, weddings and a first
+  grandchild are remembered by `js/people.js` on its own.
+- **Dreams**: hobby cards call `hobby('piano')`; `back_<kind>` cards come from 35 with `dreamOpen('piano')`; `dream16` and its
+  callbacks (`dream_trip`…) use `wish` and `dreamOpen`.
+- **Choices with no right answer** (`d_*`): no money, no `hint`, no `rel`; each option has a `val`. Every option should show
+  some value, so no answer reads as the wrong one.
+- **Regrets** need no cards: `regrets()` in `js/people.js` reads what happened (a parent who died while you were distant, a friend
+  you lost, a dream put off, a child's early years spent working). Choices with `val` never make a regret.
+- Festivals: in countries with several faiths the card is an invitation from a named friend (`fest_open`), never an assumption
+  about the player's religion.
 
 ## Follow-up cards ("three years later…")
 
@@ -261,4 +291,5 @@ sentence), concrete, calm and kind.
 3. Write the options: what's known goes in `sub`, effects you couldn't know in `hint`.
 4. Text in all three languages; a tarot name (or borrow one) and a drawing.
 5. A source in `src` for any real-world fact or figure; ESTIMATE for guesses.
-6. `node tools/build.js`, then `node tools/balance.js` if it changes money or odds.
+6. A card about life rather than money: `"life": true` (see Life cards).
+7. `node tools/build.js`, then `node tools/balance.js` if it changes money or odds.

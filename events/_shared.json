@@ -1,6 +1,42 @@
 {
  "about": "Shared parts: option sets several events use (\"use\" in an event), and consequences several events schedule.",
  "templates": {
+  "gohome": {
+   "key": "gohome",
+   "about": "A festival: going home to your parents for it (life.json). c: the journey and gifts, as a share of a typical wage.",
+   "defaults": {"c": 0.03},
+   "opts": [
+    {"id": "go", "sub": {"a": "MN(c * base)"}, "do": "pay(c * base); bond('parent', 8); happy += 1; memory('e.' + id + '.m', null, {}, 2)"},
+    {"id": "short", "sub": {"a": "MN(.5 * c * base)"}, "do": "pay(.5 * c * base); bond('parent', 4)"},
+    {"id": "stay", "do": "bond('parent', -3)"}
+   ],
+   "i18n": {
+    "en": {
+     ".go": "Go home for the whole holiday",
+     ".go.s": "About {a} for the journey and gifts. Happiness +2.",
+     ".short": "Go for two days, after the rush",
+     ".short.s": "About {a}.",
+     ".stay": "Stay where you are and call",
+     ".stay.s": "A quiet holiday."
+    },
+    "zh": {
+     ".go": "回家过完整个假期",
+     ".go.s": "路费和礼物大约{a}。幸福感 +2。",
+     ".short": "错开高峰，回去两天",
+     ".short.s": "大约{a}。",
+     ".stay": "留在原地，打个电话",
+     ".stay.s": "一个安静的假期。"
+    },
+    "zht": {
+     ".go": "回家過完整個假期",
+     ".go.s": "路費和禮物大約{a}。幸福感 +2。",
+     ".short": "避開尖峰，回去兩天",
+     ".short.s": "大約{a}。",
+     ".stay": "留在原地，打個電話",
+     ".stay.s": "一個安靜的假期。"
+    }
+   }
+  },
   "migto": {
    "key": "migto",
    "about": "Where to move: one option per country (the best-paid first); picking one brings the route card (mig_how) the same year. Used by mig and mig_idea, which add their own 'stay'.",

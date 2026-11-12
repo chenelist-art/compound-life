@@ -36,7 +36,7 @@ function pickCountry(){const tot=C.reduce((a,c)=>a+c[2],0);let u=Math.random()*t
 /* "Let me choose" picks the country and, if you like, girl or boy; otherwise both are drawn (sex from the country's sex ratio at birth) */
 $('#born').addEventListener('click',()=>{const pk=$('#bp-pick').checked;reveal(pk?+sel.value:pickCountry(),pk&&$('#sex').value||undefined)});
 function renderPast(){const p=store.get('cl-past')||[];$('#pastwrap').hidden=!p.length;
-  $('#past').innerHTML=p.slice(0,5).map(x=>{const ci=x.ci!=null?x.ci:C.findIndex(c=>c[0]===x.c);return `<li><span>${esc(t('g.pastItem',{c:ci>=0?I18N.cname(ci):x.c,a:x.age}))}</span><span class="num ${cls(x.nw)}">${x.g?`<b class="pgrade">${esc(x.g)}</b>`:''}${fm(x.nw)}</span></li>`}).join('')}
+  $('#past').innerHTML=p.slice(0,5).map(x=>{const ci=x.ci!=null?x.ci:C.findIndex(c=>c[0]===x.c);return `<li><span>${esc(t('g.pastItem',{c:ci>=0?I18N.cname(ci):x.c,a:x.age}))}${x.mem&&x.mem[0]?`<small class="past-mem">${trE(x.mem[0])}</small>`:''}</span><span class="num ${cls(x.nw)}">${x.g?`<b class="pgrade">${esc(x.g)}</b>`:''}${fm(x.nw)}</span></li>`}).join('')}
 renderPast();
 function setupBg(){Guilloche.render($('#setupRosette'),Object.assign({},Guilloche.MOON,{phase:.6}))}
 setupBg();
@@ -156,7 +156,7 @@ function texClear(){const box=$('#txs');if(box)for(const li of[...box.children])
 function texPlace(){const box=$('#txs'),fr=$('#frail');if(!box||!fr)return;box.style.bottom=getComputedStyle(fr).position==='fixed'?(fr.offsetHeight+40)+'px':''}
 function texLang(){const box=$('#txs');if(box)for(const li of box.children)if(li._o)li.innerHTML=texHTML(li._o)}
 function toast(msg){const el=$('#toast');G.toastMsg=msg;el.textContent=tr(msg);el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';clearTimeout(G.tt);G.tt=setTimeout(()=>{el.hidden=true},4200)}
-function endLife(){texClear();G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);G.grade=lifeScore(s);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s)),g:G.grade.grade});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
+function endLife(){texClear();G.ended=true;G.pending=null;clearTimeout(G.timer);const s=G.s;G.peers=bornWithYou();G.mirror=mirrorLife(s,G.foc,s.deathAge);G.grade=lifeScore(s);const p=store.get('cl-past')||[];p.unshift({c:C[s.ci][0],ci:s.ci,age:s.deathAge,nw:Math.round(netWorth(s)),g:G.grade.grade,mem:memTop(s,3)});store.set('cl-past',p.slice(0,12));render();window.scrollTo({top:0,behavior:'auto'});
   /* the farewell card comes first, then the life replay */
   if(moOn){G.moq=[deathMo()];G.moThen=playReplay;showMoment()}else playReplay()}
 
@@ -285,8 +285,8 @@ function render(){
 /* the people strip: partner, children, parents, siblings, best friend, boss, mentor; the bar is how close you are */
 const PPL_MAX=9,pplGroup=rk=>rk==='pt'?'g-pt':rk.startsWith('kid')?'g-kid':rk==='mother'||rk==='father'?'g-par':'';
 function renderPpl(L){const el=$('#ppl');if(!el)return;el.setAttribute('aria-label',t('ppl.h'));
-  const li=L.slice(0,PPL_MAX).map(p=>{const r=t('ppl.c.'+p.rk),n=t(p.n),a=t('ppl.age',{a:p.x}),b=t('ppl.bond',{n:p.b}),aw=p.away?' · '+t('ppl.away'):p.far?' · '+t('ppl.far'):'';
-    return `<li class="pp ${pplGroup(p.rk)}" aria-label="${esc(r+' '+n+', '+a+aw+', '+b)}"><span class="pp-r" aria-hidden="true">${esc(r)}</span><span class="pp-n" aria-hidden="true">${esc(n)}</span><span class="pp-a" aria-hidden="true">${esc(a+aw)}</span><span class="pp-b" aria-hidden="true"><i style="width:${p.b}%"></i></span></li>`}).join('');
+  const li=L.slice(0,PPL_MAX).map(p=>{const r=t('ppl.c.'+p.rk),n=t(p.n),a=t('ppl.age',{a:p.x}),b=t('ppl.bond',{n:p.b}),aw=(p.away?' · '+t('ppl.away'):p.far?' · '+t('ppl.far'):'')+(p.cold?' · '+t('ppl.cold'):'');
+    return `<li class="pp ${pplGroup(p.rk)}${p.cold?' pp-cold':''}" aria-label="${esc(r+' '+n+', '+a+aw+', '+b)}"><span class="pp-r" aria-hidden="true">${esc(r)}</span><span class="pp-n" aria-hidden="true">${esc(n)}</span><span class="pp-a" aria-hidden="true">${esc(a+aw)}</span><span class="pp-b" aria-hidden="true"><i style="width:${p.b}%"></i></span></li>`}).join('');
   el.innerHTML=li+(L.length>PPL_MAX?`<li class="pp-more">${esc(t('ppl.more',{n:L.length-PPL_MAX}))}</li>`:'')}
 /* "Mother Siti (58), Big sister Mei (30)…" for the replay */
 function pplItems(L,max){return L.slice(0,max).map(p=>t('ppl.item',{r:M('ppl.c.'+p.rk),n:M(p.n),a:p.x})).join(t('ppl.sep'))}
@@ -535,6 +535,9 @@ function endHTML(){
     <h2>${esc(t('g.lifeIn',{c:cn,a:s.deathAge}))}</h2>
     <div class="cert-den ${nw<0?'loss':''}" data-fit>${fm(nw)}</div><span class="lbl">${esc(t('g.nwEnd'))}</span></div><canvas class="pix pix-end" id="pixEnd" width="48" height="48" aria-hidden="true"></canvas></div>
   <p class="cert-story">${esc(t('g.bornInto',{fam}))}${I18N.lang==='en'?' ':''}${story}${s.illDeath?(I18N.lang==='en'?' ':'')+esc(t('g.illEnd',{a:s.deathAge,x:M('ill.'+s.illDeath)})):''}</p>
+  ${memHTML(s)}
+  ${valHTML(s)}
+  ${regHTML(s)}
   <div class="egrid"><div><span class="lbl">${esc(t('g.peak',{a:peak[0]}))}</span><b>${fm(peak[1])}</b></div><div><span class="lbl">${esc(t('g.lifeInc'))}</span><b>${fm(s.earned)}</b></div><div><span class="lbl">${esc(t('g.twinT'))}</span><b>${fm(tv)}</b></div><div><span class="lbl">${esc(t('g.ringHi'))}</span><b>${esc(t('g.ringOf',{n:s.milestones.ring||0}))}</b></div></div>
   ${gradeHTML(gr)}
   ${mirrorHTML()}
@@ -544,6 +547,23 @@ function endHTML(){
   <p class="share" id="share">${esc(share)}</p>
   <div class="erow"><button class="btn btn-accent" id="again" type="button">${esc(t('g.again'))} <span class="arr">→</span></button><button class="btn btn-ghost" id="same" type="button">${esc(t('g.sameC',{c:cn}))}</button><button class="btn btn-ghost" id="replay" type="button">${esc(t('rp.again'))}</button><button class="btn btn-ghost" id="copy" type="button">${esc(t('g.copy'))}</button><button class="btn btn-ghost" id="home" type="button">${esc(t('g.home'))}</button></div>`});
 }
+
+/* the scrapbook: what you'll remember (s.mem), by age; at most 12, the ones that mattered most (w), then the earliest */
+const MEMMAX=12;
+function memHTML(s){const all=s.mem||[];if(!all.length)return `<section class="scrap"><h4>${esc(t('g.memT'))}</h4><p class="muted">${esc(t('g.memNone'))}</p></section>`;
+  const keep=new Set(all.map((m,i)=>[m,i]).sort((a,b)=>b[0].w-a[0].w||a[1]-b[1]).slice(0,MEMMAX).map(x=>x[0])),L=all.filter(m=>keep.has(m));
+  return `<section class="scrap"><h4>${esc(t('g.memT'))}</h4><p class="muted">${esc(t('g.memSub'))}</p><ul>${L.map(m=>`<li><span class="scrap-a">${esc(t('g.memAt',{a:m.a}))}</span><span>${trE(m.m)}</span></li>`).join('')}</ul>${all.length>L.length?`<p class="muted">${esc(t('g.memMore',{n:all.length-L.length}))}</p>`:''}</section>`}
+/* the kind of person you were: words, never a score, from the choices with no right answer (valWords in js/people.js),
+   each with the choice that showed it most */
+function valHTML(s){const W=valWords(s);
+  const body=W.length?W.map(w=>`<p class="val-w">${esc(t(w.k))}</p>${w.ex?`<p class="val-ex">${trE(M('val.ex',{a:w.ex.a,t:M('e.'+w.ex.e+'.t'),o:w.ex.l||M('e.'+w.ex.e+'.'+w.ex.o)}))}</p>`:''}`).join('')
+    :`<p class="val-w">${esc(t((s.valLog||[]).length?'val.mixed':'val.none'))}</p>`;
+  return `<section class="vals"><h4>${esc(t('val.T'))}</h4>${body}</section>`}
+/* things left unsaid: up to three regrets from what happened in this life (regrets() in js/people.js), never part of the grade */
+function regHTML(s){const R=regrets(s);
+  return `<section class="regs"><h4>${esc(t('reg.T'))}</h4>${R.length?`<p class="muted">${esc(t('reg.sub'))}</p><ul>${R.map(r=>`<li><b>${trE(r.t)}</b><span>${trE(r.x)}</span></li>`).join('')}</ul>`:`<p>${esc(t('reg.none'))}</p>`}</section>`}
+/* the memories that mattered most, for the past lives list (kept with each life, at most three) */
+const memTop=(s,n)=>(s.mem||[]).map((m,i)=>[m,i]).sort((a,b)=>b[0].w-a[0].w||b[1]-a[1]).slice(0,n).map(x=>x[0].m);
 
 /* ---------- life replay ----------
    Before the end card, the life is drawn again as one continuous line: one scene per stage that actually happened (the
@@ -575,7 +595,11 @@ function replayPages(){
     pg.push({st:'ret',age:s.retireAge,title:d?d.title:M('rp.s.ret'),d,story:[M('rp.t.ret',{a:s.retireAge,nw:MN(nwAt(s.retireAge))})]})}
   const close=pplView(s).filter(p=>p.rk!=='boss'&&p.rk!=='mentor').sort((a,b)=>b.b-a.b).slice(0,3);
   pg.push({st:'end',age:s.deathAge,title:M('rp.endT'),story:[s.illDeath?M('rp.t.endIll',{a:s.deathAge,x:M('ill.'+s.illDeath)}):M('rp.t.end',{a:s.deathAge}),M('rp.t.endNw',{nw:MN(netWorth(s))}),...(close.length?[M('rp.t.close',{l:pplList(close)})]:[])]});
-  return pg.sort((a,b)=>a.age-b.age);
+  pg.sort((a,b)=>a.age-b.age);
+  /* the memories made from each page's age up to the next page's (at most four, the ones that mattered most) */
+  const ms=s.mem||[];pg.forEach((p,i)=>{const hi=i+1<pg.length?pg[i+1].age:999,lo=i?p.age:-1;
+    p.mem=ms.filter(m=>m.a>=lo&&m.a<hi).map((m,k)=>[m,k]).sort((a,b)=>b[0].w-a[0].w||a[1]-b[1]).slice(0,4).sort((a,b)=>a[1]-b[1]).map(x=>x[0].m)});
+  return pg;
 }
 /* a decision's passbook lines added up, year by year: [[age, value], ...] */
 function decHist(d){const ages=new Set();for(const id of d.trk)for(const p of G.th[id]||[])ages.add(p[0]);
@@ -622,7 +646,7 @@ function roadHTML(d){
 /* a scene's words: stage, age, what you did, what came of it, and the road not taken */
 function sceneText(p){const age=p.st==='end'?G.s.deathAge:p.age;
   return `<div class="rp-hd"><div class="rp-hl"><span class="rp-chip" style="--c:var(${Art.stageBg(p.st)})">${esc(t('rp.s.'+p.st))}</span><span class="rp-age">${esc(t('rp.age',{a:age}))}</span></div><canvas class="pix pix-rp" data-age="${age}" width="48" height="48" aria-hidden="true"></canvas></div>
-  <h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${(()=>{const L=p.st==='birth'?[]:pplAt(age);return L.length?`<p class="rp-ppl">${esc(t('rp.ppl',{l:pplItems(L,6)}))}</p>`:''})()}${roadHTML(p.d)}`}
+  <h3>${trE(p.title)}</h3><p class="rp-story">${p.story.map(trE).join(I18N.lang==='en'?' ':'')}</p>${(()=>{const L=p.st==='birth'?[]:pplAt(age);return L.length?`<p class="rp-ppl">${esc(t('rp.ppl',{l:pplItems(L,6)}))}</p>`:''})()}${p.mem&&p.mem.length?`<div class="rp-mem"><h4>${esc(t('rp.mem'))}</h4><ul>${p.mem.map(m=>`<li>${trE(m)}</li>`).join('')}</ul></div>`:''}${roadHTML(p.d)}`}
 /* each page's pixel character: the look recorded at that age (or the nearest year before it) */
 function pixAt(a){let k=-1;for(const x in G.pix)if(+x<=a&&+x>k)k=+x;return G.pix[k]||G.pix[0]}
 function rpPix(root){root.querySelectorAll('canvas.pix-rp').forEach(c=>Pixel.set(c,pixAt(+c.dataset.age)))}

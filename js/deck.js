@@ -56,7 +56,7 @@ function make(e,ix){
  const fns=[...(tp?ent(tp.fn).map(x=>[...x,tpre]):[]),...ent(e.fn).map(x=>[...x,pre])];
  const vars=[...Object.keys(PV),...lets.map(l=>l[0]),'chain',...(e.who?['p']:[])],fnN=fns.map(f=>f[0]);
  const sc={vars,fns:fnN},csc={vars:[...Object.keys(PV),'chain']};
- const ev={id:e.id,ix,win:e.age||undefined,def:e.def,title:M(pre+'.t'),cc:e.country,chain:!!e.chain,art:e.art,tarot:e.tarot};
+ const ev={id:e.id,ix,win:e.age||undefined,def:e.def,title:M(pre+'.t'),cc:e.country,chain:!!e.chain,art:e.art,tarot:e.tarot,life:!!e.life};
  if(e.dens!=null||e.country)ev.dens=e.dens!=null?e.dens:CDENS;
  if(e.surv)ev.surv=true;
  if(e.care)ev.care=M(e.care[0]==='.'?pre+e.care:e.care);
@@ -111,7 +111,7 @@ function option(o,kp,sc){
  const vmsg=(spec,suffix)=>{if(spec==null||spec===false)return null;if(spec===true)return(c,key)=>M(key+suffix);if(typeof spec==='string'){const f=ex(spec);return c=>f(c)}
   const vs=ent(spec).map(([k,src])=>[k,ex(src)]);return(c,key)=>{const v={};for(const[k,f]of vs)v[k]=f(c);return M(key+suffix,v)}};
  const sub=o.sub===undefined?(c,key)=>M(key+'.s'):vmsg(o.sub,'.s'),hint=vmsg(o.hint,'.h');
- const run=o.do!=null?prefixed(ES.script(o.do,lsc),kp):null,rel=o.rel,bond=o.bond;
+ const run=o.do!=null?prefixed(ES.script(o.do,lsc),kp):null,rel=o.rel,bond=o.bond,val=o.val;
  const nexts=list(o.next||[]).map(n=>({id:n.event,yrs:n.in,p:n.p,data:ent(n.data).map(([k,src])=>[k,ex(src)])}));
  const one=(c,out)=>{let cc=c;if(lets.length){const v=Object.create(c.v);cc={s:c.s,v,L:null,p:c.p};for(const[n,f]of lets)v[n]=f(cc)}
   if(show&&!show(cc))return false;
@@ -121,7 +121,8 @@ function option(o,kp,sc){
   const h=hint?hint(cc,key):undefined;if(rel!==undefined)r.hint=RH(rel,h);else if(hint)r.hint=h;
   if(grp)r.grp=grp(cc);
   const v=cc.v,p=cc.p;
-  r.go=s=>{if(rel!==undefined)rl(s,rel);if(bond&&v.p)pplBond(s,v.p,bond);const c2={s,v,L:null,p};if(run)run(c2);
+  /* "val": the kind of person you were (js/people.js), never shown while you play */
+  r.go=s=>{if(rel!==undefined)rl(s,rel);if(bond&&v.p)pplBond(s,v.p,bond);if(val)valAdd(s,kp.slice(2),id,val,r.label);const c2={s,v,L:null,p};if(run)run(c2);
    for(const n of nexts){if(n.p!=null&&evR(s,'nextP'+n.id)()>=n.p)continue;const d={};for(const[k,f]of n.data)d[k]=f(c2);next(s,n.id,n.yrs,d)}};
   out.push(r);return true};
  const each=as?prefixed(ES.expr(o.each,sc),kp):null;

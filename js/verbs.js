@@ -126,5 +126,16 @@ Object.assign(LATER,{
  V.people=(c,r)=>pplOf(c.s,r);V.person=(c,r)=>pplOf(c.s,r)[0]||null;
  V.bond=(c,x,d)=>pplBond(c.s,x,d);V.bondOf=(c,id)=>{const p=pplGet(c.s,id);return p?p.bond:null};
  V.parentsPass=c=>pplParentsPass(c.s);V.kidFee=c=>pplKidFee(c.s);
+ /* keeping in touch (js/people.js): canCall('key') a reach-out card may come this year (called('key') in its "again" makes it wait); callOk(p) this person would reach out;
+    talk(p, closeness) you answered; ignore(p, closeness lost) you didn't; mend(p, closeness) back in touch after drifting apart */
+ V.canCall=(c,k)=>pplCanCall(c.s,k);V.called=(c,k)=>pplCalled(c.s,k);V.callOk=(c,p)=>!!p&&pplCallOk(c.s,p);V.talk=(c,p,d)=>pplTalk(c.s,p,d);V.ignore=(c,p,d)=>pplIgnore(c.s,p,d);V.mend=(c,p,b)=>pplMend(c.s,p,b);
+ /* a memory (js/people.js): memory('.key', person or null, {values}, how much it mattered 1–3); '.key' is this event's own text */
+ /* dreams (js/people.js): hobby('guitar') a hobby starts; hobbyKeep('guitar', years) / hobbyStop('guitar'); wish('travel') a
+    dream at 16; dreamOpen(k) it can come back now; dreamAt(k) the age you stopped; dreamSet(k, 'back'|'gone'|'done');
+    dreamAsk(k) "not now"; dreamDone(k) it came true some other way; joinClub(k) a band or club, and a new friend (returned) */
+ V.hobby=(c,k)=>dreamStart(c.s,k);V.hobbyKeep=(c,k,y)=>dreamKeep(c.s,k,y);V.hobbyStop=(c,k)=>dreamStop(c.s,k);V.wish=(c,k)=>dreamWish(c.s,k);
+ V.dreamOpen=(c,k)=>dreamOpen(c.s,k);V.dreamAt=(c,k)=>dreamAt(c.s,k);V.dreamSet=(c,k,st)=>dreamSet(c.s,k,st);V.dreamAsk=(c,k)=>dreamAsk(c.s,k);
+ V.dreamDone=(c,k)=>dreamDone(c.s,k);V.joinClub=(c,k)=>pplClub(c.s,k);
+ V.memory=(c,k,p,v,w)=>pplMem(c.s,typeof k==='string'&&k[0]==='.'?c.p+k:k,p,v,w);
  const K=ES.CONST;K.Math={min:Math.min,max:Math.max,floor:Math.floor,ceil:Math.ceil,round:Math.round,abs:Math.abs,exp:Math.exp,log:Math.log,sqrt:Math.sqrt,pow:Math.pow,PI:Math.PI};
  K.C=C;K.MIG=MIG;K.MIGK=MIGK;K.CAR=CAR;K.ILLT=ILLT;K.SCH=SCH;K.SK=SK;K.DENSITY=DENSITY;K.CDENS=CDENS}

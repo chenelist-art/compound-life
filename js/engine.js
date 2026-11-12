@@ -228,10 +228,15 @@ function newLife(ci,seed,sex,dk){const r=mb(hsh(seed,'birth'));const c=C[ci];con
    the rest try to land on years that are still free. Events that missed the draw go into `spare`,
    used only to fill a quiet stretch (see dueEvents). */
 const DENSITY=.5; // scales every event's chance; raise it for more decisions per life (about 50 at .5). Country cards use their own (dens)
+/* cards about life rather than money ("life": true in events/*.json: people, memories, dreams, choices with no right answer)
+   take some of the money cards' places, so a life has about as many decisions as before: every other card with an age
+   window is dealt this much less often. Set with a simulation so about a third of a life's decisions are life cards */
+const MONEYW=.48;
+const pickP=(e,p)=>p<1?p*(e.dens||DENSITY)*(e.life?1:MONEYW):p;
 function planLife(s){const r=mb(hsh(s.seed,'plan')),used={},plan={},spare={};
  for(const e of EV)if(e.win&&e.win[0]===e.win[1]){plan[e.id]=e.win[0];used[e.win[0]]=1}
  for(const e of EV){if(!e.win||e.win[0]===e.win[1])continue;
-  const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p);if(e.only&&!e.only(s))continue;const pick=r()<p*(p<1?(e.dens||DENSITY):1);
+  const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p);if(e.only&&!e.only(s))continue;const pick=r()<pickP(e,p);
   const[a,b]=e.win;let age=a+Math.floor(r()*(b-a+1));for(let k=0;k<8&&used[age];k++)age=a+Math.floor(r()*(b-a+1));
   if(pick){used[age]=1;plan[e.id]=age}else if(p>0)spare[e.id]=age}
  s.spare=spare;return plan}
@@ -1095,7 +1100,7 @@ function migPRGot(s){const m=s.mig,q=MIG[cc(m.d)],g=m.how==='fam'&&q.fam.gap!=nu
 function replan(s){const r=evR(s,'replan');for(const e of EV){if(!e.win||!e.only||s.done[e.id])continue;
  if(!e.only(s)){delete s.plan[e.id];delete s.spare[e.id];continue}if(s.plan[e.id]!=null||s.spare[e.id]!=null)continue;
  const lo=Math.max(e.win[0],s.age+1),hi=e.win[1];if(lo>hi)continue;const p=typeof e.p==='function'?e.p(s):(e.p==null?1:e.p),age=lo+Math.floor(r()*(hi-lo+1));
- if(r()<p*(p<1?(e.dens||DENSITY):1))s.plan[e.id]=age;else if(p>0)s.spare[e.id]=age}}
+ if(r()<pickP(e,p))s.plan[e.id]=age;else if(p>0)s.spare[e.id]=age}}
 /* the start of each year: the pay held back fades, the years you've lived in each country (for languages) and worked there
    (for state pensions) add up */
 function migStart(s,a){const k=cc(s.lc);(s.lived||(s.lived={}))[k]=(s.lived[k]||0)+1;const m=s.mig;if(!m)return;
