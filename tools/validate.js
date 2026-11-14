@@ -46,6 +46,8 @@ const holes=s=>new Set([...String(s).matchAll(/\{(\w+)(?::[^{}]*)?\}/g)].map(m=>
 function check(data,opt){opt=opt||{};const errors=[],warnings=[],said=new Set();
  const once=(list,m)=>{if(!said.has(m)){said.add(m);list.push(m)}};
  const E=(where,msg)=>once(errors,where+': '+msg),W=(where,msg)=>once(warnings,where+': '+msg);
+ /* every script the pages load must at least parse: one typo in a file the simulation never loads (art.js, game.js, pixel.js…) stops the whole page */
+ for(const f of fs.readdirSync(path.join(ROOT,'js')).filter(f=>f.endsWith('.js'))){try{new vm.Script(fs.readFileSync(path.join(ROOT,'js',f),'utf8'),{filename:'js/'+f})}catch(e){const at=String(e.stack||'').split('\n')[0];E('js/'+f,'does not load in the browser ('+e.message+(at.indexOf(f)>=0?', '+at:'')+')')}}
  const gen=B.generate(data);const{ctx}=sandbox(gen);const ES=ctx.ES;
  vm.runInContext(fs.readFileSync(path.join(ROOT,'js/deck.js'),'utf8').replace("const D=R.EVDATA;if(!D)throw","const D=R.EVDATA||{templates:{},later:{},events:[]};if(!D)throw"),ctx,{filename:'js/deck.js'});
  const COND=ctx.Deck.COND,STAT=ctx.Deck.STAT,VERBS=ES.VERBS;
